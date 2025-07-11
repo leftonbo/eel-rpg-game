@@ -165,7 +165,7 @@ export class Player {
         if (this.statusEffects.hasEffect(StatusEffectType.KnockedOut)) {
             // Check if knock out duration is over
             const knockOutEffect = this.statusEffects.getEffect(StatusEffectType.KnockedOut);
-            if (knockOutEffect && knockOutEffect.duration <= 0) {
+            if (knockOutEffect && knockOutEffect.duration <= 1) {
                 this.statusEffects.removeEffect(StatusEffectType.KnockedOut);
                 
                 // Recover 50% HP
