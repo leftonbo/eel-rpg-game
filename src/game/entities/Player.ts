@@ -159,7 +159,9 @@ export class Player {
         }
     }
     
-    recoverFromKnockOut(): void {
+    recoverFromKnockOut(): string[] {
+        const messages: string[] = [];
+        
         if (this.statusEffects.hasEffect(StatusEffectType.KnockedOut)) {
             // Check if knock out duration is over
             const knockOutEffect = this.statusEffects.getEffect(StatusEffectType.KnockedOut);
@@ -169,8 +171,13 @@ export class Player {
                 // Recover 50% HP
                 const healAmount = Math.floor(this.maxHp * 0.5);
                 this.heal(healAmount);
+                
+                messages.push('エルナルが意識を取り戻した！');
+                messages.push(`HPが${healAmount}回復した！`);
             }
         }
+        
+        return messages;
     }
     
     canAct(): boolean {
@@ -200,10 +207,10 @@ export class Player {
         // Apply status effects and get messages
         const effectMessages = this.statusEffects.applyEffects(this);
         
-        // Check for knock out recovery
-        this.recoverFromKnockOut();
+        // Check for knock out recovery and get messages
+        const recoveryMessages = this.recoverFromKnockOut();
         
-        return effectMessages;
+        return [...effectMessages, ...recoveryMessages];
     }
     
     endTurn(): string[] {
