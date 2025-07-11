@@ -97,6 +97,12 @@
                                             <div id="player-hp-bar" class="progress-bar bg-success" style="width: 100%"></div>
                                         </div>
                                     </div>
+                                    <div class="mb-2">
+                                        マナ: <span id="player-mp">40</span> / <span id="player-max-mp">40</span>
+                                        <div class="progress">
+                                            <div id="player-mp-bar" class="progress-bar bg-info" style="width: 100%"></div>
+                                        </div>
+                                    </div>
                                     <div id="player-status-effects" class="mt-2">
                                         <!-- Status effects will be displayed here -->
                                     </div>
@@ -148,7 +154,25 @@
                             <div id="action-buttons" class="d-grid gap-2">
                                 <button id="attack-btn" class="btn btn-danger">⚔️ 攻撃</button>
                                 <button id="defend-btn" class="btn btn-primary">🛡️ 防御</button>
+                                <button id="skill-btn" class="btn btn-warning">⚡ スキル</button>
                                 <button id="item-btn" class="btn btn-success">💊 アイテム</button>
+                            </div>
+                            
+                            <!-- Skill Panel (hidden by default) -->
+                            <div id="skill-panel" class="d-none mt-3">
+                                <h6>スキル</h6>
+                                <div class="d-grid gap-2">
+                                    <button id="power-attack-btn" class="btn btn-outline-danger">
+                                        💥 パワーアタック (20MP)
+                                    </button>
+                                    <button id="heal-skill-btn" class="btn btn-outline-success">
+                                        ✨ ヒール (30MP)
+                                    </button>
+                                    <button id="struggle-skill-btn" class="btn btn-outline-warning">
+                                        🔥 あばれる (30MP)
+                                    </button>
+                                    <button id="skill-back-btn" class="btn btn-outline-secondary">戻る</button>
+                                </div>
                             </div>
                             
                             <!-- Item Panel (hidden by default) -->
@@ -160,6 +184,9 @@
                                     </button>
                                     <button id="adrenaline-btn" class="btn btn-outline-warning">
                                         💉 アドレナリン注射 (<span id="adrenaline-count">3</span>)
+                                    </button>
+                                    <button id="energy-drink-btn" class="btn btn-outline-info">
+                                        ⚡ 元気ドリンク (<span id="energy-drink-count">3</span>)
                                     </button>
                                     <button id="item-back-btn" class="btn btn-outline-secondary">戻る</button>
                                 </div>

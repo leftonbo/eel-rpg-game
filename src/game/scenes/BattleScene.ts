@@ -1,5 +1,5 @@
 import { Game } from '../Game';
-import { Player, PLAYER_NAME } from '../entities/Player';
+import { Player, PLAYER_NAME, SkillType } from '../entities/Player';
 import { Boss, ActionType } from '../entities/Boss';
 import { calculateAttackResult } from '../utils/CombatUtils';
 
@@ -15,6 +15,9 @@ export class BattleScene {
     private playerHpElement: HTMLElement | null = null;
     private playerMaxHpElement: HTMLElement | null = null;
     private playerHpBar: HTMLElement | null = null;
+    private playerMpElement: HTMLElement | null = null;
+    private playerMaxMpElement: HTMLElement | null = null;
+    private playerMpBar: HTMLElement | null = null;
     private playerStatusEffects: HTMLElement | null = null;
     
     private bossNameElement: HTMLElement | null = null;
@@ -26,9 +29,11 @@ export class BattleScene {
     private actionButtons: HTMLElement | null = null;
     private specialActions: HTMLElement | null = null;
     private itemPanel: HTMLElement | null = null;
+    private skillPanel: HTMLElement | null = null;
     
     private healPotionCount: HTMLElement | null = null;
     private adrenalineCount: HTMLElement | null = null;
+    private energyDrinkCount: HTMLElement | null = null;
     
     constructor(game: Game) {
         this.game = game;
@@ -42,6 +47,9 @@ export class BattleScene {
         this.playerHpElement = document.getElementById('player-hp');
         this.playerMaxHpElement = document.getElementById('player-max-hp');
         this.playerHpBar = document.getElementById('player-hp-bar');
+        this.playerMpElement = document.getElementById('player-mp');
+        this.playerMaxMpElement = document.getElementById('player-max-mp');
+        this.playerMpBar = document.getElementById('player-mp-bar');
         this.playerStatusEffects = document.getElementById('player-status-effects');
         
         this.bossNameElement = document.getElementById('boss-name');
@@ -53,9 +61,11 @@ export class BattleScene {
         this.actionButtons = document.getElementById('action-buttons');
         this.specialActions = document.getElementById('special-actions');
         this.itemPanel = document.getElementById('item-panel');
+        this.skillPanel = document.getElementById('skill-panel');
         
         this.healPotionCount = document.getElementById('heal-potion-count');
         this.adrenalineCount = document.getElementById('adrenaline-count');
+        this.energyDrinkCount = document.getElementById('energy-drink-count');
         
         // Setup event listeners
         this.setupEventListeners();
@@ -65,11 +75,19 @@ export class BattleScene {
         // Action buttons
         document.getElementById('attack-btn')?.addEventListener('click', () => this.playerAttack());
         document.getElementById('defend-btn')?.addEventListener('click', () => this.playerDefend());
+        document.getElementById('skill-btn')?.addEventListener('click', () => this.showSkillPanel());
         document.getElementById('item-btn')?.addEventListener('click', () => this.showItemPanel());
+        
+        // Skill buttons
+        document.getElementById('power-attack-btn')?.addEventListener('click', () => this.useSkill(SkillType.PowerAttack));
+        document.getElementById('heal-skill-btn')?.addEventListener('click', () => this.useSkill(SkillType.Heal));
+        document.getElementById('struggle-skill-btn')?.addEventListener('click', () => this.useSkill(SkillType.Struggle));
+        document.getElementById('skill-back-btn')?.addEventListener('click', () => this.hideSkillPanel());
         
         // Item buttons
         document.getElementById('heal-potion-btn')?.addEventListener('click', () => this.useItem('heal-potion'));
         document.getElementById('adrenaline-btn')?.addEventListener('click', () => this.useItem('adrenaline'));
+        document.getElementById('energy-drink-btn')?.addEventListener('click', () => this.useItem('energy-drink'));
         document.getElementById('item-back-btn')?.addEventListener('click', () => this.hideItemPanel());
         
         // Special action buttons
@@ -156,6 +174,16 @@ export class BattleScene {
             }
         }
         
+        // MP
+        if (this.playerMpElement) this.playerMpElement.textContent = this.player.mp.toString();
+        if (this.playerMaxMpElement) this.playerMaxMpElement.textContent = this.player.maxMp.toString();
+        
+        // MP Bar
+        if (this.playerMpBar) {
+            const mpPercentage = this.player.getMpPercentage();
+            this.playerMpBar.style.width = `${mpPercentage}%`;
+        }
+        
         // Status Effects
         this.updateStatusEffectsUI(this.player.statusEffects.getAllEffects(), this.playerStatusEffects);
     }
@@ -210,7 +238,7 @@ export class BattleScene {
         }
         
         // Enable/disable action buttons
-        const actionBtns = ['attack-btn', 'defend-btn', 'item-btn'];
+        const actionBtns = ['attack-btn', 'defend-btn', 'skill-btn', 'item-btn'];
         actionBtns.forEach(btnId => {
             const btn = document.getElementById(btnId);
             if (btn) {
@@ -257,6 +285,10 @@ export class BattleScene {
         if (this.adrenalineCount) {
             this.adrenalineCount.textContent = this.player.getItemCount('adrenaline').toString();
         }
+        
+        if (this.energyDrinkCount) {
+            this.energyDrinkCount.textContent = this.player.getItemCount('energy-drink').toString();
+        }
     }
     
     private playerAttack(): void {
@@ -288,6 +320,20 @@ export class BattleScene {
         this.endPlayerTurn();
     }
     
+    private showSkillPanel(): void {
+        if (this.actionButtons && this.skillPanel) {
+            this.actionButtons.classList.add('d-none');
+            this.skillPanel.classList.remove('d-none');
+        }
+    }
+    
+    private hideSkillPanel(): void {
+        if (this.actionButtons && this.skillPanel) {
+            this.skillPanel.classList.add('d-none');
+            this.actionButtons.classList.remove('d-none');
+        }
+    }
+    
     private showItemPanel(): void {
         if (this.actionButtons && this.itemPanel) {
             this.actionButtons.classList.add('d-none');
@@ -302,13 +348,39 @@ export class BattleScene {
         }
     }
     
+    private useSkill(skillType: SkillType): void {
+        if (!this.player || !this.boss || !this.playerTurn) return;
+        
+        const result = this.player.useSkill(skillType, this.boss);
+        
+        if (result.success) {
+            this.addBattleLogMessage(result.message, 'system');
+            
+            // Apply damage if applicable
+            if (result.damage && result.damage > 0) {
+                const actualDamage = this.boss.takeDamage(result.damage);
+                this.addBattleLogMessage(`${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage');
+            }
+            
+            this.hideSkillPanel();
+            this.endPlayerTurn();
+        } else {
+            this.addBattleLogMessage(result.message, 'system');
+        }
+    }
+    
     private useItem(itemName: string): void {
         if (!this.player || !this.playerTurn) return;
         
         const success = this.player.useItem(itemName);
         
         if (success) {
-            const itemDisplayName = itemName === 'heal-potion' ? '回復薬' : 'アドレナリン注射';
+            const itemDisplayNames: { [key: string]: string } = {
+                'heal-potion': '回復薬',
+                'adrenaline': 'アドレナリン注射',
+                'energy-drink': '元気ドリンク'
+            };
+            const itemDisplayName = itemDisplayNames[itemName] || itemName;
             this.addBattleLogMessage(`${PLAYER_NAME}は${itemDisplayName}を使った！`, 'heal');
             
             this.hideItemPanel();
@@ -411,6 +483,12 @@ export class BattleScene {
         // Start player turn
         if (this.player) {
             this.player.startTurn();
+            
+            // Check for exhausted recovery messages
+            const recoveryMessages = this.player.checkExhaustedRecovery();
+            recoveryMessages.forEach(message => {
+                this.addBattleLogMessage(message, 'system');
+            });
         }
         
         this.updateUI();

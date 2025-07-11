@@ -1,5 +1,20 @@
 import { StatusEffectManager, StatusEffectType } from '../systems/StatusEffect';
 
+export enum SkillType {
+    PowerAttack = 'power-attack',
+    Heal = 'heal',
+    Struggle = 'struggle'
+}
+
+export interface Skill {
+    type: SkillType;
+    name: string;
+    description: string;
+    mpCost: number;
+    canUse: (player: Player) => boolean;
+    use: (player: Player, target?: any) => { success: boolean; message: string; damage?: number };
+}
+
 // Player name constant for easy modification
 export const PLAYER_NAME = 'エルナル';
 
@@ -14,6 +29,8 @@ export class Player {
     public name: string = PLAYER_NAME;
     public maxHp: number = 100;
     public hp: number = 100;
+    public maxMp: number = 40;
+    public mp: number = 40;
     public baseAttackPower: number = 5;
     public statusEffects: StatusEffectManager = new StatusEffectManager();
     public items: Map<string, PlayerItem> = new Map();
@@ -64,6 +81,20 @@ export class Player {
                 
                 this.statusEffects.addEffect(StatusEffectType.Invincible);
                 this.items.get('adrenaline')!.count--;
+                return true;
+            }
+        });
+        
+        // Energy Drink
+        this.items.set('energy-drink', {
+            name: '元気ドリンク',
+            count: 3,
+            description: '3ターンの間、MPが常に満タンになる',
+            use: (_player: Player) => {
+                if (this.items.get('energy-drink')!.count <= 0) return false;
+                
+                this.statusEffects.addEffect(StatusEffectType.Energized);
+                this.items.get('energy-drink')!.count--;
                 return true;
             }
         });
@@ -206,6 +237,18 @@ export class Player {
     startTurn(): void {
         // Reset defending status
         this.isDefending = false;
+        
+        // Recover MP (1/4 of max MP) at start of turn, unless eaten
+        if (!this.statusEffects.isEaten()) {
+            const mpRecovery = Math.floor(this.maxMp / 4);
+            this.recoverMp(mpRecovery);
+        }
+        
+        // Check exhausted recovery
+        const recoveryMessages = this.checkExhaustedRecovery();
+        if (recoveryMessages.length > 0) {
+            // This could be handled by the game to display messages
+        }
     }
     
     // Process all status effects at round end
@@ -229,6 +272,173 @@ export class Player {
     
     getHpPercentage(): number {
         return this.maxHp > 0 ? (this.hp / this.maxHp) * 100 : 0;
+    }
+    
+    getMpPercentage(): number {
+        return this.maxMp > 0 ? (this.mp / this.maxMp) * 100 : 0;
+    }
+    
+    consumeMp(amount: number): boolean {
+        if (this.mp >= amount) {
+            this.mp -= amount;
+            return true;
+        }
+        return false;
+    }
+    
+    recoverMp(amount: number): number {
+        if (amount <= 0) return 0;
+        
+        const oldMp = this.mp;
+        this.mp = Math.min(this.maxMp, this.mp + amount);
+        return this.mp - oldMp;
+    }
+    
+    loseMp(amount: number): number {
+        if (amount <= 0) return 0;
+        
+        const oldMp = this.mp;
+        this.mp = Math.max(0, this.mp - amount);
+        return oldMp - this.mp;
+    }
+    
+    getAvailableSkills(): Skill[] {
+        const skills: Skill[] = [
+            {
+                type: SkillType.PowerAttack,
+                name: 'パワーアタック',
+                description: '2.5倍の攻撃力で確実に攻撃（20MP）',
+                mpCost: 20,
+                canUse: (player: Player) => !player.statusEffects.isExhausted() && player.statusEffects.canAct(),
+                use: (player: Player, _target?: any) => {
+                    const mpInsufficient = player.mp < 20;
+                    let powerMultiplier = 2.5;
+                    
+                    if (mpInsufficient) {
+                        powerMultiplier = 5.0; // Double effect when MP insufficient
+                        player.statusEffects.addEffect(StatusEffectType.Exhausted);
+                    } else {
+                        player.consumeMp(20);
+                    }
+                    
+                    const damage = Math.floor(player.baseAttackPower * powerMultiplier);
+                    return {
+                        success: true,
+                        message: mpInsufficient ? 
+                            `${player.name}は最後の力を振り絞ってパワーアタックを放った！` :
+                            `${player.name}はパワーアタックを放った！`,
+                        damage
+                    };
+                }
+            },
+            {
+                type: SkillType.Heal,
+                name: 'ヒール',
+                description: 'HPを100回復（30MP）',
+                mpCost: 30,
+                canUse: (player: Player) => !player.statusEffects.isExhausted() && player.statusEffects.canAct() && player.hp < player.maxHp,
+                use: (player: Player) => {
+                    const mpInsufficient = player.mp < 30;
+                    let healAmount = 100;
+                    
+                    if (mpInsufficient) {
+                        healAmount = 200; // Double effect when MP insufficient
+                        player.statusEffects.addEffect(StatusEffectType.Exhausted);
+                    } else {
+                        player.consumeMp(30);
+                    }
+                    
+                    const actualHeal = player.heal(healAmount);
+                    return {
+                        success: true,
+                        message: mpInsufficient ? 
+                            `${player.name}は最後の力でヒールを唱えた！HPが${actualHeal}回復！` :
+                            `${player.name}はヒールを唱えた！HPが${actualHeal}回復！`
+                    };
+                }
+            },
+            {
+                type: SkillType.Struggle,
+                name: 'あばれる',
+                description: '拘束状態専用：脱出確率2倍（30MP）',
+                mpCost: 30,
+                canUse: (player: Player) => !player.statusEffects.isExhausted() && 
+                    (player.statusEffects.isRestrained() || player.statusEffects.isEaten()),
+                use: (player: Player) => {
+                    const mpInsufficient = player.mp < 30;
+                    let successMultiplier = 2;
+                    
+                    if (mpInsufficient) {
+                        successMultiplier = 4; // Double effect when MP insufficient
+                        player.statusEffects.addEffect(StatusEffectType.Exhausted);
+                    } else {
+                        player.consumeMp(30);
+                    }
+                    
+                    // Calculate enhanced struggle success rate
+                    let baseSuccessRate = 0.3 + (player.struggleAttempts) * 0.2;
+                    baseSuccessRate = Math.min(baseSuccessRate, 0.9);
+                    
+                    const modifier = player.statusEffects.getStruggleModifier();
+                    let finalSuccessRate = baseSuccessRate * modifier * successMultiplier;
+                    finalSuccessRate = Math.min(finalSuccessRate, 0.95); // Cap at 95%
+                    
+                    const success = Math.random() < finalSuccessRate;
+                    player.struggleAttempts++;
+                    
+                    if (success) {
+                        player.struggleAttempts = 0;
+                        player.statusEffects.removeEffect(StatusEffectType.Restrained);
+                        player.statusEffects.removeEffect(StatusEffectType.Eaten);
+                        
+                        return {
+                            success: true,
+                            message: mpInsufficient ? 
+                                `${player.name}は最後の力で激しくあばれた！拘束から脱出した！` :
+                                `${player.name}は激しくあばれた！拘束から脱出した！`
+                        };
+                    } else {
+                        // Increase future struggle success significantly on failure
+                        player.struggleAttempts += mpInsufficient ? 2 : 1;
+                        
+                        return {
+                            success: false,
+                            message: mpInsufficient ? 
+                                `${player.name}は最後の力であばれたが、脱出できなかった...しかし次回の成功率が大幅に上がった！` :
+                                `${player.name}があばれたが、脱出できなかった...次回の成功率が上がった！`
+                        };
+                    }
+                }
+            }
+        ];
+        
+        return skills.filter(skill => skill.canUse(this));
+    }
+    
+    useSkill(skillType: SkillType, target?: any): { success: boolean; message: string; damage?: number } {
+        const skills = this.getAvailableSkills();
+        const skill = skills.find(s => s.type === skillType);
+        
+        if (!skill) {
+            return { success: false, message: 'そのスキルは使用できません' };
+        }
+        
+        return skill.use(this, target);
+    }
+    
+    checkExhaustedRecovery(): string[] {
+        const messages: string[] = [];
+        
+        if (this.statusEffects.isExhausted()) {
+            // Check if MP is full or 4 turns have passed
+            const exhaustedEffect = this.statusEffects.getEffect(StatusEffectType.Exhausted);
+            if (this.mp >= this.maxMp || (exhaustedEffect && exhaustedEffect.duration <= 1)) {
+                this.statusEffects.removeEffect(StatusEffectType.Exhausted);
+                messages.push(`${this.name}の疲れが回復した！`);
+            }
+        }
+        
+        return messages;
     }
     
     getItemCount(itemName: string): number {

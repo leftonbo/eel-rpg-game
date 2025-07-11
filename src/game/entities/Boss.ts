@@ -191,7 +191,16 @@ export class Boss {
                 if (player.statusEffects.isEaten()) {
                     // Absorb max HP based on boss attack power
                     player.loseMaxHp(this.attackPower);
-                    message += ` ${PLAYER_NAME}の最大ヘルスが${this.attackPower}減少した！（残り最大ヘルス: ${player.maxHp}）`;
+                    message += ` ${PLAYER_NAME}の最大ヘルスが${this.attackPower}減少した！`;
+                    
+                    // Absorb MP
+                    const mpDrained = Math.min(player.mp, Math.floor(this.attackPower / 2));
+                    if (mpDrained > 0) {
+                        player.loseMp(mpDrained);
+                        message += ` MPが${mpDrained}吸収された！`;
+                    }
+                    
+                    message += ` （残り最大ヘルス: ${player.maxHp}）`;
                     
                     if (player.maxHp <= 0) {
                         message += ` ${PLAYER_NAME}は完全に消化されてしまった...`;
@@ -220,7 +229,9 @@ export class Boss {
             [StatusEffectType.Stunned]: '気絶',
             [StatusEffectType.Invincible]: '無敵',
             [StatusEffectType.Defending]: '防御',
-            [StatusEffectType.KnockedOut]: '行動不能'
+            [StatusEffectType.KnockedOut]: '行動不能',
+            [StatusEffectType.Exhausted]: '疲れ果て',
+            [StatusEffectType.Energized]: '元気満々'
         };
         
         return names[type] || '未知の状態';

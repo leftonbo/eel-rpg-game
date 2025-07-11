@@ -8,7 +8,9 @@ export enum StatusEffectType {
     Stunned = 'stunned',
     Invincible = 'invincible',
     Defending = 'defending',
-    KnockedOut = 'knocked-out'
+    KnockedOut = 'knocked-out',
+    Exhausted = 'exhausted',
+    Energized = 'energized'
 }
 
 export interface StatusEffect {
@@ -74,8 +76,15 @@ export class StatusEffectManager {
         [StatusEffectType.Eaten, {
             type: StatusEffectType.Eaten,
             name: '食べられ',
-            description: '最大HPが毎ターン減少',
-            duration: -1 // Until escaped or game over
+            description: '最大HPが毎ターン減少、MP回復阻止',
+            duration: -1, // Until escaped or game over
+            onTick: (target: any, _effect: StatusEffect) => {
+                // Continuously drain MP while being eaten
+                const mpDrain = Math.min(target.mp, 2);
+                if (mpDrain > 0) {
+                    target.loseMp(mpDrain);
+                }
+            }
         }],
         [StatusEffectType.Stunned, {
             type: StatusEffectType.Stunned,
@@ -100,6 +109,21 @@ export class StatusEffectManager {
             name: '行動不能',
             description: '5ターンの間行動できない',
             duration: 5
+        }],
+        [StatusEffectType.Exhausted, {
+            type: StatusEffectType.Exhausted,
+            name: '疲れ果て',
+            description: 'スキル使用不可、攻撃力半減、受けるダメージ1.5倍',
+            duration: 4
+        }],
+        [StatusEffectType.Energized, {
+            type: StatusEffectType.Energized,
+            name: '元気満々',
+            description: 'MPが常に満タン',
+            duration: 3,
+            onTick: (target: any, _effect: StatusEffect) => {
+                target.mp = target.maxMp;
+            }
         }]
     ]);
     
@@ -210,6 +234,10 @@ export class StatusEffectManager {
             modifier *= 0.5; // Half attack power
         }
         
+        if (this.hasEffect(StatusEffectType.Exhausted)) {
+            modifier *= 0.5; // Half attack power when exhausted
+        }
+        
         return modifier;
     }
     
@@ -222,6 +250,10 @@ export class StatusEffectManager {
         
         if (this.hasEffect(StatusEffectType.Invincible)) {
             modifier = 0; // No damage taken
+        }
+        
+        if (this.hasEffect(StatusEffectType.Exhausted)) {
+            modifier *= 1.5; // 1.5x damage taken when exhausted
         }
         
         return modifier;
@@ -254,5 +286,13 @@ export class StatusEffectManager {
     
     isKnockedOut(): boolean {
         return this.hasEffect(StatusEffectType.KnockedOut);
+    }
+    
+    isExhausted(): boolean {
+        return this.hasEffect(StatusEffectType.Exhausted);
+    }
+    
+    isEnergized(): boolean {
+        return this.hasEffect(StatusEffectType.Energized);
     }
 }
