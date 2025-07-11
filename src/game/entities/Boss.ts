@@ -200,8 +200,8 @@ export class Boss {
     }
     
     onRestraintBroken(): void {
-        // Boss gets stunned for 2 turns when restraint is broken
-        this.stunTurnsRemaining = 2;
+        // Boss gets stunned for 3 turns when restraint is broken (including the turn it was broken)
+        this.stunTurnsRemaining = 3;
     }
     
     startTurn(): void {
