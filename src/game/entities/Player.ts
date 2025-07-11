@@ -200,22 +200,28 @@ export class Player {
         return this.maxHp <= 0;
     }
     
-    startTurn(): string[] {
+    startTurn(): void {
         // Reset defending status
         this.isDefending = false;
-        
-        // Apply status effects and get messages
-        const effectMessages = this.statusEffects.applyEffects(this);
-        
-        // Check for knock out recovery and get messages
-        const recoveryMessages = this.recoverFromKnockOut();
-        
-        return [...effectMessages, ...recoveryMessages];
     }
     
-    endTurn(): string[] {
-        // Decrease status effect durations and get messages
-        return this.statusEffects.decreaseDurations(this);
+    // Process all status effects at round end
+    processRoundEnd(): string[] {
+        const messages: string[] = [];
+        
+        // Apply status effect damages/effects
+        const effectMessages = this.statusEffects.applyEffects(this);
+        messages.push(...effectMessages);
+        
+        // Decrease durations and remove expired effects
+        const durationMessages = this.statusEffects.decreaseDurations(this);
+        messages.push(...durationMessages);
+        
+        // Check for knock out recovery after duration processing
+        const recoveryMessages = this.recoverFromKnockOut();
+        messages.push(...recoveryMessages);
+        
+        return messages;
     }
     
     getHpPercentage(): number {

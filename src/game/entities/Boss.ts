@@ -204,19 +204,30 @@ export class Boss {
         this.stunTurnsRemaining = 3;
     }
     
-    startTurn(): string[] {
+    startTurn(): void {
         // Reduce stun duration
         if (this.stunTurnsRemaining > 0) {
             this.stunTurnsRemaining--;
         }
-        
-        // Apply status effects and get messages
-        return this.statusEffects.applyEffects(this);
     }
     
-    endTurn(): string[] {
-        // Decrease status effect durations and get messages
-        return this.statusEffects.decreaseDurations(this);
+    // Process all status effects at round end
+    processRoundEnd(): string[] {
+        const messages: string[] = [];
+        
+        // Apply status effect damages/effects
+        const effectMessages = this.statusEffects.applyEffects(this);
+        effectMessages.forEach(message => {
+            messages.push(`${this.displayName}の${message}`);
+        });
+        
+        // Decrease durations and remove expired effects
+        const durationMessages = this.statusEffects.decreaseDurations(this);
+        durationMessages.forEach(message => {
+            messages.push(`${this.displayName}の${message}`);
+        });
+        
+        return messages;
     }
     
     getHpPercentage(): number {
