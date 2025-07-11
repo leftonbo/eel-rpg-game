@@ -1,4 +1,8 @@
 import { StatusEffectManager, StatusEffectType } from '../systems/StatusEffect';
+import { calculateAttackResult } from '../utils/CombatUtils';
+
+// Player name constant for easy modification
+export const PLAYER_NAME = 'エルナル';
 
 export interface PlayerItem {
     name: string;
@@ -8,7 +12,7 @@ export interface PlayerItem {
 }
 
 export class Player {
-    public name: string = 'エルナル';
+    public name: string = PLAYER_NAME;
     public maxHp: number = 100;
     public hp: number = 100;
     public baseAttackPower: number = 5;
@@ -26,12 +30,12 @@ export class Player {
         this.items.set('heal-potion', {
             name: '回復薬',
             count: 9,
-            description: 'HPを50%回復し、状態異常を解除する',
+            description: 'ヘルスを80%回復し、状態異常を解除する',
             use: (_player: Player) => {
                 if (this.items.get('heal-potion')!.count <= 0) return false;
                 
-                // Heal 50% of max HP
-                const healAmount = Math.floor(this.maxHp * 0.5);
+                // Heal 80% of max HP
+                const healAmount = Math.floor(this.maxHp * 0.8);
                 this.heal(healAmount);
                 
                 // Remove all negative status effects except knocked out, restrained, and eaten
@@ -79,7 +83,7 @@ export class Player {
         
         this.hp = Math.max(0, this.hp - actualDamage);
         
-        // If HP reaches 0, apply knocked out status
+        // If health reaches 0, apply knocked out status
         if (this.hp === 0 && !this.statusEffects.hasEffect(StatusEffectType.KnockedOut)) {
             this.statusEffects.addEffect(StatusEffectType.KnockedOut);
         }
@@ -146,14 +150,14 @@ export class Player {
     
     stayStill(): void {
         // Staying still provides a small amount of healing
-        const healAmount = Math.floor(this.maxHp * 0.05); // 5% of max HP
+        const healAmount = Math.floor(this.maxHp * 0.05); // 5% of max health
         this.heal(healAmount);
     }
     
     loseMaxHp(amount: number): void {
         this.maxHp = Math.max(0, this.maxHp - amount);
         
-        // If current HP exceeds new max HP, reduce it
+        // If current health exceeds new max health, reduce it
         if (this.hp > this.maxHp) {
             this.hp = this.maxHp;
         }
@@ -168,12 +172,12 @@ export class Player {
             if (knockOutEffect && knockOutEffect.duration <= 1) {
                 this.statusEffects.removeEffect(StatusEffectType.KnockedOut);
                 
-                // Recover 50% HP
+                // Recover 50% health
                 const healAmount = Math.floor(this.maxHp * 0.5);
                 this.heal(healAmount);
                 
-                messages.push('エルナルが意識を取り戻した！');
-                messages.push(`HPが${healAmount}回復した！`);
+                messages.push(`${PLAYER_NAME}が意識を取り戻した！`);
+                messages.push(`ヘルスが${healAmount}回復した！`);
             }
         }
         

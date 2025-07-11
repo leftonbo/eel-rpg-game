@@ -1,6 +1,7 @@
 import { Game } from '../Game';
-import { Player } from '../entities/Player';
+import { Player, PLAYER_NAME } from '../entities/Player';
 import { Boss, ActionType } from '../entities/Boss';
+import { calculateAttackResult } from '../utils/CombatUtils';
 
 export class BattleScene {
     private game: Game;
@@ -261,10 +262,19 @@ export class BattleScene {
     private playerAttack(): void {
         if (!this.player || !this.boss || !this.playerTurn) return;
         
-        const damage = this.player.getAttackPower();
-        const actualDamage = this.boss.takeDamage(damage);
+        const baseDamage = this.player.getAttackPower();
+        const attackResult = calculateAttackResult(baseDamage, false); // Player attacks are never guaranteed hits
         
-        this.addBattleLogMessage(`エルナルの攻撃！ ${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage');
+        if (attackResult.isMiss) {
+            this.addBattleLogMessage(`${PLAYER_NAME}の攻撃！ ${attackResult.message} 攻撃は外れた！`, 'system');
+        } else {
+            const actualDamage = this.boss.takeDamage(attackResult.damage);
+            if (attackResult.isCritical) {
+                this.addBattleLogMessage(`${PLAYER_NAME}の攻撃！ ${attackResult.message} ${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage');
+            } else {
+                this.addBattleLogMessage(`${PLAYER_NAME}の攻撃！ ${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage');
+            }
+        }
         
         this.endPlayerTurn();
     }
@@ -273,7 +283,7 @@ export class BattleScene {
         if (!this.player || !this.playerTurn) return;
         
         this.player.defend();
-        this.addBattleLogMessage('エルナルは身を守った！', 'system');
+        this.addBattleLogMessage(`${PLAYER_NAME}は身を守った！`, 'system');
         
         this.endPlayerTurn();
     }
@@ -299,7 +309,7 @@ export class BattleScene {
         
         if (success) {
             const itemDisplayName = itemName === 'heal-potion' ? '回復薬' : 'アドレナリン注射';
-            this.addBattleLogMessage(`エルナルは${itemDisplayName}を使った！`, 'heal');
+            this.addBattleLogMessage(`${PLAYER_NAME}は${itemDisplayName}を使った！`, 'heal');
             
             this.hideItemPanel();
             // Items don't end turn

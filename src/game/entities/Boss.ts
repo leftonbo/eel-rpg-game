@@ -1,5 +1,6 @@
 import { StatusEffectManager, StatusEffectType } from '../systems/StatusEffect';
-import { Player } from './Player';
+import { Player, PLAYER_NAME } from './Player';
+import { calculateAttackResult } from '../utils/CombatUtils';
 
 export enum ActionType {
     Attack = 'attack',
@@ -131,27 +132,46 @@ export class Boss {
         
         switch (action.type) {
             case ActionType.Attack:
-                const damage = action.damage || this.attackPower;
-                const actualDamage = player.takeDamage(damage);
-                message += ` エルナルに${actualDamage}のダメージ！`;
+                const baseDamage = action.damage || this.attackPower;
+                const attackResult = calculateAttackResult(baseDamage, player.isKnockedOut());
+                
+                if (attackResult.isMiss) {
+                    message += ` ${attackResult.message} 攻撃は外れた！`;
+                } else {
+                    const actualDamage = player.takeDamage(attackResult.damage);
+                    if (attackResult.isCritical) {
+                        message += ` ${attackResult.message} ${PLAYER_NAME}に${actualDamage}のダメージ！`;
+                    } else {
+                        message += ` ${PLAYER_NAME}に${actualDamage}のダメージ！`;
+                    }
+                }
                 break;
                 
             case ActionType.StatusAttack:
                 if (action.statusEffect) {
                     player.statusEffects.addEffect(action.statusEffect);
-                    message += ` エルナルが${this.getStatusEffectName(action.statusEffect)}状態になった！`;
+                    message += ` ${PLAYER_NAME}が${this.getStatusEffectName(action.statusEffect)}状態になった！`;
                 }
                 
                 if (action.damage && action.damage > 0) {
-                    const statusDamage = player.takeDamage(action.damage);
-                    message += ` ${statusDamage}のダメージ！`;
+                    const statusAttackResult = calculateAttackResult(action.damage, player.isKnockedOut());
+                    if (statusAttackResult.isMiss) {
+                        message += ` ${statusAttackResult.message}`;
+                    } else {
+                        const statusDamage = player.takeDamage(statusAttackResult.damage);
+                        if (statusAttackResult.isCritical) {
+                            message += ` ${statusAttackResult.message} ${statusDamage}のダメージ！`;
+                        } else {
+                            message += ` ${statusDamage}のダメージ！`;
+                        }
+                    }
                 }
                 break;
                 
             case ActionType.RestraintAttack:
                 player.statusEffects.addEffect(StatusEffectType.Restrained);
                 player.struggleAttempts = 0; // Reset struggle attempts
-                message += ' エルナルが拘束された！';
+                message += ` ${PLAYER_NAME}が拘束された！`;
                 break;
                 
             case ActionType.EatAttack:
@@ -159,11 +179,11 @@ export class Boss {
                     // Transform restrained state to eaten state
                     player.statusEffects.removeEffect(StatusEffectType.Restrained);
                     player.statusEffects.addEffect(StatusEffectType.Eaten);
-                    message += ' エルナルが食べられてしまった！';
+                    message += ` ${PLAYER_NAME}が食べられてしまった！`;
                 } else {
                     // Direct eating for knocked out player
                     player.statusEffects.addEffect(StatusEffectType.Eaten);
-                    message += ' エルナルが食べられてしまった！';
+                    message += ` ${PLAYER_NAME}が食べられてしまった！`;
                 }
                 break;
                 
@@ -171,13 +191,13 @@ export class Boss {
                 if (player.statusEffects.isEaten()) {
                     // Absorb max HP based on boss attack power
                     player.loseMaxHp(this.attackPower);
-                    message += ` エルナルの最大HPが${this.attackPower}減少した！（残り最大HP: ${player.maxHp}）`;
+                    message += ` ${PLAYER_NAME}の最大ヘルスが${this.attackPower}減少した！（残り最大ヘルス: ${player.maxHp}）`;
                     
                     if (player.maxHp <= 0) {
-                        message += ' エルナルは完全に消化されてしまった...';
+                        message += ` ${PLAYER_NAME}は完全に消化されてしまった...`;
                     }
                 } else {
-                    message += ' しかし、エルナルを捕まえていない！';
+                    message += ` しかし、${PLAYER_NAME}を捕まえていない！`;
                 }
                 break;
                 
