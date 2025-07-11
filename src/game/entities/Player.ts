@@ -209,6 +209,10 @@ export class Player {
     processRoundEnd(): string[] {
         const messages: string[] = [];
         
+        // Check for knock out recovery before decreasing durations
+        const recoveryMessages = this.recoverFromKnockOut();
+        messages.push(...recoveryMessages);
+        
         // Apply status effect damages/effects
         const effectMessages = this.statusEffects.applyEffects(this);
         messages.push(...effectMessages);
@@ -216,10 +220,6 @@ export class Player {
         // Decrease durations and remove expired effects
         const durationMessages = this.statusEffects.decreaseDurations(this);
         messages.push(...durationMessages);
-        
-        // Check for knock out recovery after duration processing
-        const recoveryMessages = this.recoverFromKnockOut();
-        messages.push(...recoveryMessages);
         
         return messages;
     }
