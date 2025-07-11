@@ -1,0 +1,234 @@
+/* Game Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Game Title */
+.game-title {
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+    background: linear-gradient(45deg, #ffd700, #ffed4e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: bold;
+}
+
+/* Scene Management */
+.scene {
+    height: 100vh;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.scene.d-none {
+    display: none !important;
+}
+
+/* Boss Cards */
+.boss-card {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.boss-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    border-color: #fff;
+}
+
+.boss-card.selected {
+    border-color: #007bff;
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+}
+
+/* Battle Screen Styles */
+#battle-log {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+#battle-log p {
+    margin: 0.25rem 0;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+}
+
+#battle-log .damage {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+}
+
+#battle-log .heal {
+    color: #51cf66;
+    background: rgba(81, 207, 102, 0.1);
+}
+
+#battle-log .status-effect {
+    color: #ffd43b;
+    background: rgba(255, 212, 59, 0.1);
+}
+
+#battle-log .system {
+    color: #74c0fc;
+    background: rgba(116, 192, 252, 0.1);
+}
+
+/* Progress Bars */
+.progress {
+    height: 0.75rem;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.progress-bar {
+    transition: width 0.5s ease;
+}
+
+/* Status Effects */
+.status-effect-badge {
+    display: inline-block;
+    margin: 0.1rem;
+    padding: 0.2rem 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    font-size: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.status-fire {
+    background: rgba(255, 107, 107, 0.3);
+    border-color: #ff6b6b;
+    color: #ffe0e0;
+}
+
+.status-charm {
+    background: rgba(255, 107, 255, 0.3);
+    border-color: #ff6bff;
+    color: #ffe0ff;
+}
+
+.status-slow {
+    background: rgba(107, 107, 255, 0.3);
+    border-color: #6b6bff;
+    color: #e0e0ff;
+}
+
+.status-poison {
+    background: rgba(107, 255, 107, 0.3);
+    border-color: #6bff6b;
+    color: #e0ffe0;
+}
+
+.status-restrained {
+    background: rgba(255, 165, 0, 0.3);
+    border-color: #ffa500;
+    color: #fff2e0;
+}
+
+.status-eaten {
+    background: rgba(139, 0, 0, 0.5);
+    border-color: #8b0000;
+    color: #ffe0e0;
+    animation: pulse 1.5s ease-in-out infinite alternate;
+}
+
+.status-stunned {
+    background: rgba(255, 255, 0, 0.3);
+    border-color: #ffff00;
+    color: #ffffd0;
+}
+
+.status-invincible {
+    background: rgba(255, 215, 0, 0.4);
+    border-color: #ffd700;
+    color: #fff;
+    animation: glow 1s ease-in-out infinite alternate;
+}
+
+.status-defending {
+    background: rgba(0, 100, 255, 0.3);
+    border-color: #0064ff;
+    color: #e0f0ff;
+}
+
+/* Animations */
+@keyframes pulse {
+    from {
+        box-shadow: 0 0 5px rgba(139, 0, 0, 0.5);
+    }
+    to {
+        box-shadow: 0 0 15px rgba(139, 0, 0, 0.8);
+    }
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    }
+    to {
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+    }
+}
+
+/* Button Styles */
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* Action Buttons */
+#action-buttons .btn {
+    font-weight: bold;
+    padding: 0.75rem 1rem;
+}
+
+#action-buttons .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 2.5rem;
+    }
+    
+    #battle-screen .row > .col-md-8,
+    #battle-screen .row > .col-md-4 {
+        margin-bottom: 1rem;
+    }
+    
+    .boss-card {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Custom scrollbar for battle log */
+#battle-log::-webkit-scrollbar {
+    width: 6px;
+}
+
+#battle-log::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+#battle-log::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+#battle-log::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}

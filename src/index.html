@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eel Feed - ターン制RPG</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Game Styles -->
+    <link rel="stylesheet" href="./styles/main.css">
+</head>
+<body class="bg-dark text-light">
+    <!-- Game Container -->
+    <div id="game-container" class="container-fluid vh-100 d-flex flex-column">
+        
+        <!-- Title Screen -->
+        <div id="title-screen" class="scene d-flex align-items-center justify-content-center">
+            <div class="text-center">
+                <h1 class="display-1 mb-4 game-title">🐍 Eel Feed</h1>
+                <p class="lead mb-4">ターン制RPG</p>
+                
+                <div class="alert alert-warning mx-auto" style="max-width: 600px;">
+                    <h5>⚠️ 注意事項</h5>
+                    <ul class="mb-0 text-start">
+                        <li>このゲームには戦闘シーンが含まれます</li>
+                        <li>キャラクターが捕食される表現があります</li>
+                        <li>ブラウザの音量にご注意ください</li>
+                    </ul>
+                </div>
+                
+                <button id="start-button" class="btn btn-primary btn-lg mt-4">
+                    🎮 ゲームスタート
+                </button>
+            </div>
+        </div>
+        
+        <!-- Boss Selection Screen -->
+        <div id="boss-select-screen" class="scene d-none">
+            <div class="row h-100 align-items-center">
+                <div class="col-12">
+                    <h2 class="text-center mb-5">どのボスと戦いますか？</h2>
+                    
+                    <div class="row justify-content-center">
+                        <!-- Boss Cards -->
+                        <div class="col-md-4 mb-4">
+                            <div class="card bg-secondary h-100 boss-card" data-boss="swamp-dragon">
+                                <div class="card-body text-center">
+                                    <h3 class="card-title">🐲 沼のドラゴン</h3>
+                                    <p class="card-text">高い攻撃力を持つドラゴン。炎のブレスに注意！</p>
+                                    <button class="btn btn-danger w-100">選択</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-4">
+                            <div class="card bg-secondary h-100 boss-card" data-boss="dark-ghost">
+                                <div class="card-body text-center">
+                                    <h3 class="card-title">👻 闇のおばけ</h3>
+                                    <p class="card-text">状態異常攻撃を多用する。魅了に注意！</p>
+                                    <button class="btn btn-warning w-100">選択</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-4">
+                            <div class="card bg-secondary h-100 boss-card" data-boss="mech-spider">
+                                <div class="card-body text-center">
+                                    <h3 class="card-title">🕷️ 機械のクモ</h3>
+                                    <p class="card-text">拘束攻撃を頻発する。捕まらないよう注意！</p>
+                                    <button class="btn btn-info w-100">選択</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Battle Screen -->
+        <div id="battle-screen" class="scene d-none">
+            <div class="row h-100">
+                <!-- Battle Info Panel -->
+                <div class="col-12 mb-3">
+                    <div class="row">
+                        <!-- Player Status -->
+                        <div class="col-md-6">
+                            <div class="card bg-primary">
+                                <div class="card-header">
+                                    <h5 class="mb-0">🐍 エルナル</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-2">
+                                        HP: <span id="player-hp">1000</span> / <span id="player-max-hp">1000</span>
+                                        <div class="progress">
+                                            <div id="player-hp-bar" class="progress-bar bg-success" style="width: 100%"></div>
+                                        </div>
+                                    </div>
+                                    <div id="player-status-effects" class="mt-2">
+                                        <!-- Status effects will be displayed here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Boss Status -->
+                        <div class="col-md-6">
+                            <div class="card bg-danger">
+                                <div class="card-header">
+                                    <h5 id="boss-name" class="mb-0">ボス</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-2">
+                                        HP: <span id="boss-hp">0</span> / <span id="boss-max-hp">0</span>
+                                        <div class="progress">
+                                            <div id="boss-hp-bar" class="progress-bar bg-danger" style="width: 100%"></div>
+                                        </div>
+                                    </div>
+                                    <div id="boss-status-effects" class="mt-2">
+                                        <!-- Boss status effects will be displayed here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Battle Log -->
+                <div class="col-md-8">
+                    <div class="card bg-dark border-secondary h-100">
+                        <div class="card-header">
+                            <h6 class="mb-0">バトルログ</h6>
+                        </div>
+                        <div class="card-body overflow-auto" id="battle-log" style="max-height: 400px;">
+                            <p class="text-muted">バトル開始！</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Panel -->
+                <div class="col-md-4">
+                    <div class="card bg-secondary h-100">
+                        <div class="card-header">
+                            <h6 class="mb-0">行動選択</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="action-buttons" class="d-grid gap-2">
+                                <button id="attack-btn" class="btn btn-danger">⚔️ 攻撃</button>
+                                <button id="defend-btn" class="btn btn-primary">🛡️ 防御</button>
+                                <button id="item-btn" class="btn btn-success">💊 アイテム</button>
+                            </div>
+                            
+                            <!-- Item Panel (hidden by default) -->
+                            <div id="item-panel" class="d-none mt-3">
+                                <h6>アイテム</h6>
+                                <div class="d-grid gap-2">
+                                    <button id="heal-potion-btn" class="btn btn-outline-success">
+                                        💊 回復薬 (<span id="heal-potion-count">9</span>)
+                                    </button>
+                                    <button id="adrenaline-btn" class="btn btn-outline-warning">
+                                        💉 アドレナリン注射 (<span id="adrenaline-count">3</span>)
+                                    </button>
+                                    <button id="item-back-btn" class="btn btn-outline-secondary">戻る</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Special Actions Panel (for restrained state) -->
+                            <div id="special-actions" class="d-none">
+                                <div class="d-grid gap-2">
+                                    <button id="struggle-btn" class="btn btn-warning">💪 もがく</button>
+                                    <button id="stay-still-btn" class="btn btn-info">😌 じっとする</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Back to Boss Selection -->
+            <div class="position-fixed bottom-0 start-0 p-3">
+                <button id="back-to-select-btn" class="btn btn-outline-light">← ボス選択に戻る</button>
+            </div>
+        </div>
+        
+        <!-- Boss Description Modal -->
+        <div class="modal fade" id="boss-modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modal-boss-name">ボス名</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modal-boss-description">ボスの説明</p>
+                        <div id="modal-boss-stats">
+                            <!-- Boss stats will be displayed here -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                        <button type="button" class="btn btn-primary" id="confirm-boss-btn">戦闘開始！</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

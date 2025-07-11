@@ -1,0 +1,39 @@
+{
+  "name": "eel-feed",
+  "version": "1.0.0",
+  "description": "A turn-based RPG game where you play as Ernall the eel fighting against giant bosses",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "webpack --mode production",
+    "dev": "webpack serve --mode development --open",
+    "start": "npm run dev",
+    "clean": "rimraf dist",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "game",
+    "rpg",
+    "turn-based",
+    "typescript",
+    "browser"
+  ],
+  "author": "MagdraTonbo",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "css-loader": "^6.8.0",
+    "eslint": "^8.0.0",
+    "html-webpack-plugin": "^5.5.0",
+    "rimraf": "^5.0.0",
+    "style-loader": "^3.3.0",
+    "ts-loader": "^9.4.0",
+    "typescript": "^5.0.0",
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.0",
+    "webpack-dev-server": "^4.15.0"
+  },
+  "dependencies": {}
+}
