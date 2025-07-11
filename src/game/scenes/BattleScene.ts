@@ -222,11 +222,25 @@ export class BattleScene {
         specialBtns.forEach(btnId => {
             const btn = document.getElementById(btnId);
             if (btn) {
-                // For knocked out state, only allow give-up button
-                if (isKnockedOut && (btnId === 'struggle-btn' || btnId === 'stay-still-btn')) {
-                    btn.classList.add('disabled');
-                } else {
+                if (isKnockedOut) {
+                    // For knocked out state, only show give-up button
+                    if (btnId === 'struggle-btn' || btnId === 'stay-still-btn') {
+                        btn.classList.add('d-none');
+                    } else {
+                        btn.classList.remove('d-none');
+                        btn.classList.toggle('disabled', !this.playerTurn);
+                    }
+                } else if (isRestrained) {
+                    // For restrained state, show struggle and stay-still buttons, hide give-up
+                    if (btnId === 'give-up-btn') {
+                        btn.classList.remove('d-none');
+                    } else {
+                        btn.classList.remove('d-none');
+                    }
                     btn.classList.toggle('disabled', !this.playerTurn);
+                } else {
+                    // Normal state, hide all special buttons
+                    btn.classList.add('d-none');
                 }
             }
         });
