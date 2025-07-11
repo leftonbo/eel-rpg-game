@@ -1,5 +1,4 @@
 import { StatusEffectManager, StatusEffectType } from '../systems/StatusEffect';
-import { calculateAttackResult } from '../utils/CombatUtils';
 
 // Player name constant for easy modification
 export const PLAYER_NAME = 'エルナル';
