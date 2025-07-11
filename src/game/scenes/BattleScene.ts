@@ -92,6 +92,7 @@ export class BattleScene {
         
         // Special action buttons
         document.getElementById('struggle-btn')?.addEventListener('click', () => this.playerStruggle());
+        document.getElementById('struggle-skill-special-btn')?.addEventListener('click', () => this.useSkill(SkillType.Struggle));
         document.getElementById('stay-still-btn')?.addEventListener('click', () => this.playerStayStill());
         document.getElementById('give-up-btn')?.addEventListener('click', () => this.playerGiveUp());
         
@@ -146,6 +147,9 @@ export class BattleScene {
         
         // Update action availability
         this.updateActionAvailability();
+        
+        // Update skill button visibility
+        this.updateSkillButtonVisibility();
         
         // Update item counts
         this.updateItemCounts();
@@ -288,6 +292,28 @@ export class BattleScene {
         
         if (this.energyDrinkCount) {
             this.energyDrinkCount.textContent = this.player.getItemCount('energy-drink').toString();
+        }
+    }
+    
+    private updateSkillButtonVisibility(): void {
+        if (!this.player) return;
+        
+        // Hide struggle skill button in skill panel (since it's now in special actions)
+        const struggleSkillBtn = document.getElementById('struggle-skill-btn');
+        if (struggleSkillBtn) {
+            struggleSkillBtn.classList.add('d-none');
+        }
+        
+        // Show/hide struggle skill button in special actions based on MP and exhaustion
+        const struggleSkillSpecialBtn = document.getElementById('struggle-skill-special-btn');
+        if (struggleSkillSpecialBtn) {
+            const canUseSkill = !this.player.statusEffects.isExhausted();
+            if (canUseSkill) {
+                struggleSkillSpecialBtn.classList.remove('d-none');
+                struggleSkillSpecialBtn.classList.toggle('disabled', !this.playerTurn);
+            } else {
+                struggleSkillSpecialBtn.classList.add('d-none');
+            }
         }
     }
     
