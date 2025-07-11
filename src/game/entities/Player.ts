@@ -193,15 +193,22 @@ export class Player {
         return this.maxHp <= 0;
     }
     
-    startTurn(): void {
+    startTurn(): string[] {
         // Reset defending status
         this.isDefending = false;
         
-        // Tick status effects
-        this.statusEffects.tickEffects(this);
+        // Apply status effects and get messages
+        const effectMessages = this.statusEffects.applyEffects(this);
         
         // Check for knock out recovery
         this.recoverFromKnockOut();
+        
+        return effectMessages;
+    }
+    
+    endTurn(): string[] {
+        // Decrease status effect durations and get messages
+        return this.statusEffects.decreaseDurations(this);
     }
     
     getHpPercentage(): number {

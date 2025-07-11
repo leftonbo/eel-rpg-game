@@ -147,22 +147,40 @@ export class StatusEffectManager {
         this.effects.clear();
     }
     
-    tickEffects(target: any): void {
-        const effectsToRemove: StatusEffectType[] = [];
+    // Apply status effect damages/effects at turn start
+    applyEffects(target: any): string[] {
+        const messages: string[] = [];
         
         for (const [type, effect] of this.effects) {
             const config = StatusEffectManager.configs.get(type);
             
             // Apply tick effect
             if (config?.onTick) {
+                const oldHp = target.hp;
                 config.onTick(target, effect);
+                const damage = oldHp - target.hp;
+                
+                if (damage > 0) {
+                    messages.push(`${effect.name}によって${damage}のダメージ！`);
+                }
             }
-            
+        }
+        
+        return messages;
+    }
+    
+    // Decrease durations and remove expired effects at turn end
+    decreaseDurations(target: any): string[] {
+        const messages: string[] = [];
+        const effectsToRemove: StatusEffectType[] = [];
+        
+        for (const [type, effect] of this.effects) {
             // Decrease duration for time-based effects
             if (effect.duration > 0) {
                 effect.duration--;
                 if (effect.duration <= 0) {
                     effectsToRemove.push(type);
+                    messages.push(`${effect.name}が解除された`);
                 }
             }
         }
@@ -175,6 +193,14 @@ export class StatusEffectManager {
             }
             this.removeEffect(type);
         });
+        
+        return messages;
+    }
+    
+    // Legacy method for backward compatibility
+    tickEffects(target: any): void {
+        this.applyEffects(target);
+        this.decreaseDurations(target);
     }
     
     getAttackModifier(): number {

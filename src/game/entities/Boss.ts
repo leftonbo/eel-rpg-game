@@ -204,14 +204,19 @@ export class Boss {
         this.stunTurnsRemaining = 3;
     }
     
-    startTurn(): void {
+    startTurn(): string[] {
         // Reduce stun duration
         if (this.stunTurnsRemaining > 0) {
             this.stunTurnsRemaining--;
         }
         
-        // Tick status effects (bosses can have status effects too)
-        this.statusEffects.tickEffects(this);
+        // Apply status effects and get messages
+        return this.statusEffects.applyEffects(this);
+    }
+    
+    endTurn(): string[] {
+        // Decrease status effect durations and get messages
+        return this.statusEffects.decreaseDurations(this);
     }
     
     getHpPercentage(): number {

@@ -333,6 +333,16 @@ export class BattleScene {
     
     private endPlayerTurn(): void {
         this.playerTurn = false;
+        
+        // Apply player turn end effects and show messages
+        if (this.player) {
+            const endTurnMessages = this.player.endTurn();
+            endTurnMessages.forEach(message => {
+                this.addBattleLogMessage(message, 'status-effect');
+            });
+        }
+        
+        this.updateUI();
         this.checkBattleEnd();
         
         if (!this.checkBattleEnd()) {
@@ -346,7 +356,11 @@ export class BattleScene {
     private bossTurn(): void {
         if (!this.boss || !this.player) return;
         
-        this.boss.startTurn();
+        // Start boss turn and show messages
+        const bossStartMessages = this.boss.startTurn();
+        bossStartMessages.forEach(message => {
+            this.addBattleLogMessage(`${this.boss!.displayName}の${message}`, 'status-effect');
+        });
         
         // Check if boss can act
         if (!this.boss.canAct()) {
@@ -378,12 +392,23 @@ export class BattleScene {
     }
     
     private endBossTurn(): void {
+        // Apply boss turn end effects and show messages
+        if (this.boss) {
+            const bossEndTurnMessages = this.boss.endTurn();
+            bossEndTurnMessages.forEach(message => {
+                this.addBattleLogMessage(`${this.boss!.displayName}の${message}`, 'status-effect');
+            });
+        }
+        
         this.turnCount++;
         this.playerTurn = true;
         
-        // Start player turn
+        // Start player turn and show messages
         if (this.player) {
-            this.player.startTurn();
+            const playerStartMessages = this.player.startTurn();
+            playerStartMessages.forEach(message => {
+                this.addBattleLogMessage(message, 'status-effect');
+            });
         }
         
         this.updateUI();
