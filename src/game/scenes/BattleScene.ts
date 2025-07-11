@@ -74,6 +74,7 @@ export class BattleScene {
         // Special action buttons
         document.getElementById('struggle-btn')?.addEventListener('click', () => this.playerStruggle());
         document.getElementById('stay-still-btn')?.addEventListener('click', () => this.playerStayStill());
+        document.getElementById('give-up-btn')?.addEventListener('click', () => this.playerGiveUp());
         
         // Back to boss select
         document.getElementById('back-to-select-btn')?.addEventListener('click', () => {
@@ -194,10 +195,11 @@ export class BattleScene {
         
         const canAct = this.player.canAct() && this.playerTurn;
         const isRestrained = this.player.isRestrained() || this.player.isEaten();
+        const isKnockedOut = this.player.isKnockedOut();
         
         // Show/hide action panels
         if (this.actionButtons && this.specialActions) {
-            if (isRestrained) {
+            if (isRestrained || isKnockedOut) {
                 this.actionButtons.classList.add('d-none');
                 this.specialActions.classList.remove('d-none');
             } else {
@@ -216,11 +218,16 @@ export class BattleScene {
         });
         
         // Special action buttons
-        const specialBtns = ['struggle-btn', 'stay-still-btn'];
+        const specialBtns = ['struggle-btn', 'stay-still-btn', 'give-up-btn'];
         specialBtns.forEach(btnId => {
             const btn = document.getElementById(btnId);
             if (btn) {
-                btn.classList.toggle('disabled', !this.playerTurn);
+                // For knocked out state, only allow give-up button
+                if (isKnockedOut && (btnId === 'struggle-btn' || btnId === 'stay-still-btn')) {
+                    btn.classList.add('disabled');
+                } else {
+                    btn.classList.toggle('disabled', !this.playerTurn);
+                }
             }
         });
     }
@@ -312,6 +319,14 @@ export class BattleScene {
         
         this.player.stayStill();
         this.addBattleLogMessage('エルナルはじっとして体力を回復した', 'heal');
+        
+        this.endPlayerTurn();
+    }
+    
+    private playerGiveUp(): void {
+        if (!this.player || !this.playerTurn) return;
+        
+        this.addBattleLogMessage('エルナルはなすがままにした...', 'system');
         
         this.endPlayerTurn();
     }
