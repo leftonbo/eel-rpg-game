@@ -6,14 +6,14 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.Attack,
         name: '影の爪',
         description: '闇から現れる爪で攻撃',
-        damage: 40,
+        damage: 4,
         weight: 20
     },
     {
         type: ActionType.StatusAttack,
         name: '魅惑の囁き',
         description: '心を惑わす声で魅了する',
-        damage: 20,
+        damage: 2,
         statusEffect: StatusEffectType.Charm,
         weight: 30
     },
@@ -21,7 +21,7 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '毒の息',
         description: '有毒な息を吐く',
-        damage: 30,
+        damage: 3,
         statusEffect: StatusEffectType.Poison,
         weight: 25
     },
@@ -29,7 +29,7 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '鈍化の呪い',
         description: '動きを鈍らせる呪いをかける',
-        damage: 15,
+        damage: 2,
         statusEffect: StatusEffectType.Slow,
         weight: 20
     },
@@ -51,8 +51,8 @@ export const darkGhostData: BossData = {
     name: 'DarkGhost',
     displayName: '👻 闇のおばけ',
     description: 'エルナルの魂を吸い取ろうとする邪悪なおばけ。状態異常攻撃を多用し、魅了で拘束からの脱出を困難にする。',
-    maxHp: 1500,
-    attackPower: 60,
+    maxHp: 150,
+    attackPower: 6,
     actions: darkGhostActions,
     personality: [
         'ケケケ...いい魂の匂いがする',

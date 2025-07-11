@@ -6,21 +6,21 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.Attack,
         name: 'クロー攻撃',
         description: '鋭い爪で引っ掻く',
-        damage: 80,
+        damage: 8,
         weight: 40
     },
     {
         type: ActionType.Attack,
         name: '噛みつき',
         description: '強力な顎で噛みつく',
-        damage: 120,
+        damage: 12,
         weight: 30
     },
     {
         type: ActionType.StatusAttack,
         name: '炎のブレス',
         description: '灼熱の炎を吐く',
-        damage: 60,
+        damage: 6,
         statusEffect: StatusEffectType.Fire,
         weight: 25
     },
@@ -41,8 +41,8 @@ export const swampDragonData: BossData = {
     name: 'SwampDragon',
     displayName: '🐲 沼のドラゴン',
     description: 'エルナルを美味しいウナギだと思って食べようとする古代のドラゴン。高い攻撃力と炎のブレスが特徴。',
-    maxHp: 2000,
-    attackPower: 100,
+    maxHp: 200,
+    attackPower: 10,
     actions: swampDragonActions,
     personality: [
         '美味しそうなウナギだ...！',

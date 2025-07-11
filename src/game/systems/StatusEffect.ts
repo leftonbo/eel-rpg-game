@@ -38,10 +38,10 @@ export class StatusEffectManager {
         [StatusEffectType.Fire, {
             type: StatusEffectType.Fire,
             name: '火だるま',
-            description: '毎ターンHPが80減少',
+            description: '毎ターンHPが8減少',
             duration: 2,
             onTick: (target: any, _effect: StatusEffect) => {
-                target.takeDamage(80);
+                target.takeDamage(8);
             }
         }],
         [StatusEffectType.Charm, {
@@ -59,10 +59,10 @@ export class StatusEffectManager {
         [StatusEffectType.Poison, {
             type: StatusEffectType.Poison,
             name: '毒',
-            description: '毎ターンHPが30減少',
+            description: '毎ターンHPが3減少',
             duration: 3,
             onTick: (target: any, _effect: StatusEffect) => {
-                target.takeDamage(30);
+                target.takeDamage(3);
             }
         }],
         [StatusEffectType.Restrained, {

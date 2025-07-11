@@ -6,14 +6,14 @@ const mechSpiderActions: BossAction[] = [
         type: ActionType.Attack,
         name: 'レーザー射撃',
         description: '精密なレーザーで攻撃',
-        damage: 25,
+        damage: 3,
         weight: 15
     },
     {
         type: ActionType.Attack,
         name: '機械パンチ',
         description: '機械の腕で殴る',
-        damage: 30,
+        damage: 3,
         weight: 10
     },
     {
@@ -39,7 +39,7 @@ const mechSpiderActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '電気ショック',
         description: '軽い電流で動きを鈍らせる',
-        damage: 20,
+        damage: 2,
         statusEffect: StatusEffectType.Slow,
         weight: 10
     }
@@ -50,8 +50,8 @@ export const mechSpiderData: BossData = {
     name: 'MechSpider',
     displayName: '🕷️ 機械のクモ',
     description: 'エルナルを壊れた機械と見なして修理しようとする機械クモ。攻撃力は低いが拘束攻撃を頻発する。',
-    maxHp: 1800,
-    attackPower: 40,
+    maxHp: 180,
+    attackPower: 4,
     actions: mechSpiderActions,
     personality: [
         'ERROR: 損傷した機械を検出',

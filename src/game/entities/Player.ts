@@ -9,9 +9,9 @@ export interface PlayerItem {
 
 export class Player {
     public name: string = 'エルナル';
-    public maxHp: number = 1000;
-    public hp: number = 1000;
-    public baseAttackPower: number = 20;
+    public maxHp: number = 100;
+    public hp: number = 100;
+    public baseAttackPower: number = 5;
     public statusEffects: StatusEffectManager = new StatusEffectManager();
     public items: Map<string, PlayerItem> = new Map();
     public isDefending: boolean = false;
