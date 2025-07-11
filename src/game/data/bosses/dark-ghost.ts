@@ -75,6 +75,39 @@ export const darkGhostData: BossData = {
             };
         }
         
+        // Strategic actions based on player state
+        if (player.isKnockedOut()) {
+            if (player.isRestrained()) {
+                // Restrained + Knocked Out: 85% chance to eat
+                if (Math.random() < 0.85) {
+                    return {
+                        type: ActionType.EatAttack,
+                        name: '魂の摂取',
+                        description: '無力なエルナルの魂を吸い取る',
+                        weight: 1
+                    };
+                }
+            } else {
+                // Normal + Knocked Out: 60% chance to restrain, 25% to eat directly
+                const random = Math.random();
+                if (random < 0.6) {
+                    return {
+                        type: ActionType.RestraintAttack,
+                        name: '影の縛り',
+                        description: '無力なエルナルを影の触手で拘束する',
+                        weight: 1
+                    };
+                } else if (random < 0.85) {
+                    return {
+                        type: ActionType.EatAttack,
+                        name: '魂の摂取',
+                        description: '無力なエルナルの魂を直接吸い取る',
+                        weight: 1
+                    };
+                }
+            }
+        }
+        
         // Prioritize charm if player doesn't have it
         if (!player.statusEffects.hasEffect(StatusEffectType.Charm) && Math.random() < 0.5) {
             const charmAction = darkGhostActions.find(action => action.statusEffect === StatusEffectType.Charm);

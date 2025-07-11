@@ -65,14 +65,36 @@ export const swampDragonData: BossData = {
             };
         }
         
-        // Prefer powerful attacks when player has high HP
-        if (player.getHpPercentage() > 50) {
-            const highDamageActions = swampDragonActions.filter(action => 
-                action.type === ActionType.Attack && (action.damage || 0) >= 80
-            );
-            
-            if (highDamageActions.length > 0) {
-                return highDamageActions[Math.floor(Math.random() * highDamageActions.length)];
+        // Strategic actions based on player state
+        if (player.isKnockedOut()) {
+            if (player.isRestrained()) {
+                // Restrained + Knocked Out: 90% chance to eat
+                if (Math.random() < 0.9) {
+                    return {
+                        type: ActionType.EatAttack,
+                        name: '丸呑み',
+                        description: '拘束されたエルナルを丸呑みする',
+                        weight: 1
+                    };
+                }
+            } else {
+                // Normal + Knocked Out: 70% chance to restrain, 20% to eat directly
+                const random = Math.random();
+                if (random < 0.7) {
+                    return {
+                        type: ActionType.RestraintAttack,
+                        name: '尻尾巻き付き',
+                        description: '無力なエルナルを尻尾で拘束する',
+                        weight: 1
+                    };
+                } else if (random < 0.9) {
+                    return {
+                        type: ActionType.EatAttack,
+                        name: '丸呑み',
+                        description: '無力なエルナルを直接丸呑みする',
+                        weight: 1
+                    };
+                }
             }
         }
         
@@ -81,6 +103,17 @@ export const swampDragonData: BossData = {
             const fireBreath = swampDragonActions.find(action => action.statusEffect === StatusEffectType.Fire);
             if (fireBreath && Math.random() < 0.7) {
                 return fireBreath;
+            }
+        }
+        
+        // Prefer powerful attacks when player has high HP
+        if (player.getHpPercentage() > 50) {
+            const highDamageActions = swampDragonActions.filter(action => 
+                action.type === ActionType.Attack && (action.damage || 0) >= 8
+            );
+            
+            if (highDamageActions.length > 0) {
+                return highDamageActions[Math.floor(Math.random() * highDamageActions.length)];
             }
         }
         

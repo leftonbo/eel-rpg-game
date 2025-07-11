@@ -74,6 +74,39 @@ export const mechSpiderData: BossData = {
             };
         }
         
+        // Strategic actions based on player state
+        if (player.isKnockedOut()) {
+            if (player.isRestrained()) {
+                // Restrained + Knocked Out: 95% chance to "repair" (eat)
+                if (Math.random() < 0.95) {
+                    return {
+                        type: ActionType.EatAttack,
+                        name: '内部修理開始',
+                        description: '拘束されたエルナルの内部修理を開始する',
+                        weight: 1
+                    };
+                }
+            } else {
+                // Normal + Knocked Out: 80% chance to restrain, 15% to eat directly
+                const random = Math.random();
+                if (random < 0.8) {
+                    return {
+                        type: ActionType.RestraintAttack,
+                        name: 'ワイヤー拘束',
+                        description: '損傷した機械を修理アームで固定する',
+                        weight: 1
+                    };
+                } else if (random < 0.95) {
+                    return {
+                        type: ActionType.EatAttack,
+                        name: '内部修理開始',
+                        description: '損傷した機械の内部修理を直接開始する',
+                        weight: 1
+                    };
+                }
+            }
+        }
+        
         // Almost always prioritize restraint if player is not restrained
         if (!player.isRestrained() && !player.isEaten()) {
             const restraintActions = mechSpiderActions.filter(action => action.type === ActionType.RestraintAttack);

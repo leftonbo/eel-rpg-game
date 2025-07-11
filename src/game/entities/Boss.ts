@@ -5,6 +5,7 @@ export enum ActionType {
     Attack = 'attack',
     StatusAttack = 'status-attack',
     RestraintAttack = 'restraint-attack',
+    EatAttack = 'eat-attack',
     DevourAttack = 'devour-attack',
     Skip = 'skip'
 }
@@ -148,14 +149,20 @@ export class Boss {
                 break;
                 
             case ActionType.RestraintAttack:
-                if (player.hp > 0) {
-                    player.statusEffects.addEffect(StatusEffectType.Restrained);
-                    player.struggleAttempts = 0; // Reset struggle attempts
-                    message += ' エルナルが拘束された！';
-                } else {
-                    // If player is knocked out, they get eaten instead
-                    player.statusEffects.addEffect(StatusEffectType.Eaten);
+                player.statusEffects.addEffect(StatusEffectType.Restrained);
+                player.struggleAttempts = 0; // Reset struggle attempts
+                message += ' エルナルが拘束された！';
+                break;
+                
+            case ActionType.EatAttack:
+                if (player.isRestrained()) {
+                    // Transform restrained state to eaten state
                     player.statusEffects.removeEffect(StatusEffectType.Restrained);
+                    player.statusEffects.addEffect(StatusEffectType.Eaten);
+                    message += ' エルナルが食べられてしまった！';
+                } else {
+                    // Direct eating for knocked out player
+                    player.statusEffects.addEffect(StatusEffectType.Eaten);
                     message += ' エルナルが食べられてしまった！';
                 }
                 break;
