@@ -304,10 +304,11 @@ export class BattleScene {
             struggleSkillBtn.classList.add('d-none');
         }
         
-        // Show/hide struggle skill button in special actions based on MP and exhaustion
+        // Show/hide struggle skill button in special actions based on state
         const struggleSkillSpecialBtn = document.getElementById('struggle-skill-special-btn');
         if (struggleSkillSpecialBtn) {
-            const canUseSkill = !this.player.statusEffects.isExhausted();
+            const canUseSkill = !this.player.statusEffects.isExhausted() && 
+                               !this.player.statusEffects.isKnockedOut();
             if (canUseSkill) {
                 struggleSkillSpecialBtn.classList.remove('d-none');
                 struggleSkillSpecialBtn.classList.toggle('disabled', !this.playerTurn);
