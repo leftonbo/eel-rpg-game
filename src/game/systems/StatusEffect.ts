@@ -96,7 +96,7 @@ export class StatusEffectManager {
             type: StatusEffectType.Invincible,
             name: '無敵',
             description: 'すべてのダメージを無効化',
-            duration: 1
+            duration: 3
         }],
         [StatusEffectType.Defending, {
             type: StatusEffectType.Defending,
