@@ -10,7 +10,8 @@ export enum StatusEffectType {
     Defending = 'defending',
     KnockedOut = 'knocked-out',
     Exhausted = 'exhausted',
-    Energized = 'energized'
+    Energized = 'energized',
+    Doomed = 'doomed'
 }
 
 export interface StatusEffect {
@@ -124,6 +125,12 @@ export class StatusEffectManager {
             onTick: (target: any, _effect: StatusEffect) => {
                 target.mp = target.maxMp;
             }
+        }],
+        [StatusEffectType.Doomed, {
+            type: StatusEffectType.Doomed,
+            name: '再起不能',
+            description: '最大HPが0以下になり、なすがままの行動しかできない',
+            duration: -1 // Permanent until finishing move
         }]
     ]);
     
@@ -294,5 +301,9 @@ export class StatusEffectManager {
     
     isEnergized(): boolean {
         return this.hasEffect(StatusEffectType.Energized);
+    }
+    
+    isDoomed(): boolean {
+        return this.hasEffect(StatusEffectType.Doomed);
     }
 }

@@ -348,7 +348,8 @@ export class Boss {
             [StatusEffectType.Defending]: '防御',
             [StatusEffectType.KnockedOut]: '行動不能',
             [StatusEffectType.Exhausted]: '疲れ果て',
-            [StatusEffectType.Energized]: '元気満々'
+            [StatusEffectType.Energized]: '元気満々',
+            [StatusEffectType.Doomed]: '再起不能'
         };
         
         return names[type] || '未知の状態';

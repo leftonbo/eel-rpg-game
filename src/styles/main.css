@@ -207,6 +207,13 @@ body {
     color: #e0f0ff;
 }
 
+.status-doomed {
+    background: rgba(50, 0, 0, 0.8);
+    border-color: #800000;
+    color: #ff6666;
+    animation: pulse 2s ease-in-out infinite alternate;
+}
+
 /* Animations */
 @keyframes pulse {
     from {

@@ -6,7 +6,8 @@ import { updatePlayerItems } from '../data/ExtendedItems';
 export enum SkillType {
     PowerAttack = 'power-attack',
     Heal = 'heal',
-    Struggle = 'struggle'
+    Struggle = 'struggle',
+    GiveUp = 'give-up'
 }
 
 export interface Skill {
@@ -320,6 +321,11 @@ export class Player {
         if (this.hp > this.maxHp) {
             this.hp = this.maxHp;
         }
+        
+        // If max HP reaches 0 or below, apply doomed status
+        if (this.maxHp <= 0 && !this.statusEffects.hasEffect(StatusEffectType.Doomed)) {
+            this.statusEffects.addEffect(StatusEffectType.Doomed);
+        }
     }
     
     recoverFromKnockOut(): string[] {
@@ -359,8 +365,12 @@ export class Player {
         return this.statusEffects.isKnockedOut();
     }
     
-    isDead(): boolean {
+    isDoomed(): boolean {
         return this.maxHp <= 0;
+    }
+    
+    isDead(): boolean {
+        return this.hp < 0; // Only consider dead when HP is negative (after finishing move)
     }
     
     startTurn(): void {
@@ -436,6 +446,23 @@ export class Player {
     }
     
     getAvailableSkills(): Skill[] {
+        // If doomed, only allow give up action
+        if (this.statusEffects.isDoomed()) {
+            return [{
+                type: SkillType.GiveUp,
+                name: '☠なすがまま',
+                description: '再起不能のため、なすがままにする',
+                mpCost: 0,
+                canUse: () => true,
+                use: (player: Player) => {
+                    return {
+                        success: true,
+                        message: `${player.name}は再起不能でなすがままにしている...`,
+                    };
+                }
+            }];
+        }
+        
         const skills: Skill[] = [
             {
                 type: SkillType.PowerAttack,

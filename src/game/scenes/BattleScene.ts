@@ -1,6 +1,7 @@
 import { Game } from '../Game';
 import { Player, PLAYER_NAME, SkillType } from '../entities/Player';
 import { Boss, ActionType } from '../entities/Boss';
+import { StatusEffectType } from '../systems/StatusEffect';
 import { calculateAttackResult } from '../utils/CombatUtils';
 import { calculateBattleResult } from './BattleResultScene';
 
@@ -654,6 +655,12 @@ export class BattleScene {
             return;
         }
         
+        // If player is doomed, boss performs finishing move
+        if (this.player.statusEffects.isDoomed()) {
+            this.performFinishingMove();
+            return;
+        }
+        
         // Boss AI selects action
         const action = this.boss.selectAction(this.player, this.turnCount);
         
@@ -756,7 +763,21 @@ export class BattleScene {
             return true;
         }
         
-        // Check if player is completely defeated (max HP <= 0)
+        // Check if player is doomed (max HP <= 0) but not yet dead
+        if (this.player.isDoomed() && !this.player.isDead()) {
+            this.addBattleLogMessage(`${PLAYER_NAME}は再起不能状態になった...`, 'system');
+            this.addBattleLogMessage('ボスのトドメ攻撃が始まります...', 'system');
+            
+            // Apply doomed status if not already applied
+            if (!this.player.statusEffects.isDoomed()) {
+                this.player.statusEffects.addEffect(StatusEffectType.Doomed);
+            }
+            
+            this.updateUI();
+            return false; // Don't end battle yet, let boss deliver finishing move
+        }
+        
+        // Check if player is actually dead (after finishing move)
         if (this.player.isDead()) {
             this.addBattleLogMessage(`${PLAYER_NAME}は完全に消化されてしまった...`, 'system');
             this.addBattleLogMessage('ゲームオーバー', 'system');
@@ -850,5 +871,27 @@ export class BattleScene {
             this.battleStats.wasKnockedOut
         );
         this.game.showBattleResult(battleResult);
+    }
+    
+    /**
+     * Execute boss finishing move on doomed player
+     */
+    private performFinishingMove(): void {
+        if (!this.boss || !this.player) return;
+        
+        // For now, use a simple finishing move - this can be expanded later
+        this.addBattleLogMessage(`${this.boss.displayName}はトドメを刺そうとしている...`, 'system', 'boss');
+        
+        // Simple finishing move: just mark player as dead
+        this.player.statusEffects.removeEffect(StatusEffectType.Doomed);
+        this.player.statusEffects.addEffect(StatusEffectType.KnockedOut); // Temporary - will be replaced with actual death
+        
+        // Mark as actually dead by setting HP to negative
+        this.player.hp = -1;
+        
+        this.addBattleLogMessage(`${this.boss.displayName}のトドメ攻撃！`, 'damage', 'boss');
+        this.addBattleLogMessage(`${PLAYER_NAME}にとって致命的な一撃だった...`, 'system');
+        
+        this.endBossTurn();
     }
 }
