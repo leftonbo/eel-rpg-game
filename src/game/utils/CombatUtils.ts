@@ -26,7 +26,7 @@ export function applyCustomDamageVariance(baseDamage: number, minVariance: numbe
     // ランダム係数を計算
     // 2 つの乱数を生成し、1つは正のゆらぎ、もう1つは負のゆらぎを適用
     // (足し合わせることで、比較的中央に寄った値を得る)
-    const variance = Math.random() * maxVariance + Math.random() * (-minVariance);
+    const variance = 1 + Math.random() * maxVariance + Math.random() * minVariance;
     return baseDamage * variance;
 }
 
