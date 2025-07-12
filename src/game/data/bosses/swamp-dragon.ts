@@ -30,7 +30,7 @@ const swampDragonActions: BossAction[] = [
     {
         type: ActionType.RestraintAttack,
         name: '尻尾巻き付き',
-        description: '長い尻尾でエルナルを拘束する',
+        description: '長い尻尾で対象を拘束する',
         weight: 5,
         canUse: (_boss, player, _turn) => {
             // Only use restraint if player isn't already restrained and occasionally
@@ -40,7 +40,7 @@ const swampDragonActions: BossAction[] = [
     {
         type: ActionType.Attack,
         name: '尻尾しめつけ',
-        description: '拘束中のエルナルを尻尾でしめつける',
+        description: '拘束中の獲物を尻尾でしめつける',
         damage: 8,
         weight: 40,
         playerStateCondition: 'restrained'
@@ -48,7 +48,7 @@ const swampDragonActions: BossAction[] = [
     {
         type: ActionType.Attack,
         name: 'べろちゅー',
-        description: '拘束中のエルナルを舌で舐め回す',
+        description: '拘束中の獲物を舌でキスする',
         damage: 12,
         weight: 30,
         playerStateCondition: 'restrained'
@@ -59,7 +59,7 @@ export const swampDragonData: BossData = {
     id: 'swamp-dragon',
     name: 'SwampDragon',
     displayName: '🐲 沼のドラゴン',
-    description: 'エルナルを美味しいウナギだと思って食べようとする古代のドラゴン。高い攻撃力と炎のブレスが特徴。',
+    description: '近寄った生き物をなんでも食べようとする古代のドラゴン。高い攻撃力と炎のブレスが特徴。',
     maxHp: 400,
     attackPower: 20,
     actions: swampDragonActions,
@@ -80,25 +80,25 @@ export const swampDragonData: BossData = {
                 {
                     type: ActionType.DevourAttack,
                     name: '消化',
-                    description: 'エルナルを消化する',
+                    description: '体内の獲物を消化する',
                     weight: 1
                 },
                 {
                     type: ActionType.DevourAttack,
                     name: '体内締め付け',
-                    description: 'エルナルを体内で締め付ける',
+                    description: '獲物を体内で締め付ける',
                     weight: 1
                 },
                 {
                     type: ActionType.DevourAttack,
                     name: '体内マッサージ',
-                    description: 'エルナルを体内で優しくマッサージする',
+                    description: '獲物を体内で優しくマッサージする',
                     weight: 1
                 },
                 {
                     type: ActionType.DevourAttack,
                     name: 'お腹ゆらし',
-                    description: 'エルナルの入ったお腹をゆらゆらと揺らす',
+                    description: '獲物の入ったお腹をゆらゆらと揺らす',
                     weight: 1
                 }
             ];
@@ -113,7 +113,7 @@ export const swampDragonData: BossData = {
                     return {
                         type: ActionType.EatAttack,
                         name: '丸呑み',
-                        description: '拘束されたエルナルを丸呑みする',
+                        description: '拘束した獲物を丸呑みする',
                         weight: 1
                     };
                 }
@@ -124,14 +124,14 @@ export const swampDragonData: BossData = {
                     return {
                         type: ActionType.RestraintAttack,
                         name: '尻尾巻き付き',
-                        description: '無力なエルナルを尻尾で拘束する',
+                        description: '対象を尻尾で拘束する',
                         weight: 1
                     };
                 } else if (random < 0.9) {
                     return {
                         type: ActionType.EatAttack,
                         name: '丸呑み',
-                        description: '無力なエルナルを直接丸呑みする',
+                        description: '拘束した獲物を丸呑みする',
                         weight: 1
                     };
                 }

@@ -37,7 +37,7 @@ const darkGhostActions: BossAction[] = [
     {
         type: ActionType.RestraintAttack,
         name: '影の縛り',
-        description: '影の触手でエルナルを拘束する',
+        description: '影の触手で対象を拘束する',
         weight: 15,
         canUse: (_boss, player, _turn) => {
             // Use restraint more often when player is charmed
@@ -48,7 +48,7 @@ const darkGhostActions: BossAction[] = [
     {
         type: ActionType.Attack,
         name: 'なめまわし',
-        description: '拘束中のエルナルを影の舌でなめまわす',
+        description: '拘束中の対象を影の舌でなめまわす',
         damage: 6,
         weight: 30,
         playerStateCondition: 'restrained'
@@ -59,7 +59,7 @@ export const darkGhostData: BossData = {
     id: 'dark-ghost',
     name: 'DarkGhost',
     displayName: '👻 闇のおばけ',
-    description: 'エルナルの魂を吸い取ろうとする邪悪なおばけ。状態異常攻撃を多用し、魅了で拘束からの脱出を困難にする。',
+    description: '獲物の魂を吸い取ろうとする邪悪なおばけ。状態異常攻撃を多用し、魅了で拘束からの脱出を困難にする。',
     maxHp: 300,
     attackPower: 12,
     actions: darkGhostActions,
@@ -79,7 +79,7 @@ export const darkGhostData: BossData = {
             return {
                 type: ActionType.DevourAttack,
                 name: '魂の吸収',
-                description: 'エルナルの魂を吸い取る',
+                description: '体内にいる獲物の魂を吸い取る',
                 weight: 1
             };
         }
@@ -92,7 +92,7 @@ export const darkGhostData: BossData = {
                     return {
                         type: ActionType.EatAttack,
                         name: '魂の摂取',
-                        description: '無力なエルナルの魂を吸い取る',
+                        description: '魂を吸い取るために対象を丸呑みにする',
                         weight: 1
                     };
                 }
@@ -103,14 +103,14 @@ export const darkGhostData: BossData = {
                     return {
                         type: ActionType.RestraintAttack,
                         name: '影の縛り',
-                        description: '無力なエルナルを影の触手で拘束する',
+                        description: '対象を影の触手で拘束する',
                         weight: 1
                     };
                 } else if (random < 0.85) {
                     return {
                         type: ActionType.EatAttack,
                         name: '魂の摂取',
-                        description: '無力なエルナルの魂を直接吸い取る',
+                        description: '魂を吸い取るために対象を丸呑みにする',
                         weight: 1
                     };
                 }

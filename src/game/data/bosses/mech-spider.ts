@@ -29,7 +29,7 @@ const mechSpiderActions: BossAction[] = [
     {
         type: ActionType.RestraintAttack,
         name: '修理アーム展開',
-        description: '修理用アームでエルナルを掴む',
+        description: '修理用アームで対象を掴む',
         weight: 30,
         canUse: (_boss, player, _turn) => {
             return !player.isRestrained() && !player.isEaten() && Math.random() < 0.7;
@@ -49,7 +49,7 @@ export const mechSpiderData: BossData = {
     id: 'mech-spider',
     name: 'MechSpider',
     displayName: '🕷️ 機械のクモ',
-    description: 'エルナルを壊れた機械と見なして修理しようとする機械クモ。攻撃力は低いが拘束攻撃を頻発する。',
+    description: '眼の前の生き物をなんでも壊れた機械と見なして修理しようとする機械クモ。攻撃力は低いが拘束攻撃を頻発する。',
     maxHp: 360,
     attackPower: 8,
     actions: mechSpiderActions,
@@ -69,7 +69,7 @@ export const mechSpiderData: BossData = {
             return {
                 type: ActionType.DevourAttack,
                 name: 'リサイクル処理',
-                description: 'エルナルを原材料として分解する',
+                description: '対象を原材料として分解する',
                 weight: 1
             };
         }
@@ -82,7 +82,7 @@ export const mechSpiderData: BossData = {
                     return {
                         type: ActionType.EatAttack,
                         name: '内部修理開始',
-                        description: '拘束されたエルナルの内部修理を開始する',
+                        description: '拘束された対象を修理するために体内に取り込む',
                         weight: 1
                     };
                 }
@@ -100,7 +100,7 @@ export const mechSpiderData: BossData = {
                     return {
                         type: ActionType.EatAttack,
                         name: '内部修理開始',
-                        description: '損傷した機械の内部修理を直接開始する',
+                        description: '拘束された対象を修理するために体内に取り込む',
                         weight: 1
                     };
                 }
