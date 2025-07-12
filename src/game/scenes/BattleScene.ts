@@ -362,8 +362,8 @@ export class BattleScene {
             const itemPanel = document.getElementById('item-panel');
             if (!itemPanel) return;
             
-            // Get existing static buttons to preserve them
-            const staticButtons = ['heal-potion-btn', 'adrenaline-btn', 'energy-drink-btn', 'item-back-btn'];
+            // Get existing static buttons to preserve them (for future reference)
+            // const staticButtons = ['heal-potion-btn', 'adrenaline-btn', 'energy-drink-btn', 'item-back-btn'];
             const itemGrid = itemPanel.querySelector('.d-grid');
             if (!itemGrid) return;
             
@@ -545,7 +545,13 @@ export class BattleScene {
             // Items don't end turn
             this.updateUI();
         } else {
-            this.addBattleLogMessage(`${itemDisplayName || itemName}を使用できない！`, 'system');
+            // Get display name for error message
+            let itemDisplayName = itemName;
+            const playerItem = this.player.items.get(itemName);
+            if (playerItem) {
+                itemDisplayName = playerItem.name;
+            }
+            this.addBattleLogMessage(`${itemDisplayName}を使用できない！`, 'system');
         }
     }
     
