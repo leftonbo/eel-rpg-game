@@ -48,10 +48,11 @@ const darkGhostActions: BossAction[] = [
     {
         type: ActionType.Attack,
         name: 'なめまわし',
-        description: '拘束中の対象を影の舌でなめまわす',
+        description: '拘束中の対象を影の舌でなめまわす（与えたダメージ分回復）',
         damage: 6,
         weight: 30,
-        playerStateCondition: 'restrained'
+        playerStateCondition: 'restrained',
+        healRatio: 1.0
     }
 ];
 

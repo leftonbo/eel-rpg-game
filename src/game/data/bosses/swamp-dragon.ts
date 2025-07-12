@@ -48,10 +48,11 @@ const swampDragonActions: BossAction[] = [
     {
         type: ActionType.Attack,
         name: 'べろちゅー',
-        description: '拘束中の獲物を舌でキスする',
+        description: '拘束中の獲物を舌でキスする（与えたダメージ分回復）',
         damage: 12,
         weight: 30,
-        playerStateCondition: 'restrained'
+        playerStateCondition: 'restrained',
+        healRatio: 1.0
     },
 ];
 

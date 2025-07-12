@@ -24,6 +24,7 @@ export interface BossAction {
     criticalRate?: number; // Critical hit rate (default: 5%)
     statusChance?: number; // Status effect application chance (default: 100%)
     playerStateCondition?: 'normal' | 'ko' | 'restrained' | 'eaten'; // Required player state
+    healRatio?: number; // HP absorption ratio from damage dealt (0.0 = no healing, 1.0 = 100% healing)
 }
 
 export interface BossData {
@@ -82,6 +83,29 @@ export class Boss {
         this.hp = Math.min(this.maxHp, this.hp + amount);
         
         return this.hp - oldHp;
+    }
+    
+    /**
+     * Heal HP based on damage dealt with a ratio
+     */
+    healFromDamage(damage: number, ratio: number): number {
+        if (ratio <= 0 || damage <= 0) return 0;
+        
+        const healAmount = Math.floor(damage * ratio);
+        return this.heal(healAmount);
+    }
+    
+    /**
+     * Increase both max HP and current HP (for devour absorption)
+     */
+    gainMaxHp(amount: number): number {
+        if (amount <= 0) return 0;
+        
+        const oldMaxHp = this.maxHp;
+        this.maxHp += amount;
+        this.hp += amount; // Increase current HP by the same amount
+        
+        return this.maxHp - oldMaxHp;
     }
     
     canAct(): boolean {
@@ -167,6 +191,14 @@ export class Boss {
                         } else {
                             message += ` ${PLAYER_NAME}に${actualDamage}のダメージ！`;
                         }
+                        
+                        // Check for HP absorption
+                        if (action.healRatio && action.healRatio > 0 && actualDamage > 0) {
+                            const healedAmount = this.healFromDamage(actualDamage, action.healRatio);
+                            if (healedAmount > 0) {
+                                message += ` ${this.displayName}は${healedAmount}HP回復した！`;
+                            }
+                        }
                     }
                 }
                 break;
@@ -197,6 +229,14 @@ export class Boss {
                             } else {
                                 message += ` ${statusDamage}のダメージ！`;
                             }
+                            
+                            // Check for HP absorption
+                            if (action.healRatio && action.healRatio > 0 && statusDamage > 0) {
+                                const healedAmount = this.healFromDamage(statusDamage, action.healRatio);
+                                if (healedAmount > 0) {
+                                    message += ` ${this.displayName}は${healedAmount}HP回復した！`;
+                                }
+                            }
                         }
                     }
                 }
@@ -224,8 +264,15 @@ export class Boss {
             case ActionType.DevourAttack:
                 if (player.statusEffects.isEaten()) {
                     // Absorb max HP based on boss attack power
-                    player.loseMaxHp(this.attackPower);
-                    message += ` ${PLAYER_NAME}の最大ヘルスが${this.attackPower}減少した！`;
+                    const hpAbsorbed = this.attackPower;
+                    player.loseMaxHp(hpAbsorbed);
+                    message += ` ${PLAYER_NAME}の最大ヘルスが${hpAbsorbed}減少した！`;
+                    
+                    // Boss gains the absorbed max HP
+                    const bossHpGain = this.gainMaxHp(hpAbsorbed);
+                    if (bossHpGain > 0) {
+                        message += ` ${this.displayName}の最大ヘルスが${bossHpGain}増加した！`;
+                    }
                     
                     // Absorb MP
                     const mpDrained = Math.min(player.mp, Math.floor(this.attackPower / 2));
@@ -234,7 +281,7 @@ export class Boss {
                         message += ` MPが${mpDrained}吸収された！`;
                     }
                     
-                    message += ` （残り最大ヘルス: ${player.maxHp}）`;
+                    message += ` （プレイヤー残り最大ヘルス: ${player.maxHp}、ボス最大ヘルス: ${this.maxHp}）`;
                     
                     if (player.maxHp <= 0) {
                         message += ` ${PLAYER_NAME}は完全に消化されてしまった...`;
