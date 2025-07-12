@@ -412,6 +412,10 @@ export class Player {
             this.mp -= amount;
             return true;
         }
+        // If MP is insufficient, mp becomes 0 and returns false
+        this.mp = 0;
+        // Apply exhausted status effect
+        this.statusEffects.addEffect(StatusEffectType.Exhausted);
         return false;
     }
     
@@ -442,14 +446,11 @@ export class Player {
                 damageVarianceMax: 0.5,
                 canUse: (player: Player) => !player.statusEffects.isExhausted() && player.statusEffects.canAct(),
                 use: (player: Player, _target?: any) => {
-                    const mpInsufficient = player.mp < 20;
+                    const mpInsufficient = !player.consumeMp(20);
                     let powerMultiplier = 2.5;
                     
                     if (mpInsufficient) {
                         powerMultiplier = 5.0; // Double effect when MP insufficient
-                        player.statusEffects.addEffect(StatusEffectType.Exhausted);
-                    } else {
-                        player.consumeMp(20);
                     }
                     
                     const damage = Math.floor(player.baseAttackPower * powerMultiplier);
@@ -470,14 +471,11 @@ export class Player {
                 mpCost: 30,
                 canUse: (player: Player) => !player.statusEffects.isExhausted() && player.statusEffects.canAct() && player.hp < player.maxHp,
                 use: (player: Player) => {
-                    const mpInsufficient = player.mp < 30;
+                    const mpInsufficient = !player.consumeMp(30);
                     let healAmount = 100;
                     
                     if (mpInsufficient) {
                         healAmount = 200; // Double effect when MP insufficient
-                        player.statusEffects.addEffect(StatusEffectType.Exhausted);
-                    } else {
-                        player.consumeMp(30);
                     }
                     
                     const actualHeal = player.heal(healAmount);
@@ -498,23 +496,20 @@ export class Player {
                 canUse: (player: Player) => !player.statusEffects.isExhausted() && 
                     (player.statusEffects.isRestrained() || player.statusEffects.isEaten()),
                 use: (player: Player) => {
-                    const mpInsufficient = player.mp < 30;
+                    const mpInsufficient = !player.consumeMp(30);
                     let successMultiplier = 2;
                     
                     if (mpInsufficient) {
                         successMultiplier = 4; // Double effect when MP insufficient
-                        player.statusEffects.addEffect(StatusEffectType.Exhausted);
-                    } else {
-                        player.consumeMp(30);
                     }
                     
                     // Calculate enhanced struggle success rate
                     let baseSuccessRate = 0.3 + (player.struggleAttempts) * 0.2;
-                    baseSuccessRate = Math.min(baseSuccessRate, 0.9);
+                    baseSuccessRate = Math.min(baseSuccessRate, 1.0);
                     
                     const modifier = player.statusEffects.getStruggleModifier();
                     let finalSuccessRate = baseSuccessRate * modifier * successMultiplier;
-                    finalSuccessRate = Math.min(finalSuccessRate, 0.95); // Cap at 95%
+                    finalSuccessRate = Math.min(finalSuccessRate, 1.0);
                     
                     const success = Math.random() < finalSuccessRate;
                     player.struggleAttempts++;
@@ -533,7 +528,7 @@ export class Player {
                         };
                     } else {
                         // Increase future struggle success significantly on failure
-                        player.struggleAttempts += mpInsufficient ? 2 : 1;
+                        player.struggleAttempts += mpInsufficient ? 4 : 2;
                         
                         return {
                             success: false,
