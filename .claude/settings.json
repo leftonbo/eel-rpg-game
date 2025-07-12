@@ -16,6 +16,7 @@
       "Write(**/*.css)",
       "Write(**/*.md)",
       "Write(**/*.html)",
+      "Write(**/*.ts)",
       "Write(**/*.js)",
       "Write(**/*.json)",
       "WebFetch(domain:developer.mozilla.org)",
@@ -48,4 +49,5 @@
       "mcp__supabase__execute_sql"
     ]
   }
+
 }
