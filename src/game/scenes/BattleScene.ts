@@ -108,7 +108,7 @@ export class BattleScene {
         
         // Back to boss select
         document.getElementById('back-to-select-btn')?.addEventListener('click', () => {
-            this.game.returnToBossSelect();
+            this.handleBattleExit();
         });
     }
     
@@ -660,5 +660,39 @@ export class BattleScene {
         
         this.battleLog.appendChild(messageElement);
         this.battleLog.scrollTop = this.battleLog.scrollHeight;
+    }
+    
+    /**
+     * Handle battle exit (from back to boss select button)
+     */
+    private handleBattleExit(): void {
+        if (!this.player) {
+            this.game.returnToBossSelect();
+            return;
+        }
+        
+        // Check if there's any battle activity worth showing results for
+        const hasActivity = this.battleStats.damageDealt > 0 || 
+                           this.battleStats.damageTaken > 0 || 
+                           this.battleStats.itemsUsed > 0 || 
+                           this.battleStats.mpSpent > 0 || 
+                           this.battleStats.wasKnockedOut;
+        
+        if (hasActivity) {
+            // Show battle result screen
+            const battleResult = calculateBattleResult(
+                this.player,
+                false, // not a victory (interrupted)
+                this.battleStats.damageDealt,
+                this.battleStats.damageTaken,
+                this.battleStats.itemsUsed,
+                this.battleStats.mpSpent,
+                this.battleStats.wasKnockedOut
+            );
+            this.game.showBattleResult(battleResult);
+        } else {
+            // No activity, go directly to boss select
+            this.game.returnToBossSelect();
+        }
     }
 }
