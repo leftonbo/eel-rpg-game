@@ -16,8 +16,8 @@ export function applyDamageVariance(baseDamage: number): number {
 /**
  * ダメージにカスタムゆらぎを適用する
  * @param baseDamage 基本ダメージ
- * @param minPercent 最小ゆらぎ倍率 例: -0.2
- * @param maxPercent 最大ゆらぎ倍率 例: +0.5
+ * @param minVariance 最小ゆらぎ倍率 例: -0.2
+ * @param maxVariance 最大ゆらぎ倍率 例: +0.5
  * @returns ゆらぎを適用したダメージ(小数点は処理されない)
  */
 export function applyCustomDamageVariance(baseDamage: number, minVariance: number = -0.2, maxVariance: number = 0.2): number {
