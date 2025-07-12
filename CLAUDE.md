@@ -80,6 +80,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### git コミット方針
 
+Claude Codeは以下の方針に従ってgitコミットを行うこと
+
+- Claude Code の編集であることが分かるように、コミット文に `Co-Authored-By: Claude <noreply@anthropic.com>` を追記すること
 - 指示された作業1単位が終わるごとにコミットする
 - .gitignore に含まれるファイルはコミットしない
 - コミットメッセージは日本語で記述すること
