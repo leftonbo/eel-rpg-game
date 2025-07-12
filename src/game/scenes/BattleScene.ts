@@ -335,6 +335,7 @@ export class BattleScene {
             }
         }
         
+        this.updateUI();
         this.endPlayerTurn();
     }
     
@@ -344,6 +345,7 @@ export class BattleScene {
         this.player.defend();
         this.addBattleLogMessage(`${PLAYER_NAME}は身を守った！`, 'system');
         
+        this.updateUI();
         this.endPlayerTurn();
     }
     
@@ -390,9 +392,11 @@ export class BattleScene {
             }
             
             this.hideSkillPanel();
+            this.updateUI();
             this.endPlayerTurn();
         } else {
             this.addBattleLogMessage(result.message, 'system');
+            this.updateUI();
         }
     }
     
@@ -434,6 +438,7 @@ export class BattleScene {
             this.addBattleLogMessage('エルナルはもがいたが、拘束を抜けられなかった...', 'system');
         }
         
+        this.updateUI();
         this.endPlayerTurn();
     }
     
@@ -443,6 +448,7 @@ export class BattleScene {
         this.player.stayStill();
         this.addBattleLogMessage('エルナルはじっとして体力を回復した', 'heal');
         
+        this.updateUI();
         this.endPlayerTurn();
     }
     
@@ -451,6 +457,7 @@ export class BattleScene {
         
         this.addBattleLogMessage('エルナルはなすがままにした...', 'system');
         
+        this.updateUI();
         this.endPlayerTurn();
     }
     
