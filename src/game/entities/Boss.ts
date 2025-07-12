@@ -151,42 +151,52 @@ export class Boss {
         
         switch (action.type) {
             case ActionType.Attack:
-                const baseDamage = action.damage || this.attackPower;
-                const attackResult = calculateAttackResult(baseDamage, player.isKnockedOut(), action.hitRate, action.criticalRate);
-                
-                if (attackResult.isMiss) {
-                    message += ` ${attackResult.message} 攻撃は外れた！`;
+                // Check for invincible status first
+                if (player.statusEffects.hasEffect(StatusEffectType.Invincible)) {
+                    message += ` ${PLAYER_NAME}は攻撃を華麗に回避した！`;
                 } else {
-                    const actualDamage = player.takeDamage(attackResult.damage);
-                    if (attackResult.isCritical) {
-                        message += ` ${attackResult.message} ${PLAYER_NAME}に${actualDamage}のダメージ！`;
+                    const baseDamage = action.damage || this.attackPower;
+                    const attackResult = calculateAttackResult(baseDamage, player.isKnockedOut(), action.hitRate, action.criticalRate);
+                    
+                    if (attackResult.isMiss) {
+                        message += ` ${attackResult.message} 攻撃は外れた！`;
                     } else {
-                        message += ` ${PLAYER_NAME}に${actualDamage}のダメージ！`;
+                        const actualDamage = player.takeDamage(attackResult.damage);
+                        if (attackResult.isCritical) {
+                            message += ` ${attackResult.message} ${PLAYER_NAME}に${actualDamage}のダメージ！`;
+                        } else {
+                            message += ` ${PLAYER_NAME}に${actualDamage}のダメージ！`;
+                        }
                     }
                 }
                 break;
                 
             case ActionType.StatusAttack:
-                if (action.statusEffect) {
-                    const statusChance = action.statusChance !== undefined ? action.statusChance / 100 : 1.0;
-                    if (Math.random() < statusChance) {
-                        player.statusEffects.addEffect(action.statusEffect);
-                        message += ` ${PLAYER_NAME}が${this.getStatusEffectName(action.statusEffect)}状態になった！`;
-                    } else {
-                        message += ` しかし、状態異常は効かなかった！`;
-                    }
-                }
-                
-                if (action.damage && action.damage > 0) {
-                    const statusAttackResult = calculateAttackResult(action.damage, player.isKnockedOut(), action.hitRate, action.criticalRate);
-                    if (statusAttackResult.isMiss) {
-                        message += ` ${statusAttackResult.message}`;
-                    } else {
-                        const statusDamage = player.takeDamage(statusAttackResult.damage);
-                        if (statusAttackResult.isCritical) {
-                            message += ` ${statusAttackResult.message} ${statusDamage}のダメージ！`;
+                // Check for invincible status first
+                if (player.statusEffects.hasEffect(StatusEffectType.Invincible)) {
+                    message += ` ${PLAYER_NAME}は攻撃を華麗に回避した！`;
+                } else {
+                    if (action.statusEffect) {
+                        const statusChance = action.statusChance !== undefined ? action.statusChance / 100 : 1.0;
+                        if (Math.random() < statusChance) {
+                            player.statusEffects.addEffect(action.statusEffect);
+                            message += ` ${PLAYER_NAME}が${this.getStatusEffectName(action.statusEffect)}状態になった！`;
                         } else {
-                            message += ` ${statusDamage}のダメージ！`;
+                            message += ` しかし、状態異常は効かなかった！`;
+                        }
+                    }
+                    
+                    if (action.damage && action.damage > 0) {
+                        const statusAttackResult = calculateAttackResult(action.damage, player.isKnockedOut(), action.hitRate, action.criticalRate);
+                        if (statusAttackResult.isMiss) {
+                            message += ` ${statusAttackResult.message}`;
+                        } else {
+                            const statusDamage = player.takeDamage(statusAttackResult.damage);
+                            if (statusAttackResult.isCritical) {
+                                message += ` ${statusAttackResult.message} ${statusDamage}のダメージ！`;
+                            } else {
+                                message += ` ${statusDamage}のダメージ！`;
+                            }
                         }
                     }
                 }
