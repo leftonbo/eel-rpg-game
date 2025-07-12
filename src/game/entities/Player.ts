@@ -33,14 +33,14 @@ export class Player {
     
     // Base stats (before equipment/abilities)
     public baseMaxHp: number = 100;
-    public baseMaxMp: number = 40;
+    public baseMaxMp: number = 50;
     public baseAttackPower: number = 5;
     
     // Current stats (calculated with equipment/abilities)
     public maxHp: number = 100;
     public hp: number = 100;
-    public maxMp: number = 40;
-    public mp: number = 40;
+    public maxMp: number = 50;
+    public mp: number = 50;
     
     public statusEffects: StatusEffectManager = new StatusEffectManager();
     public items: Map<string, PlayerItem> = new Map();
