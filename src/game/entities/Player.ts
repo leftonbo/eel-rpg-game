@@ -226,13 +226,9 @@ export class Player {
         
         this.hp = Math.max(0, this.hp - actualDamage);
         
-        // Add toughness experience based on damage taken
-        this.addExperience(AbilityType.Toughness, actualDamage);
-        
-        // If health reaches 0, apply knocked out status and give extra toughness experience
+        // If health reaches 0, apply knocked out status
         if (this.hp === 0 && !this.statusEffects.hasEffect(StatusEffectType.KnockedOut)) {
             this.statusEffects.addEffect(StatusEffectType.KnockedOut);
-            this.addExperience(AbilityType.Toughness, 50); // Bonus experience for being knocked out
         }
         
         return actualDamage;
@@ -265,13 +261,7 @@ export class Player {
         const item = this.items.get(itemName);
         if (!item || item.count <= 0) return false;
         
-        const success = item.use(this);
-        if (success) {
-            // Add craftwork experience for using items
-            this.addExperience(AbilityType.CraftWork, 50);
-        }
-        
-        return success;
+        return item.use(this);
     }
     
     attemptStruggle(): boolean {
@@ -408,8 +398,6 @@ export class Player {
     consumeMp(amount: number): boolean {
         if (this.mp >= amount) {
             this.mp -= amount;
-            // Add endurance experience for MP consumption (3 exp per MP)
-            this.addExperience(AbilityType.Endurance, amount * 3);
             return true;
         }
         return false;
@@ -567,8 +555,6 @@ export class Player {
             const exhaustedEffect = this.statusEffects.getEffect(StatusEffectType.Exhausted);
             if (this.mp >= this.maxMp || (exhaustedEffect && exhaustedEffect.duration <= 1)) {
                 this.statusEffects.removeEffect(StatusEffectType.Exhausted);
-                // Add endurance experience for recovering from exhaustion
-                this.addExperience(AbilityType.Endurance, 50);
                 messages.push(`${this.name}の疲れが回復した！`);
             }
         }
