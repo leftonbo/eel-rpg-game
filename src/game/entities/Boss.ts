@@ -281,34 +281,40 @@ export class Boss {
                 if (player.statusEffects.isEaten()) {
                     // Apply variance to absorption amount
                     const baseAbsorption = action.damage || this.attackPower;
-                    let hpAbsorbed = baseAbsorption;
-                    if (action.damageVarianceMin !== undefined && action.damageVarianceMax !== undefined) {
-                        hpAbsorbed = Math.max(1, Math.floor(baseAbsorption * (1 + (action.damageVarianceMin + Math.random() * (action.damageVarianceMax - action.damageVarianceMin)) / 100)));
-                    }
+                    const statusAttackResult = calculateAttackResult(
+                        baseAbsorption, 
+                        player.isKnockedOut(), 
+                        action.hitRate, 
+                        action.criticalRate,
+                        action.damageVarianceMin,
+                        action.damageVarianceMax
+                    );
+                    let hpAbsorbed = statusAttackResult.damage;
                     
                     player.loseMaxHp(hpAbsorbed);
-                    message += ` ${PLAYER_NAME}の最大ヘルスが${hpAbsorbed}減少した！`;
+                    message += ` ${PLAYER_NAME}の最大ヘルスが${hpAbsorbed}吸収された！`;
+                    message += ` （プレイヤー残り最大ヘルス: ${player.maxHp}`;
                     
                     // Boss gains the absorbed max HP
-                    const bossHpGain = this.gainMaxHp(hpAbsorbed);
-                    if (bossHpGain > 0) {
-                        message += ` ${this.displayName}の最大ヘルスが${bossHpGain}増加した！`;
-                    }
+                    this.gainMaxHp(hpAbsorbed);
                     
                     // Absorb MP (also with variance)
                     const baseMpDrain = Math.floor(baseAbsorption / 2);
-                    let mpDrainAmount = baseMpDrain;
-                    if (action.damageVarianceMin !== undefined && action.damageVarianceMax !== undefined) {
-                        mpDrainAmount = Math.max(1, Math.floor(baseMpDrain * (1 + (action.damageVarianceMin + Math.random() * (action.damageVarianceMax - action.damageVarianceMin)) / 100)));
-                    }
+                    const statusMpDrainResult = calculateAttackResult(
+                        baseMpDrain, 
+                        player.isKnockedOut(), 
+                        1.0, 
+                        0.0,
+                        action.damageVarianceMin,
+                        action.damageVarianceMax
+                    );
+                    let mpDrainAmount = statusMpDrainResult.damage;
                     
                     const mpDrained = Math.min(player.mp, mpDrainAmount);
                     if (mpDrained > 0) {
                         player.loseMp(mpDrained);
                         message += ` MPが${mpDrained}吸収された！`;
                     }
-                    
-                    message += ` （プレイヤー残り最大ヘルス: ${player.maxHp}、ボス最大ヘルス: ${this.maxHp}）`;
                     
                     if (player.maxHp <= 0) {
                         message += ` ${PLAYER_NAME}は完全に消化されてしまった...`;
