@@ -49,11 +49,11 @@ export class AbilitySystem {
     
     /**
      * Calculate required total experience for reaching a specific level
-     * Formula: level^3 * 100
+     * Formula: level^3 * 50
      */
     getRequiredExperienceForLevel(level: number): number {
         if (level <= 0) return 0;
-        return Math.pow(level, 3) * 100;
+        return level * level * level * 50;
     }
     
     /**
