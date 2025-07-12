@@ -7,7 +7,8 @@ const darkGhostActions: BossAction[] = [
         name: '影の爪',
         description: '闇から現れる爪で攻撃',
         damage: 4,
-        weight: 20
+        weight: 20,
+        playerStateCondition: 'normal'
     },
     {
         type: ActionType.StatusAttack,
@@ -43,6 +44,14 @@ const darkGhostActions: BossAction[] = [
             const baseChance = player.statusEffects.hasEffect(StatusEffectType.Charm) ? 0.6 : 0.3;
             return !player.isRestrained() && !player.isEaten() && Math.random() < baseChance;
         }
+    },
+    {
+        type: ActionType.Attack,
+        name: 'なめまわし',
+        description: '拘束中のエルナルを影の舌でなめまわす',
+        damage: 6,
+        weight: 30,
+        playerStateCondition: 'restrained'
     }
 ];
 

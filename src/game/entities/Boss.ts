@@ -20,6 +20,10 @@ export interface BossAction {
     statusDuration?: number;
     weight: number; // Probability weight for AI selection
     canUse?: (boss: Boss, player: Player, turn: number) => boolean;
+    hitRate?: number; // Attack hit rate (default: 95%)
+    criticalRate?: number; // Critical hit rate (default: 5%)
+    statusChance?: number; // Status effect application chance (default: 100%)
+    playerStateCondition?: 'normal' | 'ko' | 'restrained' | 'eaten'; // Required player state
 }
 
 export interface BossData {
@@ -101,6 +105,14 @@ export class Boss {
         
         // Default AI: weighted random selection
         const availableActions = this.actions.filter(action => {
+            // Check player state condition
+            if (action.playerStateCondition) {
+                const currentPlayerState = this.getPlayerState(player);
+                if (action.playerStateCondition !== currentPlayerState) {
+                    return false;
+                }
+            }
+            
             if (action.canUse) {
                 return action.canUse(this, player, turn);
             }
@@ -127,13 +139,20 @@ export class Boss {
         return availableActions[0]; // Fallback
     }
     
+    private getPlayerState(player: Player): 'normal' | 'ko' | 'restrained' | 'eaten' {
+        if (player.isEaten()) return 'eaten';
+        if (player.isRestrained()) return 'restrained';
+        if (player.isKnockedOut()) return 'ko';
+        return 'normal';
+    }
+    
     executeAction(action: BossAction, player: Player): string {
         let message = `${this.displayName}の${action.name}！`;
         
         switch (action.type) {
             case ActionType.Attack:
                 const baseDamage = action.damage || this.attackPower;
-                const attackResult = calculateAttackResult(baseDamage, player.isKnockedOut());
+                const attackResult = calculateAttackResult(baseDamage, player.isKnockedOut(), action.hitRate, action.criticalRate);
                 
                 if (attackResult.isMiss) {
                     message += ` ${attackResult.message} 攻撃は外れた！`;
@@ -149,12 +168,17 @@ export class Boss {
                 
             case ActionType.StatusAttack:
                 if (action.statusEffect) {
-                    player.statusEffects.addEffect(action.statusEffect);
-                    message += ` ${PLAYER_NAME}が${this.getStatusEffectName(action.statusEffect)}状態になった！`;
+                    const statusChance = action.statusChance !== undefined ? action.statusChance / 100 : 1.0;
+                    if (Math.random() < statusChance) {
+                        player.statusEffects.addEffect(action.statusEffect);
+                        message += ` ${PLAYER_NAME}が${this.getStatusEffectName(action.statusEffect)}状態になった！`;
+                    } else {
+                        message += ` しかし、状態異常は効かなかった！`;
+                    }
                 }
                 
                 if (action.damage && action.damage > 0) {
-                    const statusAttackResult = calculateAttackResult(action.damage, player.isKnockedOut());
+                    const statusAttackResult = calculateAttackResult(action.damage, player.isKnockedOut(), action.hitRate, action.criticalRate);
                     if (statusAttackResult.isMiss) {
                         message += ` ${statusAttackResult.message}`;
                     } else {

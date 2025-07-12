@@ -7,14 +7,17 @@ const swampDragonActions: BossAction[] = [
         name: 'クロー攻撃',
         description: '鋭い爪で引っ掻く',
         damage: 8,
-        weight: 40
+        weight: 40,
+        playerStateCondition: 'normal'
     },
     {
         type: ActionType.Attack,
         name: '噛みつき',
         description: '強力な顎で噛みつく',
-        damage: 12,
-        weight: 30
+        damage: 15,
+        weight: 30,
+        hitRate: 70,
+        playerStateCondition: 'normal'
     },
     {
         type: ActionType.StatusAttack,
@@ -33,6 +36,43 @@ const swampDragonActions: BossAction[] = [
             // Only use restraint if player isn't already restrained and occasionally
             return !player.isRestrained() && !player.isEaten() && Math.random() < 0.3;
         }
+    },
+    {
+        type: ActionType.Attack,
+        name: '尻尾しめつけ',
+        description: '拘束中のエルナルを尻尾でしめつける',
+        damage: 8,
+        weight: 40,
+        playerStateCondition: 'restrained'
+    },
+    {
+        type: ActionType.Attack,
+        name: 'べろちゅー',
+        description: '拘束中のエルナルを舌で舐め回す',
+        damage: 12,
+        weight: 30,
+        playerStateCondition: 'restrained'
+    },
+    {
+        type: ActionType.DevourAttack,
+        name: '体内締め付け',
+        description: 'エルナルを体内で締め付ける',
+        weight: 1,
+        playerStateCondition: 'eaten'
+    },
+    {
+        type: ActionType.DevourAttack,
+        name: '体内マッサージ',
+        description: 'エルナルを体内で優しくマッサージする',
+        weight: 1,
+        playerStateCondition: 'eaten'
+    },
+    {
+        type: ActionType.DevourAttack,
+        name: 'お腹ゆらし',
+        description: 'エルナルの入ったお腹をゆらゆらと揺らす',
+        weight: 1,
+        playerStateCondition: 'eaten'
     }
 ];
 

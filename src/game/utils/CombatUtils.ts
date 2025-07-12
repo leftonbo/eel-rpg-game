@@ -19,7 +19,12 @@ export function applyDamageVariance(baseDamage: number): number {
 /**
  * 攻撃結果を計算する（ミス、クリティカル、通常攻撃）
  */
-export function calculateAttackResult(baseDamage: number, isTargetKnockedOut: boolean = false): AttackResult {
+export function calculateAttackResult(
+    baseDamage: number, 
+    isTargetKnockedOut: boolean = false,
+    customHitRate?: number,
+    customCriticalRate?: number
+): AttackResult {
     if (baseDamage <= 0) {
         return {
             damage: 0,
@@ -32,11 +37,13 @@ export function calculateAttackResult(baseDamage: number, isTargetKnockedOut: bo
     const random = Math.random();
     
     // プレイヤーが行動不能の場合、ボスの攻撃はミスしない
-    const missChance = isTargetKnockedOut ? 0 : 0.05;
-    const criticalChance = 0.05;
+    const baseHitRate = customHitRate !== undefined ? customHitRate / 100 : 0.95;
+    const hitRate = isTargetKnockedOut ? 1.0 : baseHitRate;
+    const missChance = 1 - hitRate;
+    const criticalChance = customCriticalRate !== undefined ? customCriticalRate / 100 : 0.05;
     
     if (random < missChance) {
-        // ミス（5%）
+        // ミス
         return {
             damage: 0,
             isMiss: true,
@@ -44,7 +51,7 @@ export function calculateAttackResult(baseDamage: number, isTargetKnockedOut: bo
             message: 'ミス！'
         };
     } else if (random < missChance + criticalChance) {
-        // クリティカルヒット（5%）
+        // クリティカルヒット
         const criticalDamage = applyDamageVariance(baseDamage * 3);
         return {
             damage: criticalDamage,
@@ -53,7 +60,7 @@ export function calculateAttackResult(baseDamage: number, isTargetKnockedOut: bo
             message: 'クリティカルヒット！'
         };
     } else {
-        // 通常攻撃（90%）
+        // 通常攻撃
         const normalDamage = applyDamageVariance(baseDamage);
         return {
             damage: normalDamage,
