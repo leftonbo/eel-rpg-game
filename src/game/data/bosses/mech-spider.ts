@@ -139,6 +139,16 @@ export const mechSpiderData: BossData = {
     }
 };
 
+// Add special dialogues for specific actions
+mechSpiderData.specialDialogues = new Map([
+    ['糸拘束', '機械のクモが特殊な糸でエルナルを拘束した！'],
+    ['電気糸', '機械のクモの電気糸がエルナルに絡みついた！'],
+    ['修理作業', '機械のクモがエルナルに「修理」を施している...'],
+    ['内部修理', '機械のクモがエルナルを内部で修理している...'],
+    ['システム診断', '機械のクモがエルナルをシステム診断中...'],
+    ['回路調整', '機械のクモがエルナルの回路を調整している...']
+]);
+
 // Override dialogue for robotic personality
 mechSpiderData.getDialogue = function(situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') {
     const dialogues: Record<string, string[]> = {

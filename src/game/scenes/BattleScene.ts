@@ -668,6 +668,12 @@ export class BattleScene {
             
             this.addBattleLogMessage(message, action.type === ActionType.Attack ? 'damage' : 'status-effect', 'boss');
             
+            // Add special dialogue for this action if available
+            const specialDialogue = this.boss.getSpecialDialogue(action.name);
+            if (specialDialogue) {
+                this.addBattleLogMessage(specialDialogue, 'system', 'boss');
+            }
+            
             // Check if player was knocked down to 0 HP
             if (this.player.hp === 0 && playerHpBefore > 0) {
                 this.addBattleLogMessage(`${PLAYER_NAME}はダウンしてしまった！`, 'system');

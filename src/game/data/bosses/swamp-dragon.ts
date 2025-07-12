@@ -195,6 +195,17 @@ export const swampDragonData: BossData = {
     }
 };
 
+// Add special dialogues for specific actions
+swampDragonData.specialDialogues = new Map([
+    ['尻尾巻き付き', '沼のドラゴンは長い尻尾を巻き付けてきた！'],
+    ['尻尾しめつけ', '沼のドラゴンは尻尾でエルナルを締め付けている...'],
+    ['丸呑み', '沼のドラゴンはエルナルを大きな口で丸呑みした！'],
+    ['消化', '沼のドラゴンの胃袋がエルナルを消化しようとしている...'],
+    ['体内締め付け', '沼のドラゴンの体内がエルナルを圧迫している...'],
+    ['体内マッサージ', '沼のドラゴンの胃壁がエルナルを優しくマッサージしている...'],
+    ['お腹ゆらし', '沼のドラゴンがお腹を揺らしてエルナルを翻弄している...']
+]);
+
 // Override dialogue for personality
 swampDragonData.getDialogue = function(situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') {
     const dialogues: Record<string, string[]> = {
