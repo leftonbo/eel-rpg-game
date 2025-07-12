@@ -480,14 +480,14 @@ export class BattleScene {
         const success = this.player.attemptStruggle();
         
         if (success) {
-            this.addBattleLogMessage('エルナルは拘束を振り切った！', 'system');
+            this.addBattleLogMessage(`${PLAYER_NAME}は拘束を振り切った！`, 'system');
             this.boss.onRestraintBroken();
             this.addBattleLogMessage(`${this.boss.displayName}は反動で動けなくなった！`, 'system');
             
             const escapeDialogue = this.boss.getDialogue('player-escapes');
             this.addBattleLogMessage(escapeDialogue, 'system');
         } else {
-            this.addBattleLogMessage('エルナルはもがいたが、拘束を抜けられなかった...', 'system');
+            this.addBattleLogMessage(`${PLAYER_NAME}はもがいたが、拘束を抜けられなかった...`, 'system');
         }
         
         this.updateUI();
@@ -498,7 +498,7 @@ export class BattleScene {
         if (!this.player || !this.playerTurn) return;
         
         this.player.stayStill();
-        this.addBattleLogMessage('エルナルはじっとして体力を回復した', 'heal');
+        this.addBattleLogMessage(`${PLAYER_NAME}はじっとして体力を回復した`, 'heal');
         
         this.updateUI();
         this.endPlayerTurn();
@@ -507,7 +507,7 @@ export class BattleScene {
     private playerGiveUp(): void {
         if (!this.player || !this.playerTurn) return;
         
-        this.addBattleLogMessage('エルナルはなすがままにした...', 'system');
+        this.addBattleLogMessage(`${PLAYER_NAME}はなすがままにした...`, 'system');
         
         this.updateUI();
         this.endPlayerTurn();
@@ -632,7 +632,7 @@ export class BattleScene {
         
         // Check if player is completely defeated (max HP <= 0)
         if (this.player.isDead()) {
-            this.addBattleLogMessage('エルナルは完全に消化されてしまった...', 'system');
+            this.addBattleLogMessage(`${PLAYER_NAME}は完全に消化されてしまった...`, 'system');
             this.addBattleLogMessage('ゲームオーバー', 'system');
             
             const victoryDialogue = this.boss.getDialogue('victory');
