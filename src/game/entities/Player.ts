@@ -16,6 +16,8 @@ export interface Skill {
     mpCost: number;
     canUse: (player: Player) => boolean;
     use: (player: Player, target?: any) => { success: boolean; message: string; damage?: number };
+    damageVarianceMin?: number; // Minimum damage variance percentage (default: -20)
+    damageVarianceMax?: number; // Maximum damage variance percentage (default: +20)
 }
 
 // Player name constant for easy modification
@@ -434,6 +436,8 @@ export class Player {
                 name: 'パワーアタック',
                 description: '2.5倍の攻撃力で確実に攻撃（20MP）',
                 mpCost: 20,
+                damageVarianceMin: -20,
+                damageVarianceMax: 50,
                 canUse: (player: Player) => !player.statusEffects.isExhausted() && player.statusEffects.canAct(),
                 use: (player: Player, _target?: any) => {
                     const mpInsufficient = player.mp < 20;

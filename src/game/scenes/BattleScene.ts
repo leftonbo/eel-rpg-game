@@ -499,9 +499,38 @@ export class BattleScene {
                 this.battleStats.mpSpent += mpCost;
             }
             
-            // Apply damage if applicable
+            // Apply damage if applicable with custom variance
             if (result.damage && result.damage > 0) {
-                const actualDamage = this.boss.takeDamage(result.damage);
+                const skills = this.player.getAvailableSkills();
+                const skill = skills.find(s => s.type === skillType);
+                
+                let finalDamage = result.damage;
+                if (skill && skill.damageVarianceMin !== undefined && skill.damageVarianceMax !== undefined) {
+                    // Apply custom variance for skills
+                    const attackResult = calculateAttackResult(
+                        result.damage, 
+                        false, // Skills are never guaranteed hits
+                        undefined, // Default hit rate
+                        undefined, // Default critical rate
+                        skill.damageVarianceMin,
+                        skill.damageVarianceMax
+                    );
+                    finalDamage = attackResult.damage;
+                    
+                    if (attackResult.isCritical) {
+                        this.addBattleLogMessage(`${result.message} ${attackResult.message}`, 'system');
+                    }
+                } else {
+                    // Use default variance for skills without custom settings
+                    const attackResult = calculateAttackResult(result.damage, false);
+                    finalDamage = attackResult.damage;
+                    
+                    if (attackResult.isCritical) {
+                        this.addBattleLogMessage(`${result.message} ${attackResult.message}`, 'system');
+                    }
+                }
+                
+                const actualDamage = this.boss.takeDamage(finalDamage);
                 // Track damage dealt for experience
                 this.battleStats.damageDealt += actualDamage;
                 this.addBattleLogMessage(`${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage');

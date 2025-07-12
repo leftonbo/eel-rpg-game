@@ -25,6 +25,8 @@ export interface BossAction {
     statusChance?: number; // Status effect application chance (default: 100%)
     playerStateCondition?: 'normal' | 'ko' | 'restrained' | 'eaten'; // Required player state
     healRatio?: number; // HP absorption ratio from damage dealt (0.0 = no healing, 1.0 = 100% healing)
+    damageVarianceMin?: number; // Minimum damage variance percentage (default: -20)
+    damageVarianceMax?: number; // Maximum damage variance percentage (default: +20)
 }
 
 export interface BossData {
@@ -180,7 +182,14 @@ export class Boss {
                     message += ` ${PLAYER_NAME}は攻撃を華麗に回避した！`;
                 } else {
                     const baseDamage = action.damage || this.attackPower;
-                    const attackResult = calculateAttackResult(baseDamage, player.isKnockedOut(), action.hitRate, action.criticalRate);
+                    const attackResult = calculateAttackResult(
+                        baseDamage, 
+                        player.isKnockedOut(), 
+                        action.hitRate, 
+                        action.criticalRate,
+                        action.damageVarianceMin,
+                        action.damageVarianceMax
+                    );
                     
                     if (attackResult.isMiss) {
                         message += ` ${attackResult.message} 攻撃は外れた！`;
@@ -219,7 +228,14 @@ export class Boss {
                     }
                     
                     if (action.damage && action.damage > 0) {
-                        const statusAttackResult = calculateAttackResult(action.damage, player.isKnockedOut(), action.hitRate, action.criticalRate);
+                        const statusAttackResult = calculateAttackResult(
+                            action.damage, 
+                            player.isKnockedOut(), 
+                            action.hitRate, 
+                            action.criticalRate,
+                            action.damageVarianceMin,
+                            action.damageVarianceMax
+                        );
                         if (statusAttackResult.isMiss) {
                             message += ` ${statusAttackResult.message}`;
                         } else {
@@ -263,8 +279,13 @@ export class Boss {
                 
             case ActionType.DevourAttack:
                 if (player.statusEffects.isEaten()) {
-                    // Absorb max HP based on boss attack power
-                    const hpAbsorbed = this.attackPower;
+                    // Apply variance to absorption amount
+                    const baseAbsorption = action.damage || this.attackPower;
+                    let hpAbsorbed = baseAbsorption;
+                    if (action.damageVarianceMin !== undefined && action.damageVarianceMax !== undefined) {
+                        hpAbsorbed = Math.max(1, Math.floor(baseAbsorption * (1 + (action.damageVarianceMin + Math.random() * (action.damageVarianceMax - action.damageVarianceMin)) / 100)));
+                    }
+                    
                     player.loseMaxHp(hpAbsorbed);
                     message += ` ${PLAYER_NAME}の最大ヘルスが${hpAbsorbed}減少した！`;
                     
@@ -274,8 +295,14 @@ export class Boss {
                         message += ` ${this.displayName}の最大ヘルスが${bossHpGain}増加した！`;
                     }
                     
-                    // Absorb MP
-                    const mpDrained = Math.min(player.mp, Math.floor(this.attackPower / 2));
+                    // Absorb MP (also with variance)
+                    const baseMpDrain = Math.floor(baseAbsorption / 2);
+                    let mpDrainAmount = baseMpDrain;
+                    if (action.damageVarianceMin !== undefined && action.damageVarianceMax !== undefined) {
+                        mpDrainAmount = Math.max(1, Math.floor(baseMpDrain * (1 + (action.damageVarianceMin + Math.random() * (action.damageVarianceMax - action.damageVarianceMin)) / 100)));
+                    }
+                    
+                    const mpDrained = Math.min(player.mp, mpDrainAmount);
                     if (mpDrained > 0) {
                         player.loseMp(mpDrained);
                         message += ` MPが${mpDrained}吸収された！`;

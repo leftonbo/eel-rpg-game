@@ -13,11 +13,13 @@ const swampDragonActions: BossAction[] = [
     {
         type: ActionType.Attack,
         name: '噛みつき',
-        description: '強力な顎で噛みつく',
+        description: '強力な顎で噛みつく（ダメージに大きなゆらぎ）',
         damage: 15,
         weight: 30,
         hitRate: 70,
-        playerStateCondition: 'normal'
+        playerStateCondition: 'normal',
+        damageVarianceMin: -50,
+        damageVarianceMax: 50
     },
     {
         type: ActionType.StatusAttack,
