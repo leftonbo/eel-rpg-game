@@ -320,17 +320,84 @@ export class BattleScene {
     private updateItemCounts(): void {
         if (!this.player) return;
         
+        // Update heal potion
+        const healPotionCount = this.player.getItemCount('heal-potion');
         if (this.healPotionCount) {
-            this.healPotionCount.textContent = this.player.getItemCount('heal-potion').toString();
+            this.healPotionCount.textContent = healPotionCount.toString();
+        }
+        const healPotionBtn = document.getElementById('heal-potion-btn');
+        if (healPotionBtn) {
+            healPotionBtn.style.display = healPotionCount > 0 ? 'block' : 'none';
         }
         
+        // Update adrenaline
+        const adrenalineCount = this.player.getItemCount('adrenaline');
         if (this.adrenalineCount) {
-            this.adrenalineCount.textContent = this.player.getItemCount('adrenaline').toString();
+            this.adrenalineCount.textContent = adrenalineCount.toString();
+        }
+        const adrenalineBtn = document.getElementById('adrenaline-btn');
+        if (adrenalineBtn) {
+            adrenalineBtn.style.display = adrenalineCount > 0 ? 'block' : 'none';
         }
         
+        // Update energy drink
+        const energyDrinkCount = this.player.getItemCount('energy-drink');
         if (this.energyDrinkCount) {
-            this.energyDrinkCount.textContent = this.player.getItemCount('energy-drink').toString();
+            this.energyDrinkCount.textContent = energyDrinkCount.toString();
         }
+        const energyDrinkBtn = document.getElementById('energy-drink-btn');
+        if (energyDrinkBtn) {
+            energyDrinkBtn.style.display = energyDrinkCount > 0 ? 'block' : 'none';
+        }
+        
+        // Update other extended items dynamically
+        this.updateExtendedItemButtons();
+    }
+    
+    private updateExtendedItemButtons(): void {
+        if (!this.player) return;
+        
+        // Import EXTENDED_ITEMS for dynamic button creation
+        import('../data/ExtendedItems').then(({ EXTENDED_ITEMS }) => {
+            const itemPanel = document.getElementById('item-panel');
+            if (!itemPanel) return;
+            
+            // Get existing static buttons to preserve them
+            const staticButtons = ['heal-potion-btn', 'adrenaline-btn', 'energy-drink-btn', 'item-back-btn'];
+            const itemGrid = itemPanel.querySelector('.d-grid');
+            if (!itemGrid) return;
+            
+            // Remove dynamically created buttons (not static ones)
+            const dynamicButtons = itemGrid.querySelectorAll('[data-dynamic-item]');
+            dynamicButtons.forEach(btn => btn.remove());
+            
+            // Add buttons for extended items that are unlocked and not already shown
+            EXTENDED_ITEMS.forEach(itemData => {
+                // Skip items that already have static buttons
+                if (['heal-potion', 'adrenaline', 'energy-drink'].includes(itemData.id)) {
+                    return;
+                }
+                
+                const itemCount = this.player!.getItemCount(itemData.id);
+                if (itemCount > 0) {
+                    const button = document.createElement('button');
+                    button.id = `${itemData.id}-btn`;
+                    button.className = 'btn btn-outline-success';
+                    button.setAttribute('data-dynamic-item', 'true');
+                    button.innerHTML = `💊 ${itemData.name} (${itemCount})`;
+                    button.title = itemData.description;
+                    
+                    // Add event listener
+                    button.addEventListener('click', () => this.useItem(itemData.id));
+                    
+                    // Insert before the back button
+                    const backBtn = document.getElementById('item-back-btn');
+                    if (backBtn) {
+                        itemGrid.insertBefore(button, backBtn);
+                    }
+                }
+            });
+        });
     }
     
     private updateSkillButtonVisibility(): void {
@@ -458,19 +525,27 @@ export class BattleScene {
             // Track items used for experience
             this.battleStats.itemsUsed++;
             
-            const itemDisplayNames: { [key: string]: string } = {
-                'heal-potion': '回復薬',
-                'adrenaline': 'アドレナリン注射',
-                'energy-drink': '元気ドリンク'
-            };
-            const itemDisplayName = itemDisplayNames[itemName] || itemName;
+            // Get display name from player's item data or fallback to predefined names
+            let itemDisplayName = itemName;
+            const playerItem = this.player.items.get(itemName);
+            if (playerItem) {
+                itemDisplayName = playerItem.name;
+            } else {
+                const itemDisplayNames: { [key: string]: string } = {
+                    'heal-potion': '回復薬',
+                    'adrenaline': 'アドレナリン注射',
+                    'energy-drink': '元気ドリンク'
+                };
+                itemDisplayName = itemDisplayNames[itemName] || itemName;
+            }
+            
             this.addBattleLogMessage(`${PLAYER_NAME}は${itemDisplayName}を使った！`, 'heal');
             
             this.hideItemPanel();
             // Items don't end turn
             this.updateUI();
         } else {
-            this.addBattleLogMessage(`${itemName}を使用できない！`, 'system');
+            this.addBattleLogMessage(`${itemDisplayName || itemName}を使用できない！`, 'system');
         }
     }
     
