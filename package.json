@@ -18,7 +18,7 @@
     "typescript",
     "browser"
   ],
-  "author": "MagdraTonbo",
+  "author": "LefTonbo",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.0.0",
