@@ -438,8 +438,8 @@ export class Player {
                 name: 'パワーアタック',
                 description: '2.5倍の攻撃力で確実に攻撃（20MP）',
                 mpCost: 20,
-                damageVarianceMin: -20,
-                damageVarianceMax: 50,
+                damageVarianceMin: -0.2,
+                damageVarianceMax: 0.5,
                 canUse: (player: Player) => !player.statusEffects.isExhausted() && player.statusEffects.canAct(),
                 use: (player: Player, _target?: any) => {
                     const mpInsufficient = player.mp < 20;
