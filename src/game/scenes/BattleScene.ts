@@ -142,6 +142,9 @@ export class BattleScene {
             wasKnockedOut: false
         };
         
+        // Fully restore player HP and MP at battle start
+        this.player.fullRestore();
+        
         this.initializeBattle();
         this.updateUI();
         

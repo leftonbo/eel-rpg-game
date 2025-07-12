@@ -252,6 +252,14 @@ export class Player {
         return this.hp - oldHp;
     }
     
+    /**
+     * Fully restore HP and MP to maximum values
+     */
+    public fullRestore(): void {
+        this.hp = this.maxHp;
+        this.mp = this.maxMp;
+    }
+    
     defend(): void {
         this.isDefending = true;
         this.statusEffects.addEffect(StatusEffectType.Defending);

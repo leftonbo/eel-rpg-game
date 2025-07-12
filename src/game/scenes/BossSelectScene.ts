@@ -159,14 +159,14 @@ export class BossSelectScene {
         const equipment = player.getEquipmentInfo();
         
         // Update summary display
-        const hpElement = document.getElementById('player-summary-hp');
         const maxHpElement = document.getElementById('player-summary-max-hp');
+        const maxMpElement = document.getElementById('player-summary-max-mp');
         const attackElement = document.getElementById('player-summary-attack');
         const weaponElement = document.getElementById('player-summary-weapon');
         const armorElement = document.getElementById('player-summary-armor');
         
-        if (hpElement) hpElement.textContent = player.hp.toString();
         if (maxHpElement) maxHpElement.textContent = player.maxHp.toString();
+        if (maxMpElement) maxMpElement.textContent = player.maxMp.toString();
         if (attackElement) attackElement.textContent = player.getAttackPower().toString();
         if (weaponElement) weaponElement.textContent = equipment.weapon?.name || '素手';
         if (armorElement) armorElement.textContent = equipment.armor?.name || 'はだか';
