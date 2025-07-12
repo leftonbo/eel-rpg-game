@@ -435,16 +435,16 @@ export class BattleScene {
         ); // Player attacks are never guaranteed hits
         
         if (attackResult.isMiss) {
-            this.addBattleLogMessage(`${PLAYER_NAME}の攻撃！ ${attackResult.message} 攻撃は外れた！`, 'system');
+            this.addBattleLogMessage(`${PLAYER_NAME}の攻撃！ ${attackResult.message} 攻撃は外れた！`, 'system', 'player');
         } else {
             const actualDamage = this.boss.takeDamage(attackResult.damage);
             // Track damage dealt for experience
             this.battleStats.damageDealt += actualDamage;
             
             if (attackResult.isCritical) {
-                this.addBattleLogMessage(`${PLAYER_NAME}の攻撃！ ${attackResult.message} ${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage');
+                this.addBattleLogMessage(`${PLAYER_NAME}の攻撃！ ${attackResult.message} ${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage', 'player');
             } else {
-                this.addBattleLogMessage(`${PLAYER_NAME}の攻撃！ ${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage');
+                this.addBattleLogMessage(`${PLAYER_NAME}の攻撃！ ${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage', 'player');
             }
         }
         
@@ -456,7 +456,7 @@ export class BattleScene {
         if (!this.player || !this.playerTurn) return;
         
         this.player.defend();
-        this.addBattleLogMessage(`${PLAYER_NAME}は身を守った！`, 'system');
+        this.addBattleLogMessage(`${PLAYER_NAME}は身を守った！`, 'system', 'player');
         
         this.updateUI();
         this.endPlayerTurn();
@@ -496,7 +496,7 @@ export class BattleScene {
         const result = this.player.useSkill(skillType, this.boss);
         
         if (result.success) {
-            this.addBattleLogMessage(result.message, 'system');
+            this.addBattleLogMessage(result.message, 'system', 'player');
             
             // Track MP spent for experience
             const mpCost = (result as any).mpCost;
@@ -523,7 +523,7 @@ export class BattleScene {
                     finalDamage = attackResult.damage;
                     
                     if (attackResult.isCritical) {
-                        this.addBattleLogMessage(`${result.message} ${attackResult.message}`, 'system');
+                        this.addBattleLogMessage(`${result.message} ${attackResult.message}`, 'system', 'player');
                     }
                 } else {
                     // Use default variance for skills without custom settings
@@ -531,21 +531,21 @@ export class BattleScene {
                     finalDamage = attackResult.damage;
                     
                     if (attackResult.isCritical) {
-                        this.addBattleLogMessage(`${result.message} ${attackResult.message}`, 'system');
+                        this.addBattleLogMessage(`${result.message} ${attackResult.message}`, 'system', 'player');
                     }
                 }
                 
                 const actualDamage = this.boss.takeDamage(finalDamage);
                 // Track damage dealt for experience
                 this.battleStats.damageDealt += actualDamage;
-                this.addBattleLogMessage(`${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage');
+                this.addBattleLogMessage(`${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage', 'player');
             }
             
             this.hideSkillPanel();
             this.updateUI();
             this.endPlayerTurn();
         } else {
-            this.addBattleLogMessage(result.message, 'system');
+            this.addBattleLogMessage(result.message, 'system', 'player');
             this.updateUI();
         }
     }
@@ -573,7 +573,7 @@ export class BattleScene {
                 itemDisplayName = itemDisplayNames[itemName] || itemName;
             }
             
-            this.addBattleLogMessage(`${PLAYER_NAME}は${itemDisplayName}を使った！`, 'heal');
+            this.addBattleLogMessage(`${PLAYER_NAME}は${itemDisplayName}を使った！`, 'heal', 'player');
             
             this.hideItemPanel();
             // Items don't end turn
@@ -585,7 +585,7 @@ export class BattleScene {
             if (playerItem) {
                 itemDisplayName = playerItem.name;
             }
-            this.addBattleLogMessage(`${itemDisplayName}を使用できない！`, 'system');
+            this.addBattleLogMessage(`${itemDisplayName}を使用できない！`, 'system', 'player');
         }
     }
     
@@ -595,14 +595,14 @@ export class BattleScene {
         const success = this.player.attemptStruggle();
         
         if (success) {
-            this.addBattleLogMessage(`${PLAYER_NAME}は拘束を振り切った！`, 'system');
+            this.addBattleLogMessage(`${PLAYER_NAME}は拘束を振り切った！`, 'system', 'player');
             this.boss.onRestraintBroken();
-            this.addBattleLogMessage(`${this.boss.displayName}は反動で動けなくなった！`, 'system');
+            this.addBattleLogMessage(`${this.boss.displayName}は反動で動けなくなった！`, 'system', 'boss');
             
             const escapeDialogue = this.boss.getDialogue('player-escapes');
-            this.addBattleLogMessage(escapeDialogue, 'system');
+            this.addBattleLogMessage(escapeDialogue, 'system', 'boss');
         } else {
-            this.addBattleLogMessage(`${PLAYER_NAME}はもがいたが、拘束を抜けられなかった...`, 'system');
+            this.addBattleLogMessage(`${PLAYER_NAME}はもがいたが、拘束を抜けられなかった...`, 'system', 'player');
         }
         
         this.updateUI();
@@ -613,7 +613,7 @@ export class BattleScene {
         if (!this.player || !this.playerTurn) return;
         
         this.player.stayStill();
-        this.addBattleLogMessage(`${PLAYER_NAME}はじっとして体力を回復した`, 'heal');
+        this.addBattleLogMessage(`${PLAYER_NAME}はじっとして体力を回復した`, 'heal', 'player');
         
         this.updateUI();
         this.endPlayerTurn();
@@ -622,7 +622,7 @@ export class BattleScene {
     private playerGiveUp(): void {
         if (!this.player || !this.playerTurn) return;
         
-        this.addBattleLogMessage(`${PLAYER_NAME}はなすがままにした...`, 'system');
+        this.addBattleLogMessage(`${PLAYER_NAME}はなすがままにした...`, 'system', 'player');
         
         this.updateUI();
         this.endPlayerTurn();
@@ -648,7 +648,7 @@ export class BattleScene {
         // Check if boss can act
         if (!this.boss.canAct()) {
             if (this.boss.isStunned()) {
-                this.addBattleLogMessage(`${this.boss.displayName}は反動で動けない...`, 'system');
+                this.addBattleLogMessage(`${this.boss.displayName}は反動で動けない...`, 'system', 'boss');
             }
             this.endBossTurn();
             return;
@@ -666,7 +666,7 @@ export class BattleScene {
                 this.battleStats.damageTaken += (playerHpBefore - this.player.hp);
             }
             
-            this.addBattleLogMessage(message, action.type === ActionType.Attack ? 'damage' : 'status-effect');
+            this.addBattleLogMessage(message, action.type === ActionType.Attack ? 'damage' : 'status-effect', 'boss');
             
             // Check if player was knocked down to 0 HP
             if (this.player.hp === 0 && playerHpBefore > 0) {
@@ -676,10 +676,10 @@ export class BattleScene {
             // Add boss dialogue based on situation
             if (action.type === ActionType.RestraintAttack && this.player.isRestrained()) {
                 const restrainDialogue = this.boss.getDialogue('player-restrained');
-                this.addBattleLogMessage(restrainDialogue, 'system');
+                this.addBattleLogMessage(restrainDialogue, 'system', 'boss');
             } else if (action.type === ActionType.DevourAttack && this.player.isEaten()) {
                 const eatenDialogue = this.boss.getDialogue('player-eaten');
-                this.addBattleLogMessage(eatenDialogue, 'system');
+                this.addBattleLogMessage(eatenDialogue, 'system', 'boss');
             }
         }
         
@@ -705,7 +705,7 @@ export class BattleScene {
             // Check for exhausted recovery messages
             const recoveryMessages = this.player.checkExhaustedRecovery();
             recoveryMessages.forEach(message => {
-                this.addBattleLogMessage(message, 'system');
+                this.addBattleLogMessage(message, 'system', 'player');
             });
         }
         
@@ -769,7 +769,7 @@ export class BattleScene {
         return false;
     }
     
-    private addBattleLogMessage(message: string, type: string = ''): void {
+    private addBattleLogMessage(message: string, type: string = '', actor: 'player' | 'boss' | 'system' = 'system'): void {
         if (!this.battleLog) return;
         
         const messageElement = document.createElement('p');
@@ -777,6 +777,13 @@ export class BattleScene {
         
         if (type) {
             messageElement.classList.add(type);
+        }
+        
+        // Add actor-specific styling
+        if (actor === 'player') {
+            messageElement.classList.add('battle-log-player');
+        } else if (actor === 'boss') {
+            messageElement.classList.add('battle-log-boss');
         }
         
         this.battleLog.appendChild(messageElement);

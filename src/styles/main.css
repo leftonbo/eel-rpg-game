@@ -118,6 +118,18 @@ body {
     border-left-color: #3b82f6;
 }
 
+#battle-log .battle-log-player {
+    margin-left: 0;
+    margin-right: 2rem;
+    text-align: left;
+}
+
+#battle-log .battle-log-boss {
+    margin-left: 2rem;
+    margin-right: 0;
+    text-align: right;
+}
+
 /* Progress Bars */
 .progress {
     height: 0.75rem;
