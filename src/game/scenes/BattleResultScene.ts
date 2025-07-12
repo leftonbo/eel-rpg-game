@@ -51,13 +51,6 @@ export class BattleResultScene {
     private displayResults(): void {
         if (!this.battleResult) return;
         
-        // Update result title
-        const titleElement = document.getElementById('battle-result-title');
-        if (titleElement) {
-            titleElement.textContent = this.battleResult.victory ? '勝利！' : '敗北...';
-            titleElement.className = `h2 text-center mb-4 ${this.battleResult.victory ? 'text-success' : 'text-danger'}`;
-        }
-        
         // Display experience gained
         this.displayExperienceGained();
         
