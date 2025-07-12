@@ -1,3 +1,35 @@
+/* Custom Color Definitions */
+:root {
+    /* Primary Game Colors */
+    --game-primary: #2563eb;
+    --game-primary-hover: #1e40af;
+    --game-secondary: #64748b;
+    --game-secondary-hover: #475569;
+    --game-success: #16a34a;
+    --game-success-hover: #15803d;
+    --game-danger: #dc2626;
+    --game-danger-hover: #b91c1c;
+    --game-warning: #d97706;
+    --game-warning-hover: #b45309;
+    --game-info: #0891b2;
+    --game-info-hover: #0e7490;
+    
+    /* Status Card Backgrounds */
+    --player-status-bg: #1e3a8a;
+    --boss-status-bg: #991b1b;
+    --battle-log-bg: #0f172a;
+    --action-panel-bg: #374151;
+    
+    /* Text Colors */
+    --status-text: #e2e8f0;
+    --status-text-secondary: #94a3b8;
+    --log-text: #cbd5e1;
+    
+    /* Card Border Colors */
+    --card-border: #475569;
+    --card-border-highlight: #64748b;
+}
+
 /* Game Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -47,34 +79,43 @@ body {
 /* Battle Screen Styles */
 #battle-log {
     font-family: 'Courier New', monospace;
-    font-size: 0.9rem;
-    line-height: 1.4;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    background-color: var(--battle-log-bg) !important;
+    color: var(--log-text) !important;
 }
 
 #battle-log p {
-    margin: 0.25rem 0;
-    padding: 0.2rem 0.5rem;
-    border-radius: 3px;
+    margin: 0.3rem 0;
+    padding: 0.4rem 0.7rem;
+    border-radius: 4px;
+    border-left: 3px solid transparent;
+    color: var(--log-text) !important;
+    background: rgba(255, 255, 255, 0.05);
 }
 
 #battle-log .damage {
-    color: #ff6b6b;
-    background: rgba(255, 107, 107, 0.1);
+    color: #fca5a5 !important;
+    background: rgba(239, 68, 68, 0.15) !important;
+    border-left-color: #ef4444;
 }
 
 #battle-log .heal {
-    color: #51cf66;
-    background: rgba(81, 207, 102, 0.1);
+    color: #86efac !important;
+    background: rgba(34, 197, 94, 0.15) !important;
+    border-left-color: #22c55e;
 }
 
 #battle-log .status-effect {
-    color: #ffd43b;
-    background: rgba(255, 212, 59, 0.1);
+    color: #fbbf24 !important;
+    background: rgba(245, 158, 11, 0.15) !important;
+    border-left-color: #f59e0b;
 }
 
 #battle-log .system {
-    color: #74c0fc;
-    background: rgba(116, 192, 252, 0.1);
+    color: #93c5fd !important;
+    background: rgba(59, 130, 246, 0.15) !important;
+    border-left-color: #3b82f6;
 }
 
 /* Progress Bars */
@@ -173,9 +214,11 @@ body {
     }
 }
 
-/* Button Styles */
+/* Custom Button Styles */
 .btn {
     transition: all 0.2s ease;
+    border-width: 1px;
+    font-weight: 500;
 }
 
 .btn:hover {
@@ -184,6 +227,134 @@ body {
 
 .btn:active {
     transform: translateY(0);
+}
+
+/* Primary Button */
+.btn-primary {
+    background-color: var(--game-primary) !important;
+    border-color: var(--game-primary) !important;
+    color: white !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--game-primary-hover) !important;
+    border-color: var(--game-primary-hover) !important;
+}
+
+/* Secondary Button */
+.btn-secondary {
+    background-color: var(--game-secondary) !important;
+    border-color: var(--game-secondary) !important;
+    color: white !important;
+}
+
+.btn-secondary:hover {
+    background-color: var(--game-secondary-hover) !important;
+    border-color: var(--game-secondary-hover) !important;
+}
+
+/* Success Button */
+.btn-success {
+    background-color: var(--game-success) !important;
+    border-color: var(--game-success) !important;
+    color: white !important;
+}
+
+.btn-success:hover {
+    background-color: var(--game-success-hover) !important;
+    border-color: var(--game-success-hover) !important;
+}
+
+/* Danger Button */
+.btn-danger {
+    background-color: var(--game-danger) !important;
+    border-color: var(--game-danger) !important;
+    color: white !important;
+}
+
+.btn-danger:hover {
+    background-color: var(--game-danger-hover) !important;
+    border-color: var(--game-danger-hover) !important;
+}
+
+/* Warning Button */
+.btn-warning {
+    background-color: var(--game-warning) !important;
+    border-color: var(--game-warning) !important;
+    color: white !important;
+}
+
+.btn-warning:hover {
+    background-color: var(--game-warning-hover) !important;
+    border-color: var(--game-warning-hover) !important;
+}
+
+/* Info Button */
+.btn-info {
+    background-color: var(--game-info) !important;
+    border-color: var(--game-info) !important;
+    color: white !important;
+}
+
+.btn-info:hover {
+    background-color: var(--game-info-hover) !important;
+    border-color: var(--game-info-hover) !important;
+}
+
+/* Outline Button Styles */
+.btn-outline-danger {
+    color: var(--game-danger) !important;
+    border-color: var(--game-danger) !important;
+    background: rgba(220, 38, 38, 0.1);
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--game-danger) !important;
+    color: white !important;
+}
+
+.btn-outline-success {
+    color: var(--game-success) !important;
+    border-color: var(--game-success) !important;
+    background: rgba(22, 163, 74, 0.1);
+}
+
+.btn-outline-success:hover {
+    background-color: var(--game-success) !important;
+    color: white !important;
+}
+
+.btn-outline-warning {
+    color: var(--game-warning) !important;
+    border-color: var(--game-warning) !important;
+    background: rgba(217, 119, 6, 0.1);
+}
+
+.btn-outline-warning:hover {
+    background-color: var(--game-warning) !important;
+    color: white !important;
+}
+
+.btn-outline-info {
+    color: var(--game-info) !important;
+    border-color: var(--game-info) !important;
+    background: rgba(8, 145, 178, 0.1);
+}
+
+.btn-outline-info:hover {
+    background-color: var(--game-info) !important;
+    color: white !important;
+}
+
+.btn-outline-secondary {
+    color: var(--game-secondary) !important;
+    border-color: var(--game-secondary) !important;
+    background: rgba(100, 116, 139, 0.1);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--game-secondary) !important;
+    color: white !important;
 }
 
 /* Action Buttons */
@@ -212,6 +383,51 @@ body {
     .boss-card {
         margin-bottom: 1rem;
     }
+}
+
+/* Status Card Styles */
+.card.bg-primary {
+    background-color: var(--player-status-bg) !important;
+    border: 1px solid var(--card-border);
+    color: var(--status-text) !important;
+}
+
+.card.bg-danger {
+    background-color: var(--boss-status-bg) !important;
+    border: 1px solid var(--card-border);
+    color: var(--status-text) !important;
+}
+
+.card.bg-dark {
+    background-color: var(--battle-log-bg) !important;
+    border: 1px solid var(--card-border);
+    color: var(--log-text) !important;
+}
+
+.card.bg-secondary {
+    background-color: var(--action-panel-bg) !important;
+    border: 1px solid var(--card-border);
+    color: var(--status-text) !important;
+}
+
+/* Card Header Text Colors */
+.card-header h5,
+.card-header h6 {
+    color: var(--status-text) !important;
+    font-weight: 600;
+}
+
+/* Ensure all text within status cards is visible */
+.card-body {
+    color: var(--status-text) !important;
+}
+
+.card-body strong {
+    color: var(--status-text) !important;
+}
+
+.card-body span {
+    color: var(--status-text-secondary) !important;
 }
 
 /* Custom scrollbar for battle log */
