@@ -60,8 +60,8 @@ export const darkGhostData: BossData = {
     name: 'DarkGhost',
     displayName: '👻 闇のおばけ',
     description: 'エルナルの魂を吸い取ろうとする邪悪なおばけ。状態異常攻撃を多用し、魅了で拘束からの脱出を困難にする。',
-    maxHp: 150,
-    attackPower: 6,
+    maxHp: 300,
+    attackPower: 12,
     actions: darkGhostActions,
     personality: [
         'ケケケ...いい魂の匂いがする',

@@ -2,6 +2,7 @@ import { Game } from '../Game';
 import { Player, PLAYER_NAME, SkillType } from '../entities/Player';
 import { Boss, ActionType } from '../entities/Boss';
 import { calculateAttackResult } from '../utils/CombatUtils';
+import { calculateBattleResult } from './BattleResultScene';
 
 export class BattleScene {
     private game: Game;
@@ -10,6 +11,15 @@ export class BattleScene {
     private turnCount: number = 0;
     private playerTurn: boolean = true;
     private battleLog: HTMLElement | null = null;
+    
+    // Battle statistics for experience calculation
+    private battleStats = {
+        damageDealt: 0,
+        damageTaken: 0,
+        itemsUsed: 0,
+        mpSpent: 0,
+        wasKnockedOut: false
+    };
     
     // UI Elements
     private playerHpElement: HTMLElement | null = null;
@@ -113,6 +123,15 @@ export class BattleScene {
         
         this.turnCount = 0;
         this.playerTurn = true;
+        
+        // Reset battle statistics
+        this.battleStats = {
+            damageDealt: 0,
+            damageTaken: 0,
+            itemsUsed: 0,
+            mpSpent: 0,
+            wasKnockedOut: false
+        };
         
         this.initializeBattle();
         this.updateUI();
@@ -328,6 +347,9 @@ export class BattleScene {
             this.addBattleLogMessage(`${PLAYER_NAME}の攻撃！ ${attackResult.message} 攻撃は外れた！`, 'system');
         } else {
             const actualDamage = this.boss.takeDamage(attackResult.damage);
+            // Track damage dealt for experience
+            this.battleStats.damageDealt += actualDamage;
+            
             if (attackResult.isCritical) {
                 this.addBattleLogMessage(`${PLAYER_NAME}の攻撃！ ${attackResult.message} ${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage');
             } else {
@@ -385,9 +407,17 @@ export class BattleScene {
         if (result.success) {
             this.addBattleLogMessage(result.message, 'system');
             
+            // Track MP spent for experience
+            const mpCost = (result as any).mpCost;
+            if (mpCost) {
+                this.battleStats.mpSpent += mpCost;
+            }
+            
             // Apply damage if applicable
             if (result.damage && result.damage > 0) {
                 const actualDamage = this.boss.takeDamage(result.damage);
+                // Track damage dealt for experience
+                this.battleStats.damageDealt += actualDamage;
                 this.addBattleLogMessage(`${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage');
             }
             
@@ -406,6 +436,9 @@ export class BattleScene {
         const success = this.player.useItem(itemName);
         
         if (success) {
+            // Track items used for experience
+            this.battleStats.itemsUsed++;
+            
             const itemDisplayNames: { [key: string]: string } = {
                 'heal-potion': '回復薬',
                 'adrenaline': 'アドレナリン注射',
@@ -491,7 +524,14 @@ export class BattleScene {
         const action = this.boss.selectAction(this.player, this.turnCount);
         
         if (action) {
+            const playerHpBefore = this.player.hp;
             const message = this.boss.executeAction(action, this.player);
+            
+            // Track damage taken for experience
+            if (this.player.hp < playerHpBefore) {
+                this.battleStats.damageTaken += (playerHpBefore - this.player.hp);
+            }
+            
             this.addBattleLogMessage(message, action.type === ActionType.Attack ? 'damage' : 'status-effect');
             
             // Add boss dialogue based on situation
@@ -510,6 +550,11 @@ export class BattleScene {
     private endBossTurn(): void {
         this.turnCount++;
         this.playerTurn = true;
+        
+        // Check if player is knocked out for battle stats
+        if (this.player && this.player.isKnockedOut()) {
+            this.battleStats.wasKnockedOut = true;
+        }
         
         // Process round end effects for both player and boss
         this.processRoundEnd();
@@ -558,10 +603,19 @@ export class BattleScene {
             this.addBattleLogMessage(`${this.boss.displayName}を倒した！`, 'system');
             this.addBattleLogMessage('勝利！', 'system');
             
-            // Return to boss select after delay
+            // Calculate battle result and show result screen
             setTimeout(() => {
-                this.game.returnToBossSelect();
-            }, 3000);
+                const battleResult = calculateBattleResult(
+                    this.player,
+                    true, // victory
+                    this.battleStats.damageDealt,
+                    this.battleStats.damageTaken,
+                    this.battleStats.itemsUsed,
+                    this.battleStats.mpSpent,
+                    this.battleStats.wasKnockedOut
+                );
+                this.game.showBattleResult(battleResult);
+            }, 2000);
             
             return true;
         }
@@ -574,10 +628,19 @@ export class BattleScene {
             const victoryDialogue = this.boss.getDialogue('victory');
             this.addBattleLogMessage(victoryDialogue, 'system');
             
-            // Return to boss select after delay
+            // Calculate battle result and show result screen
             setTimeout(() => {
-                this.game.returnToBossSelect();
-            }, 3000);
+                const battleResult = calculateBattleResult(
+                    this.player,
+                    false, // defeat
+                    this.battleStats.damageDealt,
+                    this.battleStats.damageTaken,
+                    this.battleStats.itemsUsed,
+                    this.battleStats.mpSpent,
+                    this.battleStats.wasKnockedOut
+                );
+                this.game.showBattleResult(battleResult);
+            }, 2000);
             
             return true;
         }

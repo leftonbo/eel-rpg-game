@@ -60,8 +60,8 @@ export const swampDragonData: BossData = {
     name: 'SwampDragon',
     displayName: '🐲 沼のドラゴン',
     description: 'エルナルを美味しいウナギだと思って食べようとする古代のドラゴン。高い攻撃力と炎のブレスが特徴。',
-    maxHp: 200,
-    attackPower: 10,
+    maxHp: 400,
+    attackPower: 20,
     actions: swampDragonActions,
     personality: [
         '美味しそうなウナギだ...！',

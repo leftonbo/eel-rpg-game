@@ -38,9 +38,36 @@
         
         <!-- Boss Selection Screen -->
         <div id="boss-select-screen" class="scene d-none">
-            <div class="row h-100 align-items-center">
+            <div class="row h-100">
+                <!-- Player Status Area -->
+                <div class="col-12 mb-4">
+                    <div class="card bg-primary">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">🐍 エルナル</h5>
+                            <button id="player-details-btn" class="btn btn-sm btn-light">詳細表示</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <strong>ヘルス:</strong> <span id="player-summary-hp">100</span> / <span id="player-summary-max-hp">100</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>攻撃力:</strong> <span id="player-summary-attack">5</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>武器:</strong> <span id="player-summary-weapon">素手</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>防具:</strong> <span id="player-summary-armor">はだか</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Boss Selection Area -->
                 <div class="col-12">
-                    <h2 class="text-center mb-5">どのボスと戦いますか？</h2>
+                    <h2 class="text-center mb-4">どのボスと戦いますか？</h2>
                     
                     <div class="row justify-content-center">
                         <!-- Boss Cards -->
@@ -229,6 +256,162 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
                         <button type="button" class="btn btn-primary" id="confirm-boss-btn">戦闘開始！</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Battle Result Screen -->
+        <div id="battle-result-screen" class="scene d-none">
+            <div class="container-fluid h-100 d-flex align-items-center justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card bg-dark border-warning">
+                        <div class="card-body text-center">
+                            <h2 id="battle-result-title" class="text-success mb-4">勝利！</h2>
+                            
+                            <!-- Experience Gained -->
+                            <div id="experience-gained" class="mb-4">
+                                <!-- Experience details will be populated here -->
+                            </div>
+                            
+                            <!-- Level Ups -->
+                            <div id="level-ups" class="mb-4">
+                                <!-- Level up details will be populated here -->
+                            </div>
+                            
+                            <!-- New Unlocks -->
+                            <div id="new-unlocks" class="mb-4">
+                                <!-- New unlock details will be populated here -->
+                            </div>
+                            
+                            <!-- Continue Button -->
+                            <button id="battle-result-continue-btn" class="btn btn-primary btn-lg" style="display: none;">
+                                ボス選択に戻る
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Player Details Modal -->
+        <div class="modal fade" id="player-details-modal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                        <h5 class="modal-title">🐍 エルナル - 詳細ステータス</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Tabs -->
+                        <ul class="nav nav-tabs mb-3" id="player-details-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="stats-tab" data-bs-toggle="tab" href="#stats-panel">ステータス</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="equipment-tab" data-bs-toggle="tab" href="#equipment-panel">装備</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="items-tab" data-bs-toggle="tab" href="#items-panel">アイテム</a>
+                            </li>
+                        </ul>
+                        
+                        <!-- Tab Contents -->
+                        <div class="tab-content">
+                            <!-- Stats Panel -->
+                            <div class="tab-pane fade show active" id="stats-panel">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <h6>基本ステータス</h6>
+                                        <div class="mb-2">ヘルス: <span id="detail-hp">100</span> / <span id="detail-max-hp">100</span></div>
+                                        <div class="mb-2">マナ: <span id="detail-mp">40</span> / <span id="detail-max-mp">40</span></div>
+                                        <div class="mb-2">攻撃力: <span id="detail-attack">5</span></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>装備効果</h6>
+                                        <div class="mb-2">武器ボーナス: +<span id="detail-weapon-bonus">0</span></div>
+                                        <div class="mb-2">防具ボーナス: +<span id="detail-armor-bonus">0</span> HP</div>
+                                    </div>
+                                </div>
+                                
+                                <h6>アビリティ</h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card bg-secondary">
+                                            <div class="card-body">
+                                                <h6 class="card-title">⚔️ コンバット Lv.<span id="combat-level">0</span></h6>
+                                                <div class="progress mb-2">
+                                                    <div id="combat-progress" class="progress-bar" style="width: 0%"></div>
+                                                </div>
+                                                <small class="text-muted">経験値: <span id="combat-exp">0</span> / <span id="combat-next">100</span></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card bg-secondary">
+                                            <div class="card-body">
+                                                <h6 class="card-title">🛡️ タフネス Lv.<span id="toughness-level">0</span></h6>
+                                                <div class="progress mb-2">
+                                                    <div id="toughness-progress" class="progress-bar" style="width: 0%"></div>
+                                                </div>
+                                                <small class="text-muted">経験値: <span id="toughness-exp">0</span> / <span id="toughness-next">100</span></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card bg-secondary">
+                                            <div class="card-body">
+                                                <h6 class="card-title">🔧 クラフトワーク Lv.<span id="craftwork-level">0</span></h6>
+                                                <div class="progress mb-2">
+                                                    <div id="craftwork-progress" class="progress-bar" style="width: 0%"></div>
+                                                </div>
+                                                <small class="text-muted">経験値: <span id="craftwork-exp">0</span> / <span id="craftwork-next">100</span></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card bg-secondary">
+                                            <div class="card-body">
+                                                <h6 class="card-title">💪 エンデュランス Lv.<span id="endurance-level">0</span></h6>
+                                                <div class="progress mb-2">
+                                                    <div id="endurance-progress" class="progress-bar" style="width: 0%"></div>
+                                                </div>
+                                                <small class="text-muted">経験値: <span id="endurance-exp">0</span> / <span id="endurance-next">100</span></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Equipment Panel -->
+                            <div class="tab-pane fade" id="equipment-panel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>武器</h6>
+                                        <div id="weapon-selection" class="mb-3">
+                                            <!-- Weapon options will be populated here -->
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>防具</h6>
+                                        <div id="armor-selection" class="mb-3">
+                                            <!-- Armor options will be populated here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Items Panel -->
+                            <div class="tab-pane fade" id="items-panel">
+                                <h6>所持アイテム</h6>
+                                <div id="item-list">
+                                    <!-- Item list will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
                     </div>
                 </div>
             </div>

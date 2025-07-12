@@ -50,8 +50,8 @@ export const mechSpiderData: BossData = {
     name: 'MechSpider',
     displayName: '🕷️ 機械のクモ',
     description: 'エルナルを壊れた機械と見なして修理しようとする機械クモ。攻撃力は低いが拘束攻撃を頻発する。',
-    maxHp: 180,
-    attackPower: 4,
+    maxHp: 360,
+    attackPower: 8,
     actions: mechSpiderActions,
     personality: [
         'ERROR: 損傷した機械を検出',

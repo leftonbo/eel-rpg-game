@@ -4,11 +4,13 @@ import { getBossData } from './data/index';
 import { TitleScene } from './scenes/TitleScene';
 import { BossSelectScene } from './scenes/BossSelectScene';
 import { BattleScene } from './scenes/BattleScene';
+import { BattleResultScene, BattleResult } from './scenes/BattleResultScene';
 
 export enum GameState {
     Title = 'title',
     BossSelect = 'boss-select',
-    Battle = 'battle'
+    Battle = 'battle',
+    BattleResult = 'battle-result'
 }
 
 export class Game {
@@ -19,11 +21,13 @@ export class Game {
     private titleScene: TitleScene;
     private bossSelectScene: BossSelectScene;
     private battleScene: BattleScene;
+    private battleResultScene: BattleResultScene;
     
     constructor() {
         this.titleScene = new TitleScene(this);
         this.bossSelectScene = new BossSelectScene(this);
         this.battleScene = new BattleScene(this);
+        this.battleResultScene = new BattleResultScene(this);
         
         this.init();
     }
@@ -38,6 +42,7 @@ export class Game {
         document.getElementById('title-screen')?.classList.add('d-none');
         document.getElementById('boss-select-screen')?.classList.add('d-none');
         document.getElementById('battle-screen')?.classList.add('d-none');
+        document.getElementById('battle-result-screen')?.classList.add('d-none');
         
         this.currentState = newState;
         
@@ -56,6 +61,11 @@ export class Game {
             case GameState.Battle:
                 document.getElementById('battle-screen')?.classList.remove('d-none');
                 this.battleScene.enter();
+                break;
+                
+            case GameState.BattleResult:
+                document.getElementById('battle-result-screen')?.classList.remove('d-none');
+                // BattleResultScene.enter() will be called separately with result data
                 break;
         }
     }
@@ -78,10 +88,17 @@ export class Game {
     }
     
     returnToBossSelect(): void {
-        // Reset player to initial state
-        this.player = new Player();
+        // Don't reset player - keep progress
         this.currentBoss = null;
         this.setState(GameState.BossSelect);
+    }
+    
+    /**
+     * Transition to battle result scene with result data
+     */
+    showBattleResult(result: BattleResult): void {
+        this.setState(GameState.BattleResult);
+        this.battleResultScene.enter(result);
     }
     
     getPlayer(): Player {

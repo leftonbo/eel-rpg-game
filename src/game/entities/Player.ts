@@ -1,4 +1,7 @@
 import { StatusEffectManager, StatusEffectType } from '../systems/StatusEffect';
+import { AbilitySystem, AbilityType, Equipment, WEAPONS, ARMORS } from '../systems/AbilitySystem';
+import { PlayerSaveManager, PlayerSaveData } from '../systems/PlayerSaveData';
+import { updatePlayerItems } from '../data/ExtendedItems';
 
 export enum SkillType {
     PowerAttack = 'power-attack',
@@ -27,82 +30,192 @@ export interface PlayerItem {
 
 export class Player {
     public name: string = PLAYER_NAME;
+    
+    // Base stats (before equipment/abilities)
+    public baseMaxHp: number = 100;
+    public baseMaxMp: number = 40;
+    public baseAttackPower: number = 5;
+    
+    // Current stats (calculated with equipment/abilities)
     public maxHp: number = 100;
     public hp: number = 100;
     public maxMp: number = 40;
     public mp: number = 40;
-    public baseAttackPower: number = 5;
+    
     public statusEffects: StatusEffectManager = new StatusEffectManager();
     public items: Map<string, PlayerItem> = new Map();
     public isDefending: boolean = false;
     public struggleAttempts: number = 0; // For restrain escape probability
     
+    // Ability and equipment system
+    public abilitySystem: AbilitySystem = new AbilitySystem();
+    public equippedWeapon: string = 'bare-hands';
+    public equippedArmor: string = 'naked';
+    public unlockedItems: Set<string> = new Set();
+    
     constructor() {
+        this.loadFromSave();
         this.initializeItems();
+        this.recalculateStats();
+    }
+    
+    /**
+     * Load player data from localStorage
+     */
+    private loadFromSave(): void {
+        const saveData = PlayerSaveManager.loadPlayerData();
+        if (saveData) {
+            // Load abilities
+            this.abilitySystem.loadFromSaveData(saveData.abilities);
+            
+            // Load equipment
+            this.equippedWeapon = saveData.equipment.weapon;
+            this.equippedArmor = saveData.equipment.armor;
+            
+            // Load unlocked items
+            this.unlockedItems = new Set(saveData.unlockedItems);
+        } else {
+            // Initialize with default values
+            this.unlockedItems = new Set(['heal-potion', 'adrenaline', 'energy-drink']);
+        }
+    }
+    
+    /**
+     * Save player data to localStorage
+     */
+    public saveToStorage(): void {
+        const saveData: PlayerSaveData = {
+            abilities: this.abilitySystem.exportForSave(),
+            equipment: {
+                weapon: this.equippedWeapon,
+                armor: this.equippedArmor
+            },
+            unlockedItems: Array.from(this.unlockedItems),
+            version: 1
+        };
+        
+        PlayerSaveManager.savePlayerData(saveData);
+    }
+    
+    /**
+     * Recalculate all stats based on abilities and equipment
+     */
+    public recalculateStats(): void {
+        // Calculate HP with toughness bonus and armor
+        const toughnessMultiplier = 1 + this.abilitySystem.getToughnessHpBonus();
+        const armorBonus = this.getArmorHpBonus();
+        this.maxHp = Math.round(this.baseMaxHp * toughnessMultiplier) + armorBonus;
+        
+        // Ensure current HP doesn't exceed new max HP
+        if (this.hp > this.maxHp) {
+            this.hp = this.maxHp;
+        }
+        
+        // Calculate MP with endurance bonus
+        const enduranceMultiplier = 1 + this.abilitySystem.getEnduranceMpBonus();
+        this.maxMp = Math.round(this.baseMaxMp * enduranceMultiplier);
+        
+        // Ensure current MP doesn't exceed new max MP
+        if (this.mp > this.maxMp) {
+            this.mp = this.maxMp;
+        }
+        
+        // Update items based on new ability levels
+        updatePlayerItems(this);
     }
     
     private initializeItems(): void {
-        // Healing Potion
-        this.items.set('heal-potion', {
-            name: '回復薬',
-            count: 9,
-            description: 'ヘルスを80%回復し、状態異常を解除する',
-            use: (_player: Player) => {
-                if (this.items.get('heal-potion')!.count <= 0) return false;
-                
-                // Heal 80% of max HP
-                const healAmount = Math.floor(this.maxHp * 0.8);
-                this.heal(healAmount);
-                
-                // Remove all negative status effects except knocked out, restrained, and eaten
-                const effectsToRemove = [
-                    StatusEffectType.Fire,
-                    StatusEffectType.Charm,
-                    StatusEffectType.Slow,
-                    StatusEffectType.Poison
-                ];
-                
-                effectsToRemove.forEach(effect => {
-                    this.statusEffects.removeEffect(effect);
-                });
-                
-                this.items.get('heal-potion')!.count--;
-                return true;
-            }
-        });
-        
-        // Adrenaline Shot
-        this.items.set('adrenaline', {
-            name: 'アドレナリン注射',
-            count: 3,
-            description: '次のターンまで無敵になる',
-            use: (_player: Player) => {
-                if (this.items.get('adrenaline')!.count <= 0) return false;
-                
-                this.statusEffects.addEffect(StatusEffectType.Invincible);
-                this.items.get('adrenaline')!.count--;
-                return true;
-            }
-        });
-        
-        // Energy Drink
-        this.items.set('energy-drink', {
-            name: '元気ドリンク',
-            count: 3,
-            description: '3ターンの間、MPが常に満タンになる',
-            use: (_player: Player) => {
-                if (this.items.get('energy-drink')!.count <= 0) return false;
-                
-                this.statusEffects.addEffect(StatusEffectType.Energized);
-                this.items.get('energy-drink')!.count--;
-                return true;
-            }
-        });
+        // Initialize items based on ability levels
+        updatePlayerItems(this);
     }
     
     getAttackPower(): number {
-        const modifier = this.statusEffects.getAttackModifier();
-        return Math.floor(this.baseAttackPower * modifier);
+        // Calculate base attack power with combat ability and weapon
+        const combatMultiplier = 1 + this.abilitySystem.getCombatAttackBonus();
+        const weaponBonus = this.getWeaponAttackBonus();
+        const baseWithAbilityAndWeapon = (this.baseAttackPower + weaponBonus) * combatMultiplier;
+        
+        // Apply status effect modifiers
+        const statusModifier = this.statusEffects.getAttackModifier();
+        return Math.round(baseWithAbilityAndWeapon * statusModifier);
+    }
+    
+    /**
+     * Get weapon attack bonus from equipped weapon
+     */
+    public getWeaponAttackBonus(): number {
+        const weapon = WEAPONS.find(w => w.id === this.equippedWeapon);
+        return weapon?.attackPowerBonus || 0;
+    }
+    
+    /**
+     * Get armor HP bonus from equipped armor
+     */
+    public getArmorHpBonus(): number {
+        const armor = ARMORS.find(a => a.id === this.equippedArmor);
+        return armor?.hpBonus || 0;
+    }
+    
+    /**
+     * Equip a weapon (if unlocked)
+     */
+    public equipWeapon(weaponId: string): boolean {
+        const weapon = WEAPONS.find(w => w.id === weaponId);
+        if (!weapon) return false;
+        
+        const combatLevel = this.abilitySystem.getAbility(AbilityType.Combat)?.level || 0;
+        if (combatLevel < weapon.requiredLevel) return false;
+        
+        this.equippedWeapon = weaponId;
+        this.recalculateStats();
+        PlayerSaveManager.saveEquipment(this.equippedWeapon, this.equippedArmor);
+        return true;
+    }
+    
+    /**
+     * Equip armor (if unlocked)
+     */
+    public equipArmor(armorId: string): boolean {
+        const armor = ARMORS.find(a => a.id === armorId);
+        if (!armor) return false;
+        
+        const toughnessLevel = this.abilitySystem.getAbility(AbilityType.Toughness)?.level || 0;
+        if (toughnessLevel < armor.requiredLevel) return false;
+        
+        this.equippedArmor = armorId;
+        this.recalculateStats();
+        PlayerSaveManager.saveEquipment(this.equippedWeapon, this.equippedArmor);
+        return true;
+    }
+    
+    /**
+     * Get available weapons based on combat level
+     */
+    public getAvailableWeapons(): Equipment[] {
+        const combatLevel = this.abilitySystem.getAbility(AbilityType.Combat)?.level || 0;
+        return WEAPONS.filter(weapon => weapon.requiredLevel <= combatLevel);
+    }
+    
+    /**
+     * Get available armors based on toughness level
+     */
+    public getAvailableArmors(): Equipment[] {
+        const toughnessLevel = this.abilitySystem.getAbility(AbilityType.Toughness)?.level || 0;
+        return ARMORS.filter(armor => armor.requiredLevel <= toughnessLevel);
+    }
+    
+    /**
+     * Add experience to an ability
+     */
+    public addExperience(abilityType: AbilityType, amount: number): { leveledUp: boolean; newLevel: number; previousLevel: number } {
+        const result = this.abilitySystem.addExperience(abilityType, amount);
+        
+        if (result.leveledUp) {
+            this.recalculateStats();
+            this.saveToStorage(); // Auto-save on level up
+        }
+        
+        return result;
     }
     
     takeDamage(amount: number): number {
@@ -113,9 +226,13 @@ export class Player {
         
         this.hp = Math.max(0, this.hp - actualDamage);
         
-        // If health reaches 0, apply knocked out status
+        // Add toughness experience based on damage taken
+        this.addExperience(AbilityType.Toughness, actualDamage);
+        
+        // If health reaches 0, apply knocked out status and give extra toughness experience
         if (this.hp === 0 && !this.statusEffects.hasEffect(StatusEffectType.KnockedOut)) {
             this.statusEffects.addEffect(StatusEffectType.KnockedOut);
+            this.addExperience(AbilityType.Toughness, 50); // Bonus experience for being knocked out
         }
         
         return actualDamage;
@@ -124,8 +241,12 @@ export class Player {
     heal(amount: number): number {
         if (amount <= 0) return 0;
         
+        // Apply craftwork healing bonus
+        const craftworkMultiplier = 1 + this.abilitySystem.getCraftworkHealingBonus();
+        const enhancedAmount = Math.round(amount * craftworkMultiplier);
+        
         const oldHp = this.hp;
-        this.hp = Math.min(this.maxHp, this.hp + amount);
+        this.hp = Math.min(this.maxHp, this.hp + enhancedAmount);
         
         // If healed from 0, remove knocked out status
         if (oldHp === 0 && this.hp > 0) {
@@ -144,7 +265,13 @@ export class Player {
         const item = this.items.get(itemName);
         if (!item || item.count <= 0) return false;
         
-        return item.use(this);
+        const success = item.use(this);
+        if (success) {
+            // Add craftwork experience for using items
+            this.addExperience(AbilityType.CraftWork, 50);
+        }
+        
+        return success;
     }
     
     attemptStruggle(): boolean {
@@ -281,6 +408,8 @@ export class Player {
     consumeMp(amount: number): boolean {
         if (this.mp >= amount) {
             this.mp -= amount;
+            // Add endurance experience for MP consumption (3 exp per MP)
+            this.addExperience(AbilityType.Endurance, amount * 3);
             return true;
         }
         return false;
@@ -327,7 +456,8 @@ export class Player {
                         message: mpInsufficient ? 
                             `${player.name}は最後の力を振り絞ってパワーアタックを放った！` :
                             `${player.name}はパワーアタックを放った！`,
-                        damage
+                        damage,
+                        mpCost: mpInsufficient ? 0 : 20
                     };
                 }
             },
@@ -353,7 +483,8 @@ export class Player {
                         success: true,
                         message: mpInsufficient ? 
                             `${player.name}は最後の力でヒールを唱えた！HPが${actualHeal}回復！` :
-                            `${player.name}はヒールを唱えた！HPが${actualHeal}回復！`
+                            `${player.name}はヒールを唱えた！HPが${actualHeal}回復！`,
+                        mpCost: mpInsufficient ? 0 : 30
                     };
                 }
             },
@@ -395,7 +526,8 @@ export class Player {
                             success: true,
                             message: mpInsufficient ? 
                                 `${player.name}は最後の力で激しくあばれた！拘束から脱出した！` :
-                                `${player.name}は激しくあばれた！拘束から脱出した！`
+                                `${player.name}は激しくあばれた！拘束から脱出した！`,
+                            mpCost: mpInsufficient ? 0 : 30
                         };
                     } else {
                         // Increase future struggle success significantly on failure
@@ -405,7 +537,8 @@ export class Player {
                             success: false,
                             message: mpInsufficient ? 
                                 `${player.name}は最後の力であばれたが、脱出できなかった...しかし次回の成功率が大幅に上がった！` :
-                                `${player.name}があばれたが、脱出できなかった...次回の成功率が上がった！`
+                                `${player.name}があばれたが、脱出できなかった...次回の成功率が上がった！`,
+                            mpCost: mpInsufficient ? 0 : 30
                         };
                     }
                 }
@@ -434,6 +567,8 @@ export class Player {
             const exhaustedEffect = this.statusEffects.getEffect(StatusEffectType.Exhausted);
             if (this.mp >= this.maxMp || (exhaustedEffect && exhaustedEffect.duration <= 1)) {
                 this.statusEffects.removeEffect(StatusEffectType.Exhausted);
+                // Add endurance experience for recovering from exhaustion
+                this.addExperience(AbilityType.Endurance, 50);
                 messages.push(`${this.name}の疲れが回復した！`);
             }
         }
@@ -448,5 +583,41 @@ export class Player {
     
     getStatusEffectsList(): string[] {
         return this.statusEffects.getAllEffects().map(effect => effect.name);
+    }
+    
+    /**
+     * Add combat experience based on damage dealt
+     */
+    public addCombatExperience(damageDealt: number): void {
+        this.addExperience(AbilityType.Combat, damageDealt);
+    }
+    
+    /**
+     * Get display information for current equipment
+     */
+    public getEquipmentInfo(): { weapon: Equipment | null; armor: Equipment | null } {
+        const weapon = WEAPONS.find(w => w.id === this.equippedWeapon) || null;
+        const armor = ARMORS.find(a => a.id === this.equippedArmor) || null;
+        return { weapon, armor };
+    }
+    
+    /**
+     * Get ability levels for display
+     */
+    public getAbilityLevels(): { [key: string]: { level: number; experience: number; experienceToNext: number } } {
+        const result: { [key: string]: { level: number; experience: number; experienceToNext: number } } = {};
+        
+        Object.values(AbilityType).forEach(type => {
+            const ability = this.abilitySystem.getAbility(type);
+            if (ability) {
+                result[type] = {
+                    level: ability.level,
+                    experience: ability.experience,
+                    experienceToNext: this.abilitySystem.getExperienceToNextLevel(type)
+                };
+            }
+        });
+        
+        return result;
     }
 }
