@@ -289,7 +289,7 @@ export class Boss {
                         action.damageVarianceMin,
                         action.damageVarianceMax
                     );
-                    let hpAbsorbed = statusAttackResult.damage;
+                    const hpAbsorbed = statusAttackResult.damage;
                     
                     player.loseMaxHp(hpAbsorbed);
                     message += ` ${PLAYER_NAME}の最大ヘルスが${hpAbsorbed}吸収された！`;
@@ -308,7 +308,7 @@ export class Boss {
                         action.damageVarianceMin,
                         action.damageVarianceMax
                     );
-                    let mpDrainAmount = statusMpDrainResult.damage;
+                    const mpDrainAmount = statusMpDrainResult.damage;
                     
                     const mpDrained = Math.min(player.mp, mpDrainAmount);
                     if (mpDrained > 0) {

@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "A turn-based RPG game where you play as Elnal the eel fighting against giant bosses",
   "main": "dist/main.js",
+  "type": "module",
   "scripts": {
     "build": "webpack --mode production",
     "dev": "webpack serve --mode development --open",
     "start": "npm run dev",
     "clean": "rimraf dist",
-    "lint": "eslint src --ext .ts",
+    "lint": "eslint src",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
@@ -22,10 +23,10 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.36.0",
+    "@typescript-eslint/parser": "^8.36.0",
     "css-loader": "^6.8.0",
-    "eslint": "^8.0.0",
+    "eslint": "^9.31.0",
     "html-webpack-plugin": "^5.5.0",
     "rimraf": "^5.0.0",
     "style-loader": "^3.3.0",
@@ -33,7 +34,6 @@
     "typescript": "^5.0.0",
     "webpack": "^5.88.0",
     "webpack-cli": "^5.1.0",
-    "webpack-dev-server": "^4.15.0"
-  },
-  "dependencies": {}
+    "webpack-dev-server": "^5.2.2"
+  }
 }
