@@ -7,31 +7,27 @@ export interface AttackResult {
 
 /**
  * ダメージにランダムなゆらぎを適用する（±20%）
+ * @returns ゆらぎを適用したダメージ(小数点は処理されない)
  */
 export function applyDamageVariance(baseDamage: number): number {
-    if (baseDamage <= 0) return 0;
-    
-    // 80% - 120% のランダム係数を適用
-    const variance = 0.8 + Math.random() * 0.4;
-    return Math.floor(baseDamage * variance);
+    return applyCustomDamageVariance(baseDamage, -0.2, 0.2);
 }
 
 /**
  * ダメージにカスタムゆらぎを適用する
  * @param baseDamage 基本ダメージ
- * @param minPercent 最小ゆらぎ（％）例: -20
- * @param maxPercent 最大ゆらぎ（％）例: +50
+ * @param minPercent 最小ゆらぎ倍率 例: -0.2
+ * @param maxPercent 最大ゆらぎ倍率 例: +0.5
+ * @returns ゆらぎを適用したダメージ(小数点は処理されない)
  */
-export function applyCustomDamageVariance(baseDamage: number, minPercent: number = -20, maxPercent: number = 20): number {
+export function applyCustomDamageVariance(baseDamage: number, minVariance: number = -0.2, maxVariance: number = 0.2): number {
     if (baseDamage <= 0) return 0;
     
-    // パーセンテージを係数に変換（例: -20% → 0.8, +50% → 1.5）
-    const minVariance = 1 + minPercent / 100;
-    const maxVariance = 1 + maxPercent / 100;
-    
     // ランダム係数を計算
-    const variance = minVariance + Math.random() * (maxVariance - minVariance);
-    return Math.floor(baseDamage * variance);
+    // 2 つの乱数を生成し、1つは正のゆらぎ、もう1つは負のゆらぎを適用
+    // (足し合わせることで、比較的中央に寄った値を得る)
+    const variance = Math.random() * maxVariance + Math.random() * (-minVariance);
+    return baseDamage * variance;
 }
 
 /**
@@ -54,15 +50,11 @@ export function calculateAttackResult(
         };
     }
     
-    const random = Math.random();
-    
     // プレイヤーが行動不能の場合、ボスの攻撃はミスしない
-    const baseHitRate = customHitRate !== undefined ? customHitRate / 100 : 0.95;
+    const baseHitRate = customHitRate !== undefined ? customHitRate : 1.0;
     const hitRate = isTargetKnockedOut ? 1.0 : baseHitRate;
-    const missChance = 1 - hitRate;
-    const criticalChance = customCriticalRate !== undefined ? customCriticalRate / 100 : 0.05;
     
-    if (random < missChance) {
+    if (!isTargetKnockedOut && Math.random() >= hitRate) {
         // ミス
         return {
             damage: 0,
@@ -70,22 +62,28 @@ export function calculateAttackResult(
             isCritical: false,
             message: 'ミス！'
         };
-    } else if (random < missChance + criticalChance) {
+    }
+    
+    // ダメージにゆらぎを適用
+    const damage = damageVarianceMin !== undefined && damageVarianceMax !== undefined
+        ? applyCustomDamageVariance(baseDamage, damageVarianceMin, damageVarianceMax)
+        : applyDamageVariance(baseDamage);
+    
+    const criticalChance = customCriticalRate !== undefined ? customCriticalRate : 0.0;
+    const isCritical = Math.random() < criticalChance;
+    
+    if (isCritical) {
         // クリティカルヒット
-        const criticalDamage = damageVarianceMin !== undefined && damageVarianceMax !== undefined
-            ? applyCustomDamageVariance(baseDamage * 3, damageVarianceMin, damageVarianceMax)
-            : applyDamageVariance(baseDamage * 3);
+        const critDamage = Math.round(damage * 3.0); // クリティカルダメージは通常の3倍
         return {
-            damage: criticalDamage,
+            damage: critDamage,
             isMiss: false,
             isCritical: true,
             message: 'クリティカルヒット！'
         };
     } else {
         // 通常攻撃
-        const normalDamage = damageVarianceMin !== undefined && damageVarianceMax !== undefined
-            ? applyCustomDamageVariance(baseDamage, damageVarianceMin, damageVarianceMax)
-            : applyDamageVariance(baseDamage);
+        const normalDamage = Math.round(damage);
         return {
             damage: normalDamage,
             isMiss: false,

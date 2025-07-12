@@ -427,7 +427,12 @@ export class BattleScene {
         if (!this.player || !this.boss || !this.playerTurn) return;
         
         const baseDamage = this.player.getAttackPower();
-        const attackResult = calculateAttackResult(baseDamage, false); // Player attacks are never guaranteed hits
+        const attackResult = calculateAttackResult(
+            baseDamage,
+            false,
+            1.0,
+            0.05
+        ); // Player attacks are never guaranteed hits
         
         if (attackResult.isMiss) {
             this.addBattleLogMessage(`${PLAYER_NAME}の攻撃！ ${attackResult.message} 攻撃は外れた！`, 'system');
@@ -506,12 +511,12 @@ export class BattleScene {
                 
                 let finalDamage = result.damage;
                 if (skill && skill.damageVarianceMin !== undefined && skill.damageVarianceMax !== undefined) {
-                    // Apply custom variance for skills
+                    // Apply parameters for skills
                     const attackResult = calculateAttackResult(
                         result.damage, 
                         false, // Skills are never guaranteed hits
-                        undefined, // Default hit rate
-                        undefined, // Default critical rate
+                        skill.hitRate, // Use skill's custom hit rate if available
+                        skill.criticalRate, // Use skill's custom critical rate if
                         skill.damageVarianceMin,
                         skill.damageVarianceMax
                     );

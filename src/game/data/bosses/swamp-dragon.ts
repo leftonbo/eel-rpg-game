@@ -16,16 +16,18 @@ const swampDragonActions: BossAction[] = [
         description: '強力な顎で噛みつく（ダメージに大きなゆらぎ）',
         damage: 15,
         weight: 30,
-        hitRate: 70,
+        hitRate: 0.7,
+        criticalRate: 0.05,
         playerStateCondition: 'normal',
-        damageVarianceMin: -50,
-        damageVarianceMax: 50
+        damageVarianceMin: -0.2,
+        damageVarianceMax: 0.5
     },
     {
         type: ActionType.StatusAttack,
         name: '炎のブレス',
         description: '灼熱の炎を吐く',
         damage: 6,
+        hitRate: 0.9,
         statusEffect: StatusEffectType.Fire,
         weight: 25
     },

@@ -16,6 +16,8 @@ export interface Skill {
     mpCost: number;
     canUse: (player: Player) => boolean;
     use: (player: Player, target?: any) => { success: boolean; message: string; damage?: number };
+    hitRate?: number; // Custom hit rate (0-1)
+    criticalRate?: number; // Custom critical hit rate (0-1)
     damageVarianceMin?: number; // Minimum damage variance percentage (default: -20)
     damageVarianceMax?: number; // Maximum damage variance percentage (default: +20)
 }

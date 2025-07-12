@@ -7,13 +7,16 @@ const mechSpiderActions: BossAction[] = [
         name: 'レーザー射撃',
         description: '精密なレーザーで攻撃',
         damage: 3,
+        hitRate: 0.95,
         weight: 15
     },
     {
         type: ActionType.Attack,
         name: '機械パンチ',
         description: '機械の腕で殴る',
-        damage: 3,
+        damage: 5,
+        hitRate: 0.7,
+        criticalRate: 0.1,
         weight: 10
     },
     {

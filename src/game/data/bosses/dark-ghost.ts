@@ -7,6 +7,7 @@ const darkGhostActions: BossAction[] = [
         name: '影の爪',
         description: '闇から現れる爪で攻撃',
         damage: 4,
+        hitRate: 0.95,
         weight: 20,
         playerStateCondition: 'normal'
     },
@@ -15,6 +16,7 @@ const darkGhostActions: BossAction[] = [
         name: '魅惑の囁き',
         description: '心を惑わす声で魅了する',
         damage: 2,
+        hitRate: 0.95,
         statusEffect: StatusEffectType.Charm,
         weight: 30
     },
@@ -23,6 +25,7 @@ const darkGhostActions: BossAction[] = [
         name: '毒の息',
         description: '有毒な息を吐く',
         damage: 3,
+        hitRate: 0.95,
         statusEffect: StatusEffectType.Poison,
         weight: 25
     },
@@ -31,6 +34,7 @@ const darkGhostActions: BossAction[] = [
         name: '鈍化の呪い',
         description: '動きを鈍らせる呪いをかける',
         damage: 2,
+        hitRate: 0.95,
         statusEffect: StatusEffectType.Slow,
         weight: 20
     },
@@ -39,6 +43,7 @@ const darkGhostActions: BossAction[] = [
         name: '影の縛り',
         description: '影の触手で対象を拘束する',
         weight: 15,
+        hitRate: 0.9,
         canUse: (_boss, player, _turn) => {
             // Use restraint more often when player is charmed
             const baseChance = player.statusEffects.hasEffect(StatusEffectType.Charm) ? 0.6 : 0.3;
