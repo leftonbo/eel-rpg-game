@@ -10,6 +10,7 @@ export class BattleScene {
     private boss: Boss | null = null;
     private turnCount: number = 0;
     private playerTurn: boolean = true;
+    private battleEnded: boolean = false;
     private battleLog: HTMLElement | null = null;
     
     // Battle statistics for experience calculation
@@ -38,6 +39,7 @@ export class BattleScene {
     
     private actionButtons: HTMLElement | null = null;
     private specialActions: HTMLElement | null = null;
+    private battleEndActions: HTMLElement | null = null;
     private itemPanel: HTMLElement | null = null;
     private skillPanel: HTMLElement | null = null;
     
@@ -70,6 +72,7 @@ export class BattleScene {
         
         this.actionButtons = document.getElementById('action-buttons');
         this.specialActions = document.getElementById('special-actions');
+        this.battleEndActions = document.getElementById('battle-end-actions');
         this.itemPanel = document.getElementById('item-panel');
         this.skillPanel = document.getElementById('skill-panel');
         
@@ -106,6 +109,11 @@ export class BattleScene {
         document.getElementById('stay-still-btn')?.addEventListener('click', () => this.playerStayStill());
         document.getElementById('give-up-btn')?.addEventListener('click', () => this.playerGiveUp());
         
+        // Battle end button
+        document.getElementById('battle-end-btn')?.addEventListener('click', () => {
+            this.finalizeBattle();
+        });
+        
         // Back to boss select
         document.getElementById('back-to-select-btn')?.addEventListener('click', () => {
             this.handleBattleExit();
@@ -123,6 +131,7 @@ export class BattleScene {
         
         this.turnCount = 0;
         this.playerTurn = true;
+        this.battleEnded = false;
         
         // Reset battle statistics
         this.battleStats = {
@@ -245,18 +254,25 @@ export class BattleScene {
     private updateActionAvailability(): void {
         if (!this.player || !this.boss) return;
         
-        const canAct = this.player.canAct() && this.playerTurn;
+        const canAct = this.player.canAct() && this.playerTurn && !this.battleEnded;
         const isRestrained = this.player.isRestrained() || this.player.isEaten();
         const isKnockedOut = this.player.isKnockedOut();
         
         // Show/hide action panels
-        if (this.actionButtons && this.specialActions) {
-            if (isRestrained || isKnockedOut) {
+        if (this.actionButtons && this.specialActions && this.battleEndActions) {
+            if (this.battleEnded) {
+                // Battle is over, show only battle end actions
+                this.actionButtons.classList.add('d-none');
+                this.specialActions.classList.add('d-none');
+                this.battleEndActions.classList.remove('d-none');
+            } else if (isRestrained || isKnockedOut) {
                 this.actionButtons.classList.add('d-none');
                 this.specialActions.classList.remove('d-none');
+                this.battleEndActions.classList.add('d-none');
             } else {
                 this.actionButtons.classList.remove('d-none');
                 this.specialActions.classList.add('d-none');
+                this.battleEndActions.classList.add('d-none');
             }
         }
         
@@ -602,20 +618,11 @@ export class BattleScene {
         if (this.boss.isDead()) {
             this.addBattleLogMessage(`${this.boss.displayName}を倒した！`, 'system');
             this.addBattleLogMessage('勝利！', 'system');
+            this.addBattleLogMessage('「バトル終了」ボタンを押して結果を確認してください。', 'system');
             
-            // Calculate battle result and show result screen
-            setTimeout(() => {
-                const battleResult = calculateBattleResult(
-                    this.player,
-                    true, // victory
-                    this.battleStats.damageDealt,
-                    this.battleStats.damageTaken,
-                    this.battleStats.itemsUsed,
-                    this.battleStats.mpSpent,
-                    this.battleStats.wasKnockedOut
-                );
-                this.game.showBattleResult(battleResult);
-            }, 2000);
+            // Set battle ended state
+            this.battleEnded = true;
+            this.updateUI();
             
             return true;
         }
@@ -627,20 +634,11 @@ export class BattleScene {
             
             const victoryDialogue = this.boss.getDialogue('victory');
             this.addBattleLogMessage(victoryDialogue, 'system');
+            this.addBattleLogMessage('「バトル終了」ボタンを押して結果を確認してください。', 'system');
             
-            // Calculate battle result and show result screen
-            setTimeout(() => {
-                const battleResult = calculateBattleResult(
-                    this.player,
-                    false, // defeat
-                    this.battleStats.damageDealt,
-                    this.battleStats.damageTaken,
-                    this.battleStats.itemsUsed,
-                    this.battleStats.mpSpent,
-                    this.battleStats.wasKnockedOut
-                );
-                this.game.showBattleResult(battleResult);
-            }, 2000);
+            // Set battle ended state
+            this.battleEnded = true;
+            this.updateUI();
             
             return true;
         }
@@ -694,5 +692,27 @@ export class BattleScene {
             // No activity, go directly to boss select
             this.game.returnToBossSelect();
         }
+    }
+    
+    /**
+     * Finalize battle and show results screen
+     */
+    private finalizeBattle(): void {
+        if (!this.player || !this.boss) return;
+        
+        // Determine if it was a victory
+        const victory = this.boss.isDead();
+        
+        // Calculate battle result and show result screen
+        const battleResult = calculateBattleResult(
+            this.player,
+            victory,
+            this.battleStats.damageDealt,
+            this.battleStats.damageTaken,
+            this.battleStats.itemsUsed,
+            this.battleStats.mpSpent,
+            this.battleStats.wasKnockedOut
+        );
+        this.game.showBattleResult(battleResult);
     }
 }
