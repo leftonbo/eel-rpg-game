@@ -367,9 +367,9 @@ export class Player {
         // Reset defending status
         this.isDefending = false;
         
-        // Recover MP (1/5 of max MP) at start of turn, unless eaten
+        // Recover MP (1/10 of max MP) at start of turn, unless eaten
         if (!this.statusEffects.isEaten()) {
-            const mpRecovery = Math.floor(this.maxMp / 5);
+            const mpRecovery = Math.floor(this.maxMp / 10);
             this.recoverMp(mpRecovery);
         }
         
