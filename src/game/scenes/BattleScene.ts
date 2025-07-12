@@ -553,6 +553,11 @@ export class BattleScene {
             
             this.addBattleLogMessage(message, action.type === ActionType.Attack ? 'damage' : 'status-effect');
             
+            // Check if player was knocked down to 0 HP
+            if (this.player.hp === 0 && playerHpBefore > 0) {
+                this.addBattleLogMessage(`${PLAYER_NAME}はダウンしてしまった！`, 'system');
+            }
+            
             // Add boss dialogue based on situation
             if (action.type === ActionType.RestraintAttack && this.player.isRestrained()) {
                 const restrainDialogue = this.boss.getDialogue('player-restrained');
