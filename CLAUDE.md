@@ -29,13 +29,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### エンティティシステム
 
-- **Player.ts**: エルナル（主人公）のステータス、アイテム、行動管理
+- **Player.ts**: 主人公のステータス、アイテム、行動管理
 - **Boss.ts**: ボス基底クラス、AI戦略とアクションシステム
 - **StatusEffectManager**: 状態異常の統一管理（火だるま、魅了、拘束など）
 
 ### データ駆動型ボス設計
 
-- `src/game/data/bosses/`: 各ボスが個別ファイル
+- `src/game/data/bosses/`: 各ボス個別ファイル
 - **BossData interface**: HP、攻撃力、行動パターン、AI戦略を定義
 - **AIStrategy function**: ボス固有の戦術（沼のドラゴン＝高火力、闇のおばけ＝状態異常、機械のクモ＝拘束特化）
 
