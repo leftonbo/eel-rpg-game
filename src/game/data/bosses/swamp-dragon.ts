@@ -53,27 +53,6 @@ const swampDragonActions: BossAction[] = [
         weight: 30,
         playerStateCondition: 'restrained'
     },
-    {
-        type: ActionType.DevourAttack,
-        name: '体内締め付け',
-        description: 'エルナルを体内で締め付ける',
-        weight: 1,
-        playerStateCondition: 'eaten'
-    },
-    {
-        type: ActionType.DevourAttack,
-        name: '体内マッサージ',
-        description: 'エルナルを体内で優しくマッサージする',
-        weight: 1,
-        playerStateCondition: 'eaten'
-    },
-    {
-        type: ActionType.DevourAttack,
-        name: 'お腹ゆらし',
-        description: 'エルナルの入ったお腹をゆらゆらと揺らす',
-        weight: 1,
-        playerStateCondition: 'eaten'
-    }
 ];
 
 export const swampDragonData: BossData = {
@@ -95,14 +74,35 @@ export const swampDragonData: BossData = {
     aiStrategy: (boss, player, turn) => {
         // Swamp Dragon AI Strategy
         
-        // If player is eaten, devour them
+        // If player is eaten, use varied devour actions
         if (player.isEaten()) {
-            return {
-                type: ActionType.DevourAttack,
-                name: '消化',
-                description: 'エルナルを消化する',
-                weight: 1
-            };
+            const eatenActions = [
+                {
+                    type: ActionType.DevourAttack,
+                    name: '消化',
+                    description: 'エルナルを消化する',
+                    weight: 1
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '体内締め付け',
+                    description: 'エルナルを体内で締め付ける',
+                    weight: 1
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '体内マッサージ',
+                    description: 'エルナルを体内で優しくマッサージする',
+                    weight: 1
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: 'お腹ゆらし',
+                    description: 'エルナルの入ったお腹をゆらゆらと揺らす',
+                    weight: 1
+                }
+            ];
+            return eatenActions[Math.floor(Math.random() * eatenActions.length)];
         }
         
         // Strategic actions based on player state
@@ -148,8 +148,11 @@ export const swampDragonData: BossData = {
         
         // Prefer powerful attacks when player has high HP
         if (player.getHpPercentage() > 50) {
+            const currentPlayerState = boss.getPlayerState(player);
             const highDamageActions = swampDragonActions.filter(action => 
-                action.type === ActionType.Attack && (action.damage || 0) >= 8
+                action.type === ActionType.Attack && 
+                (action.damage || 0) >= 8 &&
+                (!action.playerStateCondition || action.playerStateCondition === currentPlayerState)
             );
             
             if (highDamageActions.length > 0) {
@@ -158,7 +161,15 @@ export const swampDragonData: BossData = {
         }
         
         // Default to weighted random selection
+        const currentPlayerState = boss.getPlayerState(player);
         const availableActions = swampDragonActions.filter(action => {
+            // Check player state condition
+            if (action.playerStateCondition) {
+                if (action.playerStateCondition !== currentPlayerState) {
+                    return false;
+                }
+            }
+            
             if (action.canUse) {
                 return action.canUse(boss, player, turn);
             }

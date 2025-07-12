@@ -139,7 +139,7 @@ export class Boss {
         return availableActions[0]; // Fallback
     }
     
-    private getPlayerState(player: Player): 'normal' | 'ko' | 'restrained' | 'eaten' {
+    public getPlayerState(player: Player): 'normal' | 'ko' | 'restrained' | 'eaten' {
         if (player.isEaten()) return 'eaten';
         if (player.isRestrained()) return 'restrained';
         if (player.isKnockedOut()) return 'ko';
