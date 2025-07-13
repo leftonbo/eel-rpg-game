@@ -766,12 +766,6 @@ export class BattleScene {
         // Check if player is doomed (max HP <= 0) but not yet dead
         if (this.player.isDoomed() && !this.player.isDead()) {
             this.addBattleLogMessage(`${PLAYER_NAME}は再起不能状態になった...`, 'system');
-            this.addBattleLogMessage('ボスのトドメ攻撃が始まります...', 'system');
-            
-            // Apply doomed status if not already applied
-            if (!this.player.statusEffects.isDoomed()) {
-                this.player.statusEffects.addEffect(StatusEffectType.Doomed);
-            }
             
             this.updateUI();
             return false; // Don't end battle yet, let boss deliver finishing move
