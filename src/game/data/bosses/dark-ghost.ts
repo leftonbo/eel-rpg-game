@@ -42,6 +42,7 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.RestraintAttack,
         name: '影の縛り',
         description: '影の触手で対象を拘束する',
+        messageFirst: 'は影の触手で<PLAYER_NAME>を捕らえようとしてきた！',
         weight: 15,
         hitRate: 0.9,
         canUse: (_boss, player, _turn) => {
@@ -54,6 +55,7 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.Attack,
         name: 'なめまわし',
         description: '拘束中の対象を影の舌でなめまわす（与えたダメージ分回復）',
+        messageFirst: 'は舌で<PLAYER_NAME>をなめまわしてきた！',
         damage: 6,
         weight: 30,
         playerStateCondition: 'restrained',

@@ -60,7 +60,7 @@ export function calculateAttackResult(
             damage: 0,
             isMiss: true,
             isCritical: false,
-            message: 'ミス！'
+            message: ''
         };
     }
     
@@ -79,7 +79,7 @@ export function calculateAttackResult(
             damage: critDamage,
             isMiss: false,
             isCritical: true,
-            message: 'クリティカルヒット！'
+            message: ''
         };
     } else {
         // 通常攻撃

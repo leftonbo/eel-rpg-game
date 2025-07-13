@@ -435,17 +435,19 @@ export class BattleScene {
             0.05
         ); // Player attacks are never guaranteed hits
         
+        this.addBattleLogMessage(`${PLAYER_NAME}の攻撃！`, 'system', 'player');
+        
         if (attackResult.isMiss) {
-            this.addBattleLogMessage(`${PLAYER_NAME}の攻撃！ ${attackResult.message} 攻撃は外れた！`, 'system', 'player');
+            this.addBattleLogMessage(`しかし攻撃は外れた！`, 'system', 'player');
         } else {
             const actualDamage = this.boss.takeDamage(attackResult.damage);
             // Track damage dealt for experience
             this.battleStats.damageDealt += actualDamage;
             
             if (attackResult.isCritical) {
-                this.addBattleLogMessage(`${PLAYER_NAME}の攻撃！ ${attackResult.message} ${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage', 'player');
+                this.addBattleLogMessage(`会心の一撃！ ${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage', 'player');
             } else {
-                this.addBattleLogMessage(`${PLAYER_NAME}の攻撃！ ${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage', 'player');
+                this.addBattleLogMessage(`${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage', 'player');
             }
         }
         
@@ -666,14 +668,17 @@ export class BattleScene {
         
         if (action) {
             const playerHpBefore = this.player.hp;
-            const message = this.boss.executeAction(action, this.player);
+            const messages = this.boss.executeAction(action, this.player);
             
             // Track damage taken for experience
             if (this.player.hp < playerHpBefore) {
                 this.battleStats.damageTaken += (playerHpBefore - this.player.hp);
             }
             
-            this.addBattleLogMessage(message, action.type === ActionType.Attack ? 'damage' : 'status-effect', 'boss');
+            // Add action messages to battle log
+            messages.forEach(message => {
+                this.addBattleLogMessage(message, action.type === ActionType.Attack ? 'damage' : 'status-effect', 'boss');
+            });
             
             // Add special dialogue for this action if available
             const specialDialogue = this.boss.getSpecialDialogue(action.name);
