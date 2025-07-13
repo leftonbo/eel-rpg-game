@@ -52,6 +52,7 @@ export interface BossData {
     name: string;
     displayName: string;
     description: string;
+    questNote: string;
     maxHp: number;
     attackPower: number;
     actions: BossAction[];
@@ -66,6 +67,7 @@ export class Boss {
     public name: string;
     public displayName: string;
     public description: string;
+    public questNote: string;
     public maxHp: number;
     public hp: number;
     public attackPower: number;
@@ -81,6 +83,7 @@ export class Boss {
         this.name = data.name;
         this.displayName = data.displayName;
         this.description = data.description;
+        this.questNote = data.questNote;
         this.maxHp = data.maxHp;
         this.hp = data.maxHp;
         this.attackPower = data.attackPower;

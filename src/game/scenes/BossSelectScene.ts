@@ -118,6 +118,11 @@ export class BossSelectScene {
             modalDescription.textContent = bossData.description;
         }
         
+        const modalQuestNote = document.getElementById('modal-boss-quest-note');
+        if (modalQuestNote) {
+            modalQuestNote.textContent = bossData.questNote;
+        }
+        
         // Update modal stats
         const modalStats = document.getElementById('modal-boss-stats');
         if (modalStats) {
@@ -129,12 +134,6 @@ export class BossSelectScene {
                     <div class=\"col-6\">
                         <strong>攻撃力:</strong> ${bossData.attackPower}
                     </div>
-                </div>
-                <div class=\"mt-2\">
-                    <strong>特殊能力:</strong><br>
-                    <ul class=\"list-unstyled\">
-                        ${bossData.actions.map(action => `<li>• ${action.name}: ${action.description}</li>`).join('')}
-                    </ul>
                 </div>
             `;
         }
