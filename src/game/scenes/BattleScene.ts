@@ -262,7 +262,7 @@ export class BattleScene {
         if (!this.player || !this.boss) return;
         
         const canAct = this.player.canAct() && this.playerTurn && !this.battleEnded;
-        const isRestrained = this.player.isRestrained() || this.player.isEaten();
+        const isRestrained = this.player.isRestrained() || this.player.isEaten() || this.player.isCocoon();
         const isKnockedOut = this.player.isKnockedOut();
         
         // Show/hide action panels
