@@ -1,5 +1,6 @@
 import { Game } from '../Game';
 import { getAllBossData } from '../data/index';
+import { PlayerSaveManager } from '../systems/PlayerSaveData';
 
 export class BossSelectScene {
     private game: Game;
@@ -248,6 +249,7 @@ export class BossSelectScene {
                     if (input.checked) {
                         player.equipWeapon(weapon.id);
                         this.updatePlayerStatus();
+                        PlayerSaveManager.saveEquipment(player.equippedWeapon, player.equippedArmor);
                     }
                 });
             });

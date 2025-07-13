@@ -173,7 +173,6 @@ export class Player {
         
         this.equippedWeapon = weaponId;
         this.recalculateStats();
-        PlayerSaveManager.saveEquipment(this.equippedWeapon, this.equippedArmor);
         return true;
     }
     
@@ -189,7 +188,6 @@ export class Player {
         
         this.equippedArmor = armorId;
         this.recalculateStats();
-        PlayerSaveManager.saveEquipment(this.equippedWeapon, this.equippedArmor);
         return true;
     }
     
