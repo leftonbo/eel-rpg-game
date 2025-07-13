@@ -2,6 +2,15 @@ import { StatusEffectManager, StatusEffectType } from '../systems/StatusEffect';
 import { Player, PLAYER_NAME } from './Player';
 import { calculateAttackResult } from '../utils/CombatUtils';
 
+// Message formatter utility
+function formatMessage(template: string, boss: Boss, action: BossAction): string {
+    return template
+        .replace(/<USER>/g, boss.displayName)
+        .replace(/<TARGET>/g, PLAYER_NAME)
+        .replace(/<SKILL>/g, action.name)
+        .replace(/<PLAYER_NAME>/g, PLAYER_NAME); // Keep backward compatibility
+}
+
 export enum ActionType {
     Attack = 'attack',
     StatusAttack = 'status-attack',
@@ -15,8 +24,7 @@ export interface BossAction {
     type: ActionType;
     name: string;
     description: string;
-    messageFirst?: string; // Optional message, will attach boss name before it
-    messageSecond?: string; // Optional message
+    messages?: string[]; // Optional messages with format specifiers: <USER>, <TARGET>, <SKILL>
     damage?: number;
     statusEffect?: StatusEffectType;
     statusDuration?: number;
@@ -183,16 +191,15 @@ export class Boss {
     executeAction(action: BossAction, player: Player): string[] {
         let messages = [];
         
-        // message for action
-        let messageFirst = action.messageFirst
-            ? `${this.displayName}${action.messageFirst.replace('<PLAYER_NAME>', PLAYER_NAME)}`
-            : `${this.displayName}の${action.name}！`;
-        messages.push(messageFirst);
-        
-        // message for action second part
-        if (action.messageSecond) {
-            const messageSecond = action.messageSecond.replace('<PLAYER_NAME>', PLAYER_NAME);
-            messages.push(messageSecond);
+        // Process custom messages if provided
+        if (action.messages && action.messages.length > 0) {
+            action.messages.forEach(messageTemplate => {
+                const formattedMessage = formatMessage(messageTemplate, this, action);
+                messages.push(formattedMessage);
+            });
+        } else {
+            // Default message if no custom messages provided
+            messages.push(`${this.displayName}の${action.name}！`);
         }
 
         // Check for invincible status first

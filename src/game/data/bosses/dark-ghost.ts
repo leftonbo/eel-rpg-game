@@ -42,7 +42,7 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.RestraintAttack,
         name: '影の縛り',
         description: '影の触手で対象を拘束する',
-        messageFirst: 'は影の触手で<PLAYER_NAME>を捕らえようとしてきた！',
+        messages: ['<USER>は影の触手で<TARGET>を捕らえようとしてきた！'],
         weight: 15,
         hitRate: 0.9,
         canUse: (_boss, player, _turn) => {
@@ -55,7 +55,7 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.Attack,
         name: 'なめまわし',
         description: '拘束中の対象を影の舌でなめまわす（与えたダメージ分回復）',
-        messageFirst: 'は舌で<PLAYER_NAME>をなめまわしてきた！',
+        messages: ['<USER>は舌で<TARGET>をなめまわしてきた！'],
         damage: 6,
         weight: 30,
         playerStateCondition: 'restrained',
@@ -88,7 +88,7 @@ export const darkGhostData: BossData = {
                 type: ActionType.DevourAttack,
                 name: '魂の吸収',
                 description: '体内にいる獲物の魂を吸い取る',
-                messageFirst: 'は<PLAYER_NAME>の魂を吸い取る！',
+                messages: ['<USER>は<TARGET>の魂を吸い取る！'],
                 weight: 1
             };
         }
@@ -102,7 +102,7 @@ export const darkGhostData: BossData = {
                         type: ActionType.EatAttack,
                         name: '魂の摂取',
                         description: '魂を吸い取るために対象を丸呑みにする',
-                        messageFirst: 'は大きな口を開け、<PLAYER_NAME>を吸い込む！',
+                        messages: ['<USER>は大きな口を開け、<TARGET>を吸い込む！'],
                         weight: 1
                     };
                 }
@@ -114,7 +114,7 @@ export const darkGhostData: BossData = {
                         type: ActionType.RestraintAttack,
                         name: '影の縛り',
                         description: '対象を影の触手で拘束する',
-                        messageFirst: 'は影の触手で<PLAYER_NAME>を捕らえようとしてきた！',
+                        messages: ['<USER>は影の触手で<TARGET>を捕らえようとしてきた！'],
                         weight: 1
                     };
                 } else if (random < 0.85) {
@@ -122,7 +122,7 @@ export const darkGhostData: BossData = {
                         type: ActionType.EatAttack,
                         name: '魂の摂取',
                         description: '魂を吸い取るために対象を丸呑みにする',
-                        messageFirst: 'は大きな口を開け、<PLAYER_NAME>を吸い込む！',
+                        messages: ['<USER>は大きな口を開け、<TARGET>を吸い込む！'],
                         weight: 1
                     };
                 }
