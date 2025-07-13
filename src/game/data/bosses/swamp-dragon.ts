@@ -85,10 +85,11 @@ export const swampDragonData: BossData = {
         if (player.isEaten()) {
             const eatenActions = [
                 {
-                    type: ActionType.StatusAttack,
+                    type: ActionType.DevourAttack,
                     name: '胃液分泌',
                     description: 'ネバネバな胃液を分泌してエルナルを粘液まみれにする',
                     messageFirst: 'の胃袋が<PLAYER_NAME>をネバネバな胃液まみれにする...',
+                    damage: 10,
                     statusEffect: StatusEffectType.Slimed,
                     weight: 1
                 },
@@ -97,6 +98,7 @@ export const swampDragonData: BossData = {
                     name: '体内締め付け',
                     description: '獲物を体内で締め付ける',
                     messageFirst: 'の体内が<PLAYER_NAME>を圧迫している...',
+                    damage: 20,
                     weight: 1
                 },
                 {
@@ -104,6 +106,7 @@ export const swampDragonData: BossData = {
                     name: '体内マッサージ',
                     description: '獲物を体内で優しくマッサージする',
                     messageFirst: 'の胃壁が<PLAYER_NAME>を優しくマッサージしている...',
+                    damage: 20,
                     weight: 1
                 },
                 {
@@ -111,6 +114,7 @@ export const swampDragonData: BossData = {
                     name: 'お腹ゆらし',
                     description: '獲物の入ったお腹をゆらゆらと揺らす',
                     messageFirst: 'がお腹を揺らして<PLAYER_NAME>を翻弄している...',
+                    damage: 20,
                     weight: 1
                 }
             ];
