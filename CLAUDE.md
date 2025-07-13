@@ -84,6 +84,7 @@ Claude Codeは以下の方針に従ってgitコミットを行うこと
 
 - Claude Code の編集であることが分かるように、コミット文に `Co-Authored-By: Claude <noreply@anthropic.com>` を追記すること
 - 指示された作業1単位が終わるごとにコミットする
+- コマンドでコミットメッセージを記載する際、シングルクォートを使うこと
 - .gitignore に含まれるファイルはコミットしない
 - コミットメッセージは日本語で記述すること
 - コミットメッセージの先頭に [gitmoji](https://gitmoji.dev/ja/) を使用すること
