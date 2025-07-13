@@ -491,3 +491,27 @@ body {
 #battle-log::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.5);
 }
+
+/* Footer Styles */
+footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+footer .text-muted {
+    color: #94a3b8 !important;
+}
+
+footer a {
+    color: #94a3b8 !important;
+    transition: color 0.2s ease;
+}
+
+footer a:hover {
+    color: #e2e8f0 !important;
+    text-decoration: none !important;
+}
+
+footer svg {
+    vertical-align: middle;
+}
