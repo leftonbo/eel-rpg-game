@@ -86,9 +86,10 @@ export const darkGhostData: BossData = {
         if (player.isEaten()) {
             return {
                 type: ActionType.DevourAttack,
-                name: '魂の吸収',
-                description: '体内にいる獲物の魂を吸い取る',
-                messages: ['<USER>は<TARGET>の魂を吸い取る！'],
+                name: '魂の捕食',
+                damage: 15,
+                description: '体内にいる獲物の生命エネルギーを吸収する',
+                messages: ['<USER>は<TARGET>の魂からエネルギーを吸い取っている...'],
                 weight: 1
             };
         }
@@ -100,7 +101,7 @@ export const darkGhostData: BossData = {
                 if (Math.random() < 0.85) {
                     return {
                         type: ActionType.EatAttack,
-                        name: '魂の摂取',
+                        name: '魂の吸引',
                         description: '魂を吸い取るために対象を丸呑みにする',
                         messages: ['<USER>は大きな口を開け、<TARGET>を吸い込む！'],
                         weight: 1
@@ -120,7 +121,7 @@ export const darkGhostData: BossData = {
                 } else if (random < 0.85) {
                     return {
                         type: ActionType.EatAttack,
-                        name: '魂の摂取',
+                        name: '魂の吸引',
                         description: '魂を吸い取るために対象を丸呑みにする',
                         messages: ['<USER>は大きな口を開け、<TARGET>を吸い込む！'],
                         weight: 1
