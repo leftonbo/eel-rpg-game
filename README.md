@@ -93,6 +93,10 @@ eelfood/
 └── README.md               # このファイル
 ```
 
+## 開発ガイドライン
+
+- [ボス作成ガイド](docs/boss-creation-guide.md)
+
 ## ライセンス
 
 ### ゲームシステム
