@@ -1,5 +1,6 @@
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -11,6 +12,7 @@ export default {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
     clean: true,
+    publicPath: process.env.NODE_ENV === 'production' ? '/eel-rpg-game/' : '/',
   },
   resolve: {
     extensions: ['.ts', '.js'],
@@ -38,6 +40,14 @@ export default {
     new HtmlWebpackPlugin({
       template: './src/index.html',
       title: 'Eel Feed - Turn-based RPG',
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: './src/robots.txt',
+          to: 'robots.txt'
+        }
+      ]
     }),
   ],
   devServer: {

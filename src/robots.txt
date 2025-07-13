@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /
+
+# 個人制作のゲームのため、検索エンジンでのインデックスはご遠慮ください
+# This is a personal game project, please do not index this site
