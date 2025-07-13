@@ -58,7 +58,6 @@ export interface BossData {
     personality?: string[];
     aiStrategy?: (boss: Boss, player: Player, turn: number) => BossAction;
     getDialogue?: (situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') => string;
-    specialDialogues?: Map<string, string>;
     finishingMove?: () => string[];
 }
 
@@ -88,7 +87,6 @@ export class Boss {
         this.actions = data.actions;
         this.personality = data.personality || [];
         this.aiStrategy = data.aiStrategy;
-        this.specialDialogues = data.specialDialogues || new Map();
         this.finishingMove = data.finishingMove;
     }
     

@@ -240,16 +240,6 @@ export const mechSpiderData: BossData = {
     }
 };
 
-// Add special dialogues for specific actions
-mechSpiderData.specialDialogues = new Map([
-    ['縮小プロセス', '機械のクモはエルナルを「壊れた機械」として修理を開始する！'],
-    ['繭の抱擁', '機械のクモは繭を愛情深く抱き、中の「部品」を調整している...'],
-    ['繭の圧縮', '機械のクモは繭を締め上げ、縮小液をエルナルに染み込ませる！'],
-    ['縮小液循環', '機械のクモは繭内部の液体を循環させ、エルナルの「故障」を修復している...'],
-    ['修理完了判定', '機械のクモは修理が完了したか診断を開始する...'],
-    ['体内修理装置', '機械のクモの体内修理装置が起動した！']
-]);
-
 // Override dialogue for robotic personality
 mechSpiderData.getDialogue = function(situation: 'battle-start' | 'player-restrained' | 'player-cocoon' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') {
     const dialogues: Record<string, string[]> = {
