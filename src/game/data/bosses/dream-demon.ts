@@ -1,0 +1,539 @@
+import { BossData, ActionType, BossAction } from '../../entities/Boss';
+import { StatusEffectType } from '../../systems/StatusEffect';
+
+const dreamDemonActions: BossAction[] = [
+    // Basic attack
+    {
+        type: ActionType.Attack,
+        name: '魔法の触手',
+        description: '小さな触手で軽く攻撃',
+        damage: 8,
+        hitRate: 0.95,
+        weight: 15,
+        playerStateCondition: 'normal'
+    },
+    
+    // Debuff attacks - Primary arsenal
+    {
+        type: ActionType.StatusAttack,
+        name: '魅惑の眼差し',
+        description: '甘い視線で相手を魅了する',
+        statusEffect: StatusEffectType.Charm,
+        statusChance: 90,
+        weight: 25,
+        messages: ['<USER>は甘い眼差しで<TARGET>を見つめる...', '<TARGET>の心がとろけそうになる...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '麻痺の粉',
+        description: '麻痺を誘発する粉末を撒く',
+        statusEffect: StatusEffectType.Paralysis,
+        statusChance: 85,
+        weight: 20,
+        messages: ['<USER>は光る粉を撒き散らした！', '<TARGET>の体がしびれていく...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '淫毒の吐息',
+        description: '甘い毒を含んだ息を吹きかける',
+        statusEffect: StatusEffectType.AphrodisiacPoison,
+        statusChance: 90,
+        weight: 25,
+        messages: ['<USER>は甘い香りの息を<TARGET>に吹きかけた', '<TARGET>の体が熱くなってきた...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: 'ねむけ誘発',
+        description: '眠気を誘う魔法をかける',
+        statusEffect: StatusEffectType.Drowsiness,
+        statusChance: 80,
+        weight: 20,
+        messages: ['<USER>は催眠術をかけてきた', '<TARGET>のまぶたが重くなってきた...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '脱力の呪文',
+        description: '力を奪う呪文を唱える',
+        statusEffect: StatusEffectType.Weakness,
+        statusChance: 85,
+        weight: 20,
+        messages: ['<USER>は呪文を唱えた', '<TARGET>の力が抜けていく...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: 'メロメロビーム',
+        description: 'ハート型の光線で相手をメロメロにする',
+        statusEffect: StatusEffectType.Infatuation,
+        statusChance: 80,
+        weight: 25,
+        messages: ['<USER>はハート型の光線を放った！', '<TARGET>は完全にメロメロになってしまった...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '混乱の渦',
+        description: '思考を混乱させる魔法',
+        statusEffect: StatusEffectType.Confusion,
+        statusChance: 75,
+        weight: 20,
+        messages: ['<USER>は不思議な渦を作り出した', '<TARGET>の思考が混乱してきた...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '発情促進',
+        description: '発情状態を誘発する魔法',
+        statusEffect: StatusEffectType.Arousal,
+        statusChance: 85,
+        weight: 25,
+        messages: ['<USER>は妖艶な魔法をかけた', '<TARGET>の体が火照ってきた...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '悩殺ポーズ',
+        description: '魅惑的なポーズで相手を悩殺する',
+        statusEffect: StatusEffectType.Seduction,
+        statusChance: 80,
+        weight: 20,
+        messages: ['<USER>は魅惑的なポーズを取った', '<TARGET>は思わず見とれてしまった...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '魔法封印術',
+        description: '魔法の使用を封じる',
+        statusEffect: StatusEffectType.MagicSeal,
+        statusChance: 90,
+        weight: 15,
+        messages: ['<USER>は封印の呪文を唱えた', '<TARGET>の魔力が封じられた！']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '快楽の呪い',
+        description: '快楽に溺れさせる強力な呪い',
+        statusEffect: StatusEffectType.PleasureFall,
+        statusChance: 70,
+        weight: 15,
+        messages: ['<USER>は禁断の呪いをかけた...', '<TARGET>は快楽の波に飲み込まれていく...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '狂乱の魔法',
+        description: '理性を奪う狂気の魔法',
+        statusEffect: StatusEffectType.Madness,
+        statusChance: 75,
+        weight: 15,
+        messages: ['<USER>は狂気を呼ぶ魔法を唱えた', '<TARGET>の理性が揺らいでいく...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '催眠波動',
+        description: '強力な催眠術で意識を奪う',
+        statusEffect: StatusEffectType.Hypnosis,
+        statusChance: 60,
+        weight: 10,
+        canUse: (_boss, player, _turn) => {
+            // Use when player has multiple debuffs
+            return player.statusEffects.getDebuffLevel() >= 5;
+        },
+        messages: ['<USER>は強力な催眠波動を放った！', '<TARGET>の意識が朦朧としてきた...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '洗脳光線',
+        description: '思考を支配する洗脳光線',
+        statusEffect: StatusEffectType.Brainwash,
+        statusChance: 50,
+        weight: 8,
+        canUse: (_boss, player, _turn) => {
+            // Use when player is severely debuffed
+            return player.statusEffects.getDebuffLevel() >= 7;
+        },
+        messages: ['<USER>は邪悪な光線を<TARGET>に向けた...', '<TARGET>の思考が侵食されていく...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: 'あまあま魔法',
+        description: '甘い幸福感で抵抗力を奪う',
+        statusEffect: StatusEffectType.Sweet,
+        statusChance: 85,
+        weight: 20,
+        messages: ['<USER>は甘い魔法をかけた', '<TARGET>は幸せな気分になった...']
+    },
+    
+    // Restraint attacks
+    {
+        type: ActionType.RestraintAttack,
+        name: '尻尾による拘束',
+        description: '長い尻尾で対象を捕らえる',
+        weight: 20,
+        hitRate: 0.85,
+        messages: ['<USER>は長い尻尾で<TARGET>を捕らえようとしてきた！'],
+        canUse: (_boss, player, _turn) => {
+            return !player.isRestrained() && !player.isEaten() && Math.random() < 0.4;
+        }
+    },
+    {
+        type: ActionType.RestraintAttack,
+        name: '魔法の手による拘束',
+        description: '魔法の手で対象を捕まえる',
+        weight: 18,
+        hitRate: 0.80,
+        messages: ['<USER>は魔法の手を伸ばして<TARGET>を掴もうとしてきた！'],
+        canUse: (_boss, player, _turn) => {
+            return !player.isRestrained() && !player.isEaten() && Math.random() < 0.35;
+        }
+    },
+    {
+        type: ActionType.RestraintAttack,
+        name: 'テレポート拘束',
+        description: 'テレポートして背後から捕らえる',
+        weight: 15,
+        hitRate: 0.90,
+        messages: ['<USER>は一瞬姿を消した...', '気づくと<USER>が<TARGET>の背後にいた！'],
+        canUse: (_boss, player, _turn) => {
+            return !player.isRestrained() && !player.isEaten() && Math.random() < 0.3;
+        }
+    },
+    
+    // Restraint-specific actions
+    {
+        type: ActionType.StatusAttack,
+        name: '悩殺キス',
+        description: '拘束中の相手に魅惑的なキスをする',
+        damage: 12,
+        statusEffect: StatusEffectType.Infatuation,
+        statusChance: 95,
+        weight: 30,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は<TARGET>に熱いキスをした...', '<TARGET>は完全にとろけてしまった...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: 'べろちゅ攻撃',
+        description: '大きな舌で相手をなめまわす',
+        damage: 10,
+        statusEffect: StatusEffectType.Arousal,
+        statusChance: 90,
+        weight: 28,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は大きな舌で<TARGET>をべろべろとなめまわした', '<TARGET>の体が震えている...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '体密着攻撃',
+        description: '体を密着させて誘惑する',
+        damage: 8,
+        statusEffect: StatusEffectType.Seduction,
+        statusChance: 95,
+        weight: 25,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は<TARGET>に体を密着させてきた', '<TARGET>は誘惑に負けそうになっている...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '揺さぶり攻撃',
+        description: '体を揺さぶって快楽を与える',
+        damage: 6,
+        statusEffect: StatusEffectType.PleasureFall,
+        statusChance: 80,
+        weight: 20,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は<TARGET>の体をリズミカルに揺さぶった', '<TARGET>は快楽の波に飲み込まれていく...']
+    },
+    
+    // Sleep-inducing attacks (triggered when player has enough debuffs)
+    {
+        type: ActionType.StatusAttack,
+        name: '眠りのキス',
+        description: '強いキスで相手を眠らせる',
+        statusEffect: StatusEffectType.Sleep,
+        statusChance: 95,
+        weight: 5,
+        canUse: (_boss, player, _turn) => {
+            // Use when player has 10+ debuff levels
+            return player.statusEffects.getDebuffLevel() >= 10;
+        },
+        messages: ['<USER>は<TARGET>に近づいてきた...', '<USER>は<TARGET>に深いキスをした...', '<TARGET>は眠りに落ちてしまった...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '眠りの粉',
+        description: '魔法の粉で相手を眠らせる',
+        statusEffect: StatusEffectType.Sleep,
+        statusChance: 90,
+        weight: 5,
+        canUse: (_boss, player, _turn) => {
+            // Use when player has 10+ debuff levels
+            return player.statusEffects.getDebuffLevel() >= 10;
+        },
+        messages: ['<USER>は眠りを誘う粉を撒いた', '<TARGET>は深い眠りに落ちてしまった...']
+    }
+];
+
+export const dreamDemonData: BossData = {
+    id: 'dream-demon',
+    name: 'DreamDemon',
+    displayName: '😈 夢魔ちゃん',
+    description: '夢を操る小さな淫魔、様々なデバフで相手を弱らせる',
+    questNote: `最近、冒険者たちが奇妙な夢にうなされて目覚めないという事件が多発している。調査によると、夢の世界に小さな淫魔が現れ、甘い誘惑で冒険者たちを虜にしているという。この夢魔を討伐し、被害者たちを救出せよ。`,
+    maxHp: 350,
+    attackPower: 10,
+    actions: dreamDemonActions,
+    personality: [
+        'あら〜可愛い獲物が来たのね♪',
+        'その魂、とっても美味しそう♡',
+        '夢の中で一緒に遊ぼ？',
+        'うふふ〜抵抗しても無駄よ♪',
+        'もっともっと気持ちよくしてあげる♡',
+        'あまあまな夢を見せてあげる〜',
+        '生気をちゅーちゅー吸わせて♪',
+        'ずっとずっと一緒にいましょ♡'
+    ],
+    aiStrategy: (boss, player, turn) => {
+        // Dream Demon AI Strategy - Focus on debuff stacking and strategic restraint
+        
+        // If player is eaten, devour them
+        if (player.isEaten()) {
+            return {
+                type: ActionType.DevourAttack,
+                name: '生気吸収',
+                damage: 20,
+                description: '体内にいる獲物の生命エネルギーを吸収する',
+                messages: ['<USER>は<TARGET>の生気をちゅーちゅーと吸い取っている...'],
+                weight: 1
+            };
+        }
+        
+        // If player is sleeping, use dream attacks
+        if (player.statusEffects.isSleeping()) {
+            return {
+                type: ActionType.StatusAttack,
+                name: '夢魔の本領発揮',
+                damage: 15,
+                statusEffect: StatusEffectType.PleasureFall,
+                statusChance: 100,
+                description: '夢の中で強烈な誘惑攻撃を行う',
+                messages: ['<USER>は夢の中で本領を発揮した！', '<TARGET>は夢の中で激しい誘惑を受けている...'],
+                weight: 1
+            };
+        }
+        
+        // Calculate debuff level
+        const debuffLevel = player.statusEffects.getDebuffLevel();
+        
+        // If player has 10+ debuffs, try to put them to sleep
+        if (debuffLevel >= 10) {
+            const sleepActions = dreamDemonActions.filter(action => 
+                action.statusEffect === StatusEffectType.Sleep
+            );
+            if (sleepActions.length > 0 && Math.random() < 0.8) {
+                return sleepActions[Math.floor(Math.random() * sleepActions.length)];
+            }
+        }
+        
+        // Strategic actions based on player state
+        if (player.isKnockedOut()) {
+            if (player.isRestrained()) {
+                // Restrained + Knocked Out: 90% chance to eat
+                if (Math.random() < 0.9) {
+                    return {
+                        type: ActionType.EatAttack,
+                        name: '丸呑み',
+                        description: '拘束した獲物を丸呑みにする',
+                        messages: ['<USER>は<TARGET>を大きな口で丸呑みにした！'],
+                        weight: 1
+                    };
+                }
+            } else {
+                // Normal + Knocked Out: 70% chance to restrain, 20% to eat directly
+                const random = Math.random();
+                if (random < 0.7) {
+                    const restraintActions = dreamDemonActions.filter(action => 
+                        action.type === ActionType.RestraintAttack
+                    );
+                    return restraintActions[Math.floor(Math.random() * restraintActions.length)];
+                } else if (random < 0.9) {
+                    return {
+                        type: ActionType.EatAttack,
+                        name: '丸呑み',
+                        description: '無防備な獲物を丸呑みにする',
+                        messages: ['<USER>は<TARGET>を大きな口で丸呑みにした！'],
+                        weight: 1
+                    };
+                }
+            }
+        }
+        
+        // If player is restrained, use restraint-specific attacks
+        if (player.isRestrained()) {
+            const restraintAttacks = dreamDemonActions.filter(action => 
+                action.playerStateCondition === 'restrained'
+            );
+            if (restraintAttacks.length > 0 && Math.random() < 0.9) {
+                const totalWeight = restraintAttacks.reduce((sum, action) => sum + action.weight, 0);
+                let random = Math.random() * totalWeight;
+                
+                for (const action of restraintAttacks) {
+                    random -= action.weight;
+                    if (random <= 0) {
+                        return action;
+                    }
+                }
+            }
+        }
+        
+        // Restraint timing - every 7-9 turns with some randomness
+        const restraintInterval = 7 + Math.floor(Math.random() * 3); // 7-9 turns
+        if (turn % restraintInterval === 0 && !player.isRestrained() && !player.isEaten()) {
+            const restraintActions = dreamDemonActions.filter(action => 
+                action.type === ActionType.RestraintAttack
+            );
+            if (restraintActions.length > 0 && Math.random() < 0.8) {
+                return restraintActions[Math.floor(Math.random() * restraintActions.length)];
+            }
+        }
+        
+        // Debuff priority system
+        const statusPriorities = [
+            // Primary debuffs to establish early
+            { type: StatusEffectType.Charm, weight: 3.0, priority: 1 },
+            { type: StatusEffectType.Infatuation, weight: 2.5, priority: 1 },
+            { type: StatusEffectType.AphrodisiacPoison, weight: 2.8, priority: 1 },
+            
+            // Secondary debuffs for stacking
+            { type: StatusEffectType.Weakness, weight: 2.2, priority: 2 },
+            { type: StatusEffectType.Arousal, weight: 2.4, priority: 2 },
+            { type: StatusEffectType.Seduction, weight: 2.0, priority: 2 },
+            
+            // Tertiary debuffs for variety
+            { type: StatusEffectType.Paralysis, weight: 1.8, priority: 3 },
+            { type: StatusEffectType.Confusion, weight: 1.6, priority: 3 },
+            { type: StatusEffectType.Drowsiness, weight: 1.9, priority: 3 },
+            { type: StatusEffectType.Sweet, weight: 1.7, priority: 3 },
+            { type: StatusEffectType.MagicSeal, weight: 1.5, priority: 3 },
+            
+            // Advanced debuffs for later stages
+            { type: StatusEffectType.PleasureFall, weight: 1.2, priority: 4 },
+            { type: StatusEffectType.Madness, weight: 1.0, priority: 4 },
+            { type: StatusEffectType.Hypnosis, weight: 0.8, priority: 5 },
+            { type: StatusEffectType.Brainwash, weight: 0.6, priority: 5 }
+        ];
+        
+        // Find debuffs not currently applied
+        const missingDebuffs = statusPriorities.filter(status => 
+            !player.statusEffects.hasEffect(status.type)
+        );
+        
+        // Prioritize by current turn and debuff priority
+        const turnFactor = Math.min(turn / 5, 3); // Gradually increase priority over time
+        const applicableDebuffs = missingDebuffs.filter(status => 
+            status.priority <= (1 + turnFactor)
+        );
+        
+        if (applicableDebuffs.length > 0) {
+            // Weight selection by priority and turn
+            const weightedDebuffs = applicableDebuffs.map(status => ({
+                ...status,
+                adjustedWeight: status.weight * (4 - status.priority + turnFactor)
+            }));
+            
+            const totalWeight = weightedDebuffs.reduce((sum, status) => sum + status.adjustedWeight, 0);
+            let random = Math.random() * totalWeight;
+            
+            for (const status of weightedDebuffs) {
+                random -= status.adjustedWeight;
+                if (random <= 0) {
+                    const statusAction = dreamDemonActions.find(action => 
+                        action.statusEffect === status.type && action.type === ActionType.StatusAttack &&
+                        (!action.playerStateCondition || action.playerStateCondition === 'normal')
+                    );
+                    if (statusAction) {
+                        return statusAction;
+                    }
+                }
+            }
+        }
+        
+        // If no specific debuffs needed, use weighted random selection
+        const availableActions = dreamDemonActions.filter(action => {
+            // Exclude restraint-specific and special actions
+            if (action.playerStateCondition === 'restrained') return false;
+            if (action.statusEffect === StatusEffectType.Sleep) return false;
+            if (action.statusEffect === StatusEffectType.Hypnosis && debuffLevel < 5) return false;
+            if (action.statusEffect === StatusEffectType.Brainwash && debuffLevel < 7) return false;
+            
+            if (action.canUse) {
+                return action.canUse(boss, player, turn);
+            }
+            return true;
+        });
+        
+        if (availableActions.length === 0) {
+            // Fallback to basic attack
+            return dreamDemonActions.find(action => action.type === ActionType.Attack) || dreamDemonActions[0];
+        }
+        
+        const totalWeight = availableActions.reduce((sum, action) => sum + action.weight, 0);
+        let random = Math.random() * totalWeight;
+        
+        for (const action of availableActions) {
+            random -= action.weight;
+            if (random <= 0) {
+                return action;
+            }
+        }
+        
+        return availableActions[0];
+    }
+};
+
+// Override dialogue for talkative personality
+dreamDemonData.getDialogue = function(situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') {
+    const dialogues: Record<string, string[]> = {
+        'battle-start': [
+            'あら〜♪ 新しい獲物が来たのね〜',
+            'うふふ♡ とっても美味しそうな魂の匂い〜',
+            'あまあまな夢を見せてあげる♪',
+            'その生気、ちゅーちゅー吸わせて♡',
+            '一緒に夢の世界で遊びましょ〜♪'
+        ],
+        'player-restrained': [
+            'うふふ♡ 動けないのね〜？',
+            'もがけばもがくほど可愛いわ♪',
+            'あまあまにしてあげる〜♡',
+            'その顔...とっても良い表情よ♪',
+            'どんどん弱くなっていくのね〜♡',
+            '抵抗しても無駄よ〜？'
+        ],
+        'player-eaten': [
+            'あ〜んおいしい♡',
+            'おなかの中であまあまされてる？',
+            'ゆっくりと生気を吸い取ってあげる〜',
+            'もうずっとここにいましょ♪',
+            'あまあまな気分になってるでしょ♡',
+            'ちゅーちゅー...美味しい〜♪'
+        ],
+        'player-escapes': [
+            'あら...生意気ね〜',
+            'でもまたすぐに捕まえてあげる♪',
+            '逃げても無駄よ〜？',
+            '今度はもっと優しくしてあげる♡',
+            'ふふっ...面白いことしてくれるじゃない'
+        ],
+        'low-hp': [
+            'まだまだ...負けないわよ〜',
+            '本気出しちゃうから〜♪',
+            'あまあまな夢で包んであげる♡',
+            'こんなのまだ序の口よ〜',
+            '夢の世界では私が最強なの♪'
+        ],
+        'victory': [
+            'うふふ♡ とっても美味しかった〜',
+            'またあまあまな夢で会いましょ♪',
+            '生気をたくさんもらっちゃった♡',
+            'いい夢見なさいよ〜♪',
+            'ずっと夢の中で一緒にいましょ♡'
+        ]
+    };
+    
+    const options = dialogues[situation] || dialogues['battle-start'];
+    return options[Math.floor(Math.random() * options.length)];
+};
