@@ -67,7 +67,6 @@ export class Boss {
     public aiStrategy?: (boss: Boss, player: Player, turn: number) => BossAction;
     public specialDialogues: Map<string, string> = new Map();
     public finishingMove?: () => string[];
-    public stunTurnsRemaining: number = 0; // For restraint break stun
     
     constructor(data: BossData) {
         this.id = data.id;
@@ -126,7 +125,7 @@ export class Boss {
     }
     
     canAct(): boolean {
-        return this.stunTurnsRemaining <= 0 && this.hp > 0;
+        return this.statusEffects.canAct() && this.hp > 0;
     }
     
     selectAction(player: Player, turn: number): BossAction | null {
@@ -374,14 +373,12 @@ export class Boss {
     
     onRestraintBroken(): void {
         // Boss gets stunned for 3 turns when restraint is broken (including the turn it was broken)
-        this.stunTurnsRemaining = 3;
+        this.statusEffects.addEffect(StatusEffectType.Stunned);
     }
     
     startTurn(): void {
-        // Reduce stun duration
-        if (this.stunTurnsRemaining > 0) {
-            this.stunTurnsRemaining--;
-        }
+        // Status effects are now managed by StatusEffectManager
+        // Duration reduction happens in processRoundEnd()
     }
     
     // Process all status effects at round end
@@ -412,7 +409,7 @@ export class Boss {
     }
     
     isStunned(): boolean {
-        return this.stunTurnsRemaining > 0;
+        return this.statusEffects.hasEffect(StatusEffectType.Stunned);
     }
     
     getDialogue(situation: 'battle-start' | 'victory' | 'defeat'): string {

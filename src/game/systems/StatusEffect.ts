@@ -86,7 +86,7 @@ export class StatusEffectManager {
             type: StatusEffectType.Stunned,
             name: '気絶',
             description: '行動できない',
-            duration: 2
+            duration: 3
         }],
         [StatusEffectType.Fire, {
             type: StatusEffectType.Fire,
