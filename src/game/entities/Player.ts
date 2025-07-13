@@ -16,11 +16,17 @@ export interface Skill {
     description: string;
     mpCost: number;
     canUse: (player: Player) => boolean;
-    use: (player: Player, target?: any) => { success: boolean; message: string; damage?: number };
+    use: (player: Player, target?: any) => SkillResult;
     hitRate?: number; // Custom hit rate (0-1)
     criticalRate?: number; // Custom critical hit rate (0-1)
     damageVarianceMin?: number; // Minimum damage variance percentage (default: -20)
     damageVarianceMax?: number; // Maximum damage variance percentage (default: +20)
+}
+
+export interface SkillResult {
+    success: boolean;
+    message: string;
+    damage?: number; // Only for attack skills
 }
 
 // Player name constant for easy modification
@@ -577,7 +583,7 @@ export class Player {
         return skills.filter(skill => skill.canUse(this));
     }
     
-    useSkill(skillType: SkillType, target?: any): { success: boolean; message: string; damage?: number } {
+    useSkill(skillType: SkillType, target?: any): SkillResult {
         const skills = this.getAvailableSkills();
         const skill = skills.find(s => s.type === skillType);
         
