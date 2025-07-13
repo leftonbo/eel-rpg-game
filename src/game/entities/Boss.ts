@@ -342,6 +342,14 @@ export class Boss {
                         player.loseMp(mpDrained);
                         messages.push(`${this.displayName}は${PLAYER_NAME}のMPを${mpDrained}吸収した！`);
                     }
+
+                    if (action.statusEffect) {
+                        const statusChance = action.statusChance !== undefined ? action.statusChance / 100 : 1.0;
+                        if (Math.random() < statusChance) {
+                            player.statusEffects.addEffect(action.statusEffect);
+                            messages.push(`${PLAYER_NAME}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
+                        }
+                    }
                 }
                 break;
                 
