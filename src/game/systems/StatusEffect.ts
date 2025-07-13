@@ -26,11 +26,17 @@ export enum StatusEffectType {
     Seduction = 'seduction',
     MagicSeal = 'magic-seal',
     PleasureFall = 'pleasure-fall',
-    Madness = 'madness',
+    Lewdness = 'lewdness',
     Hypnosis = 'hypnosis',
     Brainwash = 'brainwash',
     Sweet = 'sweet',
-    Sleep = 'sleep'
+    Sleep = 'sleep',
+    // Additional sweet/charming debuffs
+    Melting = 'melting',
+    Euphoria = 'euphoria',
+    Fascination = 'fascination',
+    Bliss = 'bliss',
+    Enchantment = 'enchantment'
 }
 
 export interface StatusEffect {
@@ -130,8 +136,14 @@ export class StatusEffectManager {
         [StatusEffectType.Charm, {
             type: StatusEffectType.Charm,
             name: '魅了',
-            description: 'もがくの成功率が大幅低下',
-            duration: 5
+            description: 'もがくの成功率が大幅低下、MP減少',
+            duration: 20,
+            onTick: (target: any, _effect: StatusEffect) => {
+                const mpLoss = Math.min(target.mp, 1);
+                if (mpLoss > 0) {
+                    target.loseMp(mpLoss);
+                }
+            }
         }],
         [StatusEffectType.Slow, {
             type: StatusEffectType.Slow,
@@ -178,10 +190,13 @@ export class StatusEffectManager {
         [StatusEffectType.AphrodisiacPoison, {
             type: StatusEffectType.AphrodisiacPoison,
             name: '淫毒',
-            description: '毎ターンダメージ＋魅了効果が蓄積',
+            description: '毎ターンMP減少＋魅了効果が蓄積',
             duration: 20,
             onTick: (target: any, _effect: StatusEffect) => {
-                target.takeDamage(5);
+                const mpLoss = Math.min(target.mp, 2);
+                if (mpLoss > 0) {
+                    target.loseMp(mpLoss);
+                }
             }
         }],
         [StatusEffectType.Drowsiness, {
@@ -199,8 +214,14 @@ export class StatusEffectManager {
         [StatusEffectType.Infatuation, {
             type: StatusEffectType.Infatuation,
             name: 'メロメロ',
-            description: '魅了の強化版、拘束解除率がさらに低下',
-            duration: 20
+            description: '魅了の強化版、拘束解除率がさらに低下、MP大幅減少',
+            duration: 20,
+            onTick: (target: any, _effect: StatusEffect) => {
+                const mpLoss = Math.min(target.mp, 3);
+                if (mpLoss > 0) {
+                    target.loseMp(mpLoss);
+                }
+            }
         }],
         [StatusEffectType.Confusion, {
             type: StatusEffectType.Confusion,
@@ -211,14 +232,26 @@ export class StatusEffectManager {
         [StatusEffectType.Arousal, {
             type: StatusEffectType.Arousal,
             name: '発情',
-            description: '拘束解除率が大幅低下、判断力が鈍る',
-            duration: 20
+            description: '拘束解除率が大幅低下、判断力が鈍る、MP減少',
+            duration: 20,
+            onTick: (target: any, _effect: StatusEffect) => {
+                const mpLoss = Math.min(target.mp, 2);
+                if (mpLoss > 0) {
+                    target.loseMp(mpLoss);
+                }
+            }
         }],
         [StatusEffectType.Seduction, {
             type: StatusEffectType.Seduction,
             name: '悩殺',
-            description: '複合デバフ、様々な能力が低下',
-            duration: 20
+            description: '複合デバフ、様々な能力が低下、MP減少',
+            duration: 20,
+            onTick: (target: any, _effect: StatusEffect) => {
+                const mpLoss = Math.min(target.mp, 2);
+                if (mpLoss > 0) {
+                    target.loseMp(mpLoss);
+                }
+            }
         }],
         [StatusEffectType.MagicSeal, {
             type: StatusEffectType.MagicSeal,
@@ -229,14 +262,26 @@ export class StatusEffectManager {
         [StatusEffectType.PleasureFall, {
             type: StatusEffectType.PleasureFall,
             name: '快楽堕ち',
-            description: '重篤なデバフ複合状態、全能力が大幅低下',
-            duration: 20
+            description: '重篤なデバフ複合状態、全能力が大幅低下、MP大幅減少',
+            duration: 20,
+            onTick: (target: any, _effect: StatusEffect) => {
+                const mpLoss = Math.min(target.mp, 4);
+                if (mpLoss > 0) {
+                    target.loseMp(mpLoss);
+                }
+            }
         }],
-        [StatusEffectType.Madness, {
-            type: StatusEffectType.Madness,
-            name: '狂淫',
-            description: '行動が不安定になり、時々行動不能',
-            duration: 20
+        [StatusEffectType.Lewdness, {
+            type: StatusEffectType.Lewdness,
+            name: '淫乱',
+            description: '行動が不安定になり、時々行動不能、MP減少',
+            duration: 20,
+            onTick: (target: any, _effect: StatusEffect) => {
+                const mpLoss = Math.min(target.mp, 2);
+                if (mpLoss > 0) {
+                    target.loseMp(mpLoss);
+                }
+            }
         }],
         [StatusEffectType.Hypnosis, {
             type: StatusEffectType.Hypnosis,
@@ -247,20 +292,92 @@ export class StatusEffectManager {
         [StatusEffectType.Brainwash, {
             type: StatusEffectType.Brainwash,
             name: '洗脳',
-            description: '永続的な思考支配、解除困難',
-            duration: 30
+            description: '永続的な思考支配、解除困難、MP減少',
+            duration: 30,
+            onTick: (target: any, _effect: StatusEffect) => {
+                const mpLoss = Math.min(target.mp, 3);
+                if (mpLoss > 0) {
+                    target.loseMp(mpLoss);
+                }
+            }
         }],
         [StatusEffectType.Sweet, {
             type: StatusEffectType.Sweet,
             name: 'あまあま',
-            description: '幸福状態でデバフに無抵抗',
-            duration: 20
+            description: '幸福状態でデバフに無抵抗、MP減少',
+            duration: 20,
+            onTick: (target: any, _effect: StatusEffect) => {
+                const mpLoss = Math.min(target.mp, 1);
+                if (mpLoss > 0) {
+                    target.loseMp(mpLoss);
+                }
+            }
         }],
         [StatusEffectType.Sleep, {
             type: StatusEffectType.Sleep,
             name: '睡眠',
             description: '完全に眠っており行動不能',
             duration: 10
+        }],
+        [StatusEffectType.Melting, {
+            type: StatusEffectType.Melting,
+            name: 'とろとろ',
+            description: '意識がとろけて抵抗力低下、MP減少',
+            duration: 20,
+            onTick: (target: any, _effect: StatusEffect) => {
+                const mpLoss = Math.min(target.mp, 2);
+                if (mpLoss > 0) {
+                    target.loseMp(mpLoss);
+                }
+            }
+        }],
+        [StatusEffectType.Euphoria, {
+            type: StatusEffectType.Euphoria,
+            name: 'うっとり',
+            description: '恍惚状態で判断力低下、MP減少',
+            duration: 20,
+            onTick: (target: any, _effect: StatusEffect) => {
+                const mpLoss = Math.min(target.mp, 1);
+                if (mpLoss > 0) {
+                    target.loseMp(mpLoss);
+                }
+            }
+        }],
+        [StatusEffectType.Fascination, {
+            type: StatusEffectType.Fascination,
+            name: '魅惑',
+            description: '深い魅惑状態、行動意欲低下、MP減少',
+            duration: 20,
+            onTick: (target: any, _effect: StatusEffect) => {
+                const mpLoss = Math.min(target.mp, 2);
+                if (mpLoss > 0) {
+                    target.loseMp(mpLoss);
+                }
+            }
+        }],
+        [StatusEffectType.Bliss, {
+            type: StatusEffectType.Bliss,
+            name: '至福',
+            description: '至福の陶酔状態、抵抗不能、MP減少',
+            duration: 20,
+            onTick: (target: any, _effect: StatusEffect) => {
+                const mpLoss = Math.min(target.mp, 3);
+                if (mpLoss > 0) {
+                    target.loseMp(mpLoss);
+                }
+            }
+        }],
+        [StatusEffectType.Enchantment, {
+            type: StatusEffectType.Enchantment,
+            name: '魅了術',
+            description: '強力な魅了魔法の効果、完全支配、MP減少',
+            duration: 20,
+            onTick: (target: any, _effect: StatusEffect) => {
+                const mpLoss = Math.min(target.mp, 2);
+                if (mpLoss > 0) {
+                    target.loseMp(mpLoss);
+                }
+            }
         }]
     ]);
     
@@ -468,6 +585,34 @@ export class StatusEffectManager {
             modifier *= 0.4; // Reduced success rate
         }
         
+        if (this.hasEffect(StatusEffectType.Lewdness)) {
+            modifier *= 0.3; // Reduced success rate
+        }
+        
+        if (this.hasEffect(StatusEffectType.Melting)) {
+            modifier *= 0.2; // Very low success rate
+        }
+        
+        if (this.hasEffect(StatusEffectType.Euphoria)) {
+            modifier *= 0.25; // Very low success rate
+        }
+        
+        if (this.hasEffect(StatusEffectType.Fascination)) {
+            modifier *= 0.15; // Extremely low success rate
+        }
+        
+        if (this.hasEffect(StatusEffectType.Bliss)) {
+            modifier *= 0.1; // Extremely low success rate
+        }
+        
+        if (this.hasEffect(StatusEffectType.Enchantment)) {
+            modifier *= 0.05; // Nearly impossible success rate
+        }
+        
+        if (this.hasEffect(StatusEffectType.Brainwash)) {
+            modifier *= 0.05; // Nearly impossible success rate
+        }
+        
         return modifier;
     }
     
@@ -560,8 +705,8 @@ export class StatusEffectManager {
         return this.hasEffect(StatusEffectType.PleasureFall);
     }
     
-    isMad(): boolean {
-        return this.hasEffect(StatusEffectType.Madness);
+    isLewd(): boolean {
+        return this.hasEffect(StatusEffectType.Lewdness);
     }
     
     isHypnotized(): boolean {
@@ -578,6 +723,27 @@ export class StatusEffectManager {
     
     isSleeping(): boolean {
         return this.hasEffect(StatusEffectType.Sleep);
+    }
+    
+    // New debuff helper methods
+    isMelting(): boolean {
+        return this.hasEffect(StatusEffectType.Melting);
+    }
+    
+    isEuphoric(): boolean {
+        return this.hasEffect(StatusEffectType.Euphoria);
+    }
+    
+    isFascinated(): boolean {
+        return this.hasEffect(StatusEffectType.Fascination);
+    }
+    
+    isBlissful(): boolean {
+        return this.hasEffect(StatusEffectType.Bliss);
+    }
+    
+    isEnchanted(): boolean {
+        return this.hasEffect(StatusEffectType.Enchantment);
     }
     
     // Helper method to calculate debuff level for Dream Demon's sleep trigger

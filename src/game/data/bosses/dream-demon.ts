@@ -115,12 +115,12 @@ const dreamDemonActions: BossAction[] = [
     },
     {
         type: ActionType.StatusAttack,
-        name: '狂乱の魔法',
-        description: '理性を奪う狂気の魔法',
-        statusEffect: StatusEffectType.Madness,
+        name: '淫乱の魔法',
+        description: '理性を奪う淫らな魔法',
+        statusEffect: StatusEffectType.Lewdness,
         statusChance: 75,
         weight: 15,
-        messages: ['<USER>は狂気を呼ぶ魔法を唱えた', '<TARGET>の理性が揺らいでいく...']
+        messages: ['<USER>は淫らな魔法を唱えた', '<TARGET>の理性が揺らいでいく...']
     },
     {
         type: ActionType.StatusAttack,
@@ -156,6 +156,55 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 85,
         weight: 20,
         messages: ['<USER>は甘い魔法をかけた', '<TARGET>は幸せな気分になった...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: 'とろとろ魔法',
+        description: '意識をとろけさせる魔法',
+        statusEffect: StatusEffectType.Melting,
+        statusChance: 85,
+        weight: 20,
+        messages: ['<USER>はとろける魔法をかけた', '<TARGET>の意識がとろけていく...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: 'うっとり魔法',
+        description: '恍惚状態にする魔法',
+        statusEffect: StatusEffectType.Euphoria,
+        statusChance: 80,
+        weight: 18,
+        messages: ['<USER>は恍惚の魔法をかけた', '<TARGET>はうっとりとした表情になった...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '魅惑の術',
+        description: '深い魅惑状態にする魔法',
+        statusEffect: StatusEffectType.Fascination,
+        statusChance: 85,
+        weight: 20,
+        messages: ['<USER>は魅惑の術を唱えた', '<TARGET>は深い魅惑に囚われた...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '至福の呪文',
+        description: '至福の陶酔状態にする',
+        statusEffect: StatusEffectType.Bliss,
+        statusChance: 75,
+        weight: 15,
+        messages: ['<USER>は至福の呪文を唱えた', '<TARGET>は至福の表情を浮かべた...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '魅了術',
+        description: '強力な魅了魔法で完全支配',
+        statusEffect: StatusEffectType.Enchantment,
+        statusChance: 70,
+        weight: 12,
+        canUse: (_boss, player, _turn) => {
+            // Use when player has multiple debuffs
+            return player.statusEffects.getDebuffLevel() >= 6;
+        },
+        messages: ['<USER>は強力な魅了術を発動した', '<TARGET>は完全に魅了されてしまった...']
     },
     
     // Restraint attacks
@@ -198,7 +247,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '悩殺キス',
         description: '拘束中の相手に魅惑的なキスをする',
-        damage: 12,
+        damage: 1,
         statusEffect: StatusEffectType.Infatuation,
         statusChance: 95,
         weight: 30,
@@ -209,7 +258,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: 'べろちゅ攻撃',
         description: '大きな舌で相手をなめまわす',
-        damage: 10,
+        damage: 2,
         statusEffect: StatusEffectType.Arousal,
         statusChance: 90,
         weight: 28,
@@ -220,7 +269,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '体密着攻撃',
         description: '体を密着させて誘惑する',
-        damage: 8,
+        damage: 1,
         statusEffect: StatusEffectType.Seduction,
         statusChance: 95,
         weight: 25,
@@ -231,12 +280,209 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '揺さぶり攻撃',
         description: '体を揺さぶって快楽を与える',
-        damage: 6,
+        damage: 2,
         statusEffect: StatusEffectType.PleasureFall,
         statusChance: 80,
         weight: 20,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>の体をリズミカルに揺さぶった', '<TARGET>は快楽の波に飲み込まれていく...']
+    },
+    
+    // Additional restraint actions for more variety
+    {
+        type: ActionType.StatusAttack,
+        name: '激しい密着',
+        description: '体を激しく密着させて圧迫する',
+        damage: 1,
+        statusEffect: StatusEffectType.Bliss,
+        statusChance: 85,
+        weight: 25,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は<TARGET>に激しく体を押し付けてきた', '<TARGET>は息ができないほど密着されている...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '激しい揺さぶり',
+        description: '体を激しく揺さぶって感覚を狂わせる',
+        damage: 2,
+        statusEffect: StatusEffectType.Lewdness,
+        statusChance: 90,
+        weight: 23,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は<TARGET>を激しく揺さぶった', '<TARGET>の理性が揺らいでいく...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '官能的な動き',
+        description: '官能的な動きで相手を魅了する',
+        damage: 1,
+        statusEffect: StatusEffectType.Fascination,
+        statusChance: 95,
+        weight: 26,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は官能的な動きを見せつけてきた', '<TARGET>は目が離せなくなっている...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '激しい愛撫',
+        description: '激しく愛撫して感覚を麻痺させる',
+        damage: 2,
+        statusEffect: StatusEffectType.Melting,
+        statusChance: 88,
+        weight: 24,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は<TARGET>を激しく愛撫してきた', '<TARGET>の感覚がとろけていく...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '圧迫攻撃',
+        description: '体重をかけて圧迫し続ける',
+        damage: 1,
+        statusEffect: StatusEffectType.Euphoria,
+        statusChance: 85,
+        weight: 22,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は<TARGET>に全体重をかけて圧迫してきた', '<TARGET>は恍惚の表情を浮かべている...']
+    },
+    
+    // All debuff restraint versions
+    {
+        type: ActionType.StatusAttack,
+        name: '拘束魅了',
+        description: '拘束中に強力な魅了をかける',
+        damage: 1,
+        statusEffect: StatusEffectType.Charm,
+        statusChance: 98,
+        weight: 20,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は<TARGET>を見つめながら強力な魅了をかけた', '<TARGET>の意思が完全に奪われていく...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '拘束麻痺',
+        description: '拘束中に麻痺効果を与える',
+        damage: 1,
+        statusEffect: StatusEffectType.Paralysis,
+        statusChance: 95,
+        weight: 18,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は<TARGET>の神経を痺れさせた', '<TARGET>の体が完全に痺れてしまった...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '拘束淫毒',
+        description: '拘束中に淫毒を注入する',
+        damage: 2,
+        statusEffect: StatusEffectType.AphrodisiacPoison,
+        statusChance: 98,
+        weight: 22,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は<TARGET>に直接淫毒を注入した', '<TARGET>の体が激しく火照っていく...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '拘束睡眠誘導',
+        description: '拘束中に強制的に眠らせる',
+        damage: 1,
+        statusEffect: StatusEffectType.Drowsiness,
+        statusChance: 95,
+        weight: 19,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は<TARGET>の意識を朦朧とさせた', '<TARGET>の意識がだんだん遠のいていく...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '拘束脱力',
+        description: '拘束中に力を完全に奪う',
+        damage: 1,
+        statusEffect: StatusEffectType.Weakness,
+        statusChance: 98,
+        weight: 21,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は<TARGET>の力を吸い取った', '<TARGET>の体から力が完全に抜けていく...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '拘束混乱',
+        description: '拘束中に思考を混乱させる',
+        damage: 1,
+        statusEffect: StatusEffectType.Confusion,
+        statusChance: 95,
+        weight: 18,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は<TARGET>の思考を混乱させた', '<TARGET>は何が何だかわからなくなっている...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '拘束魔法封印',
+        description: '拘束中に魔法を完全封印する',
+        damage: 1,
+        statusEffect: StatusEffectType.MagicSeal,
+        statusChance: 98,
+        weight: 17,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は<TARGET>の魔力を封印した', '<TARGET>の魔法が使えなくなった...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '拘束とろとろ',
+        description: '拘束中に意識をとろけさせる',
+        damage: 2,
+        statusEffect: StatusEffectType.Melting,
+        statusChance: 95,
+        weight: 22,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は<TARGET>の意識をとろけさせた', '<TARGET>の思考が液体のようにとろけていく...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '拘束うっとり',
+        description: '拘束中に恍惚状態にする',
+        damage: 1,
+        statusEffect: StatusEffectType.Euphoria,
+        statusChance: 92,
+        weight: 19,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は<TARGET>を恍惚状態にした', '<TARGET>はうっとりと夢見心地になっている...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '拘束あまあま',
+        description: '拘束中に甘い幸福感を与える',
+        damage: 1,
+        statusEffect: StatusEffectType.Sweet,
+        statusChance: 95,
+        weight: 20,
+        playerStateCondition: 'restrained',
+        messages: ['<USER>は<TARGET>に甘い幸福感を与えた', '<TARGET>は幸せそうな表情を浮かべている...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '拘束催眠',
+        description: '拘束中に強制催眠をかける',
+        damage: 1,
+        statusEffect: StatusEffectType.Hypnosis,
+        statusChance: 90,
+        weight: 15,
+        playerStateCondition: 'restrained',
+        canUse: (_boss, player, _turn) => {
+            return player.statusEffects.getDebuffLevel() >= 8;
+        },
+        messages: ['<USER>は<TARGET>に強制催眠をかけた', '<TARGET>の意識が完全に支配された...']
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: '拘束洗脳',
+        description: '拘束中に思考を洗脳する',
+        damage: 2,
+        statusEffect: StatusEffectType.Brainwash,
+        statusChance: 85,
+        weight: 12,
+        playerStateCondition: 'restrained',
+        canUse: (_boss, player, _turn) => {
+            return player.statusEffects.getDebuffLevel() >= 10;
+        },
+        messages: ['<USER>は<TARGET>の思考を洗脳した', '<TARGET>の心が完全に支配されてしまった...']
     },
     
     // Sleep-inducing attacks (triggered when player has enough debuffs)
@@ -330,32 +576,58 @@ export const dreamDemonData: BossData = {
         }
         
         // Strategic actions based on player state
+        if (player.maxHp <= 0) {
+            // Max HP is 0 or below: always eat with special messages
+            return {
+                type: ActionType.EatAttack,
+                name: 'ゆっくり丸呑み',
+                description: '弱り切った獲物をゆっくりと丸呑みにする',
+                messages: [
+                    '<USER>はクスクスと笑い始めた...',
+                    '<USER>はゆっくりと<TARGET>に近づいてくる...',
+                    '<USER>は<TARGET>をゆっくりと口に含んでいく......',
+                    'ごっくん......',
+                    '<TARGET>は<USER>のお腹の中に取り込まれてしまった...'
+                ],
+                weight: 1
+            };
+        }
+        
         if (player.isKnockedOut()) {
             if (player.isRestrained()) {
-                // Restrained + Knocked Out: 90% chance to eat
-                if (Math.random() < 0.9) {
+                // Restrained + Knocked Out: 70% chance to eat
+                if (Math.random() < 0.7) {
                     return {
                         type: ActionType.EatAttack,
-                        name: '丸呑み',
-                        description: '拘束した獲物を丸呑みにする',
-                        messages: ['<USER>は<TARGET>を大きな口で丸呑みにした！'],
+                        name: 'ゆっくり丸呑み',
+                        description: '拘束した獲物をゆっくりと丸呑みにする',
+                        messages: [
+                            '<USER>はクスクスと笑い始めた...',
+                            '<USER>はゆっくりと<TARGET>に近づいてくる...',
+                            '<USER>は<TARGET>をゆっくりと口に含んでいく......',
+                            'ごっくん......'
+                        ],
                         weight: 1
                     };
                 }
             } else {
-                // Normal + Knocked Out: 70% chance to restrain, 20% to eat directly
+                // Normal + Knocked Out: 60% chance to restrain, 15% to eat directly
                 const random = Math.random();
-                if (random < 0.7) {
+                if (random < 0.6) {
                     const restraintActions = dreamDemonActions.filter(action => 
                         action.type === ActionType.RestraintAttack
                     );
                     return restraintActions[Math.floor(Math.random() * restraintActions.length)];
-                } else if (random < 0.9) {
+                } else if (random < 0.75) {
                     return {
                         type: ActionType.EatAttack,
-                        name: '丸呑み',
-                        description: '無防備な獲物を丸呑みにする',
-                        messages: ['<USER>は<TARGET>を大きな口で丸呑みにした！'],
+                        name: 'ゆっくり丸呑み',
+                        description: '無防備な獲物をゆっくりと丸呑みにする',
+                        messages: [
+                            '<USER>はクスクスと笑い始めた...',
+                            '<USER>は<TARGET>をゆっくりと口に含んでいく......',
+                            'ごっくん......'
+                        ],
                         weight: 1
                     };
                 }
@@ -380,14 +652,16 @@ export const dreamDemonData: BossData = {
             }
         }
         
-        // Restraint timing - every 7-9 turns with some randomness
-        const restraintInterval = 7 + Math.floor(Math.random() * 3); // 7-9 turns
-        if (turn % restraintInterval === 0 && !player.isRestrained() && !player.isEaten()) {
-            const restraintActions = dreamDemonActions.filter(action => 
-                action.type === ActionType.RestraintAttack
-            );
-            if (restraintActions.length > 0 && Math.random() < 0.8) {
-                return restraintActions[Math.floor(Math.random() * restraintActions.length)];
+        // Restraint timing - starts after 8 turns, then every 7-9 turns with some randomness
+        if (turn > 8) {
+            const restraintInterval = 7 + Math.floor(Math.random() * 3); // 7-9 turns
+            if ((turn - 8) % restraintInterval === 0 && !player.isRestrained() && !player.isEaten()) {
+                const restraintActions = dreamDemonActions.filter(action => 
+                    action.type === ActionType.RestraintAttack
+                );
+                if (restraintActions.length > 0 && Math.random() < 0.8) {
+                    return restraintActions[Math.floor(Math.random() * restraintActions.length)];
+                }
             }
         }
         
@@ -409,10 +683,15 @@ export const dreamDemonData: BossData = {
             { type: StatusEffectType.Drowsiness, weight: 1.9, priority: 3 },
             { type: StatusEffectType.Sweet, weight: 1.7, priority: 3 },
             { type: StatusEffectType.MagicSeal, weight: 1.5, priority: 3 },
+            { type: StatusEffectType.Melting, weight: 1.8, priority: 3 },
+            { type: StatusEffectType.Euphoria, weight: 1.6, priority: 3 },
             
             // Advanced debuffs for later stages
             { type: StatusEffectType.PleasureFall, weight: 1.2, priority: 4 },
-            { type: StatusEffectType.Madness, weight: 1.0, priority: 4 },
+            { type: StatusEffectType.Lewdness, weight: 1.0, priority: 4 },
+            { type: StatusEffectType.Fascination, weight: 1.1, priority: 4 },
+            { type: StatusEffectType.Bliss, weight: 0.9, priority: 4 },
+            { type: StatusEffectType.Enchantment, weight: 0.7, priority: 5 },
             { type: StatusEffectType.Hypnosis, weight: 0.8, priority: 5 },
             { type: StatusEffectType.Brainwash, weight: 0.6, priority: 5 }
         ];

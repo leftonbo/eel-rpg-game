@@ -469,6 +469,23 @@ export class Player {
             }];
         }
         
+        // If sleeping, only allow give up action
+        if (this.statusEffects.isSleeping()) {
+            return [{
+                type: SkillType.GiveUp,
+                name: '😴なすがまま',
+                description: '深い眠りに落ちて行動できない',
+                mpCost: 0,
+                canUse: () => true,
+                use: (player: Player) => {
+                    return {
+                        success: true,
+                        message: `${player.name}は深く眠っており何もできない...`,
+                    };
+                }
+            }];
+        }
+        
         const skills: Skill[] = [
             {
                 type: SkillType.PowerAttack,
