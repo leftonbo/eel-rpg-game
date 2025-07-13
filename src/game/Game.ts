@@ -88,7 +88,8 @@ export class Game {
     }
     
     returnToBossSelect(): void {
-        // Don't reset player - keep progress
+        // Reset battle-specific state while keeping progress
+        this.player.resetBattleState();
         this.currentBoss = null;
         this.setState(GameState.BossSelect);
     }

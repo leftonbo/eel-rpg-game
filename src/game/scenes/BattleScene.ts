@@ -143,6 +143,9 @@ export class BattleScene {
             wasKnockedOut: false
         };
         
+        // Reset battle-specific state for safety
+        this.player.resetBattleState();
+        
         // Fully restore player HP and MP at battle start
         this.player.fullRestore();
         

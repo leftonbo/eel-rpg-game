@@ -653,4 +653,19 @@ export class Player {
         
         return result;
     }
+
+    /**
+     * Reset battle-specific state while preserving progression
+     */
+    public resetBattleState(): void {
+        // Clear all status effects
+        this.statusEffects.clearAllEffects();
+        
+        // Reset battle-specific flags
+        this.struggleAttempts = 0;
+        this.isDefending = false;
+        
+        // Note: Keep progression data (abilities, equipment, items) intact
+        // Also preserve maxHp changes from abilities/equipment
+    }
 }
