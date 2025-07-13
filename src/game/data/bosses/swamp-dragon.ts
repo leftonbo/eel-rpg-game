@@ -212,8 +212,8 @@ export const swampDragonData: BossData = {
 // Add finishing move for doomed player
 swampDragonData.finishingMove = function() {
     return [
-        '沼のドラゴンは力尽きたエルナルを体内の奥深くに送り込む！',
-        'エルナルは体内に閉じ込められ、沼のドラゴンが満足するまで消化され続けることになった...'
+        '<USER>は力尽きた<TARGET>を体内の奥深くに送り込む！',
+        '<TARGET>は体内奥深くに閉じ込められ、<USER>が満足するまで消化され続けることになった...'
     ];
 };
 

@@ -1,6 +1,6 @@
 import { Game } from '../Game';
 import { Player, SkillType } from '../entities/Player';
-import { Boss, ActionType } from '../entities/Boss';
+import { Boss, ActionType, formatMessage } from '../entities/Boss';
 import { StatusEffectType } from '../systems/StatusEffect';
 import { calculateAttackResult } from '../utils/CombatUtils';
 import { calculateBattleResult } from './BattleResultScene';
@@ -870,11 +870,18 @@ export class BattleScene {
         if (this.boss.finishingMove) {
             const messages = this.boss.finishingMove();
             messages.forEach(message => {
-                this.addBattleLogMessage(message, 'system', 'boss');
+                this.addBattleLogMessage(
+                    formatMessage(
+                        message,
+                        this.boss?.displayName ?? '',
+                        this.player?.name ?? ''
+                    ),
+                    'system',
+                    'boss'
+                );
             });
         } else {
             // Default finishing move
-            this.addBattleLogMessage(`${this.boss.displayName}はトドメを刺そうとしている...`, 'system', 'boss');
             this.addBattleLogMessage(`${this.boss.displayName}のトドメ攻撃！`, 'damage', 'boss');
             this.addBattleLogMessage(`${this.player.name}にとって致命的な一撃だった...`, 'system');
         }

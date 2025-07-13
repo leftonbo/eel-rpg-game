@@ -3,7 +3,14 @@ import { Player } from './Player';
 import { calculateAttackResult } from '../utils/CombatUtils';
 
 // Message formatter utility
-function formatMessage(template: string, boss: Boss, player: Player, action: BossAction): string {
+export function formatMessage(template: string, nameUser: string, nameTarget: string): string {
+    return template
+        .replace(/<USER>/g, nameUser)
+        .replace(/<TARGET>/g, nameTarget)
+}
+
+// Message formatter utility
+export function formatMessageSkill(template: string, boss: Boss, player: Player, action: BossAction): string {
     return template
         .replace(/<USER>/g, boss.displayName)
         .replace(/<TARGET>/g, player.name)
@@ -192,7 +199,7 @@ export class Boss {
         // Process custom messages if provided
         if (action.messages && action.messages.length > 0) {
             action.messages.forEach(messageTemplate => {
-                const formattedMessage = formatMessage(messageTemplate, this, player, action);
+                const formattedMessage = formatMessageSkill(messageTemplate, this, player, action);
                 messages.push(formattedMessage);
             });
         } else {
