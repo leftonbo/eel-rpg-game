@@ -1,5 +1,5 @@
 import { Game } from '../Game';
-import { Player, PLAYER_NAME, SkillType } from '../entities/Player';
+import { Player, SkillType } from '../entities/Player';
 import { Boss, ActionType } from '../entities/Boss';
 import { StatusEffectType } from '../systems/StatusEffect';
 import { calculateAttackResult } from '../utils/CombatUtils';
@@ -438,7 +438,7 @@ export class BattleScene {
             0.05
         ); // Player attacks are never guaranteed hits
         
-        this.addBattleLogMessage(`${PLAYER_NAME}の攻撃！`, 'system', 'player');
+        this.addBattleLogMessage(`${this.player.name}の攻撃！`, 'system', 'player');
         
         if (attackResult.isMiss) {
             this.addBattleLogMessage(`しかし攻撃は外れた！`, 'system', 'player');
@@ -462,7 +462,7 @@ export class BattleScene {
         if (!this.player || !this.playerTurn) return;
         
         this.player.defend();
-        this.addBattleLogMessage(`${PLAYER_NAME}は身を守った！`, 'system', 'player');
+        this.addBattleLogMessage(`${this.player.name}は身を守った！`, 'system', 'player');
         
         this.updateUI();
         this.endPlayerTurn();
@@ -579,7 +579,7 @@ export class BattleScene {
                 itemDisplayName = itemDisplayNames[itemName] || itemName;
             }
             
-            this.addBattleLogMessage(`${PLAYER_NAME}は${itemDisplayName}を使った！`, 'heal', 'player');
+            this.addBattleLogMessage(`${this.player.name}は${itemDisplayName}を使った！`, 'heal', 'player');
             
             this.hideItemPanel();
             // Items don't end turn
@@ -601,11 +601,11 @@ export class BattleScene {
         const success = this.player.attemptStruggle();
         
         if (success) {
-            this.addBattleLogMessage(`${PLAYER_NAME}は拘束を振り切った！`, 'system', 'player');
+            this.addBattleLogMessage(`${this.player.name}は拘束を振り切った！`, 'system', 'player');
             this.boss.onRestraintBroken();
             this.addBattleLogMessage(`${this.boss.displayName}は反動で動けなくなった！`, 'system', 'boss');
         } else {
-            this.addBattleLogMessage(`${PLAYER_NAME}はもがいたが、拘束を抜けられなかった...`, 'system', 'player');
+            this.addBattleLogMessage(`${this.player.name}はもがいたが、拘束を抜けられなかった...`, 'system', 'player');
         }
         
         this.updateUI();
@@ -616,7 +616,7 @@ export class BattleScene {
         if (!this.player || !this.playerTurn) return;
         
         this.player.stayStill();
-        this.addBattleLogMessage(`${PLAYER_NAME}はじっとして体力を回復した`, 'heal', 'player');
+        this.addBattleLogMessage(`${this.player.name}はじっとして体力を回復した`, 'heal', 'player');
         
         this.updateUI();
         this.endPlayerTurn();
@@ -625,7 +625,7 @@ export class BattleScene {
     private playerGiveUp(): void {
         if (!this.player || !this.playerTurn) return;
         
-        this.addBattleLogMessage(`${PLAYER_NAME}はなすがままにした...`, 'system', 'player');
+        this.addBattleLogMessage(`${this.player.name}は何もできない....`, 'system', 'player');
         
         this.updateUI();
         this.endPlayerTurn();
@@ -682,7 +682,7 @@ export class BattleScene {
             
             // Check if player was knocked down to 0 HP
             if (this.player.hp === 0 && playerHpBefore > 0) {
-                this.addBattleLogMessage(`${PLAYER_NAME}はダウンしてしまった！`, 'system');
+                this.addBattleLogMessage(`${this.player.name}はダウンしてしまった！`, 'system');
             }
         }
         
@@ -759,7 +759,7 @@ export class BattleScene {
         
         // Check if player is doomed (max HP <= 0) but not yet dead
         if (this.player.isDoomed() && !this.player.isDead()) {
-            this.addBattleLogMessage(`${PLAYER_NAME}は再起不能状態になった...`, 'system');
+            this.addBattleLogMessage(`${this.player.name}は再起不能状態になった...`, 'system');
             
             this.updateUI();
             return false; // Don't end battle yet, let boss deliver finishing move
@@ -876,7 +876,7 @@ export class BattleScene {
             // Default finishing move
             this.addBattleLogMessage(`${this.boss.displayName}はトドメを刺そうとしている...`, 'system', 'boss');
             this.addBattleLogMessage(`${this.boss.displayName}のトドメ攻撃！`, 'damage', 'boss');
-            this.addBattleLogMessage(`${PLAYER_NAME}にとって致命的な一撃だった...`, 'system');
+            this.addBattleLogMessage(`${this.player.name}にとって致命的な一撃だった...`, 'system');
         }
         
         // Mark player as dead

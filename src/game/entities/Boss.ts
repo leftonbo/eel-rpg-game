@@ -1,14 +1,13 @@
 import { StatusEffectManager, StatusEffectType } from '../systems/StatusEffect';
-import { Player, PLAYER_NAME } from './Player';
+import { Player } from './Player';
 import { calculateAttackResult } from '../utils/CombatUtils';
 
 // Message formatter utility
-function formatMessage(template: string, boss: Boss, action: BossAction): string {
+function formatMessage(template: string, boss: Boss, player: Player, action: BossAction): string {
     return template
         .replace(/<USER>/g, boss.displayName)
-        .replace(/<TARGET>/g, PLAYER_NAME)
+        .replace(/<TARGET>/g, player.name)
         .replace(/<SKILL>/g, action.name)
-        .replace(/<PLAYER_NAME>/g, PLAYER_NAME); // Keep backward compatibility
 }
 
 export enum ActionType {
@@ -194,7 +193,7 @@ export class Boss {
         // Process custom messages if provided
         if (action.messages && action.messages.length > 0) {
             action.messages.forEach(messageTemplate => {
-                const formattedMessage = formatMessage(messageTemplate, this, action);
+                const formattedMessage = formatMessage(messageTemplate, this, player, action);
                 messages.push(formattedMessage);
             });
         } else {
@@ -204,7 +203,7 @@ export class Boss {
 
         // Check for invincible status first
         if (player.statusEffects.hasEffect(StatusEffectType.Invincible)) {
-            messages.push(`${PLAYER_NAME}は攻撃を華麗に回避した！`);
+            messages.push(`${player.name}は攻撃を華麗に回避した！`);
             return messages;
         }
         
@@ -230,9 +229,9 @@ export class Boss {
                     } else {
                         const actualDamage = player.takeDamage(attackResult.damage);
                         if (attackResult.isCritical) {
-                            messages.push(`痛恨の一撃！ ${PLAYER_NAME}に${actualDamage}のダメージ！`);
+                            messages.push(`痛恨の一撃！ ${player.name}に${actualDamage}のダメージ！`);
                         } else {
-                            messages.push(`${PLAYER_NAME}に${actualDamage}のダメージ！`);
+                            messages.push(`${player.name}に${actualDamage}のダメージ！`);
                         }
                         
                         // Check for HP absorption
@@ -266,9 +265,9 @@ export class Boss {
                         } else {
                             const actualDamage = player.takeDamage(attackResult.damage);
                             if (attackResult.isCritical) {
-                                messages.push(`痛恨の一撃！ ${PLAYER_NAME}に${actualDamage}のダメージ！`);
+                                messages.push(`痛恨の一撃！ ${player.name}に${actualDamage}のダメージ！`);
                             } else {
-                                messages.push(`${PLAYER_NAME}に${actualDamage}のダメージ！`);
+                                messages.push(`${player.name}に${actualDamage}のダメージ！`);
                             }
 
                             // Check for HP absorption
@@ -285,13 +284,13 @@ export class Boss {
                         const statusChance = action.statusChance !== undefined ? action.statusChance / 100 : 1.0;
                         if (Math.random() < statusChance) {
                             player.statusEffects.addEffect(action.statusEffect);
-                            messages.push(`${PLAYER_NAME}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
+                            messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
                         }
                         else if (!action.damage)
                         {
                             // If it's a status-only attack and the status didn't apply
                             // we still want to show a message
-                            messages.push(`${PLAYER_NAME}は${this.getStatusEffectName(action.statusEffect)}状態にならなかった。`);
+                            messages.push(`${player.name}は${this.getStatusEffectName(action.statusEffect)}状態にならなかった。`);
                         }
                     }
                 }
@@ -300,7 +299,7 @@ export class Boss {
             case ActionType.RestraintAttack:
                 player.statusEffects.addEffect(StatusEffectType.Restrained);
                 player.struggleAttempts = 0; // Reset struggle attempts
-                messages.push(`${PLAYER_NAME}が拘束された！`);
+                messages.push(`${player.name}が拘束された！`);
                 break;
                 
             case ActionType.EatAttack:
@@ -309,7 +308,7 @@ export class Boss {
                     player.statusEffects.removeEffect(StatusEffectType.Restrained);
                 }
                 player.statusEffects.addEffect(StatusEffectType.Eaten);
-                messages.push(`${PLAYER_NAME}が食べられてしまった！`);
+                messages.push(`${player.name}が食べられてしまった！`);
                 break;
                 
             case ActionType.DevourAttack:
@@ -327,7 +326,7 @@ export class Boss {
                     const hpAbsorbed = statusAttackResult.damage;
                     
                     player.loseMaxHp(hpAbsorbed);
-                    messages.push(`${this.displayName}は${PLAYER_NAME}の最大ヘルスを${hpAbsorbed}吸収した！`);
+                    messages.push(`${player.name}の最大ヘルスが${hpAbsorbed}奪われた！`);
                     
                     // Boss gains the absorbed max HP
                     this.gainMaxHp(hpAbsorbed);
@@ -347,14 +346,14 @@ export class Boss {
                     const mpDrained = Math.min(player.mp, mpDrainAmount);
                     if (mpDrained > 0) {
                         player.loseMp(mpDrained);
-                        messages.push(`${this.displayName}は${PLAYER_NAME}のMPを${mpDrained}吸収した！`);
+                        messages.push(`${player.name}のMPが${mpDrained}奪われた！`);
                     }
 
                     if (action.statusEffect) {
                         const statusChance = action.statusChance !== undefined ? action.statusChance / 100 : 1.0;
                         if (Math.random() < statusChance) {
                             player.statusEffects.addEffect(action.statusEffect);
-                            messages.push(`${PLAYER_NAME}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
+                            messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
                         }
                     }
                 }

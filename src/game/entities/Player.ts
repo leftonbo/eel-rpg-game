@@ -342,7 +342,7 @@ export class Player {
                 const healAmount = Math.floor(this.maxHp * 0.5);
                 this.heal(healAmount);
                 
-                messages.push(`${PLAYER_NAME}が意識を取り戻した！`);
+                messages.push(`${this.name}が意識を取り戻した！`);
                 messages.push(`ヘルスが${healAmount}回復した！`);
             }
         }
