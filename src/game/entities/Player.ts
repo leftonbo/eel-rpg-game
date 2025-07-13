@@ -371,7 +371,7 @@ export class Player {
     }
     
     isDoomed(): boolean {
-        return this.maxHp <= 0;
+        return this.statusEffects.isDoomed();
     }
     
     isDead(): boolean {
