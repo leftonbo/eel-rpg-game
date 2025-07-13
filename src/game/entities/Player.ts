@@ -81,7 +81,7 @@ export class Player {
             this.unlockedItems = new Set(saveData.unlockedItems);
         } else {
             // Initialize with default values
-            this.unlockedItems = new Set(['heal-potion', 'adrenaline', 'energy-drink']);
+            this.unlockedItems = new Set();
         }
     }
     
