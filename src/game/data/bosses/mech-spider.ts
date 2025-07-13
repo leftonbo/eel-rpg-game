@@ -8,33 +8,33 @@ const mechSpiderActions: BossAction[] = [
         name: 'レーザーショット',
         description: '精密なレーザーで攻撃する',
         messages: ['<USER>は精密なレーザーで<TARGET>を狙撃する！'],
-        damage: 4,
+        damage: 10,
         hitRate: 0.9,
-        weight: 20,
-        playerStateCondition: 'normal'
+        weight: 20
     },
     {
         type: ActionType.Attack,
         name: 'クモキック',
         description: '強力だが不正確な蹴り攻撃',
         messages: ['<USER>は機械の脚で<TARGET>を蹴り飛ばそうとする！'],
-        damage: 8,
+        damage: 15,
         hitRate: 0.6,
         weight: 15,
         playerStateCondition: 'normal'
     },
     {
+        // Shockbite (for normal state)
         type: ActionType.StatusAttack,
         name: 'ショックバイト',
         description: '噛みついて電気ショックを与える',
         messages: ['<USER>は<TARGET>に噛みついて電気ショックを流す！'],
-        damage: 3,
+        damage: 10,
         statusEffect: StatusEffectType.Stunned,
         statusChance: 30,
         hitRate: 0.7,
         weight: 12,
         canUse: (_boss, player, _turn) => {
-            return player.isKnockedOut() || !player.isRestrained();
+            return !player.isRestrained();
         }
     },
     {
@@ -42,7 +42,7 @@ const mechSpiderActions: BossAction[] = [
         name: 'スパイダーグラブ',
         description: '抱きしめるように拘束する',
         messages: ['<USER>は機械の腕で<TARGET>を抱きしめて拘束しようとする！'],
-        damage: 4,
+        damage: 15,
         weight: 25,
         canUse: (_boss, player, _turn) => {
             return (!player.isRestrained() && !player.isCocoon() && !player.isEaten() && Math.random() < 0.6) || player.isKnockedOut();
@@ -58,8 +58,42 @@ const mechSpiderActions: BossAction[] = [
         canUse: (_boss, player, _turn) => {
             return (!player.isRestrained() && !player.isCocoon() && !player.isEaten() && Math.random() < 0.8) || player.isKnockedOut();
         }
+    }
+];
+
+const mechSpiderActionsRestrained: BossAction[] = [
+    // Restrained state actions
+    {
+        type: ActionType.Attack,
+        name: 'クモキック',
+        description: '強力だが不正確な蹴り攻撃',
+        messages: ['<USER>は機械の脚で<TARGET>を蹴りつける！'],
+        damage: 15,
+        weight: 20
     },
-    
+    {
+        // Shockbite (for restrained state)
+        type: ActionType.StatusAttack,
+        name: 'ショックバイト',
+        description: '噛みついて電気ショックを与える',
+        messages: ['<USER>は<TARGET>に噛みついて電気ショックを流す！'],
+        damage: 10,
+        statusEffect: StatusEffectType.Stunned,
+        statusChance: 50,
+        hitRate: 0.95,
+        weight: 15
+    },
+    {
+        type: ActionType.Attack,
+        name: 'スパイダーハグ',
+        description: '抱きしめるように締め付ける',
+        messages: ['<USER>は機械の腕で<TARGET>を締め付ける！'],
+        damage: 18,
+        weight: 25
+    }
+];
+
+const mechSpiderActionsKnockoutRestrained: BossAction[] = [
     // Cocoon Process - special transition attack
     {
         type: ActionType.CocoonAttack,
@@ -74,36 +108,47 @@ const mechSpiderActions: BossAction[] = [
             // Only use when player is knocked out AND restrained
             return player.isKnockedOut() && player.isRestrained();
         }
-    },
-    
+    }
+];
+
+const mechSpiderActionsCocoon: BossAction[] = [  
     // Cocoon state actions
     {
         type: ActionType.CocoonAction,
         name: '繭の抱擁',
         description: '繭状態のエルナルをゆらゆら揺らして縮小させる',
         messages: ['<USER>は繭を優しく抱擁し、ゆらゆらと揺らしている...'],
-        damage: 8, // Max HP reduction amount
+        damage: 10, // Max HP reduction amount
         weight: 30,
-        playerStateCondition: 'cocoon'
+        playerStateCondition: 'cocoon',
+        canUse: (_boss, player, _turn) => {
+            return player.isCocoon();
+        }
     },
     {
         type: ActionType.CocoonAction,
         name: '繭の圧縮',
         description: '繭を抱きしめて縮小液を馴染ませる',
         messages: ['<USER>は繭を強く抱きしめ、縮小液を<TARGET>に馴染ませる！'],
-        damage: 15, // Max HP reduction amount
+        damage: 18, // Max HP reduction amount
         weight: 25,
-        playerStateCondition: 'cocoon'
+        playerStateCondition: 'cocoon',
+        canUse: (_boss, player, _turn) => {
+            return player.isCocoon();
+        }
     },
     {
         type: ActionType.CocoonAction,
         name: '縮小液循環',
         description: '繭内部の縮小液を循環させてエネルギーを得る',
         messages: ['<USER>は繭内部の縮小液を循環させ、<TARGET>のエネルギーを吸収する！'],
-        damage: 12, // Max HP reduction amount
+        damage: 15, // Max HP reduction amount
         healRatio: 2.0, // Heal 2x the amount reduced + gain max HP
         weight: 20,
-        playerStateCondition: 'cocoon'
+        playerStateCondition: 'cocoon',
+        canUse: (_boss, player, _turn) => {
+            return player.isCocoon();
+        }
     }
 ];
 
@@ -113,7 +158,7 @@ export const mechSpiderData: BossData = {
     displayName: '🕷️ 機械のクモ',
     description: '眼の前の生き物をなんでも壊れた機械と見なして修理しようとする機械クモ。エルナルを「壊れた機械」として修理しようと執拗に追い詰める。',
     maxHp: 320,
-    attackPower: 6,
+    attackPower: 10,
     actions: mechSpiderActions,
     personality: [
         'ERROR: 損傷した機械を検出',
@@ -131,10 +176,7 @@ export const mechSpiderData: BossData = {
         
         // If player is in cocoon state, use cocoon actions
         if (playerState === 'cocoon') {
-            const cocoonActions = mechSpiderActions.filter(action => 
-                action.type === ActionType.CocoonAction && 
-                (!action.playerStateCondition || action.playerStateCondition === 'cocoon')
-            );
+            const cocoonActions = mechSpiderActionsCocoon;
             
             if (cocoonActions.length > 0) {
                 // Weight-based selection among cocoon actions
@@ -151,28 +193,18 @@ export const mechSpiderData: BossData = {
             }
         }
         
-        // If player is eaten, devour them (process as "recycling")
-        if (playerState === 'eaten') {
-            return {
-                type: ActionType.DevourAttack,
-                name: 'リサイクル処理',
-                description: '対象を原材料として分解する',
-                weight: 1
-            };
-        }
-        
         // Special condition: cocoon process (KO + restrained)
         if (player.isKnockedOut() && player.isRestrained()) {
-            const cocoonAttack = mechSpiderActions.find(action => action.type === ActionType.CocoonAttack);
+            const cocoonAttack = mechSpiderActionsKnockoutRestrained[0];
             if (cocoonAttack) {
                 return cocoonAttack;
             }
         }
         
-        // Knocked out state prioritization
-        if (playerState === 'ko') {
-            // 80% chance to restrain if not already restrained
-            if (!player.isRestrained() && Math.random() < 0.8) {
+        // Knocked out (but not restrained) state prioritization
+        if (player.isKnockedOut()) {
+            // 80% chance to restrain
+            if (Math.random() < 0.8) {
                 const restraintActions = mechSpiderActions.filter(action => 
                     action.type === ActionType.RestraintAttack && 
                     (!action.canUse || action.canUse(boss, player, turn))
@@ -192,47 +224,34 @@ export const mechSpiderData: BossData = {
             }
         }
         
-        // Restrained state: use electric shock occasionally
-        if (playerState === 'restrained') {
-            const shockBite = mechSpiderActions.find(action => 
-                action.name === 'ショックバイト' && 
+        // Restrained state
+        if (player.isRestrained()) {
+            const restrainedActions = mechSpiderActionsRestrained.filter(action =>
                 (!action.canUse || action.canUse(boss, player, turn))
             );
-            if (shockBite && Math.random() < 0.3) {
-                return shockBite;
+            if (restrainedActions.length > 0) {
+                return restrainedActions[Math.floor(Math.random() * restrainedActions.length)];
             }
         }
         
         // Normal state: prioritize restraint attacks
-        if (playerState === 'normal') {
-            // 70% chance to use restraint attacks
-            if (Math.random() < 0.7) {
-                const restraintActions = mechSpiderActions.filter(action => 
-                    action.type === ActionType.RestraintAttack && 
-                    (!action.canUse || action.canUse(boss, player, turn))
-                );
-                if (restraintActions.length > 0) {
-                    return restraintActions[Math.floor(Math.random() * restraintActions.length)];
-                }
-            }
-            
-            // Otherwise use normal attacks or shock bite
-            const normalActions = mechSpiderActions.filter(action => 
-                (action.type === ActionType.Attack || action.type === ActionType.StatusAttack) &&
-                action.playerStateCondition === 'normal' &&
+        // 70% chance to use restraint attacks
+        if (Math.random() < 0.7) {
+            const restraintActions = mechSpiderActions.filter(action =>
+                action.type === ActionType.RestraintAttack &&
                 (!action.canUse || action.canUse(boss, player, turn))
             );
-            if (normalActions.length > 0) {
-                return normalActions[Math.floor(Math.random() * normalActions.length)];
+            if (restraintActions.length > 0) {
+                return restraintActions[Math.floor(Math.random() * restraintActions.length)];
             }
         }
-        
-        // Fallback: any available action
-        const availableActions = mechSpiderActions.filter(action => 
-            !action.canUse || action.canUse(boss, player, turn)
+
+        // Otherwise use normal attacks or shock bite
+        const normalActions = mechSpiderActions.filter(action =>
+            (!action.canUse || action.canUse(boss, player, turn))
         );
-        if (availableActions.length > 0) {
-            return availableActions[Math.floor(Math.random() * availableActions.length)];
+        if (normalActions.length > 0) {
+            return normalActions[Math.floor(Math.random() * normalActions.length)];
         }
         
         // Final fallback
