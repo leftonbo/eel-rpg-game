@@ -313,6 +313,10 @@ export class Player {
         // Staying still provides a small amount of healing
         const healAmount = Math.floor(this.maxHp * 0.05); // 5% of max health
         this.heal(healAmount);
+        
+        // Also recover a small amount of MP
+        const mpRecovery = Math.floor(this.maxMp * 0.25); // 25% of max MP
+        this.recoverMp(mpRecovery);
     }
     
     loseMaxHp(amount: number): void {
