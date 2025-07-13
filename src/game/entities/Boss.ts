@@ -195,7 +195,7 @@ export class Boss {
     }
     
     executeAction(action: BossAction, player: Player): string[] {
-        let messages = [];
+        const messages = [];
         
         // Process custom messages if provided
         if (action.messages && action.messages.length > 0) {
