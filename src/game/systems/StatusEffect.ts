@@ -141,6 +141,11 @@ export class StatusEffectManager {
         }]
     ]);
     
+    static getEffectName(type: StatusEffectType): string {
+        const config = StatusEffectManager.configs.get(type);
+        return config ? config.name : '不明な状態異常';
+    }
+    
     addEffect(type: StatusEffectType): boolean {
         const config = StatusEffectManager.configs.get(type);
         if (!config) return false;
