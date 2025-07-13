@@ -6,7 +6,7 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.Attack,
         name: 'クロー攻撃',
         description: '鋭い爪で引っ掻く',
-        damage: 8,
+        damage: 18,
         weight: 40,
         playerStateCondition: 'normal'
     },
@@ -14,10 +14,10 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.Attack,
         name: '噛みつき',
         description: '強力な顎で噛みつく',
-        damage: 15,
-        weight: 30,
+        damage: 30,
+        weight: 25,
         hitRate: 0.7,
-        criticalRate: 0.05,
+        criticalRate: 0.08,
         playerStateCondition: 'normal',
         damageVarianceMin: -0.2,
         damageVarianceMax: 0.5
@@ -26,7 +26,7 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '炎のブレス',
         description: '灼熱の炎を吐く',
-        damage: 6,
+        damage: 24,
         hitRate: 0.9,
         statusEffect: StatusEffectType.Fire,
         weight: 25
@@ -36,6 +36,7 @@ const swampDragonActions: BossAction[] = [
         name: '尻尾巻き付き',
         description: '長い尻尾で対象を拘束する',
         messages: ['<USER>は尻尾で<TARGET>を巻き付けてきた！'],
+        damage: 16,
         weight: 5,
         canUse: (_boss, player, _turn) => {
             // Only use restraint if player isn't already restrained and occasionally
@@ -47,7 +48,7 @@ const swampDragonActions: BossAction[] = [
         name: '尻尾しめつけ',
         description: '拘束中の獲物を尻尾でしめつける',
         messages: ['<USER>は尻尾で<TARGET>を締め付けている...'],
-        damage: 8,
+        damage: 18,
         weight: 40,
         playerStateCondition: 'restrained'
     },
@@ -55,7 +56,7 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.Attack,
         name: 'べろちゅー',
         description: '拘束中の獲物を舌でキスする（与えたダメージ分回復）',
-        damage: 12,
+        damage: 24,
         weight: 30,
         playerStateCondition: 'restrained',
         healRatio: 1.0
@@ -68,7 +69,7 @@ export const swampDragonData: BossData = {
     displayName: '🐲 沼のドラゴン',
     description: '近寄った生き物をなんでも食べようとする古代のドラゴン。高い攻撃力と炎のブレスが特徴。',
     maxHp: 400,
-    attackPower: 20,
+    attackPower: 18,
     actions: swampDragonActions,
     personality: [
         '美味しそうなウナギだ...！',
@@ -89,7 +90,7 @@ export const swampDragonData: BossData = {
                     name: '胃液分泌',
                     description: 'ネバネバな胃液を分泌してエルナルを粘液まみれにする',
                     messages: ['<USER>の胃袋が<TARGET>をネバネバな胃液まみれにする...'],
-                    damage: 10,
+                    damage: 16,
                     statusEffect: StatusEffectType.Slimed,
                     weight: 1
                 },
@@ -98,7 +99,7 @@ export const swampDragonData: BossData = {
                     name: '体内締め付け',
                     description: '獲物を体内で締め付ける',
                     messages: ['<USER>の体内が<TARGET>を圧迫している...'],
-                    damage: 20,
+                    damage: 25,
                     weight: 1
                 },
                 {
@@ -106,7 +107,7 @@ export const swampDragonData: BossData = {
                     name: '体内マッサージ',
                     description: '獲物を体内で優しくマッサージする',
                     messages: ['<USER>の胃壁が<TARGET>を優しくマッサージしている...'],
-                    damage: 20,
+                    damage: 25,
                     weight: 1
                 },
                 {
@@ -114,7 +115,7 @@ export const swampDragonData: BossData = {
                     name: 'お腹ゆらし',
                     description: '獲物の入ったお腹をゆらゆらと揺らす',
                     messages: ['<USER>がお腹を揺らして<TARGET>を翻弄している...'],
-                    damage: 20,
+                    damage: 25,
                     weight: 1
                 }
             ];

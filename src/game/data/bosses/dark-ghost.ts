@@ -6,7 +6,7 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.Attack,
         name: '影の爪',
         description: '闇から現れる爪で攻撃',
-        damage: 4,
+        damage: 10,
         hitRate: 0.95,
         weight: 20,
         playerStateCondition: 'normal'
@@ -15,7 +15,7 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '魅惑の囁き',
         description: '心を惑わす声で魅了する',
-        damage: 2,
+        damage: 5,
         hitRate: 0.95,
         statusEffect: StatusEffectType.Charm,
         weight: 30
@@ -24,7 +24,7 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '毒の息',
         description: '有毒な息を吐く',
-        damage: 3,
+        damage: 8,
         hitRate: 0.95,
         statusEffect: StatusEffectType.Poison,
         weight: 25
@@ -33,7 +33,6 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '鈍化の呪い',
         description: '動きを鈍らせる呪いをかける',
-        damage: 2,
         hitRate: 0.95,
         statusEffect: StatusEffectType.Slow,
         weight: 20
@@ -56,7 +55,7 @@ const darkGhostActions: BossAction[] = [
         name: 'なめまわし',
         description: '拘束中の対象を影の舌でなめまわす（与えたダメージ分回復）',
         messages: ['<USER>は舌で<TARGET>をなめまわしてきた！'],
-        damage: 6,
+        damage: 16,
         weight: 30,
         playerStateCondition: 'restrained',
         healRatio: 1.0
@@ -87,7 +86,7 @@ export const darkGhostData: BossData = {
             return {
                 type: ActionType.DevourAttack,
                 name: '魂の捕食',
-                damage: 15,
+                damage: 18,
                 description: '体内にいる獲物の生命エネルギーを吸収する',
                 messages: ['<USER>は<TARGET>の魂からエネルギーを吸い取っている...'],
                 weight: 1
