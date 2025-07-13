@@ -88,6 +88,7 @@ export const darkGhostData: BossData = {
                 type: ActionType.DevourAttack,
                 name: '魂の吸収',
                 description: '体内にいる獲物の魂を吸い取る',
+                messageFirst: 'は<PLAYER_NAME>の魂を吸い取る！',
                 weight: 1
             };
         }
@@ -101,6 +102,7 @@ export const darkGhostData: BossData = {
                         type: ActionType.EatAttack,
                         name: '魂の摂取',
                         description: '魂を吸い取るために対象を丸呑みにする',
+                        messageFirst: 'は大きな口を開け、<PLAYER_NAME>を吸い込む！',
                         weight: 1
                     };
                 }
@@ -112,6 +114,7 @@ export const darkGhostData: BossData = {
                         type: ActionType.RestraintAttack,
                         name: '影の縛り',
                         description: '対象を影の触手で拘束する',
+                        messageFirst: 'は影の触手で<PLAYER_NAME>を捕らえようとしてきた！',
                         weight: 1
                     };
                 } else if (random < 0.85) {
@@ -119,6 +122,7 @@ export const darkGhostData: BossData = {
                         type: ActionType.EatAttack,
                         name: '魂の摂取',
                         description: '魂を吸い取るために対象を丸呑みにする',
+                        messageFirst: 'は大きな口を開け、<PLAYER_NAME>を吸い込む！',
                         weight: 1
                     };
                 }

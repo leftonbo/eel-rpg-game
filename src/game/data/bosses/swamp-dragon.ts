@@ -13,7 +13,7 @@ const swampDragonActions: BossAction[] = [
     {
         type: ActionType.Attack,
         name: '噛みつき',
-        description: '強力な顎で噛みつく（ダメージに大きなゆらぎ）',
+        description: '強力な顎で噛みつく',
         damage: 15,
         weight: 30,
         hitRate: 0.7,
@@ -35,6 +35,7 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.RestraintAttack,
         name: '尻尾巻き付き',
         description: '長い尻尾で対象を拘束する',
+        messageFirst: 'は尻尾で<PLAYER_NAME>を巻き付けてきた！',
         weight: 5,
         canUse: (_boss, player, _turn) => {
             // Only use restraint if player isn't already restrained and occasionally
@@ -45,6 +46,7 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.Attack,
         name: '尻尾しめつけ',
         description: '拘束中の獲物を尻尾でしめつける',
+        messageFirst: 'は尻尾で<PLAYER_NAMEを締め付けている...',
         damage: 8,
         weight: 40,
         playerStateCondition: 'restrained'
@@ -86,24 +88,28 @@ export const swampDragonData: BossData = {
                     type: ActionType.DevourAttack,
                     name: '消化',
                     description: '体内の獲物を消化する',
+                    messageFirst: 'の胃袋が<PLAYER_NAME>を消化しようとしている...',
                     weight: 1
                 },
                 {
                     type: ActionType.DevourAttack,
                     name: '体内締め付け',
                     description: '獲物を体内で締め付ける',
+                    messageFirst: 'の体内が<PLAYER_NAME>を圧迫している...',
                     weight: 1
                 },
                 {
                     type: ActionType.DevourAttack,
                     name: '体内マッサージ',
                     description: '獲物を体内で優しくマッサージする',
+                    messageFirst: 'の胃壁が<PLAYER_NAME>を優しくマッサージしている...',
                     weight: 1
                 },
                 {
                     type: ActionType.DevourAttack,
                     name: 'お腹ゆらし',
                     description: '獲物の入ったお腹をゆらゆらと揺らす',
+                    messageFirst: 'がお腹を揺らして<PLAYER_NAME>を翻弄している...',
                     weight: 1
                 }
             ];
@@ -119,6 +125,7 @@ export const swampDragonData: BossData = {
                         type: ActionType.EatAttack,
                         name: '丸呑み',
                         description: '拘束した獲物を丸呑みする',
+                        messageFirst: 'は<PLAYER_NAME>を大きな口で丸呑みする！',
                         weight: 1
                     };
                 }
@@ -130,6 +137,7 @@ export const swampDragonData: BossData = {
                         type: ActionType.RestraintAttack,
                         name: '尻尾巻き付き',
                         description: '対象を尻尾で拘束する',
+                        messageFirst: 'は尻尾で<PLAYER_NAME>を巻き付けてきた！',
                         weight: 1
                     };
                 } else if (random < 0.9) {
@@ -137,6 +145,7 @@ export const swampDragonData: BossData = {
                         type: ActionType.EatAttack,
                         name: '丸呑み',
                         description: '拘束した獲物を丸呑みする',
+                        messageFirst: 'は<PLAYER_NAME>を大きな口で丸呑みする！',
                         weight: 1
                     };
                 }
