@@ -230,7 +230,7 @@ export class Player {
         this.hp = Math.max(0, this.hp - actualDamage);
         
         // If health reaches 0, apply knocked out status
-        if (this.hp === 0 && !this.statusEffects.hasEffect(StatusEffectType.KnockedOut)) {
+        if (this.hp <= 0 && !this.statusEffects.hasEffect(StatusEffectType.KnockedOut)) {
             this.statusEffects.addEffect(StatusEffectType.KnockedOut);
         }
         
@@ -239,6 +239,9 @@ export class Player {
     
     heal(amount: number): number {
         if (amount <= 0) return 0;
+        
+        // Only heal if hp is below max
+        if (this.hp >= this.maxHp) return 0;
         
         // Apply craftwork healing bonus
         const craftworkMultiplier = 1 + this.abilitySystem.getCraftworkHealingBonus();
