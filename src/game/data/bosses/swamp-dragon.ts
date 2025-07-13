@@ -85,10 +85,11 @@ export const swampDragonData: BossData = {
         if (player.isEaten()) {
             const eatenActions = [
                 {
-                    type: ActionType.DevourAttack,
-                    name: '消化',
-                    description: '体内の獲物を消化する',
-                    messageFirst: 'の胃袋が<PLAYER_NAME>を消化しようとしている...',
+                    type: ActionType.StatusAttack,
+                    name: '胃液分泌',
+                    description: 'ネバネバな胃液を分泌してエルナルを粘液まみれにする',
+                    messageFirst: 'の胃袋が<PLAYER_NAME>をネバネバな胃液まみれにする...',
+                    statusEffect: StatusEffectType.Slimed,
                     weight: 1
                 },
                 {
@@ -209,7 +210,7 @@ swampDragonData.specialDialogues = new Map([
     ['尻尾巻き付き', '沼のドラゴンは長い尻尾を巻き付けてきた！'],
     ['尻尾しめつけ', '沼のドラゴンは尻尾でエルナルを締め付けている...'],
     ['丸呑み', '沼のドラゴンはエルナルを大きな口で丸呑みした！'],
-    ['消化', '沼のドラゴンの胃袋がエルナルを消化しようとしている...'],
+    ['胃液分泌', '沼のドラゴンの胃袋がエルナルをネバネバな胃液まみれにする...'],
     ['体内締め付け', '沼のドラゴンの体内がエルナルを圧迫している...'],
     ['体内マッサージ', '沼のドラゴンの胃壁がエルナルを優しくマッサージしている...'],
     ['お腹ゆらし', '沼のドラゴンがお腹を揺らしてエルナルを翻弄している...']
