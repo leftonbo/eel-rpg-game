@@ -209,17 +209,6 @@ export const swampDragonData: BossData = {
     }
 };
 
-// Add special dialogues for specific actions
-swampDragonData.specialDialogues = new Map([
-    ['尻尾巻き付き', '沼のドラゴンは長い尻尾を巻き付けてきた！'],
-    ['尻尾しめつけ', '沼のドラゴンは尻尾でエルナルを締め付けている...'],
-    ['丸呑み', '沼のドラゴンはエルナルを大きな口で丸呑みした！'],
-    ['胃液分泌', '沼のドラゴンの胃袋がエルナルをネバネバな胃液まみれにする...'],
-    ['体内締め付け', '沼のドラゴンの体内がエルナルを圧迫している...'],
-    ['体内マッサージ', '沼のドラゴンの胃壁がエルナルを優しくマッサージしている...'],
-    ['お腹ゆらし', '沼のドラゴンがお腹を揺らしてエルナルを翻弄している...']
-]);
-
 // Add finishing move for doomed player
 swampDragonData.finishingMove = function() {
     return [

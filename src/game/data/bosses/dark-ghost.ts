@@ -179,16 +179,6 @@ export const darkGhostData: BossData = {
     }
 };
 
-// Add special dialogues for specific actions
-darkGhostData.specialDialogues = new Map([
-    ['触手拘束', '闇のおばけの触手がエルナルに絡みついた！'],
-    ['触手なめ回し', '闇のおばけがエルナルの体を舐め回してきた...'],
-    ['影の抱擁', '闇のおばけがエルナルを影で包み込んだ！'],
-    ['魂吸収', '闇のおばけがエルナルの魂を吸収している...'],
-    ['精神侵食', '闇のおばけがエルナルの精神を侵食している...'],
-    ['悪夢注入', '闇のおばけがエルナルに悪夢を注入している...']
-]);
-
 // Override dialogue for talkative personality
 darkGhostData.getDialogue = function(situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') {
     const dialogues: Record<string, string[]> = {
