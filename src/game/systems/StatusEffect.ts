@@ -13,6 +13,7 @@ export enum StatusEffectType {
     Poison = 'poison',
     Invincible = 'invincible',
     Energized = 'energized',
+    Slimed = 'slimed',
 }
 
 export interface StatusEffect {
@@ -131,6 +132,12 @@ export class StatusEffectManager {
             onTick: (target: any, _effect: StatusEffect) => {
                 target.mp = target.maxMp;
             }
+        }],
+        [StatusEffectType.Slimed, {
+            type: StatusEffectType.Slimed,
+            name: '粘液まみれ',
+            description: '拘束解除の成功率が半減',
+            duration: 3
         }]
     ]);
     
@@ -273,6 +280,10 @@ export class StatusEffectManager {
             modifier *= 0.3; // Much lower success rate when charmed
         }
         
+        if (this.hasEffect(StatusEffectType.Slimed)) {
+            modifier *= 0.5; // Half success rate when slimed
+        }
+        
         return modifier;
     }
     
@@ -311,5 +322,9 @@ export class StatusEffectManager {
     
     isEnergized(): boolean {
         return this.hasEffect(StatusEffectType.Energized);
+    }
+    
+    isSlimed(): boolean {
+        return this.hasEffect(StatusEffectType.Slimed);
     }
 }

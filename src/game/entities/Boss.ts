@@ -366,7 +366,8 @@ export class Boss {
             [StatusEffectType.Poison]: '毒',
             [StatusEffectType.Invincible]: '無敵',
             [StatusEffectType.Exhausted]: '疲れ果て',
-            [StatusEffectType.Energized]: '元気満々'
+            [StatusEffectType.Energized]: '元気満々',
+            [StatusEffectType.Slimed]: '粘液まみれ'
         };
         
         return names[type] || '未知の状態';
