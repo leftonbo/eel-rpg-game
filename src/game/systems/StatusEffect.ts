@@ -1,17 +1,17 @@
 export enum StatusEffectType {
+    Doomed = 'doomed',
+    KnockedOut = 'knocked-out',
+    Exhausted = 'exhausted',
+    Restrained = 'restrained',
+    Eaten = 'eaten',
+    Defending = 'defending',
+    Stunned = 'stunned',
     Fire = 'fire',
     Charm = 'charm',
     Slow = 'slow',
     Poison = 'poison',
-    Restrained = 'restrained',
-    Eaten = 'eaten',
-    Stunned = 'stunned',
     Invincible = 'invincible',
-    Defending = 'defending',
-    KnockedOut = 'knocked-out',
-    Exhausted = 'exhausted',
     Energized = 'energized',
-    Doomed = 'doomed'
 }
 
 export interface StatusEffect {
@@ -38,6 +38,48 @@ export class StatusEffectManager {
     
     // Status effect configurations
     private static configs: Map<StatusEffectType, StatusEffectConfig> = new Map<StatusEffectType, StatusEffectConfig>([
+        [StatusEffectType.Doomed, {
+            type: StatusEffectType.Doomed,
+            name: '再起不能',
+            description: '最大HPが0以下になり、なすがままの行動しかできない',
+            duration: -1 // Permanent until finishing move
+        }],
+        [StatusEffectType.KnockedOut, {
+            type: StatusEffectType.KnockedOut,
+            name: '行動不能',
+            description: '5ターンの間行動できない',
+            duration: 5
+        }],
+        [StatusEffectType.Exhausted, {
+            type: StatusEffectType.Exhausted,
+            name: '疲れ果て',
+            description: 'スキル使用不可、攻撃力半減、受けるダメージ1.5倍',
+            duration: 4
+        }],
+        [StatusEffectType.Restrained, {
+            type: StatusEffectType.Restrained,
+            name: '拘束',
+            description: '行動が制限される',
+            duration: -1 // Duration managed by struggle system
+        }],
+        [StatusEffectType.Eaten, {
+            type: StatusEffectType.Eaten,
+            name: '食べられ',
+            description: '最大HPが毎ターン減少、MP回復阻止',
+            duration: -1, // Until escaped or game over
+        }],
+        [StatusEffectType.Defending, {
+            type: StatusEffectType.Defending,
+            name: '防御',
+            description: '次のターンのダメージを半減',
+            duration: 1
+        }],
+        [StatusEffectType.Stunned, {
+            type: StatusEffectType.Stunned,
+            name: '気絶',
+            description: '行動できない',
+            duration: 2
+        }],
         [StatusEffectType.Fire, {
             type: StatusEffectType.Fire,
             name: '火だるま',
@@ -68,54 +110,11 @@ export class StatusEffectManager {
                 target.takeDamage(3);
             }
         }],
-        [StatusEffectType.Restrained, {
-            type: StatusEffectType.Restrained,
-            name: '拘束',
-            description: '行動が制限される',
-            duration: -1 // Duration managed by struggle system
-        }],
-        [StatusEffectType.Eaten, {
-            type: StatusEffectType.Eaten,
-            name: '食べられ',
-            description: '最大HPが毎ターン減少、MP回復阻止',
-            duration: -1, // Until escaped or game over
-            onTick: (target: any, _effect: StatusEffect) => {
-                // Continuously drain MP while being eaten
-                const mpDrain = Math.min(target.mp, 2);
-                if (mpDrain > 0) {
-                    target.loseMp(mpDrain);
-                }
-            }
-        }],
-        [StatusEffectType.Stunned, {
-            type: StatusEffectType.Stunned,
-            name: '気絶',
-            description: '行動できない',
-            duration: 2
-        }],
         [StatusEffectType.Invincible, {
             type: StatusEffectType.Invincible,
             name: '無敵',
             description: 'すべての攻撃を回避する',
             duration: 3
-        }],
-        [StatusEffectType.Defending, {
-            type: StatusEffectType.Defending,
-            name: '防御',
-            description: '次のターンのダメージを半減',
-            duration: 1
-        }],
-        [StatusEffectType.KnockedOut, {
-            type: StatusEffectType.KnockedOut,
-            name: '行動不能',
-            description: '5ターンの間行動できない',
-            duration: 5
-        }],
-        [StatusEffectType.Exhausted, {
-            type: StatusEffectType.Exhausted,
-            name: '疲れ果て',
-            description: 'スキル使用不可、攻撃力半減、受けるダメージ1.5倍',
-            duration: 4
         }],
         [StatusEffectType.Energized, {
             type: StatusEffectType.Energized,
@@ -125,12 +124,6 @@ export class StatusEffectManager {
             onTick: (target: any, _effect: StatusEffect) => {
                 target.mp = target.maxMp;
             }
-        }],
-        [StatusEffectType.Doomed, {
-            type: StatusEffectType.Doomed,
-            name: '再起不能',
-            description: '最大HPが0以下になり、なすがままの行動しかできない',
-            duration: -1 // Permanent until finishing move
         }]
     ]);
     
@@ -277,10 +270,23 @@ export class StatusEffectManager {
     }
     
     canAct(): boolean {
-        return !this.hasEffect(StatusEffectType.Stunned) && 
+        return !this.hasEffect(StatusEffectType.Doomed) &&
                !this.hasEffect(StatusEffectType.KnockedOut) &&
                !this.hasEffect(StatusEffectType.Restrained) &&
-               !this.hasEffect(StatusEffectType.Eaten);
+               !this.hasEffect(StatusEffectType.Eaten) &&
+               !this.hasEffect(StatusEffectType.Stunned);
+    }
+
+    isDoomed(): boolean {
+        return this.hasEffect(StatusEffectType.Doomed);
+    }
+
+    isKnockedOut(): boolean {
+        return this.hasEffect(StatusEffectType.KnockedOut);
+    }
+
+    isExhausted(): boolean {
+        return this.hasEffect(StatusEffectType.Exhausted);
     }
     
     isRestrained(): boolean {
@@ -291,19 +297,7 @@ export class StatusEffectManager {
         return this.hasEffect(StatusEffectType.Eaten);
     }
     
-    isKnockedOut(): boolean {
-        return this.hasEffect(StatusEffectType.KnockedOut);
-    }
-    
-    isExhausted(): boolean {
-        return this.hasEffect(StatusEffectType.Exhausted);
-    }
-    
     isEnergized(): boolean {
         return this.hasEffect(StatusEffectType.Energized);
-    }
-    
-    isDoomed(): boolean {
-        return this.hasEffect(StatusEffectType.Doomed);
     }
 }
