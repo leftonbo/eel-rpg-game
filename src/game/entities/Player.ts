@@ -117,19 +117,9 @@ export class Player {
         const armorBonus = this.getArmorHpBonus();
         this.maxHp = Math.round(this.baseMaxHp * toughnessMultiplier) + armorBonus;
         
-        // Ensure current HP doesn't exceed new max HP
-        if (this.hp > this.maxHp) {
-            this.hp = this.maxHp;
-        }
-        
         // Calculate MP with endurance bonus
         const enduranceMultiplier = 1 + this.abilitySystem.getEnduranceMpBonus();
         this.maxMp = Math.round(this.baseMaxMp * enduranceMultiplier);
-        
-        // Ensure current MP doesn't exceed new max MP
-        if (this.mp > this.maxMp) {
-            this.mp = this.maxMp;
-        }
         
         // Update items based on new ability levels
         updatePlayerItems(this);
@@ -664,6 +654,12 @@ export class Player {
         // Reset battle-specific flags
         this.struggleAttempts = 0;
         this.isDefending = false;
+        
+        // Recalculate stats based on current abilities and equipment
+        this.recalculateStats();
+        
+        // Reset HP and MP to maximum
+        this.fullRestore();
         
         // Note: Keep progression data (abilities, equipment, items) intact
         // Also preserve maxHp changes from abilities/equipment
