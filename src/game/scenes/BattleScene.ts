@@ -779,7 +779,6 @@ export class BattleScene {
         
         // Check if player is actually dead (after finishing move)
         if (this.player.isDead()) {
-            this.addBattleLogMessage(`${PLAYER_NAME}は完全に消化されてしまった...`, 'system');
             this.addBattleLogMessage('ゲームオーバー', 'system');
             
             const victoryDialogue = this.boss.getDialogue('victory');
@@ -884,10 +883,7 @@ export class BattleScene {
         
         // Simple finishing move: just mark player as dead
         this.player.statusEffects.removeEffect(StatusEffectType.Doomed);
-        this.player.statusEffects.addEffect(StatusEffectType.KnockedOut); // Temporary - will be replaced with actual death
-        
-        // Mark as actually dead by setting HP to negative
-        this.player.hp = -1;
+        this.player.statusEffects.addEffect(StatusEffectType.Dead);
         
         this.addBattleLogMessage(`${this.boss.displayName}のトドメ攻撃！`, 'damage', 'boss');
         this.addBattleLogMessage(`${PLAYER_NAME}にとって致命的な一撃だった...`, 'system');

@@ -1,4 +1,5 @@
 export enum StatusEffectType {
+    Dead = 'dead',
     Doomed = 'doomed',
     KnockedOut = 'knocked-out',
     Exhausted = 'exhausted',
@@ -38,10 +39,16 @@ export class StatusEffectManager {
     
     // Status effect configurations
     private static configs: Map<StatusEffectType, StatusEffectConfig> = new Map<StatusEffectType, StatusEffectConfig>([
+        [StatusEffectType.Dead, {
+            type: StatusEffectType.Dead,
+            name: '再起不能',
+            description: 'これ以上抵抗できない',
+            duration: -1 // Considered received finishing move
+        }],
         [StatusEffectType.Doomed, {
             type: StatusEffectType.Doomed,
             name: '再起不能',
-            description: '最大HPが0以下になり、なすがままの行動しかできない',
+            description: 'これ以上抵抗できない',
             duration: -1 // Permanent until finishing move
         }],
         [StatusEffectType.KnockedOut, {
@@ -270,11 +277,16 @@ export class StatusEffectManager {
     }
     
     canAct(): boolean {
-        return !this.hasEffect(StatusEffectType.Doomed) &&
+        return !this.hasEffect(StatusEffectType.Dead) &&
+               !this.hasEffect(StatusEffectType.Doomed) &&
                !this.hasEffect(StatusEffectType.KnockedOut) &&
                !this.hasEffect(StatusEffectType.Restrained) &&
                !this.hasEffect(StatusEffectType.Eaten) &&
                !this.hasEffect(StatusEffectType.Stunned);
+    }
+
+    isDead(): boolean {
+        return this.hasEffect(StatusEffectType.Dead);
     }
 
     isDoomed(): boolean {

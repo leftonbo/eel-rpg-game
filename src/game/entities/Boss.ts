@@ -318,10 +318,6 @@ export class Boss {
                         player.loseMp(mpDrained);
                         message += ` MPが${mpDrained}吸収された！`;
                     }
-                    
-                    if (player.maxHp <= 0) {
-                        message += ` ${PLAYER_NAME}は完全に消化されてしまった...`;
-                    }
                 } else {
                     message += ` しかし、${PLAYER_NAME}を捕まえていない！`;
                 }
@@ -337,19 +333,20 @@ export class Boss {
     
     private getStatusEffectName(type: StatusEffectType): string {
         const names: Record<StatusEffectType, string> = {
+            [StatusEffectType.Dead]: '再起不能',
+            [StatusEffectType.Doomed]: '再起不能',
+            [StatusEffectType.KnockedOut]: '行動不能',
+            [StatusEffectType.Restrained]: '拘束',
+            [StatusEffectType.Eaten]: '食べられ',
+            [StatusEffectType.Defending]: '防御',
+            [StatusEffectType.Stunned]: '気絶',
             [StatusEffectType.Fire]: '火だるま',
             [StatusEffectType.Charm]: '魅了',
             [StatusEffectType.Slow]: '鈍足',
             [StatusEffectType.Poison]: '毒',
-            [StatusEffectType.Restrained]: '拘束',
-            [StatusEffectType.Eaten]: '食べられ',
-            [StatusEffectType.Stunned]: '気絶',
             [StatusEffectType.Invincible]: '無敵',
-            [StatusEffectType.Defending]: '防御',
-            [StatusEffectType.KnockedOut]: '行動不能',
             [StatusEffectType.Exhausted]: '疲れ果て',
-            [StatusEffectType.Energized]: '元気満々',
-            [StatusEffectType.Doomed]: '再起不能'
+            [StatusEffectType.Energized]: '元気満々'
         };
         
         return names[type] || '未知の状態';

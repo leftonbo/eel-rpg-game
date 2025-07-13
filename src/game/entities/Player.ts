@@ -375,7 +375,7 @@ export class Player {
     }
     
     isDead(): boolean {
-        return this.hp < 0; // Only consider dead when HP is negative (after finishing move)
+        return this.statusEffects.isDead();
     }
     
     startTurn(): void {
@@ -456,13 +456,13 @@ export class Player {
             return [{
                 type: SkillType.GiveUp,
                 name: '☠なすがまま',
-                description: '再起不能のため、なすがままにする',
+                description: '再起不能でもう行動できない',
                 mpCost: 0,
                 canUse: () => true,
                 use: (player: Player) => {
                     return {
                         success: true,
-                        message: `${player.name}は再起不能でなすがままにしている...`,
+                        message: `${player.name}はなすがままにしている...`,
                     };
                 }
             }];
