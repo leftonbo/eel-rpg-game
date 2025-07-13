@@ -541,14 +541,14 @@ export class BattleScene {
                 this.battleStats.damageDealt += actualDamage;
                 this.addBattleLogMessage(`${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage', 'player');
             }
-            
-            this.hideSkillPanel();
-            this.updateUI();
-            this.endPlayerTurn();
         } else {
+            // If skill failed, show message
             this.addBattleLogMessage(result.message, 'system', 'player');
-            this.updateUI();
         }
+
+        this.hideSkillPanel();
+        this.updateUI();
+        this.endPlayerTurn();
     }
     
     private useItem(itemName: string): void {
