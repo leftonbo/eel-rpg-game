@@ -415,22 +415,15 @@ export class Boss {
         return this.stunTurnsRemaining > 0;
     }
     
-    getDialogue(situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory'): string {
+    getDialogue(situation: 'battle-start' | 'victory' | 'defeat'): string {
         // Default dialogue, can be overridden by specific boss implementations
         const dialogues: Record<string, string[]> = {
             'battle-start': ['戦闘開始だ！'],
-            'player-restrained': ['捕まえた！'],
-            'player-eaten': ['美味しそうだ...'],
-            'player-escapes': ['逃げられた！'],
-            'low-hp': ['まだ諦めない！'],
-            'victory': ['勝利した...'  ]
+            'victory': ['勝利した...'],
+            'defeat': ['敗北した...']
         };
         
         const options = dialogues[situation] || dialogues['battle-start'];
         return options[Math.floor(Math.random() * options.length)];
-    }
-    
-    getSpecialDialogue(actionName: string): string | null {
-        return this.specialDialogues.get(actionName) || null;
     }
 }

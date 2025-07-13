@@ -601,9 +601,6 @@ export class BattleScene {
             this.addBattleLogMessage(`${PLAYER_NAME}は拘束を振り切った！`, 'system', 'player');
             this.boss.onRestraintBroken();
             this.addBattleLogMessage(`${this.boss.displayName}は反動で動けなくなった！`, 'system', 'boss');
-            
-            const escapeDialogue = this.boss.getDialogue('player-escapes');
-            this.addBattleLogMessage(escapeDialogue, 'system', 'boss');
         } else {
             this.addBattleLogMessage(`${PLAYER_NAME}はもがいたが、拘束を抜けられなかった...`, 'system', 'player');
         }
@@ -680,24 +677,9 @@ export class BattleScene {
                 this.addBattleLogMessage(message, action.type === ActionType.Attack ? 'damage' : 'status-effect', 'boss');
             });
             
-            // Add special dialogue for this action if available
-            const specialDialogue = this.boss.getSpecialDialogue(action.name);
-            if (specialDialogue) {
-                this.addBattleLogMessage(specialDialogue, 'system', 'boss');
-            }
-            
             // Check if player was knocked down to 0 HP
             if (this.player.hp === 0 && playerHpBefore > 0) {
                 this.addBattleLogMessage(`${PLAYER_NAME}はダウンしてしまった！`, 'system');
-            }
-            
-            // Add boss dialogue based on situation
-            if (action.type === ActionType.RestraintAttack && this.player.isRestrained()) {
-                const restrainDialogue = this.boss.getDialogue('player-restrained');
-                this.addBattleLogMessage(restrainDialogue, 'system', 'boss');
-            } else if (action.type === ActionType.DevourAttack && this.player.isEaten()) {
-                const eatenDialogue = this.boss.getDialogue('player-eaten');
-                this.addBattleLogMessage(eatenDialogue, 'system', 'boss');
             }
         }
         
@@ -758,6 +740,10 @@ export class BattleScene {
         // Check if boss is defeated
         if (this.boss.isDead()) {
             this.addBattleLogMessage(`${this.boss.displayName}を倒した！`, 'system');
+            
+            const defeatDialogue = this.boss.getDialogue('defeat');
+            this.addBattleLogMessage(defeatDialogue, 'boss');
+
             this.addBattleLogMessage('勝利！', 'system');
             this.addBattleLogMessage('「バトル終了」ボタンを押して結果を確認してください。', 'system');
             
@@ -778,10 +764,10 @@ export class BattleScene {
         
         // Check if player is actually dead (after finishing move)
         if (this.player.isDead()) {
-            this.addBattleLogMessage('ゲームオーバー', 'system');
-            
             const victoryDialogue = this.boss.getDialogue('victory');
-            this.addBattleLogMessage(victoryDialogue, 'system');
+            this.addBattleLogMessage(victoryDialogue, 'boss');
+            
+            this.addBattleLogMessage('ゲームオーバー', 'system');
             this.addBattleLogMessage('「バトル終了」ボタンを押して結果を確認してください。', 'system');
             
             // Set battle ended state
