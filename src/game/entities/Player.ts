@@ -458,7 +458,7 @@ export class Player {
                 use: (player: Player) => {
                     return {
                         success: true,
-                        message: `${player.name}はなすがままにしている...`,
+                        message: `${player.name}はもう何もできない...`,
                     };
                 }
             }];
