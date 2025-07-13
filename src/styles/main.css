@@ -220,6 +220,13 @@ body {
     color: #66ff99;
 }
 
+.status-cocoon {
+    background: rgba(139, 69, 19, 0.5);
+    border-color: #8b4513;
+    color: #deb887;
+    animation: shrink 3s ease-in-out infinite alternate;
+}
+
 /* Animations */
 @keyframes pulse {
     from {
@@ -236,6 +243,17 @@ body {
     }
     to {
         box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+    }
+}
+
+@keyframes shrink {
+    from {
+        box-shadow: 0 0 8px rgba(139, 69, 19, 0.6);
+        transform: scale(1);
+    }
+    to {
+        box-shadow: 0 0 20px rgba(139, 69, 19, 0.9);
+        transform: scale(0.95);
     }
 }
 

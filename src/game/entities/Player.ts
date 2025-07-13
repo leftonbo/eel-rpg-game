@@ -275,7 +275,7 @@ export class Player {
     }
     
     attemptStruggle(): boolean {
-        if (!this.statusEffects.isRestrained() && !this.statusEffects.isEaten()) {
+        if (!this.statusEffects.isRestrained() && !this.statusEffects.isEaten() && !this.statusEffects.isCocoon()) {
             return false;
         }
         
@@ -295,9 +295,10 @@ export class Player {
             // Reset struggle attempts
             this.struggleAttempts = 0;
             
-            // Remove restrained or eaten status
+            // Remove restrained, eaten, or cocoon status
             this.statusEffects.removeEffect(StatusEffectType.Restrained);
             this.statusEffects.removeEffect(StatusEffectType.Eaten);
+            this.statusEffects.removeEffect(StatusEffectType.Cocoon);
             
             return true;
         }
@@ -360,6 +361,10 @@ export class Player {
     
     isEaten(): boolean {
         return this.statusEffects.isEaten();
+    }
+    
+    isCocoon(): boolean {
+        return this.statusEffects.isCocoon();
     }
     
     isKnockedOut(): boolean {

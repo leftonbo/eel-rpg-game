@@ -4,6 +4,7 @@ export enum StatusEffectType {
     KnockedOut = 'knocked-out',
     Exhausted = 'exhausted',
     Restrained = 'restrained',
+    Cocoon = 'cocoon',
     Eaten = 'eaten',
     Defending = 'defending',
     Stunned = 'stunned',
@@ -69,6 +70,19 @@ export class StatusEffectManager {
             name: '拘束',
             description: '行動が制限される',
             duration: -1 // Duration managed by struggle system
+        }],
+        [StatusEffectType.Cocoon, {
+            type: StatusEffectType.Cocoon,
+            name: '繭状態',
+            description: '合成糸で包まれ縮小液によって体が縮小されている',
+            duration: -1, // Duration managed by struggle system like restraint
+            onTick: (target: any, _effect: StatusEffect) => {
+                // Reduce max HP each turn to represent shrinking
+                const maxHpReduction = Math.floor(target.maxHp * 0.05); // 5% per turn
+                if (maxHpReduction > 0) {
+                    target.loseMaxHp(maxHpReduction);
+                }
+            }
         }],
         [StatusEffectType.Eaten, {
             type: StatusEffectType.Eaten,
@@ -297,6 +311,7 @@ export class StatusEffectManager {
                !this.hasEffect(StatusEffectType.Doomed) &&
                !this.hasEffect(StatusEffectType.KnockedOut) &&
                !this.hasEffect(StatusEffectType.Restrained) &&
+               !this.hasEffect(StatusEffectType.Cocoon) &&
                !this.hasEffect(StatusEffectType.Eaten) &&
                !this.hasEffect(StatusEffectType.Stunned);
     }
@@ -331,5 +346,9 @@ export class StatusEffectManager {
     
     isSlimed(): boolean {
         return this.hasEffect(StatusEffectType.Slimed);
+    }
+    
+    isCocoon(): boolean {
+        return this.hasEffect(StatusEffectType.Cocoon);
     }
 }

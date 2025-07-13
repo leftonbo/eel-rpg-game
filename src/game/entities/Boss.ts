@@ -21,6 +21,8 @@ export enum ActionType {
     Attack = 'attack',
     StatusAttack = 'status-attack',
     RestraintAttack = 'restraint-attack',
+    CocoonAttack = 'cocoon-attack',
+    CocoonAction = 'cocoon-action',
     EatAttack = 'eat-attack',
     DevourAttack = 'devour-attack',
     Skip = 'skip'
@@ -39,7 +41,7 @@ export interface BossAction {
     hitRate?: number; // Attack hit rate (default: 95%)
     criticalRate?: number; // Critical hit rate (default: 5%)
     statusChance?: number; // Status effect application chance (default: 100%)
-    playerStateCondition?: 'normal' | 'ko' | 'restrained' | 'eaten'; // Required player state
+    playerStateCondition?: 'normal' | 'ko' | 'restrained' | 'cocoon' | 'eaten'; // Required player state
     healRatio?: number; // HP absorption ratio from damage dealt (0.0 = no healing, 1.0 = 100% healing)
     damageVarianceMin?: number; // Minimum damage variance percentage (default: -20)
     damageVarianceMax?: number; // Maximum damage variance percentage (default: +20)
@@ -186,8 +188,9 @@ export class Boss {
         return availableActions[0]; // Fallback
     }
     
-    public getPlayerState(player: Player): 'normal' | 'ko' | 'restrained' | 'eaten' {
+    public getPlayerState(player: Player): 'normal' | 'ko' | 'restrained' | 'cocoon' | 'eaten' {
         if (player.isEaten()) return 'eaten';
+        if (player.statusEffects.isCocoon()) return 'cocoon';
         if (player.isRestrained()) return 'restrained';
         if (player.isKnockedOut()) return 'ko';
         return 'normal';
@@ -306,6 +309,49 @@ export class Boss {
                 player.statusEffects.addEffect(StatusEffectType.Restrained);
                 player.struggleAttempts = 0; // Reset struggle attempts
                 messages.push(`${player.name}が拘束された！`);
+                break;
+                
+            case ActionType.CocoonAttack:
+                // Transform restrained state to cocoon state
+                if (player.isRestrained()) {
+                    player.statusEffects.removeEffect(StatusEffectType.Restrained);
+                }
+                player.statusEffects.addEffect(StatusEffectType.Cocoon);
+                player.struggleAttempts = 0; // Reset struggle attempts
+                messages.push(`${player.name}が繭状態になった！`);
+                break;
+                
+            case ActionType.CocoonAction:
+                if (player.statusEffects.isCocoon()) {
+                    const baseDamage = action.damage || 0;
+                    const maxHpReduction = action.damage || Math.floor(player.maxHp * 0.1); // Default 10% max HP reduction
+                    
+                    if (maxHpReduction > 0) {
+                        player.loseMaxHp(maxHpReduction);
+                        messages.push(`${player.name}の最大HPが${maxHpReduction}減少した！`);
+                        
+                        // Check for HP absorption for boss healing/growth
+                        if (action.healRatio && action.healRatio > 0) {
+                            const healedAmount = this.healFromDamage(maxHpReduction, action.healRatio);
+                            if (healedAmount > 0) {
+                                messages.push(`${this.displayName}は${healedAmount}HP回復した！`);
+                            }
+                            
+                            // Boss can also gain max HP (for certain actions like "circulation")
+                            const maxHpGain = Math.floor(maxHpReduction * (action.healRatio || 0));
+                            if (maxHpGain > 0) {
+                                this.gainMaxHp(maxHpGain);
+                                messages.push(`${this.displayName}の最大HPが${maxHpGain}増加した！`);
+                            }
+                        }
+                    }
+                    
+                    // Apply direct damage if specified
+                    if (baseDamage > 0) {
+                        const actualDamage = player.takeDamage(baseDamage);
+                        messages.push(`${player.name}に${actualDamage}のダメージ！`);
+                    }
+                }
                 break;
                 
             case ActionType.EatAttack:
