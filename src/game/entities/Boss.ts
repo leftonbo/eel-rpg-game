@@ -43,6 +43,7 @@ export interface BossData {
     aiStrategy?: (boss: Boss, player: Player, turn: number) => BossAction;
     getDialogue?: (situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') => string;
     specialDialogues?: Map<string, string>;
+    finishingMove?: () => string[];
 }
 
 export class Boss {
@@ -58,6 +59,7 @@ export class Boss {
     public personality: string[];
     public aiStrategy?: (boss: Boss, player: Player, turn: number) => BossAction;
     public specialDialogues: Map<string, string> = new Map();
+    public finishingMove?: () => string[];
     public stunTurnsRemaining: number = 0; // For restraint break stun
     
     constructor(data: BossData) {
@@ -72,6 +74,7 @@ export class Boss {
         this.personality = data.personality || [];
         this.aiStrategy = data.aiStrategy;
         this.specialDialogues = data.specialDialogues || new Map();
+        this.finishingMove = data.finishingMove;
     }
     
     takeDamage(amount: number): number {

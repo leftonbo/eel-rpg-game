@@ -863,15 +863,22 @@ export class BattleScene {
     private performFinishingMove(): void {
         if (!this.boss || !this.player) return;
         
-        // For now, use a simple finishing move - this can be expanded later
-        this.addBattleLogMessage(`${this.boss.displayName}はトドメを刺そうとしている...`, 'system', 'boss');
+        // Use boss-specific finishing move if available
+        if (this.boss.finishingMove) {
+            const messages = this.boss.finishingMove();
+            messages.forEach(message => {
+                this.addBattleLogMessage(message, 'system', 'boss');
+            });
+        } else {
+            // Default finishing move
+            this.addBattleLogMessage(`${this.boss.displayName}はトドメを刺そうとしている...`, 'system', 'boss');
+            this.addBattleLogMessage(`${this.boss.displayName}のトドメ攻撃！`, 'damage', 'boss');
+            this.addBattleLogMessage(`${PLAYER_NAME}にとって致命的な一撃だった...`, 'system');
+        }
         
-        // Simple finishing move: just mark player as dead
+        // Mark player as dead
         this.player.statusEffects.removeEffect(StatusEffectType.Doomed);
         this.player.statusEffects.addEffect(StatusEffectType.Dead);
-        
-        this.addBattleLogMessage(`${this.boss.displayName}のトドメ攻撃！`, 'damage', 'boss');
-        this.addBattleLogMessage(`${PLAYER_NAME}にとって致命的な一撃だった...`, 'system');
         
         this.endBossTurn();
     }

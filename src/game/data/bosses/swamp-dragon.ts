@@ -216,6 +216,14 @@ swampDragonData.specialDialogues = new Map([
     ['お腹ゆらし', '沼のドラゴンがお腹を揺らしてエルナルを翻弄している...']
 ]);
 
+// Add finishing move for doomed player
+swampDragonData.finishingMove = function() {
+    return [
+        '沼のドラゴンは力尽きたエルナルを体内の奥深くに送り込む！',
+        'エルナルは体内に閉じ込められ、沼のドラゴンが満足するまで消化され続けることになった...'
+    ];
+};
+
 // Override dialogue for personality
 swampDragonData.getDialogue = function(situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') {
     const dialogues: Record<string, string[]> = {
