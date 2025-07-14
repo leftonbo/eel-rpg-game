@@ -1,9 +1,9 @@
 name: Deploy to GitHub Pages
 
 on:
-  # mainブランチへのpush時に実行
-  push:
-    branches: [ main ]
+  # release作成時に実行
+  release:
+    types: [published]
   
   # 手動実行も可能
   workflow_dispatch:
