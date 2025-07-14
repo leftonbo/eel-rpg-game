@@ -494,7 +494,7 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 95,
         weight: 5,
         playerStateCondition: 'restrained',
-        canUse: (boss, player, turn) => {
+        canUse: (_boss, player, _turn) => {
             // Need restraint counter implementation - for now use turn based approximation
             // Player must be restrained for 7+ turns
             return player.isRestrained() && Math.random() < 0.3; // Temporary logic
