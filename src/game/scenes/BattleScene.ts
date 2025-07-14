@@ -272,7 +272,7 @@ export class BattleScene {
                 this.actionButtons.classList.add('d-none');
                 this.specialActions.classList.add('d-none');
                 this.battleEndActions.classList.remove('d-none');
-            } else if (isRestrained || isKnockedOut) {
+            } else if (isRestrained || isKnockedOut || this.player.statusEffects.isSleeping()) {
                 this.actionButtons.classList.add('d-none');
                 this.specialActions.classList.remove('d-none');
                 this.battleEndActions.classList.add('d-none');
