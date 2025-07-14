@@ -93,7 +93,7 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Seduction,
         statusChance: 80,
         weight: 20,
-        messages: ['<USER>は魅惑的なポーズを取った', '<TARGET>は思わず見とれてしまった...']
+        messages: ['<USER>は急接近し深いべろちゅーをしてきた！', '<TARGET>は完全に悩殺されてしまった...']
     },
     {
         type: ActionType.StatusAttack,
@@ -485,32 +485,26 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は<TARGET>の思考を洗脳した', '<TARGET>の心が完全に支配されてしまった...']
     },
     
-    // Sleep-inducing attacks (triggered when player has enough debuffs)
+    // Sleep-inducing attacks (restraint-only, after 7 turns restrained)
     {
         type: ActionType.StatusAttack,
         name: '眠りのキス',
-        description: '強いキスで相手を眠らせる',
+        description: '拘束中の相手に眠りを誘うキスをする',
         statusEffect: StatusEffectType.Sleep,
         statusChance: 95,
         weight: 5,
-        canUse: (_boss, player, _turn) => {
-            // Use when player has 10+ debuff levels
-            return player.statusEffects.getDebuffLevel() >= 10;
+        playerStateCondition: 'restrained',
+        canUse: (boss, player, turn) => {
+            // Need restraint counter implementation - for now use turn based approximation
+            // Player must be restrained for 7+ turns
+            return player.isRestrained() && Math.random() < 0.3; // Temporary logic
         },
-        messages: ['<USER>は<TARGET>に近づいてきた...', '<USER>は<TARGET>に深いキスをした...', '<TARGET>は眠りに落ちてしまった...']
-    },
-    {
-        type: ActionType.StatusAttack,
-        name: '眠りの粉',
-        description: '魔法の粉で相手を眠らせる',
-        statusEffect: StatusEffectType.Sleep,
-        statusChance: 90,
-        weight: 5,
-        canUse: (_boss, player, _turn) => {
-            // Use when player has 10+ debuff levels
-            return player.statusEffects.getDebuffLevel() >= 10;
-        },
-        messages: ['<USER>は眠りを誘う粉を撒いた', '<TARGET>は深い眠りに落ちてしまった...']
+        messages: [
+            '<USER>はくちびるに強く魔力を蓄えると、<TARGET>に熱く深いキスをした...',
+            '<TARGET>は眠りに落ちてしまい、<USER>の夢の世界にとらわれてしまった...',
+            '<TARGET>が睡眠状態になった！',
+            '<TARGET>が夢操作状態になった！'
+        ]
     }
 ];
 
@@ -536,30 +530,184 @@ export const dreamDemonData: BossData = {
     aiStrategy: (boss, player, turn) => {
         // Dream Demon AI Strategy - Focus on debuff stacking and strategic restraint
         
-        // If player is eaten, devour them
+        // If player is eaten, use random stomach attacks
         if (player.isEaten()) {
-            return {
-                type: ActionType.DevourAttack,
-                name: '生気吸収',
-                damage: 20,
-                description: '体内にいる獲物の生命エネルギーを吸収する',
-                messages: ['<USER>は<TARGET>の生気をちゅーちゅーと吸い取っている...'],
-                weight: 1
-            };
+            const stomachAttacks = [
+                {
+                    type: ActionType.DevourAttack,
+                    name: '胃壁圧迫',
+                    damage: 18,
+                    description: '胃壁で獲物を圧迫して生気を搾り取る',
+                    messages: [
+                        '<USER>の胃壁が<TARGET>を優しく圧迫してきた...',
+                        '<TARGET>は胃壁に包まれながら生気を吸い取られている...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '消化液愛撫',
+                    damage: 20,
+                    description: '特殊な消化液で獲物を愛撫しながら消化する',
+                    messages: [
+                        '<USER>の甘い消化液が<TARGET>を包み込んだ...',
+                        '<TARGET>は消化液に愛撫されながら生気が溶けていく...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '胃内マッサージ',
+                    damage: 16,
+                    description: '胃の内側から優しくマッサージして生気を吸収',
+                    messages: [
+                        '<USER>は胃の中で<TARGET>を優しくマッサージしている...',
+                        '<TARGET>は心地よいマッサージを受けながら生気を奪われている...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '生気直接吸収',
+                    damage: 22,
+                    description: '体内で直接生気を吸い取る',
+                    messages: [
+                        '<USER>は<TARGET>の生気を直接ちゅーちゅーと吸い取り始めた...',
+                        '<TARGET>は生気を根こそぎ吸い取られて意識が朦朧としている...'
+                    ],
+                    weight: 1
+                }
+            ];
+            
+            return stomachAttacks[Math.floor(Math.random() * stomachAttacks.length)];
         }
         
-        // If player is sleeping, use dream attacks
+        // If player is sleeping, use random dream attacks
         if (player.statusEffects.isSleeping()) {
-            return {
-                type: ActionType.StatusAttack,
-                name: '夢魔の本領発揮',
-                damage: 15,
-                statusEffect: StatusEffectType.PleasureFall,
-                statusChance: 100,
-                description: '夢の中で強烈な誘惑攻撃を行う',
-                messages: ['<USER>は夢の中で本領を発揮した！', '<TARGET>は夢の中で激しい誘惑を受けている...'],
-                weight: 1
-            };
+            const dreamAttacks = [
+                {
+                    type: ActionType.DevourAttack,
+                    name: '夢中激しい密着',
+                    damage: 6,
+                    description: '夢の中で体を激しく密着させて生気を吸い取る',
+                    messages: [
+                        '<USER>は夢の中で<TARGET>に激しく体を密着させた',
+                        '<USER>は<TARGET>の生気を激しくちゅーちゅーと吸い取っている...',
+                        '<TARGET>は生気が吸い取られているのを感じながら気持ちよくて抵抗できない！'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '夢中魔力べろちゅー',
+                    damage: 7,
+                    description: '夢の中で魔力を込めたべろちゅーで生気を吸い取る',
+                    messages: [
+                        '<USER>は夢の中で魔力を込めて<TARGET>にべろちゅーをした',
+                        '<USER>は<TARGET>の生気をべろちゅーで吸い取っている...',
+                        '<TARGET>は魔力に侵されながら生気を奪われていく...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '夢中抱き着き攻撃',
+                    damage: 5,
+                    description: '夢の中で抱き着いて激しく動きながら生気を吸い取る',
+                    messages: [
+                        '<USER>は夢の中で<TARGET>に抱き着いて激しく動いた',
+                        '<USER>は密着しながら<TARGET>の生気をちゅーちゅーと吸い取っている...',
+                        '<TARGET>は抱き着かれながら生気を奪われて快感に溺れている！'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '夢中触手愛撫',
+                    damage: 6,
+                    description: '夢の中で触手を使って愛撫しながら生気を吸い取る',
+                    messages: [
+                        '<USER>は夢の中で無数の触手で<TARGET>を愛撫した',
+                        '<USER>の触手は<TARGET>の生気をじわじわと吸い取っている...',
+                        '<TARGET>は触手に愛撫されながら生気を搾り取られていく...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '夢中魔法圧迫',
+                    damage: 7,
+                    description: '夢の中で魔法の力で圧迫しながら生気を吸い取る',
+                    messages: [
+                        '<USER>は夢の中で魔法の力で<TARGET>を圧迫した',
+                        '<USER>は魔法で<TARGET>の生気を強制的に吸い取っている...',
+                        '<TARGET>は魔法に圧迫されながら生気を根こそぎ奪われている！'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '夢中激しい揺さぶり',
+                    damage: 5,
+                    description: '夢の中で激しく揺さぶりながら生気を吸い取る',
+                    messages: [
+                        '<USER>は夢の中で<TARGET>を激しく揺さぶった',
+                        '<USER>は揺さぶりながら<TARGET>の生気をどんどん吸い取っている...',
+                        '<TARGET>は激しく揺さぶられながら生気を吸い取られて意識が朦朧としている...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '夢中魅惑の舞',
+                    damage: 6,
+                    description: '夢の中で魅惑的な舞を踊りながら生気を吸い取る',
+                    messages: [
+                        '<USER>は夢の中で<TARGET>の周りで魅惑的な舞を踊った',
+                        '<USER>の舞は<TARGET>の生気を踊りながら吸い取っている...',
+                        '<TARGET>は魅惑の舞に見とれながら生気をちゅーちゅー吸われている！'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '夢中魔力注入',
+                    damage: 7,
+                    description: '夢の中で魔力を注入しながら生気を吸い取る',
+                    messages: [
+                        '<USER>は夢の中で<TARGET>に直接魔力を注入した',
+                        '<USER>の魔力は<TARGET>の生気を内側から吸い取っている...',
+                        '<TARGET>は魔力に侵食されながら生気を内側から奪われていく...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '夢中甘い誘惑',
+                    damage: 5,
+                    description: '夢の中で甘い誘惑をしながら生気を吸い取る',
+                    messages: [
+                        '<USER>は夢の中で<TARGET>に甘い誘惑をささやいた',
+                        '<USER>は甘い言葉で<TARGET>の生気をそっと吸い取っている...',
+                        '<TARGET>は甘い誘惑に溺れながら生気を静かに奪われている...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '夢中完全支配',
+                    damage: 6,
+                    description: '夢の中で完全に支配しながら生気を吸い取る',
+                    messages: [
+                        '<USER>は夢の中で<TARGET>を完全に支配した',
+                        '<USER>は支配した<TARGET>の生気を容赦なく吸い取っている...',
+                        '<TARGET>は完全に支配されながら生気を全て奪われていく！'
+                    ],
+                    weight: 1
+                }
+            ];
+            
+            return dreamAttacks[Math.floor(Math.random() * dreamAttacks.length)];
         }
         
         // Calculate debuff level
@@ -584,8 +732,9 @@ export const dreamDemonData: BossData = {
                 description: '弱り切った獲物をゆっくりと丸呑みにする',
                 messages: [
                     '<USER>はクスクスと笑い始めた...',
+                    '<TARGET>は生気を吸い取られすぎて動けなくなってしまった...',
                     '<USER>はゆっくりと<TARGET>に近づいてくる...',
-                    '<USER>は<TARGET>をゆっくりと口に含んでいく......',
+                    '<USER>は動けなくなった<TARGET>をゆっくりと口に含んでいく......',
                     'ごっくん......',
                     '<TARGET>は<USER>のお腹の中に取り込まれてしまった...'
                 ],
@@ -815,4 +964,14 @@ dreamDemonData.getDialogue = function(situation: 'battle-start' | 'player-restra
     
     const options = dialogues[situation] || dialogues['battle-start'];
     return options[Math.floor(Math.random() * options.length)];
+};
+
+// Add finishing move for final victory
+dreamDemonData.finishingMove = function() {
+    return [
+        '<USER>は力尽きた<TARGET>を完全に消化してしまった...',
+        '<USER>はお腹をさすりながら満足げな表情を浮かべる',
+        'けぷっ、おいしかったぁ♡',
+        '<TARGET>は<USER>の一部となって永遠に夢の世界に残ることになった...'
+    ];
 };
