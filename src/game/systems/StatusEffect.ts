@@ -31,6 +31,7 @@ export enum StatusEffectType {
     Brainwash = 'brainwash',
     Sweet = 'sweet',
     Sleep = 'sleep',
+    DreamControl = 'dream-control',
     // Additional sweet/charming debuffs
     Melting = 'melting',
     Euphoria = 'euphoria',
@@ -318,6 +319,12 @@ export class StatusEffectManager {
             name: '睡眠',
             description: '完全に眠っており行動不能',
             duration: 10
+        }],
+        [StatusEffectType.DreamControl, {
+            type: StatusEffectType.DreamControl,
+            name: '夢操作',
+            description: '夢の世界に閉じ込められ、完全に支配されている',
+            duration: -1 // Permanent while sleeping
         }],
         [StatusEffectType.Melting, {
             type: StatusEffectType.Melting,
@@ -744,6 +751,10 @@ export class StatusEffectManager {
     
     isEnchanted(): boolean {
         return this.hasEffect(StatusEffectType.Enchantment);
+    }
+    
+    isDreamControlled(): boolean {
+        return this.hasEffect(StatusEffectType.DreamControl);
     }
     
     // Helper method to calculate debuff level for Dream Demon's sleep trigger
