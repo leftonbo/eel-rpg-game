@@ -365,7 +365,7 @@ export class Boss {
                 break;
                 
             case ActionType.DevourAttack:
-                if (player.statusEffects.isEaten()) {
+                {
                     // Apply variance to absorption amount
                     const baseAbsorption = action.damage || this.attackPower;
                     const statusAttackResult = calculateAttackResult(
