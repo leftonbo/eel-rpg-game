@@ -2,11 +2,13 @@ import { BossData } from '../entities/Boss';
 import { swampDragonData } from './bosses/swamp-dragon';
 import { darkGhostData } from './bosses/dark-ghost';
 import { mechSpiderData } from './bosses/mech-spider';
+import { dreamDemonData } from './bosses/dream-demon';
 
 export const bosses: Map<string, BossData> = new Map([
     ['swamp-dragon', swampDragonData],
     ['dark-ghost', darkGhostData],
-    ['mech-spider', mechSpiderData]
+    ['mech-spider', mechSpiderData],
+    ['dream-demon', dreamDemonData]
 ]);
 
 export function getBossData(id: string): BossData | undefined {
@@ -17,4 +19,4 @@ export function getAllBossData(): BossData[] {
     return Array.from(bosses.values());
 }
 
-export { swampDragonData, darkGhostData, mechSpiderData };
+export { swampDragonData, darkGhostData, mechSpiderData, dreamDemonData };
