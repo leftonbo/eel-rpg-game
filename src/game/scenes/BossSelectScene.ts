@@ -198,8 +198,8 @@ export class BossSelectScene {
             // Update progress bar
             const progressElement = document.getElementById(`${prefix}-progress`);
             if (progressElement && data.experienceToNext > 0) {
-                const currentLevelExp = data.experience - (data.level > 0 ? Math.pow(data.level, 3) * 100 : 0);
-                const nextLevelExp = Math.pow(data.level + 1, 3) * 100 - (data.level > 0 ? Math.pow(data.level, 3) * 100 : 0);
+                const currentLevelExp = data.experience - (data.level > 0 ? Math.pow(data.level, 3) * 50 : 0);
+                const nextLevelExp = Math.pow(data.level + 1, 3) * 50 - (data.level > 0 ? Math.pow(data.level, 3) * 50 : 0);
                 const percentage = (currentLevelExp / nextLevelExp) * 100;
                 progressElement.style.width = `${percentage}%`;
             }

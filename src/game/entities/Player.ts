@@ -285,6 +285,10 @@ export class Player {
         let baseSuccessRate = 0.3 + (this.struggleAttempts - 1) * 0.2;
         baseSuccessRate = Math.min(baseSuccessRate, 0.9); // Cap at 90%
         
+        // Apply agility bonus
+        const agilityBonus = this.abilitySystem.getAgilityEscapeBonus();
+        baseSuccessRate += agilityBonus;
+        
         // Apply charm modifier
         const modifier = this.statusEffects.getStruggleModifier();
         const finalSuccessRate = baseSuccessRate * modifier;
@@ -300,8 +304,14 @@ export class Player {
             this.statusEffects.removeEffect(StatusEffectType.Eaten);
             this.statusEffects.removeEffect(StatusEffectType.Cocoon);
             
+            // Add agility experience for successful escape
+            this.addExperience(AbilityType.Agility, 5);
+            
             return true;
         }
+        
+        // Add agility experience for failed escape (2x amount)
+        this.addExperience(AbilityType.Agility, 10);
         
         return false;
     }
@@ -557,6 +567,10 @@ export class Player {
                     let baseSuccessRate = 0.3 + (player.struggleAttempts) * 0.2;
                     baseSuccessRate = Math.min(baseSuccessRate, 1.0);
                     
+                    // Apply agility bonus
+                    const agilityBonus = player.abilitySystem.getAgilityEscapeBonus();
+                    baseSuccessRate += agilityBonus;
+                    
                     const modifier = player.statusEffects.getStruggleModifier();
                     let finalSuccessRate = baseSuccessRate * modifier * successMultiplier;
                     finalSuccessRate = Math.min(finalSuccessRate, 1.0);
@@ -569,6 +583,9 @@ export class Player {
                         player.statusEffects.removeEffect(StatusEffectType.Restrained);
                         player.statusEffects.removeEffect(StatusEffectType.Eaten);
                         
+                        // Add agility experience for successful escape
+                        player.addExperience(AbilityType.Agility, 8);
+                        
                         return {
                             success: true,
                             message: mpInsufficient ? 
@@ -579,6 +596,9 @@ export class Player {
                     } else {
                         // Increase future struggle success significantly on failure
                         player.struggleAttempts += mpInsufficient ? 4 : 2;
+                        
+                        // Add agility experience for failed escape (2x amount)
+                        player.addExperience(AbilityType.Agility, 16);
                         
                         return {
                             success: false,

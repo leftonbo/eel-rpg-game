@@ -156,7 +156,8 @@ export class BattleResultScene {
             [AbilityType.Combat]: '⚔️ コンバット',
             [AbilityType.Toughness]: '🛡️ タフネス',
             [AbilityType.CraftWork]: '🔧 クラフトワーク',
-            [AbilityType.Endurance]: '💪 エンデュランス'
+            [AbilityType.Endurance]: '💪 エンデュランス',
+            [AbilityType.Agility]: '🏃 アジリティ'
         };
         return names[abilityType] || abilityType;
     }

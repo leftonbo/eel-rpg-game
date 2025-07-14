@@ -2,7 +2,8 @@ export enum AbilityType {
     Combat = 'combat',
     Toughness = 'toughness',
     CraftWork = 'craftwork',
-    Endurance = 'endurance'
+    Endurance = 'endurance',
+    Agility = 'agility'
 }
 
 export interface AbilityData {
@@ -149,6 +150,16 @@ export class AbilitySystem {
         if (!enduranceAbility) return 0;
         
         return enduranceAbility.level / 10; // 10% per level (level/10 = multiplier)
+    }
+    
+    /**
+     * Calculate agility restrain escape bonus (5% per level)
+     */
+    getAgilityEscapeBonus(): number {
+        const agilityAbility = this.abilities.get(AbilityType.Agility);
+        if (!agilityAbility) return 0;
+        
+        return agilityAbility.level * 0.05; // 5% per level
     }
     
     /**
