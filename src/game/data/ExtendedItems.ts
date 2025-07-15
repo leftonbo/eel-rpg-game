@@ -1,5 +1,5 @@
 import { AbilityType } from '../systems/AbilitySystem';
-import { StatusEffectType } from '../systems/StatusEffect';
+import { StatusEffectType, StatusEffectManager } from '../systems/StatusEffect';
 import { Player } from '../entities/Player';
 
 export interface ExtendedItemData {
@@ -34,17 +34,11 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
             const healAmount = Math.floor(player.maxHp * 0.8);
             player.heal(healAmount);
             
-            // Remove all negative status effects except knocked out, restrained, and eaten
-            const effectsToRemove = [
-                StatusEffectType.Fire,
-                StatusEffectType.Charm,
-                StatusEffectType.Slow,
-                StatusEffectType.Poison
-            ];
-            
-            effectsToRemove.forEach(effect => {
-                player.statusEffects.removeEffect(effect);
-            });
+            // Remove all debuff status effects using the new system
+            const removedDebuffs = player.statusEffects.removeDebuffs();
+            if (removedDebuffs.length > 0) {
+                console.log('回復薬で解除されたデバフ:', removedDebuffs.map(type => StatusEffectManager.getEffectName(type)).join(', '));
+            }
             
             player.items.get('heal-potion')!.count--;
             return true;
@@ -146,17 +140,11 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
             // Full heal
             player.heal(player.maxHp);
             
-            // Remove all negative status effects
-            const effectsToRemove = [
-                StatusEffectType.Fire,
-                StatusEffectType.Charm,
-                StatusEffectType.Slow,
-                StatusEffectType.Poison
-            ];
-            
-            effectsToRemove.forEach(effect => {
-                player.statusEffects.removeEffect(effect);
-            });
+            // Remove all debuff status effects using the new system
+            const removedDebuffs = player.statusEffects.removeDebuffs();
+            if (removedDebuffs.length > 0) {
+                console.log('エリクサーで解除されたデバフ:', removedDebuffs.map(type => StatusEffectManager.getEffectName(type)).join(', '));
+            }
             
             // Add energized effect
             player.statusEffects.addEffect(StatusEffectType.Energized);
@@ -195,17 +183,11 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
             // Full heal
             player.heal(player.maxHp);
             
-            // Remove all negative status effects
-            const effectsToRemove = [
-                StatusEffectType.Fire,
-                StatusEffectType.Charm,
-                StatusEffectType.Slow,
-                StatusEffectType.Poison
-            ];
-            
-            effectsToRemove.forEach(effect => {
-                player.statusEffects.removeEffect(effect);
-            });
+            // Remove all debuff status effects using the new system
+            const removedDebuffs = player.statusEffects.removeDebuffs();
+            if (removedDebuffs.length > 0) {
+                console.log('おまもりで解除されたデバフ:', removedDebuffs.map(type => StatusEffectManager.getEffectName(type)).join(', '));
+            }
             
             player.items.get('omamori')!.count--;
             return true;
