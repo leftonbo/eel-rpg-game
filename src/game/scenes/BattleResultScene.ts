@@ -180,13 +180,15 @@ export function calculateBattleResult(
     damageTaken: number,
     itemsUsed: number,
     mpSpent: number,
-    knockedOut: boolean
+    knockedOut: boolean,
+    agilityExperience: number = 0
 ): BattleResult {
     const experienceGained: { [key: string]: number } = {
         [AbilityType.Combat]: damageDealt,
         [AbilityType.Toughness]: damageTaken + (knockedOut ? 50 : 0),
         [AbilityType.CraftWork]: itemsUsed * 50,
-        [AbilityType.Endurance]: mpSpent * 3
+        [AbilityType.Endurance]: mpSpent * 3,
+        [AbilityType.Agility]: agilityExperience
     };
     
     const levelUps: { [key: string]: { previousLevel: number; newLevel: number } } = {};

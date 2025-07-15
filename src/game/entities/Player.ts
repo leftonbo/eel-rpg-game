@@ -53,6 +53,9 @@ export class Player {
     public maxMp: number = 50;
     public mp: number = 50;
     
+    // Agility experience callback
+    public agilityExperienceCallback?: (amount: number) => void;
+    
     public statusEffects: StatusEffectManager = new StatusEffectManager();
     public items: Map<string, PlayerItem> = new Map();
     public isDefending: boolean = false;
@@ -304,14 +307,18 @@ export class Player {
             this.statusEffects.removeEffect(StatusEffectType.Eaten);
             this.statusEffects.removeEffect(StatusEffectType.Cocoon);
             
-            // Add agility experience for successful escape
-            this.addExperience(AbilityType.Agility, 5);
+            // Notify agility experience for successful escape
+            if (this.agilityExperienceCallback) {
+                this.agilityExperienceCallback(5);
+            }
             
             return true;
         }
         
-        // Add agility experience for failed escape (2x amount)
-        this.addExperience(AbilityType.Agility, 10);
+        // Notify agility experience for failed escape (2x amount)
+        if (this.agilityExperienceCallback) {
+            this.agilityExperienceCallback(10);
+        }
         
         return false;
     }
@@ -583,8 +590,10 @@ export class Player {
                         player.statusEffects.removeEffect(StatusEffectType.Restrained);
                         player.statusEffects.removeEffect(StatusEffectType.Eaten);
                         
-                        // Add agility experience for successful escape
-                        player.addExperience(AbilityType.Agility, 8);
+                        // Notify agility experience for successful escape
+                        if (player.agilityExperienceCallback) {
+                            player.agilityExperienceCallback(8);
+                        }
                         
                         return {
                             success: true,
@@ -597,8 +606,10 @@ export class Player {
                         // Increase future struggle success significantly on failure
                         player.struggleAttempts += mpInsufficient ? 4 : 2;
                         
-                        // Add agility experience for failed escape (2x amount)
-                        player.addExperience(AbilityType.Agility, 16);
+                        // Notify agility experience for failed escape (2x amount)
+                        if (player.agilityExperienceCallback) {
+                            player.agilityExperienceCallback(16);
+                        }
                         
                         return {
                             success: false,

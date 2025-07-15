@@ -20,7 +20,8 @@ export class BattleScene {
         damageTaken: 0,
         itemsUsed: 0,
         mpSpent: 0,
-        wasKnockedOut: false
+        wasKnockedOut: false,
+        agilityExperience: 0
     };
     
     // UI Elements
@@ -130,6 +131,11 @@ export class BattleScene {
             return;
         }
         
+        // Set agility experience callback
+        this.player.agilityExperienceCallback = (amount: number) => {
+            this.addAgilityExperience(amount);
+        };
+        
         this.turnCount = 0;
         this.playerTurn = true;
         this.battleEnded = false;
@@ -140,7 +146,8 @@ export class BattleScene {
             damageTaken: 0,
             itemsUsed: 0,
             mpSpent: 0,
-            wasKnockedOut: false
+            wasKnockedOut: false,
+            agilityExperience: 0
         };
         
         // Reset battle-specific state for safety
@@ -839,7 +846,8 @@ export class BattleScene {
                 this.battleStats.damageTaken,
                 this.battleStats.itemsUsed,
                 this.battleStats.mpSpent,
-                this.battleStats.wasKnockedOut
+                this.battleStats.wasKnockedOut,
+                this.battleStats.agilityExperience
             );
             this.game.showBattleResult(battleResult);
         } else {
@@ -865,9 +873,17 @@ export class BattleScene {
             this.battleStats.damageTaken,
             this.battleStats.itemsUsed,
             this.battleStats.mpSpent,
-            this.battleStats.wasKnockedOut
+            this.battleStats.wasKnockedOut,
+            this.battleStats.agilityExperience
         );
         this.game.showBattleResult(battleResult);
+    }
+    
+    /**
+     * Add agility experience to battle stats
+     */
+    public addAgilityExperience(amount: number): void {
+        this.battleStats.agilityExperience += amount;
     }
     
     /**
