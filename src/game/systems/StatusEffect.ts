@@ -57,6 +57,17 @@ export interface StatusEffectConfig {
     onTick?: (target: any, effect: StatusEffect) => void;
     onRemove?: (target: any) => void;
     stackable?: boolean;
+    
+    // New properties for better organization
+    category: 'buff' | 'debuff' | 'neutral';
+    isDebuff: boolean;
+    modifiers?: {
+        attackPower?: number; // Multiplier for attack power (default: 1.0)
+        damageReceived?: number; // Multiplier for damage received (default: 1.0)
+        struggleRate?: number; // Multiplier for struggle success rate (default: 1.0)
+        canAct?: boolean; // Whether the entity can act (default: true)
+        canUseSkills?: boolean; // Whether skills can be used (default: true)
+    };
 }
 
 export class StatusEffectManager {
@@ -68,37 +79,69 @@ export class StatusEffectManager {
             type: StatusEffectType.Dead,
             name: '再起不能',
             description: 'これ以上抵抗できない',
-            duration: -1 // Considered received finishing move
+            duration: -1, // Considered received finishing move
+            category: 'neutral',
+            isDebuff: false,
+            modifiers: {
+                canAct: false
+            }
         }],
         [StatusEffectType.Doomed, {
             type: StatusEffectType.Doomed,
             name: '再起不能',
             description: 'これ以上抵抗できない',
-            duration: -1 // Permanent until finishing move
+            duration: -1, // Permanent until finishing move
+            category: 'neutral',
+            isDebuff: false,
+            modifiers: {
+                canAct: false
+            }
         }],
         [StatusEffectType.KnockedOut, {
             type: StatusEffectType.KnockedOut,
             name: '行動不能',
             description: '5ターンの間行動できない',
-            duration: 5
+            duration: 5,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                canAct: false
+            }
         }],
         [StatusEffectType.Exhausted, {
             type: StatusEffectType.Exhausted,
             name: '疲れ果て',
             description: 'スキル使用不可、攻撃力半減、受けるダメージ1.5倍',
-            duration: 4
+            duration: 4,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                attackPower: 0.5,
+                damageReceived: 1.5,
+                canUseSkills: false
+            }
         }],
         [StatusEffectType.Restrained, {
             type: StatusEffectType.Restrained,
             name: '拘束',
             description: '行動が制限される',
-            duration: -1 // Duration managed by struggle system
+            duration: -1, // Duration managed by struggle system
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                canAct: false
+            }
         }],
         [StatusEffectType.Cocoon, {
             type: StatusEffectType.Cocoon,
             name: '繭状態',
             description: '合成糸で包まれ縮小液によって体が縮小されている',
             duration: -1, // Duration managed by struggle system like restraint
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                canAct: false
+            },
             onTick: (target: any, _effect: StatusEffect) => {
                 // Reduce max HP each turn to represent shrinking
                 const maxHpReduction = Math.floor(target.maxHp * 0.05); // 5% per turn
@@ -112,24 +155,41 @@ export class StatusEffectManager {
             name: '食べられ',
             description: '最大HPが毎ターン減少、MP回復阻止',
             duration: -1, // Until escaped or game over
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                canAct: false
+            }
         }],
         [StatusEffectType.Defending, {
             type: StatusEffectType.Defending,
             name: '防御',
             description: '次のターンのダメージを半減',
-            duration: 1
+            duration: 1,
+            category: 'buff',
+            isDebuff: false,
+            modifiers: {
+                damageReceived: 0.5
+            }
         }],
         [StatusEffectType.Stunned, {
             type: StatusEffectType.Stunned,
             name: '気絶',
             description: '行動できない',
-            duration: 3
+            duration: 3,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                canAct: false
+            }
         }],
         [StatusEffectType.Fire, {
             type: StatusEffectType.Fire,
             name: '火だるま',
             description: '毎ターンHPが8減少',
             duration: 2,
+            category: 'debuff',
+            isDebuff: true,
             onTick: (target: any, _effect: StatusEffect) => {
                 target.takeDamage(8);
             }
@@ -139,6 +199,11 @@ export class StatusEffectManager {
             name: '魅了',
             description: 'もがくの成功率が大幅低下、MP減少',
             duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                struggleRate: 0.3
+            },
             onTick: (target: any, _effect: StatusEffect) => {
                 const mpLoss = Math.min(target.mp, 1);
                 if (mpLoss > 0) {
@@ -150,13 +215,20 @@ export class StatusEffectManager {
             type: StatusEffectType.Slow,
             name: '鈍足',
             description: '攻撃力が半減',
-            duration: 2
+            duration: 2,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                attackPower: 0.5
+            }
         }],
         [StatusEffectType.Poison, {
             type: StatusEffectType.Poison,
             name: '毒',
             description: '毎ターンHPが3減少',
             duration: 3,
+            category: 'debuff',
+            isDebuff: true,
             onTick: (target: any, _effect: StatusEffect) => {
                 target.takeDamage(3);
             }
@@ -165,13 +237,20 @@ export class StatusEffectManager {
             type: StatusEffectType.Invincible,
             name: '無敵',
             description: 'すべての攻撃を回避する',
-            duration: 3
+            duration: 3,
+            category: 'buff',
+            isDebuff: false,
+            modifiers: {
+                damageReceived: 0
+            }
         }],
         [StatusEffectType.Energized, {
             type: StatusEffectType.Energized,
             name: '元気満々',
             description: 'MPが常に満タン',
             duration: 3,
+            category: 'buff',
+            isDebuff: false,
             onTick: (target: any, _effect: StatusEffect) => {
                 target.mp = target.maxMp;
             }
@@ -180,19 +259,34 @@ export class StatusEffectManager {
             type: StatusEffectType.Slimed,
             name: '粘液まみれ',
             description: '拘束解除の成功率が半減',
-            duration: 3
+            duration: 3,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                struggleRate: 0.5
+            }
         }],
         [StatusEffectType.Paralysis, {
             type: StatusEffectType.Paralysis,
             name: '麻痺',
             description: '時々行動不能になり、攻撃力が大幅低下',
-            duration: 20
+            duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                attackPower: 0.3
+            }
         }],
         [StatusEffectType.AphrodisiacPoison, {
             type: StatusEffectType.AphrodisiacPoison,
             name: '淫毒',
             description: '毎ターンMP減少＋魅了効果が蓄積',
             duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                struggleRate: 0.4
+            },
             onTick: (target: any, _effect: StatusEffect) => {
                 const mpLoss = Math.min(target.mp, 2);
                 if (mpLoss > 0) {
@@ -204,19 +298,35 @@ export class StatusEffectManager {
             type: StatusEffectType.Drowsiness,
             name: 'ねむけ',
             description: '時々眠ってしまい行動不能、重ねがけで睡眠状態に',
-            duration: 20
+            duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                attackPower: 0.7
+            }
         }],
         [StatusEffectType.Weakness, {
             type: StatusEffectType.Weakness,
             name: '脱力',
             description: '攻撃力と防御力が大幅低下',
-            duration: 20
+            duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                attackPower: 0.4,
+                damageReceived: 1.3
+            }
         }],
         [StatusEffectType.Infatuation, {
             type: StatusEffectType.Infatuation,
             name: 'メロメロ',
             description: '魅了の強化版、拘束解除率がさらに低下、MP大幅減少',
             duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                struggleRate: 0.2
+            },
             onTick: (target: any, _effect: StatusEffect) => {
                 const mpLoss = Math.min(target.mp, 3);
                 if (mpLoss > 0) {
@@ -228,13 +338,23 @@ export class StatusEffectManager {
             type: StatusEffectType.Confusion,
             name: '混乱',
             description: '時々間違った行動をとってしまう',
-            duration: 20
+            duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                attackPower: 0.6
+            }
         }],
         [StatusEffectType.Arousal, {
             type: StatusEffectType.Arousal,
             name: '発情',
             description: '拘束解除率が大幅低下、判断力が鈍る、MP減少',
             duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                struggleRate: 0.25
+            },
             onTick: (target: any, _effect: StatusEffect) => {
                 const mpLoss = Math.min(target.mp, 2);
                 if (mpLoss > 0) {
@@ -247,6 +367,12 @@ export class StatusEffectManager {
             name: '悩殺',
             description: '複合デバフ、様々な能力が低下、MP減少',
             duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                attackPower: 0.5,
+                struggleRate: 0.3
+            },
             onTick: (target: any, _effect: StatusEffect) => {
                 const mpLoss = Math.min(target.mp, 2);
                 if (mpLoss > 0) {
@@ -258,13 +384,25 @@ export class StatusEffectManager {
             type: StatusEffectType.MagicSeal,
             name: '魔法封印',
             description: 'MP使用不可、スキルが封印される',
-            duration: 20
+            duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                canUseSkills: false
+            }
         }],
         [StatusEffectType.PleasureFall, {
             type: StatusEffectType.PleasureFall,
             name: '快楽堕ち',
             description: '重篤なデバフ複合状態、全能力が大幅低下、MP大幅減少',
             duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                attackPower: 0.2,
+                damageReceived: 1.8,
+                struggleRate: 0.1
+            },
             onTick: (target: any, _effect: StatusEffect) => {
                 const mpLoss = Math.min(target.mp, 4);
                 if (mpLoss > 0) {
@@ -277,6 +415,12 @@ export class StatusEffectManager {
             name: '淫乱',
             description: '行動が不安定になり、時々行動不能、MP減少',
             duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                attackPower: 0.6,
+                struggleRate: 0.4
+            },
             onTick: (target: any, _effect: StatusEffect) => {
                 const mpLoss = Math.min(target.mp, 2);
                 if (mpLoss > 0) {
@@ -288,13 +432,24 @@ export class StatusEffectManager {
             type: StatusEffectType.Hypnosis,
             name: '催眠',
             description: '完全な行動不能状態',
-            duration: 15
+            duration: 15,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                canAct: false
+            }
         }],
         [StatusEffectType.Brainwash, {
             type: StatusEffectType.Brainwash,
             name: '洗脳',
             description: '永続的な思考支配、解除困難、MP減少',
             duration: 30,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                canAct: false,
+                canUseSkills: false
+            },
             onTick: (target: any, _effect: StatusEffect) => {
                 const mpLoss = Math.min(target.mp, 3);
                 if (mpLoss > 0) {
@@ -307,6 +462,12 @@ export class StatusEffectManager {
             name: 'あまあま',
             description: '幸福状態でデバフに無抵抗、MP減少',
             duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                damageReceived: 1.2,
+                struggleRate: 0.6
+            },
             onTick: (target: any, _effect: StatusEffect) => {
                 const mpLoss = Math.min(target.mp, 1);
                 if (mpLoss > 0) {
@@ -318,19 +479,36 @@ export class StatusEffectManager {
             type: StatusEffectType.Sleep,
             name: '睡眠',
             description: '完全に眠っており行動不能',
-            duration: 10
+            duration: 10,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                canAct: false
+            }
         }],
         [StatusEffectType.DreamControl, {
             type: StatusEffectType.DreamControl,
             name: '夢操作',
             description: '夢の世界に閉じ込められ、完全に支配されている',
-            duration: -1 // Permanent while sleeping
+            duration: -1, // Permanent while sleeping
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                canAct: false,
+                canUseSkills: false
+            }
         }],
         [StatusEffectType.Melting, {
             type: StatusEffectType.Melting,
             name: 'とろとろ',
             description: '意識がとろけて抵抗力低下、MP減少',
             duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                attackPower: 0.5,
+                struggleRate: 0.4
+            },
             onTick: (target: any, _effect: StatusEffect) => {
                 const mpLoss = Math.min(target.mp, 2);
                 if (mpLoss > 0) {
@@ -343,6 +521,12 @@ export class StatusEffectManager {
             name: 'うっとり',
             description: '恍惚状態で判断力低下、MP減少',
             duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                attackPower: 0.6,
+                struggleRate: 0.5
+            },
             onTick: (target: any, _effect: StatusEffect) => {
                 const mpLoss = Math.min(target.mp, 1);
                 if (mpLoss > 0) {
@@ -355,6 +539,12 @@ export class StatusEffectManager {
             name: '魅惑',
             description: '深い魅惑状態、行動意欲低下、MP減少',
             duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                attackPower: 0.5,
+                struggleRate: 0.3
+            },
             onTick: (target: any, _effect: StatusEffect) => {
                 const mpLoss = Math.min(target.mp, 2);
                 if (mpLoss > 0) {
@@ -367,6 +557,12 @@ export class StatusEffectManager {
             name: '至福',
             description: '至福の陶酔状態、抵抗不能、MP減少',
             duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                attackPower: 0.3,
+                struggleRate: 0.1
+            },
             onTick: (target: any, _effect: StatusEffect) => {
                 const mpLoss = Math.min(target.mp, 3);
                 if (mpLoss > 0) {
@@ -379,6 +575,12 @@ export class StatusEffectManager {
             name: '魅了術',
             description: '強力な魅了魔法の効果、完全支配、MP減少',
             duration: 20,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                attackPower: 0.2,
+                struggleRate: 0.15
+            },
             onTick: (target: any, _effect: StatusEffect) => {
                 const mpLoss = Math.min(target.mp, 2);
                 if (mpLoss > 0) {
@@ -496,28 +698,11 @@ export class StatusEffectManager {
     getAttackModifier(): number {
         let modifier = 1.0;
         
-        if (this.hasEffect(StatusEffectType.Slow)) {
-            modifier *= 0.5; // Half attack power
-        }
-        
-        if (this.hasEffect(StatusEffectType.Exhausted)) {
-            modifier *= 0.5; // Half attack power when exhausted
-        }
-        
-        if (this.hasEffect(StatusEffectType.Paralysis)) {
-            modifier *= 0.3; // Severe attack power reduction
-        }
-        
-        if (this.hasEffect(StatusEffectType.Weakness)) {
-            modifier *= 0.4; // Significant attack power reduction
-        }
-        
-        if (this.hasEffect(StatusEffectType.Seduction)) {
-            modifier *= 0.6; // Moderate attack power reduction
-        }
-        
-        if (this.hasEffect(StatusEffectType.PleasureFall)) {
-            modifier *= 0.2; // Severe attack power reduction
+        for (const [type, _effect] of this.effects) {
+            const config = StatusEffectManager.configs.get(type);
+            if (config?.modifiers?.attackPower !== undefined) {
+                modifier *= config.modifiers.attackPower;
+            }
         }
         
         return modifier;
@@ -526,28 +711,11 @@ export class StatusEffectManager {
     getDamageModifier(): number {
         let modifier = 1.0;
         
-        if (this.hasEffect(StatusEffectType.Defending)) {
-            modifier *= 0.5; // Half damage taken
-        }
-        
-        if (this.hasEffect(StatusEffectType.Invincible)) {
-            modifier = 0; // No damage taken
-        }
-        
-        if (this.hasEffect(StatusEffectType.Exhausted)) {
-            modifier *= 1.5; // 1.5x damage taken when exhausted
-        }
-        
-        if (this.hasEffect(StatusEffectType.Weakness)) {
-            modifier *= 1.3; // Increased damage taken
-        }
-        
-        if (this.hasEffect(StatusEffectType.PleasureFall)) {
-            modifier *= 1.8; // Severe damage increase
-        }
-        
-        if (this.hasEffect(StatusEffectType.Sweet)) {
-            modifier *= 1.4; // Increased vulnerability
+        for (const [type, _effect] of this.effects) {
+            const config = StatusEffectManager.configs.get(type);
+            if (config?.modifiers?.damageReceived !== undefined) {
+                modifier *= config.modifiers.damageReceived;
+            }
         }
         
         return modifier;
@@ -556,83 +724,24 @@ export class StatusEffectManager {
     getStruggleModifier(): number {
         let modifier = 1.0;
         
-        if (this.hasEffect(StatusEffectType.Charm)) {
-            modifier *= 0.3; // Much lower success rate when charmed
-        }
-        
-        if (this.hasEffect(StatusEffectType.Slimed)) {
-            modifier *= 0.5; // Half success rate when slimed
-        }
-        
-        if (this.hasEffect(StatusEffectType.Infatuation)) {
-            modifier *= 0.2; // Even lower success rate
-        }
-        
-        if (this.hasEffect(StatusEffectType.Arousal)) {
-            modifier *= 0.25; // Very low success rate
-        }
-        
-        if (this.hasEffect(StatusEffectType.Seduction)) {
-            modifier *= 0.4; // Reduced success rate
-        }
-        
-        if (this.hasEffect(StatusEffectType.PleasureFall)) {
-            modifier *= 0.1; // Extremely low success rate
-        }
-        
-        if (this.hasEffect(StatusEffectType.Sweet)) {
-            modifier *= 0.15; // Very low success rate
-        }
-        
-        if (this.hasEffect(StatusEffectType.Weakness)) {
-            modifier *= 0.6; // Reduced success rate
-        }
-        
-        if (this.hasEffect(StatusEffectType.Paralysis)) {
-            modifier *= 0.4; // Reduced success rate
-        }
-        
-        if (this.hasEffect(StatusEffectType.Lewdness)) {
-            modifier *= 0.3; // Reduced success rate
-        }
-        
-        if (this.hasEffect(StatusEffectType.Melting)) {
-            modifier *= 0.2; // Very low success rate
-        }
-        
-        if (this.hasEffect(StatusEffectType.Euphoria)) {
-            modifier *= 0.25; // Very low success rate
-        }
-        
-        if (this.hasEffect(StatusEffectType.Fascination)) {
-            modifier *= 0.15; // Extremely low success rate
-        }
-        
-        if (this.hasEffect(StatusEffectType.Bliss)) {
-            modifier *= 0.1; // Extremely low success rate
-        }
-        
-        if (this.hasEffect(StatusEffectType.Enchantment)) {
-            modifier *= 0.05; // Nearly impossible success rate
-        }
-        
-        if (this.hasEffect(StatusEffectType.Brainwash)) {
-            modifier *= 0.05; // Nearly impossible success rate
+        for (const [type, _effect] of this.effects) {
+            const config = StatusEffectManager.configs.get(type);
+            if (config?.modifiers?.struggleRate !== undefined) {
+                modifier *= config.modifiers.struggleRate;
+            }
         }
         
         return modifier;
     }
     
     canAct(): boolean {
-        return !this.hasEffect(StatusEffectType.Dead) &&
-               !this.hasEffect(StatusEffectType.Doomed) &&
-               !this.hasEffect(StatusEffectType.KnockedOut) &&
-               !this.hasEffect(StatusEffectType.Restrained) &&
-               !this.hasEffect(StatusEffectType.Cocoon) &&
-               !this.hasEffect(StatusEffectType.Eaten) &&
-               !this.hasEffect(StatusEffectType.Stunned) &&
-               !this.hasEffect(StatusEffectType.Hypnosis) &&
-               !this.hasEffect(StatusEffectType.Sleep);
+        for (const [type, _effect] of this.effects) {
+            const config = StatusEffectManager.configs.get(type);
+            if (config?.modifiers?.canAct === false) {
+                return false;
+            }
+        }
+        return true;
     }
 
     isDead(): boolean {
@@ -763,16 +872,55 @@ export class StatusEffectManager {
         const effects = this.getAllEffects();
         
         for (const effect of effects) {
-            // Count each debuff type (excluding neutral or positive effects)
-            if (![
-                StatusEffectType.Defending,
-                StatusEffectType.Invincible,
-                StatusEffectType.Energized
-            ].includes(effect.type)) {
+            const config = StatusEffectManager.configs.get(effect.type);
+            if (config?.isDebuff) {
                 level += 1;
             }
         }
         
         return level;
+    }
+    
+    // New methods for debuff management
+    getDebuffEffects(): StatusEffect[] {
+        return this.getAllEffects().filter(effect => {
+            const config = StatusEffectManager.configs.get(effect.type);
+            return config?.isDebuff === true;
+        });
+    }
+    
+    removeDebuffs(): StatusEffectType[] {
+        const removedTypes: StatusEffectType[] = [];
+        const debuffEffects = this.getDebuffEffects();
+        
+        for (const effect of debuffEffects) {
+            if (this.removeEffect(effect.type)) {
+                removedTypes.push(effect.type);
+            }
+        }
+        
+        return removedTypes;
+    }
+    
+    removeSpecificDebuffs(debuffTypes: StatusEffectType[]): StatusEffectType[] {
+        const removedTypes: StatusEffectType[] = [];
+        
+        for (const type of debuffTypes) {
+            if (this.hasEffect(type) && this.removeEffect(type)) {
+                removedTypes.push(type);
+            }
+        }
+        
+        return removedTypes;
+    }
+    
+    canUseSkills(): boolean {
+        for (const [type, _effect] of this.effects) {
+            const config = StatusEffectManager.configs.get(type);
+            if (config?.modifiers?.canUseSkills === false) {
+                return false;
+            }
+        }
+        return true;
     }
 }
