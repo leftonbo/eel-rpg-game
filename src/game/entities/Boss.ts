@@ -1,6 +1,7 @@
 import { StatusEffectManager, StatusEffectType } from '../systems/StatusEffect';
 import { Player } from './Player';
 import { calculateAttackResult } from '../utils/CombatUtils';
+import { Actor } from './Actor';
 
 // Message formatter utility
 export function formatMessage(template: string, nameUser: string, nameTarget: string): string {
@@ -62,16 +63,11 @@ export interface BossData {
     finishingMove?: () => string[];
 }
 
-export class Boss {
+export class Boss extends Actor {
     public id: string;
     public name: string;
-    public displayName: string;
     public description: string;
     public questNote: string;
-    public maxHp: number;
-    public hp: number;
-    public attackPower: number;
-    public statusEffects: StatusEffectManager = new StatusEffectManager();
     public actions: BossAction[];
     public personality: string[];
     public aiStrategy?: (boss: Boss, player: Player, turn: number) => BossAction;
@@ -79,38 +75,43 @@ export class Boss {
     public finishingMove?: () => string[];
     
     constructor(data: BossData) {
+        // Boss has unlimited MP (無尽蔵) - set to a high value
+        super(data.displayName, data.maxHp, data.attackPower, 999999);
         this.id = data.id;
         this.name = data.name;
-        this.displayName = data.displayName;
         this.description = data.description;
         this.questNote = data.questNote;
-        this.maxHp = data.maxHp;
-        this.hp = data.maxHp;
-        this.attackPower = data.attackPower;
         this.actions = data.actions;
         this.personality = data.personality || [];
         this.aiStrategy = data.aiStrategy;
         this.finishingMove = data.finishingMove;
     }
-    
-    takeDamage(amount: number): number {
-        if (amount <= 0) return 0;
-        
-        const actualDamage = Math.max(0, amount);
-        this.hp = Math.max(0, this.hp - actualDamage);
-        
-        return actualDamage;
+
+    /**
+     * Recalculate stats based on boss data
+     */
+    recalculateStats(): void {
+        // Boss stats are fixed by BossData, no additional calculations needed
+        // MP remains unlimited
+        this.mp = this.maxMp;
     }
-    
-    heal(amount: number): number {
-        if (amount <= 0) return 0;
-        
-        const oldHp = this.hp;
-        this.hp = Math.min(this.maxHp, this.hp + amount);
-        
-        return this.hp - oldHp;
+
+    /**
+     * Boss has unlimited MP - override to always return true
+     */
+    consumeMp(_amount: number): boolean {
+        // Boss MP is unlimited, so consumption always succeeds
+        return true;
     }
-    
+
+    /**
+     * Boss has unlimited MP - override to do nothing
+     */
+    recoverMp(_amount: number): number {
+        // Boss MP is unlimited, no recovery needed
+        return 0;
+    }
+
     /**
      * Heal HP based on damage dealt with a ratio
      */
@@ -121,22 +122,7 @@ export class Boss {
         return this.heal(healAmount);
     }
     
-    /**
-     * Increase both max HP and current HP (for devour absorption)
-     */
-    gainMaxHp(amount: number): number {
-        if (amount <= 0) return 0;
-        
-        const oldMaxHp = this.maxHp;
-        this.maxHp += amount;
-        this.hp += amount; // Increase current HP by the same amount
-        
-        return this.maxHp - oldMaxHp;
-    }
     
-    canAct(): boolean {
-        return this.statusEffects.canAct() && this.hp > 0;
-    }
     
     selectAction(player: Player, turn: number): BossAction | null {
         if (!this.canAct()) {
@@ -431,6 +417,7 @@ export class Boss {
     }
     
     startTurn(): void {
+        // Boss MP is unlimited, so we override to avoid MP recovery
         // Status effects are now managed by StatusEffectManager
         // Duration reduction happens in processRoundEnd()
     }
@@ -439,32 +426,17 @@ export class Boss {
     processRoundEnd(): string[] {
         const messages: string[] = [];
         
-        // Apply status effect damages/effects
-        const effectMessages = this.statusEffects.applyEffects(this);
-        effectMessages.forEach(message => {
-            messages.push(`${this.displayName}の${message}`);
-        });
-        
-        // Decrease durations and remove expired effects
-        const durationMessages = this.statusEffects.decreaseDurations(this);
-        durationMessages.forEach(message => {
+        // Call parent processRoundEnd for status effect processing
+        const parentMessages = super.processRoundEnd();
+        parentMessages.forEach(message => {
             messages.push(`${this.displayName}の${message}`);
         });
         
         return messages;
     }
     
-    getHpPercentage(): number {
-        return this.maxHp > 0 ? (this.hp / this.maxHp) * 100 : 0;
-    }
     
-    isDead(): boolean {
-        return this.hp <= 0;
-    }
     
-    isStunned(): boolean {
-        return this.statusEffects.hasEffect(StatusEffectType.Stunned);
-    }
     
     getDialogue(situation: 'battle-start' | 'victory' | 'defeat'): string {
         // Default dialogue, can be overridden by specific boss implementations
