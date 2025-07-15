@@ -309,7 +309,7 @@ export class Player {
             
             // Notify agility experience for successful escape
             if (this.agilityExperienceCallback) {
-                this.agilityExperienceCallback(5);
+                this.agilityExperienceCallback(50);
             }
             
             return true;
@@ -317,7 +317,7 @@ export class Player {
         
         // Notify agility experience for failed escape (2x amount)
         if (this.agilityExperienceCallback) {
-            this.agilityExperienceCallback(10);
+            this.agilityExperienceCallback(100);
         }
         
         return false;
@@ -592,7 +592,7 @@ export class Player {
                         
                         // Notify agility experience for successful escape
                         if (player.agilityExperienceCallback) {
-                            player.agilityExperienceCallback(8);
+                            player.agilityExperienceCallback(100);
                         }
                         
                         return {
@@ -604,11 +604,11 @@ export class Player {
                         };
                     } else {
                         // Increase future struggle success significantly on failure
-                        player.struggleAttempts += mpInsufficient ? 4 : 2;
+                        player.struggleAttempts += mpInsufficient ? 8 : 4;
                         
                         // Notify agility experience for failed escape (2x amount)
                         if (player.agilityExperienceCallback) {
-                            player.agilityExperienceCallback(16);
+                            player.agilityExperienceCallback(400);
                         }
                         
                         return {
