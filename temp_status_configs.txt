@@ -1,0 +1,55 @@
+        [StatusEffectType.Slow, {
+            type: StatusEffectType.Slow,
+            name: '鈍足',
+            description: '攻撃力が半減',
+            duration: 2,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                attackPower: 0.5
+            }
+        }],
+        [StatusEffectType.Poison, {
+            type: StatusEffectType.Poison,
+            name: '毒',
+            description: '毎ターンHPが3減少',
+            duration: 3,
+            category: 'debuff',
+            isDebuff: true,
+            onTick: (target: any, _effect: StatusEffect) => {
+                target.takeDamage(3);
+            }
+        }],
+        [StatusEffectType.Invincible, {
+            type: StatusEffectType.Invincible,
+            name: '無敵',
+            description: 'すべての攻撃を回避する',
+            duration: 3,
+            category: 'buff',
+            isDebuff: false,
+            modifiers: {
+                damageReceived: 0
+            }
+        }],
+        [StatusEffectType.Energized, {
+            type: StatusEffectType.Energized,
+            name: '元気満々',
+            description: 'MPが常に満タン',
+            duration: 3,
+            category: 'buff',
+            isDebuff: false,
+            onTick: (target: any, _effect: StatusEffect) => {
+                target.mp = target.maxMp;
+            }
+        }],
+        [StatusEffectType.Slimed, {
+            type: StatusEffectType.Slimed,
+            name: '粘液まみれ',
+            description: '拘束解除の成功率が半減',
+            duration: 3,
+            category: 'debuff',
+            isDebuff: true,
+            modifiers: {
+                struggleRate: 0.5
+            }
+        }],
