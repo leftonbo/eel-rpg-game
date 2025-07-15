@@ -1,18 +1,36 @@
 export enum StatusEffectType {
+    // `Dead` is for Player to make game-over state.
+    // NOTE: It's not meaning actual "death".
     Dead = 'dead',
+    // `Doomed` is for Player to mark defeat state (MaxHP = 0). 
+    // It can be used to trigger special defeat scenes.
     Doomed = 'doomed',
+    // `KnockedOut` is for any actor to mark incapacitated state (HP = 0).
+    // If Boss is KnockedOut, the player win.
+    // If Player is KnockedOut, it continues some turns
+    // then recover itself and heald 50% of MaxHP.
     KnockedOut = 'knocked-out',
+    // `Exhausted` is for Player to mark exhausted state (MP = 0).
+    // Player's skills are disabled until MP is recovered or after some turns.
     Exhausted = 'exhausted',
+    // `Restrained` is for Player to mark restrained state.
+    // Player cannot act, but can struggle to escape.
     Restrained = 'restrained',
+    // `Cocoon` is special state for Mech Spider.
     Cocoon = 'cocoon',
+    // `Eaten` is for Player to mark eaten state.
     Eaten = 'eaten',
+    // `Defending` is for defensive state.
     Defending = 'defending',
+    // `Stunned` is for Player / Boss to mark stunned state.
     Stunned = 'stunned',
     Fire = 'fire',
     Charm = 'charm',
     Slow = 'slow',
     Poison = 'poison',
+    // `Invincible` is from Adrenaline Shot (Item)
     Invincible = 'invincible',
+    // `Energized` is from Energy Drink (Item)
     Energized = 'energized',
     Slimed = 'slimed',
     // New status effects for Dream Demon
