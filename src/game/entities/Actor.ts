@@ -152,10 +152,10 @@ export abstract class Actor {
     }
 
     /**
-     * Check if actor is dead
+     * Check if actor is defeated
      */
-    isDead(): boolean {
-        return this.hp <= 0;
+    isDefeated(): boolean {
+        return this.statusEffects.isKnockedOut();
     }
 
     /**

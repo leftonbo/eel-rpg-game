@@ -357,8 +357,14 @@ export class Player extends Actor {
         
         return messages;
     }
-    
-    
+
+    /**
+     * Check if player is defeated
+     */
+    isDefeated(): boolean {
+        // consider player defeated if marked as "dead"
+        return this.statusEffects.isDead();
+    }
     
     getAvailableSkills(): Skill[] {
         // If doomed, only allow give up action
