@@ -1,7 +1,8 @@
-import { StatusEffectManager, StatusEffectType } from '../systems/StatusEffect';
+import { StatusEffectType } from '../systems/StatusEffect';
 import { AbilitySystem, AbilityType, Equipment, WEAPONS, ARMORS } from '../systems/AbilitySystem';
 import { PlayerSaveManager, PlayerSaveData } from '../systems/PlayerSaveData';
 import { updatePlayerItems } from '../data/ExtendedItems';
+import { Actor } from './Actor';
 
 export enum SkillType {
     PowerAttack = 'power-attack',
@@ -39,7 +40,7 @@ export interface PlayerItem {
     use: (player: Player) => boolean;
 }
 
-export class Player {
+export class Player extends Actor {
     public name: string = PLAYER_NAME;
     
     // Base stats (before equipment/abilities)
@@ -47,16 +48,8 @@ export class Player {
     public baseMaxMp: number = 50;
     public baseAttackPower: number = 5;
     
-    // Current stats (calculated with equipment/abilities)
-    public maxHp: number = 100;
-    public hp: number = 100;
-    public maxMp: number = 50;
-    public mp: number = 50;
-    
     // Agility experience callback
     public agilityExperienceCallback?: (amount: number) => void;
-    
-    public statusEffects: StatusEffectManager = new StatusEffectManager();
     public items: Map<string, PlayerItem> = new Map();
     public isDefending: boolean = false;
     public struggleAttempts: number = 0; // For restrain escape probability
@@ -68,6 +61,7 @@ export class Player {
     public unlockedItems: Set<string> = new Set();
     
     constructor() {
+        super(PLAYER_NAME, 100, 5, 50);
         this.loadFromSave();
         this.initializeItems();
         this.recalculateStats();
@@ -220,21 +214,6 @@ export class Player {
         return result;
     }
     
-    takeDamage(amount: number): number {
-        if (amount <= 0) return 0;
-        
-        const modifier = this.statusEffects.getDamageModifier();
-        const actualDamage = Math.floor(amount * modifier);
-        
-        this.hp = Math.max(0, this.hp - actualDamage);
-        
-        // If health reaches 0, apply knocked out status
-        if (this.hp <= 0 && !this.statusEffects.hasEffect(StatusEffectType.KnockedOut)) {
-            this.statusEffects.addEffect(StatusEffectType.KnockedOut);
-        }
-        
-        return actualDamage;
-    }
     
     heal(amount: number): number {
         if (amount <= 0) return 0;
@@ -257,13 +236,6 @@ export class Player {
         return this.hp - oldHp;
     }
     
-    /**
-     * Fully restore HP and MP to maximum values
-     */
-    public fullRestore(): void {
-        this.hp = this.maxHp;
-        this.mp = this.maxMp;
-    }
     
     defend(): void {
         this.isDefending = true;
@@ -333,19 +305,6 @@ export class Player {
         this.recoverMp(mpRecovery);
     }
     
-    loseMaxHp(amount: number): void {
-        this.maxHp = Math.max(0, this.maxHp - amount);
-        
-        // If current health exceeds new max health, reduce it
-        if (this.hp > this.maxHp) {
-            this.hp = this.maxHp;
-        }
-        
-        // If max HP reaches 0 or below, apply doomed status
-        if (this.maxHp <= 0 && !this.statusEffects.hasEffect(StatusEffectType.Doomed)) {
-            this.statusEffects.addEffect(StatusEffectType.Doomed);
-        }
-    }
     
     recoverFromKnockOut(): string[] {
         const messages: string[] = [];
@@ -368,43 +327,14 @@ export class Player {
         return messages;
     }
     
-    canAct(): boolean {
-        return this.statusEffects.canAct();
-    }
     
-    isRestrained(): boolean {
-        return this.statusEffects.isRestrained();
-    }
-    
-    isEaten(): boolean {
-        return this.statusEffects.isEaten();
-    }
-    
-    isCocoon(): boolean {
-        return this.statusEffects.isCocoon();
-    }
-    
-    isKnockedOut(): boolean {
-        return this.statusEffects.isKnockedOut();
-    }
-    
-    isDoomed(): boolean {
-        return this.statusEffects.isDoomed();
-    }
-    
-    isDead(): boolean {
-        return this.statusEffects.isDead();
-    }
     
     startTurn(): void {
         // Reset defending status
         this.isDefending = false;
         
-        // Recover MP (1/10 of max MP) at start of turn, unless eaten
-        if (!this.statusEffects.isEaten()) {
-            const mpRecovery = Math.floor(this.maxMp / 10);
-            this.recoverMp(mpRecovery);
-        }
+        // Call parent startTurn for MP recovery
+        super.startTurn();
         
         // Check exhausted recovery
         const recoveryMessages = this.checkExhaustedRecovery();
@@ -421,52 +351,14 @@ export class Player {
         const recoveryMessages = this.recoverFromKnockOut();
         messages.push(...recoveryMessages);
         
-        // Apply status effect damages/effects
-        const effectMessages = this.statusEffects.applyEffects(this);
-        messages.push(...effectMessages);
-        
-        // Decrease durations and remove expired effects
-        const durationMessages = this.statusEffects.decreaseDurations(this);
-        messages.push(...durationMessages);
+        // Call parent processRoundEnd for status effect processing
+        const parentMessages = super.processRoundEnd();
+        messages.push(...parentMessages);
         
         return messages;
     }
     
-    getHpPercentage(): number {
-        return this.maxHp > 0 ? (this.hp / this.maxHp) * 100 : 0;
-    }
     
-    getMpPercentage(): number {
-        return this.maxMp > 0 ? (this.mp / this.maxMp) * 100 : 0;
-    }
-    
-    consumeMp(amount: number): boolean {
-        if (this.mp >= amount) {
-            this.mp -= amount;
-            return true;
-        }
-        // If MP is insufficient, mp becomes 0 and returns false
-        this.mp = 0;
-        // Apply exhausted status effect
-        this.statusEffects.addEffect(StatusEffectType.Exhausted);
-        return false;
-    }
-    
-    recoverMp(amount: number): number {
-        if (amount <= 0) return 0;
-        
-        const oldMp = this.mp;
-        this.mp = Math.min(this.maxMp, this.mp + amount);
-        return this.mp - oldMp;
-    }
-    
-    loseMp(amount: number): number {
-        if (amount <= 0) return 0;
-        
-        const oldMp = this.mp;
-        this.mp = Math.max(0, this.mp - amount);
-        return oldMp - this.mp;
-    }
     
     getAvailableSkills(): Skill[] {
         // If doomed, only allow give up action
@@ -701,18 +593,12 @@ export class Player {
      * Reset battle-specific state while preserving progression
      */
     public resetBattleState(): void {
-        // Clear all status effects
-        this.statusEffects.clearAllEffects();
-        
         // Reset battle-specific flags
         this.struggleAttempts = 0;
         this.isDefending = false;
         
-        // Recalculate stats based on current abilities and equipment
-        this.recalculateStats();
-        
-        // Reset HP and MP to maximum
-        this.fullRestore();
+        // Call parent resetBattleState for common processing
+        super.resetBattleState();
         
         // Note: Keep progression data (abilities, equipment, items) intact
         // Also preserve maxHp changes from abilities/equipment
