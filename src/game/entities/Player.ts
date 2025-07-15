@@ -53,6 +53,9 @@ export class Player {
     public maxMp: number = 50;
     public mp: number = 50;
     
+    // Agility experience callback
+    public agilityExperienceCallback?: (amount: number) => void;
+    
     public statusEffects: StatusEffectManager = new StatusEffectManager();
     public items: Map<string, PlayerItem> = new Map();
     public isDefending: boolean = false;
@@ -285,6 +288,10 @@ export class Player {
         let baseSuccessRate = 0.3 + (this.struggleAttempts - 1) * 0.2;
         baseSuccessRate = Math.min(baseSuccessRate, 0.9); // Cap at 90%
         
+        // Apply agility bonus
+        const agilityBonus = this.abilitySystem.getAgilityEscapeBonus();
+        baseSuccessRate += agilityBonus;
+        
         // Apply charm modifier
         const modifier = this.statusEffects.getStruggleModifier();
         const finalSuccessRate = baseSuccessRate * modifier;
@@ -300,7 +307,17 @@ export class Player {
             this.statusEffects.removeEffect(StatusEffectType.Eaten);
             this.statusEffects.removeEffect(StatusEffectType.Cocoon);
             
+            // Notify agility experience for successful escape
+            if (this.agilityExperienceCallback) {
+                this.agilityExperienceCallback(5);
+            }
+            
             return true;
+        }
+        
+        // Notify agility experience for failed escape (2x amount)
+        if (this.agilityExperienceCallback) {
+            this.agilityExperienceCallback(10);
         }
         
         return false;
@@ -557,6 +574,10 @@ export class Player {
                     let baseSuccessRate = 0.3 + (player.struggleAttempts) * 0.2;
                     baseSuccessRate = Math.min(baseSuccessRate, 1.0);
                     
+                    // Apply agility bonus
+                    const agilityBonus = player.abilitySystem.getAgilityEscapeBonus();
+                    baseSuccessRate += agilityBonus;
+                    
                     const modifier = player.statusEffects.getStruggleModifier();
                     let finalSuccessRate = baseSuccessRate * modifier * successMultiplier;
                     finalSuccessRate = Math.min(finalSuccessRate, 1.0);
@@ -569,6 +590,11 @@ export class Player {
                         player.statusEffects.removeEffect(StatusEffectType.Restrained);
                         player.statusEffects.removeEffect(StatusEffectType.Eaten);
                         
+                        // Notify agility experience for successful escape
+                        if (player.agilityExperienceCallback) {
+                            player.agilityExperienceCallback(8);
+                        }
+                        
                         return {
                             success: true,
                             message: mpInsufficient ? 
@@ -579,6 +605,11 @@ export class Player {
                     } else {
                         // Increase future struggle success significantly on failure
                         player.struggleAttempts += mpInsufficient ? 4 : 2;
+                        
+                        // Notify agility experience for failed escape (2x amount)
+                        if (player.agilityExperienceCallback) {
+                            player.agilityExperienceCallback(16);
+                        }
                         
                         return {
                             success: false,
