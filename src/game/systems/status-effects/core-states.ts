@@ -1,4 +1,4 @@
-import { StatusEffectType, StatusEffectConfig } from '../StatusEffectTypes';
+import { StatusEffectType, StatusEffectConfig, ActionPriority } from '../StatusEffectTypes';
 
 export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new Map([
     [StatusEffectType.Dead, {
@@ -9,7 +9,8 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
         category: 'neutral',
         isDebuff: false,
         modifiers: {
-            canAct: false
+            canAct: false,
+            actionPriority: ActionPriority.CannotAct
         }
     }],
     [StatusEffectType.Doomed, {
@@ -20,7 +21,8 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
         category: 'neutral',
         isDebuff: false,
         modifiers: {
-            canAct: false
+            canAct: false,
+            actionPriority: ActionPriority.CannotAct
         }
     }],
     [StatusEffectType.KnockedOut, {
@@ -31,7 +33,8 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
         category: 'debuff',
         isDebuff: true,
         modifiers: {
-            canAct: false
+            canAct: false,
+            actionPriority: ActionPriority.CannotAct
         }
     }],
     [StatusEffectType.Exhausted, {
@@ -55,7 +58,8 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
         category: 'debuff',
         isDebuff: true,
         modifiers: {
-            canAct: false
+            canAct: false,
+            actionPriority: ActionPriority.StruggleAction
         }
     }],
     [StatusEffectType.Cocoon, {
@@ -66,7 +70,8 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
         category: 'debuff',
         isDebuff: true,
         modifiers: {
-            canAct: false
+            canAct: false,
+            actionPriority: ActionPriority.StruggleAction
         },
         onTick: (target: any, _effect: any) => {
             // Reduce max HP each turn to represent shrinking
@@ -84,7 +89,8 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
         category: 'debuff',
         isDebuff: true,
         modifiers: {
-            canAct: false
+            canAct: false,
+            actionPriority: ActionPriority.StruggleAction
         }
     }]
 ]);

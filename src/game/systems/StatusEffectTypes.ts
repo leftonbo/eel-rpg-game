@@ -1,3 +1,9 @@
+export enum ActionPriority {
+    CannotAct = 'cannot-act',
+    StruggleAction = 'struggle-action', 
+    NormalAction = 'normal-action'
+}
+
 export enum StatusEffectType {
     // `Dead` is for Player to make game-over state.
     // NOTE: It's not meaning actual "death".
@@ -85,5 +91,6 @@ export interface StatusEffectConfig {
         struggleRate?: number; // Multiplier for struggle success rate (default: 1.0)
         canAct?: boolean; // Whether the entity can act (default: true)
         canUseSkills?: boolean; // Whether skills can be used (default: true)
+        actionPriority?: ActionPriority; // Action priority level
     };
 }

@@ -1,8 +1,8 @@
-export { StatusEffectType } from './StatusEffectTypes';
+export { StatusEffectType, ActionPriority } from './StatusEffectTypes';
 export type { StatusEffect, StatusEffectConfig } from './StatusEffectTypes';
 
 import { createStatusEffectConfigs } from './status-effects';
-import { StatusEffectType, StatusEffect, StatusEffectConfig } from './StatusEffectTypes';
+import { StatusEffectType, StatusEffect, StatusEffectConfig, ActionPriority } from './StatusEffectTypes';
 
 export class StatusEffectManager {
     private effects: Map<StatusEffectType, StatusEffect> = new Map();
@@ -252,5 +252,22 @@ export class StatusEffectManager {
             }
         }
         return true;
+    }
+    
+    getActionPriority(): ActionPriority {
+        let highestPriority = ActionPriority.NormalAction;
+        
+        for (const [type, _effect] of this.effects) {
+            const config = StatusEffectManager.configs.get(type);
+            const priority = config?.modifiers?.actionPriority;
+            
+            if (priority === ActionPriority.CannotAct) {
+                return ActionPriority.CannotAct;
+            } else if (priority === ActionPriority.StruggleAction && highestPriority === ActionPriority.NormalAction) {
+                highestPriority = ActionPriority.StruggleAction;
+            }
+        }
+        
+        return highestPriority;
     }
 }
