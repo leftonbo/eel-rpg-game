@@ -37,18 +37,12 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
     [StatusEffectType.Charm, {
         type: StatusEffectType.Charm,
         name: '魅了',
-        description: 'もがくの成功率が大幅低下、MP減少',
-        duration: 20,
+        description: 'もがくの成功率が低下',
+        duration: 3,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
-            struggleRate: 0.3
-        },
-        onTick: (target: any, _effect: any) => {
-            const mpLoss = Math.min(target.mp, 1);
-            if (mpLoss > 0) {
-                target.loseMp(mpLoss);
-            }
+            struggleRate: 0.5
         }
     }],
     [StatusEffectType.Slow, {
