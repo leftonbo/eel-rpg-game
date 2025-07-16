@@ -110,7 +110,7 @@ export const swampDragonData: BossData = {
                     description: '獲物を体内で締め付ける',
                     messages: [
                         '「ウォォォ...」',
-                        '<USER>の体内が<TARGET>を圧迫する！'
+                        '<USER>の胃壁が<TARGET>の体を圧迫する！'
                     ],
                     damage: 25,
                     weight: 1
@@ -121,7 +121,7 @@ export const swampDragonData: BossData = {
                     description: '獲物を体内で優しくマッサージする',
                     messages: [
                         '「グルル...」',
-                        '<USER>が<TARGET>を優しく包み込む...'
+                        '<USER>の胃壁が<TARGET>を優しくマッサージしている...'
                     ],
                     damage: 25,
                     weight: 1
