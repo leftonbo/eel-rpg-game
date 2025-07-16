@@ -35,7 +35,10 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.RestraintAttack,
         name: '尻尾巻き付き',
         description: '長い尻尾で対象を拘束する',
-        messages: ['グルル...<USER>は尻尾で<TARGET>を巻き付けた'],
+        messages: [
+            '「グルル....」',
+            '<USER>は尻尾で<TARGET>を巻き付けてきた！',
+        ],
         damage: 16,
         weight: 5,
         canUse: (_boss, player, _turn) => {
@@ -47,7 +50,10 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.Attack,
         name: '尻尾しめつけ',
         description: '拘束中の獲物を尻尾でしめつける',
-        messages: ['グオオオ...<USER>は<TARGET>を締め付けている'],
+        messages: [
+            '「グオオオ...」',
+            '<USER>は<TARGET>を尻尾で締め付ける！'
+        ],
         damage: 18,
         weight: 40,
         playerStateCondition: 'restrained'
@@ -67,8 +73,8 @@ export const swampDragonData: BossData = {
     id: 'swamp-dragon',
     name: 'SwampDragon',
     displayName: '🐲 沼のドラゴン',
-    description: '沼地に生息する巨大な焼け茶色のドラゴン',
-    questNote: `沼地に生息する圧倒的な大きさを誇る焼け茶色のドラゴンが、通りかかる旅人を襲い続けている。その巨大なドラゴンを討伐し、平和を取り戻すことがあなたの任務だ。`,
+    description: '沼地に生息するドラゴン',
+    questNote: `沼地に生息する焼け茶色のドラゴンが、通りかかる旅人を襲い続けている。そのドラゴンを討伐し、平和を取り戻すことがあなたの任務だ。`,
     maxHp: 400,
     attackPower: 18,
     actions: swampDragonActions,
@@ -90,7 +96,10 @@ export const swampDragonData: BossData = {
                     type: ActionType.DevourAttack,
                     name: '胃液分泌',
                     description: 'ネバネバな胃液を分泌してエルナルを粘液まみれにする',
-                    messages: ['グルルル...<USER>の胃液が<TARGET>を包む'],
+                    messages: [
+                        '「グルルル...」',
+                        '<USER>の胃袋が<TARGET>をネバネバな胃液まみれにする！'
+                    ],
                     damage: 16,
                     statusEffect: StatusEffectType.Slimed,
                     weight: 1
@@ -99,7 +108,10 @@ export const swampDragonData: BossData = {
                     type: ActionType.DevourAttack,
                     name: '体内締め付け',
                     description: '獲物を体内で締め付ける',
-                    messages: ['ウォォォ...<USER>の体内が<TARGET>を圧迫する'],
+                    messages: [
+                        '「ウォォォ...」',
+                        '<USER>の体内が<TARGET>を圧迫する！'
+                    ],
                     damage: 25,
                     weight: 1
                 },
@@ -107,7 +119,10 @@ export const swampDragonData: BossData = {
                     type: ActionType.DevourAttack,
                     name: '体内マッサージ',
                     description: '獲物を体内で優しくマッサージする',
-                    messages: ['グルル...<USER>が<TARGET>を優しく包み込む'],
+                    messages: [
+                        '「グルル...」',
+                        '<USER>が<TARGET>を優しく包み込む...'
+                    ],
                     damage: 25,
                     weight: 1
                 },
@@ -115,7 +130,10 @@ export const swampDragonData: BossData = {
                     type: ActionType.DevourAttack,
                     name: 'お腹ゆらし',
                     description: '獲物の入ったお腹をゆらゆらと揺らす',
-                    messages: ['ガオー...<USER>がお腹を揺らす'],
+                    messages: [
+                        '「ガオー...」',
+                        '<USER>がお腹を揺らして<TARGET>を翻弄している...'
+                    ],
                     damage: 25,
                     weight: 1
                 }
@@ -132,7 +150,10 @@ export const swampDragonData: BossData = {
                         type: ActionType.EatAttack,
                         name: '丸呑み',
                         description: '拘束した獲物を丸呑みする',
-                        messages: ['ガオー！<USER>は<TARGET>を丸呑みした'],
+                        messages: [
+                            '「ガオー！」',
+                            '<USER>が大きな口を開け、<TARGET>を丸呑みにする！'
+                        ],
                         weight: 1
                     };
                 }
@@ -144,7 +165,10 @@ export const swampDragonData: BossData = {
                         type: ActionType.RestraintAttack,
                         name: '尻尾巻き付き',
                         description: '対象を尻尾で拘束する',
-                        messages: ['グルル...<USER>は<TARGET>を捕らえた'],
+                        messages: [
+                            '「グルル...」',
+                            '<USER>は尻尾で<TARGET>を巻き付けてきた！'
+                        ],
                         weight: 1
                     };
                 } else if (random < 0.9) {
@@ -152,7 +176,10 @@ export const swampDragonData: BossData = {
                         type: ActionType.EatAttack,
                         name: '丸呑み',
                         description: '拘束した獲物を丸呑みする',
-                        messages: ['ガオー！<USER>は<TARGET>を丸呑みした'],
+                        messages: [
+                            '「ガオー！」',
+                            '<USER>が大きな口を開け、<TARGET>を丸呑みにする！'
+                        ],
                         weight: 1
                     };
                 }
