@@ -758,7 +758,7 @@ export class BattleScene {
         if (!this.player || !this.boss) return false;
         
         // Check if boss is defeated
-        if (this.boss.isDead()) {
+        if (this.boss.isDefeated()) {
             this.addBattleLogMessage(`${this.boss.displayName}を倒した！`, 'system');
             
             const defeatDialogue = this.boss.getDialogue('defeat');
@@ -775,7 +775,7 @@ export class BattleScene {
         }
         
         // Check if player is doomed (max HP <= 0) but not yet dead
-        if (this.player.isDoomed() && !this.player.isDead()) {
+        if (this.player.isDoomed() && !this.player.isDefeated()) {
             this.addBattleLogMessage(`${this.player.name}は再起不能状態になった...`, 'system');
             
             this.updateUI();
@@ -783,7 +783,7 @@ export class BattleScene {
         }
         
         // Check if player is actually dead (after finishing move)
-        if (this.player.isDead()) {
+        if (this.player.isDefeated()) {
             const victoryDialogue = this.boss.getDialogue('victory');
             this.addBattleLogMessage(victoryDialogue, 'boss');
             
@@ -863,7 +863,7 @@ export class BattleScene {
         if (!this.player || !this.boss) return;
         
         // Determine if it was a victory
-        const victory = this.boss.isDead();
+        const victory = this.boss.isDefeated();
         
         // Calculate battle result and show result screen
         const battleResult = calculateBattleResult(
