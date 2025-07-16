@@ -101,6 +101,73 @@ export const desertSnake: BossData = {
         'この砂漠に骨を埋めるがいい...'
     ],
     aiStrategy: (boss: Boss, player: Player, turn: number) => {
+        // If player is defeated, use special post-defeat actions
+        if (player.isDefeated()) {
+            const postDefeatedActions: BossAction[] = [
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '砂漠の消化活動',
+                    description: '砂漠のヘビの体内で消化液が分泌され、エルナルの体力を吸収し続ける',
+                    messages: [
+                        'シャアアア...',
+                        '<USER>の体内で消化液がゆっくりと分泌されている...',
+                        '<TARGET>の体が徐々に砂漠の一部となっていく...'
+                    ],
+                    statusEffect: StatusEffectType.Weakness,
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '砂漠の締めつけ',
+                    description: '砂漠のヘビの体内で締めつけられ、エルナルの体力を削り続ける',
+                    messages: [
+                        'シャアアア...',
+                        '<USER>の体内でじわじわと締めつけられている...',
+                        '<TARGET>の体が砂漠の王者の胃袋に圧迫されている...'
+                    ],
+                    statusEffect: StatusEffectType.Exhausted,
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '砂漠の栄養吸収',
+                    description: '砂漠のヘビが体内でエルナルの栄養を吸収し続ける',
+                    messages: [
+                        'シャアアア...',
+                        '<USER>が<TARGET>の生命力を吸収している...',
+                        '<TARGET>の体が砂漠の養分として取り込まれていく...'
+                    ],
+                    statusEffect: StatusEffectType.Weakness,
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '砂漠の眠り',
+                    description: '砂漠のヘビの体内で暖かい眠りに包まれる',
+                    messages: [
+                        'シャアアア...',
+                        '<USER>の体内で<TARGET>は深い眠りに包まれている...',
+                        '砂漠の王者の胃袋で永遠の眠りに誘われている...'
+                    ],
+                    statusEffect: StatusEffectType.Sleep,
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '砂漠の魅了',
+                    description: '砂漠のヘビの体内で心を奪われ続ける',
+                    messages: [
+                        'シャアアア...',
+                        '<USER>の体内で<TARGET>は砂漠の魅力に取り憑かれている...',
+                        '砂漠の王者の魅力に完全に支配されている...'
+                    ],
+                    statusEffect: StatusEffectType.Charm,
+                    weight: 1
+                }
+            ];
+            return postDefeatedActions[Math.floor(Math.random() * postDefeatedActions.length)];
+        }
+        
         const playerState = boss.getPlayerState(player);
         const availableActions = desertSnake.actions.filter(action => {
             if (action.playerStateCondition && action.playerStateCondition !== playerState) {
