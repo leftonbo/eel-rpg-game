@@ -582,6 +582,73 @@ export const dreamDemonData: BossData = {
             return stomachAttacks[Math.floor(Math.random() * stomachAttacks.length)];
         }
         
+        // If player is post-defeated, use special post-defeat actions
+        if (player.isDefeated()) {
+            const postDefeatedActions = [
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '夢中での永遠の愛撫',
+                    description: '夢の中で永遠にエルナルを愛で続ける',
+                    messages: [
+                        '<USER>は夢の中で<TARGET>を永遠に愛でている...',
+                        '<TARGET>は夢の中で<USER>に愛撫され続けている...',
+                        '<TARGET>の意識は<USER>の夢の中に囚われている...'
+                    ],
+                    statusEffect: StatusEffectType.Charm,
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '夢中での甘い拘束',
+                    description: '夢の中でエルナルを甘く拘束し続ける',
+                    messages: [
+                        '<USER>は夢の中で<TARGET>を甘く拘束している...',
+                        '<TARGET>は夢の拘束から逃れることができない...',
+                        '<TARGET>の心は<USER>の夢に支配されている...'
+                    ],
+                    statusEffect: StatusEffectType.Hypnosis,
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '夢中での至福体験',
+                    description: '夢の中でエルナルに至福を与え続ける',
+                    messages: [
+                        '<USER>は夢の中で<TARGET>に至福を与えている...',
+                        '<TARGET>は夢の中で至福に包まれている...',
+                        '<TARGET>の魂は<USER>の夢に溶けている...'
+                    ],
+                    statusEffect: StatusEffectType.Bliss,
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '夢中での魅了術',
+                    description: '夢の中でエルナルを魅了し続ける',
+                    messages: [
+                        '<USER>は夢の中で<TARGET>を魅了している...',
+                        '<TARGET>は夢の中で<USER>に魅了され続けている...',
+                        '<TARGET>の心は<USER>の魅力に完全に支配されている...'
+                    ],
+                    statusEffect: StatusEffectType.Fascination,
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '夢中での甘い支配',
+                    description: '夢の中でエルナルを甘く支配し続ける',
+                    messages: [
+                        '<USER>は夢の中で<TARGET>を甘く支配している...',
+                        '<TARGET>は夢の中で<USER>に支配されている...',
+                        '<TARGET>の意志は<USER>の夢に完全に屈服している...'
+                    ],
+                    statusEffect: StatusEffectType.Brainwash,
+                    weight: 1
+                }
+            ];
+            return postDefeatedActions[Math.floor(Math.random() * postDefeatedActions.length)];
+        }
+        
         // If player is sleeping, use random dream attacks
         if (player.statusEffects.isSleeping()) {
             const dreamAttacks = [
