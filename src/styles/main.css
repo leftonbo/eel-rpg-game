@@ -788,6 +788,23 @@ body {
     transform: none;
 }
 
+/* Disabled skill buttons */
+.btn.disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    transform: none !important;
+    filter: grayscale(50%);
+    background-color: rgba(100, 116, 139, 0.3) !important;
+    border-color: rgba(100, 116, 139, 0.5) !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.btn.disabled:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     .game-title {

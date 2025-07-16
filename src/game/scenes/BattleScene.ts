@@ -442,6 +442,43 @@ export class BattleScene {
                 struggleSkillSpecialBtn.classList.add('d-none');
             }
         }
+        
+        // Update availability of individual skill buttons
+        this.updateIndividualSkillButtons();
+    }
+    
+    private updateIndividualSkillButtons(): void {
+        if (!this.player) return;
+        
+        const availableSkills = this.player.getAvailableSkills();
+        const canActAndPlayerTurn = this.player.canAct() && this.playerTurn && !this.battleEnded;
+        
+        // Check each skill button
+        const skillButtons = [
+            { id: 'power-attack-btn', skillType: SkillType.PowerAttack },
+            { id: 'heal-skill-btn', skillType: SkillType.Heal },
+            { id: 'struggle-skill-btn', skillType: SkillType.Struggle }
+        ];
+        
+        skillButtons.forEach(({ id, skillType }) => {
+            const button = document.getElementById(id);
+            if (button) {
+                const skill = availableSkills.find(s => s.type === skillType);
+                const canUseSkill = skill && skill.canUse(this.player!) && canActAndPlayerTurn;
+                
+                // Enable/disable button
+                button.classList.toggle('disabled', !canUseSkill);
+                
+                // Update button style to indicate disabled state
+                if (!canUseSkill) {
+                    button.style.pointerEvents = 'none';
+                    button.style.opacity = '0.5';
+                } else {
+                    button.style.pointerEvents = '';
+                    button.style.opacity = '';
+                }
+            }
+        });
     }
     
     private playerAttack(): void {
@@ -515,6 +552,19 @@ export class BattleScene {
     
     private useSkill(skillType: SkillType): void {
         if (!this.player || !this.boss || !this.playerTurn) return;
+        
+        // Check if player can act and battle is not ended
+        if (!this.player.canAct() || this.battleEnded) {
+            return;
+        }
+        
+        // Check if the specific skill can be used
+        const availableSkills = this.player.getAvailableSkills();
+        const skill = availableSkills.find(s => s.type === skillType);
+        if (!skill || !skill.canUse(this.player)) {
+            this.addBattleLogMessage('そのスキルは使用できません', 'system', 'player');
+            return;
+        }
         
         const result = this.player.useSkill(skillType, this.boss);
         
