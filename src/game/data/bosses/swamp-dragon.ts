@@ -35,7 +35,7 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.RestraintAttack,
         name: '尻尾巻き付き',
         description: '長い尻尾で対象を拘束する',
-        messages: ['<USER>は尻尾で<TARGET>を巻き付けてきた！'],
+        messages: ['グルル...<USER>は尻尾で<TARGET>を巻き付けた'],
         damage: 16,
         weight: 5,
         canUse: (_boss, player, _turn) => {
@@ -47,7 +47,7 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.Attack,
         name: '尻尾しめつけ',
         description: '拘束中の獲物を尻尾でしめつける',
-        messages: ['<USER>は尻尾で<TARGET>を締め付けている...'],
+        messages: ['グオオオ...<USER>は<TARGET>を締め付けている'],
         damage: 18,
         weight: 40,
         playerStateCondition: 'restrained'
@@ -67,18 +67,18 @@ export const swampDragonData: BossData = {
     id: 'swamp-dragon',
     name: 'SwampDragon',
     displayName: '🐲 沼のドラゴン',
-    description: '沼地に生息するドラゴン',
-    questNote: `沼地に生息する巨大なドラゴンが通りかかる旅人を襲い、被害が出続けている。そのドラゴンを討伐し、平和を取り戻すことがあなたの任務だ。`,
+    description: '沼地に生息する巨大な焼け茶色のドラゴン',
+    questNote: `沼地に生息する圧倒的な大きさを誇る焼け茶色のドラゴンが、通りかかる旅人を襲い続けている。その巨大なドラゴンを討伐し、平和を取り戻すことがあなたの任務だ。`,
     maxHp: 400,
     attackPower: 18,
     actions: swampDragonActions,
     personality: [
-        '美味しそうなウナギだ...！',
-        'その香り、堪らないな',
-        '焼いて食べてやろう',
-        'もっと熱くしてやる！',
-        '逃がさないぞ',
-        'この香ばしい匂い...'
+        'ふむ...良い匂いだな',
+        'グルル...なかなか',
+        'ガオー...逃がさん',
+        'ウォォォ...',
+        'グルルル...',
+        'この匂い...悪くない'
     ],
     aiStrategy: (boss, player, turn) => {
         // Swamp Dragon AI Strategy
@@ -90,7 +90,7 @@ export const swampDragonData: BossData = {
                     type: ActionType.DevourAttack,
                     name: '胃液分泌',
                     description: 'ネバネバな胃液を分泌してエルナルを粘液まみれにする',
-                    messages: ['<USER>の胃袋が<TARGET>をネバネバな胃液まみれにする...'],
+                    messages: ['グルルル...<USER>の胃液が<TARGET>を包む'],
                     damage: 16,
                     statusEffect: StatusEffectType.Slimed,
                     weight: 1
@@ -99,7 +99,7 @@ export const swampDragonData: BossData = {
                     type: ActionType.DevourAttack,
                     name: '体内締め付け',
                     description: '獲物を体内で締め付ける',
-                    messages: ['<USER>の体内が<TARGET>を圧迫している...'],
+                    messages: ['ウォォォ...<USER>の体内が<TARGET>を圧迫する'],
                     damage: 25,
                     weight: 1
                 },
@@ -107,7 +107,7 @@ export const swampDragonData: BossData = {
                     type: ActionType.DevourAttack,
                     name: '体内マッサージ',
                     description: '獲物を体内で優しくマッサージする',
-                    messages: ['<USER>の胃壁が<TARGET>を優しくマッサージしている...'],
+                    messages: ['グルル...<USER>が<TARGET>を優しく包み込む'],
                     damage: 25,
                     weight: 1
                 },
@@ -115,7 +115,7 @@ export const swampDragonData: BossData = {
                     type: ActionType.DevourAttack,
                     name: 'お腹ゆらし',
                     description: '獲物の入ったお腹をゆらゆらと揺らす',
-                    messages: ['<USER>がお腹を揺らして<TARGET>を翻弄している...'],
+                    messages: ['ガオー...<USER>がお腹を揺らす'],
                     damage: 25,
                     weight: 1
                 }
@@ -132,7 +132,7 @@ export const swampDragonData: BossData = {
                         type: ActionType.EatAttack,
                         name: '丸呑み',
                         description: '拘束した獲物を丸呑みする',
-                        messages: ['<USER>は<TARGET>を大きな口で丸呑みする！'],
+                        messages: ['ガオー！<USER>は<TARGET>を丸呑みした'],
                         weight: 1
                     };
                 }
@@ -144,7 +144,7 @@ export const swampDragonData: BossData = {
                         type: ActionType.RestraintAttack,
                         name: '尻尾巻き付き',
                         description: '対象を尻尾で拘束する',
-                        messages: ['<USER>は尻尾で<TARGET>を巻き付けてきた！'],
+                        messages: ['グルル...<USER>は<TARGET>を捕らえた'],
                         weight: 1
                     };
                 } else if (random < 0.9) {
@@ -152,7 +152,7 @@ export const swampDragonData: BossData = {
                         type: ActionType.EatAttack,
                         name: '丸呑み',
                         description: '拘束した獲物を丸呑みする',
-                        messages: ['<USER>は<TARGET>を大きな口で丸呑みする！'],
+                        messages: ['ガオー！<USER>は<TARGET>を丸呑みした'],
                         weight: 1
                     };
                 }
@@ -214,8 +214,8 @@ export const swampDragonData: BossData = {
 // Add finishing move for doomed player
 swampDragonData.finishingMove = function() {
     return [
-        '<USER>は力尽きた<TARGET>を体内の奥深くに送り込む！',
-        '<TARGET>は体内奥深くに閉じ込められ、<USER>が満足するまで消化され続けることになった...'
+        'グルル...<USER>は<TARGET>を体内奥深くに送り込む',
+        'ウォォォ...<TARGET>は体内奥深くに閉じ込められた...'
     ];
 };
 
@@ -223,33 +223,33 @@ swampDragonData.finishingMove = function() {
 swampDragonData.getDialogue = function(situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') {
     const dialogues: Record<string, string[]> = {
         'battle-start': [
-            'おお！なんて香ばしい匂いだ！',
-            '美味しそうなウナギが来たじゃないか',
-            'その身、じっくりと味わってやろう'
+            'ふむ...良い匂いだな',
+            'グルル...貴殿、なかなか',
+            'ウォォォ...面白い'
         ],
         'player-restrained': [
-            'よし、捕まえた！動くな',
-            'いい匂いがするぞ...',
-            'これで逃げられまい'
+            'グルル...動くなよ',
+            '捕らえたぞ',
+            'ガオー...おとなしくしろ'
         ],
         'player-eaten': [
-            'むむむ...この味、最高だ！',
-            'もっと味わってやろう',
-            'ゆっくりと消化してやる'
+            'むむ...悪くない',
+            'グルルル...',
+            'ゆっくり味わうとしよう'
         ],
         'player-escapes': [
-            'ちっ！逃げられたか',
-            'また捕まえてやる',
-            'その程度では逃げられん！'
+            'ちっ...逃げたか',
+            'ガオー！次はそうはいかん',
+            'グルル...なかなかやるな'
         ],
         'low-hp': [
-            'この程度でワシが倒れると思うな！',
-            'まだまだやれるわ！',
-            '美味い獲物は手放さん！'
+            'グオオオ...まだだ！',
+            'この程度では倒れん',
+            'ウォォォ...まだまだ！'
         ],
         'victory': [
-            'ふははは！美味かったぞ！',
-            'また美味しいウナギが来るのを待っておろう'
+            'ふむ...満足だ',
+            'また獲物を待つとしよう'
         ]
     };
     
