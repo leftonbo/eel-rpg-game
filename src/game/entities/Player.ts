@@ -1,4 +1,4 @@
-import { StatusEffectType } from '../systems/StatusEffect';
+import { StatusEffectType, ActionPriority } from '../systems/StatusEffect';
 import { AbilitySystem, AbilityType, Equipment, WEAPONS, ARMORS } from '../systems/AbilitySystem';
 import { PlayerSaveManager, PlayerSaveData } from '../systems/PlayerSaveData';
 import { updatePlayerItems } from '../data/ExtendedItems';
@@ -22,6 +22,7 @@ export interface Skill {
     criticalRate?: number; // Custom critical hit rate (0-1)
     damageVarianceMin?: number; // Minimum damage variance percentage (default: -20)
     damageVarianceMax?: number; // Maximum damage variance percentage (default: +20)
+    priority?: ActionPriority; // Action priority level
 }
 
 export interface SkillResult {
@@ -374,6 +375,7 @@ export class Player extends Actor {
                 name: '☠なすがまま',
                 description: '再起不能でもう行動できない',
                 mpCost: 0,
+                priority: ActionPriority.CannotAct,
                 canUse: () => true,
                 use: (player: Player) => {
                     return {
@@ -391,6 +393,7 @@ export class Player extends Actor {
                 name: '😴なすがまま',
                 description: '深い眠りに落ちて行動できない',
                 mpCost: 0,
+                priority: ActionPriority.CannotAct,
                 canUse: () => true,
                 use: (player: Player) => {
                     return {
@@ -407,6 +410,7 @@ export class Player extends Actor {
                 name: 'パワーアタック',
                 description: '2.5倍の攻撃力で確実に攻撃（20MP）',
                 mpCost: 20,
+                priority: ActionPriority.NormalAction,
                 damageVarianceMin: -0.2,
                 damageVarianceMax: 0.5,
                 canUse: (player: Player) => !player.statusEffects.isExhausted() && player.statusEffects.canAct(),
@@ -434,6 +438,7 @@ export class Player extends Actor {
                 name: 'ヒール',
                 description: 'HPを100回復（30MP）',
                 mpCost: 30,
+                priority: ActionPriority.NormalAction,
                 canUse: (player: Player) => !player.statusEffects.isExhausted() && player.statusEffects.canAct() && player.hp < player.maxHp,
                 use: (player: Player) => {
                     const mpInsufficient = !player.consumeMp(30);
@@ -458,6 +463,7 @@ export class Player extends Actor {
                 name: 'あばれる',
                 description: '拘束状態専用：脱出確率2倍（30MP）',
                 mpCost: 30,
+                priority: ActionPriority.StruggleAction,
                 canUse: (player: Player) => !player.statusEffects.isExhausted() && 
                     (player.statusEffects.isRestrained() || player.statusEffects.isEaten()),
                 use: (player: Player) => {
