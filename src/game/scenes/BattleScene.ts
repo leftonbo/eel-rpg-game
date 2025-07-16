@@ -272,6 +272,7 @@ export class BattleScene {
         const isRestrained = this.player.isRestrained() || this.player.isEaten() || this.player.isCocoon();
         const isKnockedOut = this.player.isKnockedOut();
         const isDoomed = this.player.isDoomed();
+        const isDefeated = this.player.isDefeated();
         
         // Show/hide action panels
         if (this.actionButtons && this.specialActions && this.battleEndActions) {
@@ -280,7 +281,7 @@ export class BattleScene {
                 this.actionButtons.classList.add('d-none');
                 this.specialActions.classList.add('d-none');
                 this.battleEndActions.classList.remove('d-none');
-            } else if (isRestrained || isKnockedOut || this.player.statusEffects.isSleeping() || isDoomed) {
+            } else if (isRestrained || isKnockedOut || this.player.statusEffects.isSleeping() || isDoomed || isDefeated) {
                 this.actionButtons.classList.add('d-none');
                 this.specialActions.classList.remove('d-none');
                 this.battleEndActions.classList.add('d-none');
@@ -305,7 +306,15 @@ export class BattleScene {
         specialBtns.forEach(btnId => {
             const btn = document.getElementById(btnId);
             if (btn) {
-                if (isDoomed) {
+                if (isDefeated) {
+                    // For defeat state, only show give-up button
+                    if (btnId === 'struggle-btn' || btnId === 'stay-still-btn') {
+                        btn.classList.add('d-none');
+                    } else {
+                        btn.classList.remove('d-none');
+                        btn.classList.toggle('disabled', !this.playerTurn);
+                    }
+                } else if (isDoomed) {
                     // For doomed state, only show give-up button
                     if (btnId === 'struggle-btn' || btnId === 'stay-still-btn') {
                         btn.classList.add('d-none');
@@ -434,7 +443,8 @@ export class BattleScene {
         if (struggleSkillSpecialBtn) {
             const canUseSkill = !this.player.statusEffects.isExhausted() && 
                                !this.player.statusEffects.isKnockedOut() &&
-                               !this.player.statusEffects.isDoomed();
+                               !this.player.statusEffects.isDoomed() &&
+                               !this.player.statusEffects.isDead();
             if (canUseSkill) {
                 struggleSkillSpecialBtn.classList.remove('d-none');
                 struggleSkillSpecialBtn.classList.toggle('disabled', !this.playerTurn);
@@ -721,7 +731,12 @@ export class BattleScene {
     private playerGiveUp(): void {
         if (!this.player || !this.playerTurn) return;
         
-        this.addBattleLogMessage(`${this.player.name}は何もできない....`, 'system', 'player');
+        // Handle post-defeat state differently
+        if (this.player.isDefeated()) {
+            this.addBattleLogMessage('......', 'system', 'player');
+        } else {
+            this.addBattleLogMessage(`${this.player.name}は何もできない....`, 'system', 'player');
+        }
         
         this.updateUI();
         this.endPlayerTurn();
@@ -753,8 +768,8 @@ export class BattleScene {
             return;
         }
         
-        // If player is doomed, boss performs finishing move
-        if (this.player.statusEffects.isDoomed()) {
+        // If player is doomed but not defeated, boss performs finishing move
+        if (this.player.statusEffects.isDoomed() && !this.player.isDefeated()) {
             this.performFinishingMove();
             return;
         }
@@ -844,29 +859,6 @@ export class BattleScene {
             this.addBattleLogMessage(defeatDialogue, 'boss');
 
             this.addBattleLogMessage('勝利！', 'system');
-            this.addBattleLogMessage('「バトル終了」ボタンを押して結果を確認してください。', 'system');
-            
-            // Set battle ended state
-            this.battleEnded = true;
-            this.updateUI();
-            
-            return true;
-        }
-        
-        // Check if player is doomed (max HP <= 0) but not yet dead
-        if (this.player.isDoomed() && !this.player.isDefeated()) {
-            this.addBattleLogMessage(`${this.player.name}は再起不能状態になった...`, 'system');
-            
-            this.updateUI();
-            return false; // Don't end battle yet, let boss deliver finishing move
-        }
-        
-        // Check if player is actually dead (after finishing move)
-        if (this.player.isDefeated()) {
-            const victoryDialogue = this.boss.getDialogue('victory');
-            this.addBattleLogMessage(victoryDialogue, 'boss');
-            
-            this.addBattleLogMessage('ゲームオーバー', 'system');
             this.addBattleLogMessage('「バトル終了」ボタンを押して結果を確認してください。', 'system');
             
             // Set battle ended state

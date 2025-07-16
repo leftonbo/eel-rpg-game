@@ -8,7 +8,8 @@ export enum SkillType {
     PowerAttack = 'power-attack',
     Heal = 'heal',
     Struggle = 'struggle',
-    GiveUp = 'give-up'
+    GiveUp = 'give-up',
+    SubmitToFate = 'submit-to-fate'
 }
 
 export interface Skill {
@@ -368,6 +369,24 @@ export class Player extends Actor {
     }
     
     getAvailableSkills(): Skill[] {
+        // If in defeat state, only allow submit to fate action
+        if (this.isDefeated()) {
+            return [{
+                type: SkillType.SubmitToFate,
+                name: '☠なすがまま',
+                description: '......',
+                mpCost: 0,
+                priority: ActionPriority.CannotAct,
+                canUse: () => true,
+                use: (_player: Player) => {
+                    return {
+                        success: true,
+                        message: '......',
+                    };
+                }
+            }];
+        }
+        
         // If doomed, only allow give up action
         if (this.statusEffects.isDoomed()) {
             return [{

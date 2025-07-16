@@ -87,6 +87,73 @@ export const darkGhostData: BossData = {
     ],
     aiStrategy: (boss, player, turn) => {
         // Dark Ghost AI Strategy - Focus on status effects and talking
+
+        // If player is defeated, use special post-defeat actions
+        if (player.isDefeated()) {
+            const postDefeatedActions: BossAction[] = [
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '魂からのエネルギー吸収',
+                    description: '魂だけになったエルナルからエネルギーを吸い続ける',
+                    messages: [
+                        '「ケケケ...」',
+                        '<USER>が<TARGET>の魂からエネルギーを吸い取っている...',
+                        '<TARGET>の魂は<USER>の中で力を失っていく...'
+                    ],
+                    statusEffect: StatusEffectType.Exhausted,
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '魂の操縦',
+                    description: '魂を操作してエルナルを支配し続ける',
+                    messages: [
+                        '「フフフ...」',
+                        '<USER>が<TARGET>の魂を操縦している...',
+                        '<TARGET>の意識は<USER>に支配されている...'
+                    ],
+                    statusEffect: StatusEffectType.Charm,
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '魂の毒化',
+                    description: '魂に毒を流し込み続ける',
+                    messages: [
+                        '「ケケケ...」',
+                        '<USER>が<TARGET>の魂に毒を流し込んでいる...',
+                        '<TARGET>の魂は徐々に汚染されていく...'
+                    ],
+                    statusEffect: StatusEffectType.Poison,
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '魂の鈍化',
+                    description: '魂の動きを鈍らせ続ける',
+                    messages: [
+                        '「フフフ...」',
+                        '<USER>が<TARGET>の魂の動きを鈍らせている...',
+                        '<TARGET>の魂は重く沈んでいく...'
+                    ],
+                    statusEffect: StatusEffectType.Slow,
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '魂の監視',
+                    description: '魂を監視し続けて逃げられないようにする',
+                    messages: [
+                        '「ケケケ...」',
+                        '<USER>が<TARGET>の魂を監視している...',
+                        '<TARGET>の魂は<USER>の視線から逃れられない...'
+                    ],
+                    statusEffect: StatusEffectType.Paralysis,
+                    weight: 1
+                }
+            ];
+            return postDefeatedActions[Math.floor(Math.random() * postDefeatedActions.length)];
+        }
         
         // If player is eaten, devour them
         if (player.isEaten()) {

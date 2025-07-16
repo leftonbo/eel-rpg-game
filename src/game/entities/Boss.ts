@@ -26,6 +26,7 @@ export enum ActionType {
     CocoonAction = 'cocoon-action',
     EatAttack = 'eat-attack',
     DevourAttack = 'devour-attack',
+    PostDefeatedAttack = 'post-defeated-attack',
     Skip = 'skip'
 }
 
@@ -42,7 +43,7 @@ export interface BossAction {
     hitRate?: number; // Attack hit rate (default: 95%)
     criticalRate?: number; // Critical hit rate (default: 5%)
     statusChance?: number; // Status effect application chance (default: 100%)
-    playerStateCondition?: 'normal' | 'ko' | 'restrained' | 'cocoon' | 'eaten'; // Required player state
+    playerStateCondition?: 'normal' | 'ko' | 'restrained' | 'cocoon' | 'eaten' | 'defeated'; // Required player state
     healRatio?: number; // HP absorption ratio from damage dealt (0.0 = no healing, 1.0 = 100% healing)
     damageVarianceMin?: number; // Minimum damage variance percentage (default: -20)
     damageVarianceMax?: number; // Maximum damage variance percentage (default: +20)
@@ -175,7 +176,8 @@ export class Boss extends Actor {
         return availableActions[0]; // Fallback
     }
     
-    public getPlayerState(player: Player): 'normal' | 'ko' | 'restrained' | 'cocoon' | 'eaten' {
+    public getPlayerState(player: Player): 'normal' | 'ko' | 'restrained' | 'cocoon' | 'eaten' | 'defeated' {
+        if (player.isDefeated()) return 'defeated';
         if (player.isEaten()) return 'eaten';
         if (player.statusEffects.isCocoon()) return 'cocoon';
         if (player.isRestrained()) return 'restrained';
@@ -395,6 +397,14 @@ export class Boss extends Actor {
                             messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
                         }
                     }
+                }
+                break;
+                
+            case ActionType.PostDefeatedAttack:
+                // Post-defeat actions (status effects only, no HP/MP changes)
+                if (action.statusEffect) {
+                    player.statusEffects.addEffect(action.statusEffect);
+                    messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
                 }
                 break;
                 
