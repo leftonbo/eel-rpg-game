@@ -593,6 +593,12 @@ export class BattleScene {
                 this.battleStats.mpSpent += mpCost;
             }
             
+            // Check if this was a successful struggle skill that broke restraint
+            if (skillType === SkillType.Struggle && result.success) {
+                this.boss.onRestraintBroken();
+                this.addBattleLogMessage(`${this.boss.displayName}は反動で動けなくなった！`, 'system', 'boss');
+            }
+            
             // Apply damage if applicable with custom variance
             if (result.damage && result.damage > 0) {
                 const skills = this.player.getAvailableSkills();
