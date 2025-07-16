@@ -456,9 +456,16 @@ export class BattleScene {
     private canUseSkill(skillType: SkillType): boolean {
         if (!this.player) return false;
         
-        // Check basic conditions
-        if (!this.player.canAct() || !this.playerTurn || this.battleEnded) {
-            return false;
+        // Check basic conditions - struggle skill is special case that can be used when restrained
+        if (skillType !== SkillType.Struggle) {
+            if (!this.player.canAct() || !this.playerTurn || this.battleEnded) {
+                return false;
+            }
+        } else {
+            // For struggle skill, only check turn and battle state
+            if (!this.playerTurn || this.battleEnded) {
+                return false;
+            }
         }
         
         // Check if skill is available
