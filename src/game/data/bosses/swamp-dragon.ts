@@ -36,7 +36,7 @@ const swampDragonActions: BossAction[] = [
         name: '尻尾巻き付き',
         description: '長い尻尾で対象を拘束する',
         messages: [
-            '「グルル....」',
+            '「グルル...」',
             '<USER>は尻尾で<TARGET>を巻き付けてきた！',
         ],
         damage: 16,
@@ -241,8 +241,9 @@ export const swampDragonData: BossData = {
 // Add finishing move for doomed player
 swampDragonData.finishingMove = function() {
     return [
-        'グルル...<USER>は<TARGET>を体内奥深くに送り込む',
-        'ウォォォ...<TARGET>は体内奥深くに閉じ込められた...'
+        '「グルル...」',
+        '<USER>は<TARGET>を体内の奥深くに送り込む！',
+        '<TARGET>は体内奥深くに閉じ込められ、<USER>が満足するまで体力を吸収され続けることになった...'
     ];
 };
 
