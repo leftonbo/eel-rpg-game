@@ -449,6 +449,9 @@ export class BattleScene {
     
     /**
      * Check if a specific skill can be used by the player
+     * 
+     * @param skillType The type of skill to check
+     * @return True if the skill can be used, false otherwise
      */
     private canUseSkill(skillType: SkillType): boolean {
         if (!this.player) return false;
@@ -465,6 +468,14 @@ export class BattleScene {
         return skill ? skill.canUse(this.player) : false;
     }
     
+    /**
+     * Update individual skill buttons based on player state
+     * 
+     * This method checks if the player can use each skill and updates the button state accordingly.
+     * It also handles visual updates to indicate whether the skill is available or not.
+     * 
+     * This is called after any action that might change skill availability, such as using items or skills, or at the start of each turn.
+     */
     private updateIndividualSkillButtons(): void {
         if (!this.player) return;
         
