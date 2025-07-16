@@ -122,5 +122,41 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
             canAct: false,
             canUseSkills: false
         }
+    }],
+    
+    // Scorpion Carrier status effects
+    [StatusEffectType.Anesthesia, {
+        type: StatusEffectType.Anesthesia,
+        name: '麻酔',
+        description: '麻酔により行動不能',
+        duration: 3,
+        category: 'debuff',
+        isDebuff: true,
+        modifiers: {
+            canAct: false
+        }
+    }],
+    [StatusEffectType.ScorpionPoison, {
+        type: StatusEffectType.ScorpionPoison,
+        name: 'サソリ毒',
+        description: '毎ターン最大HPの1/10のダメージを受ける',
+        duration: 3,
+        category: 'debuff',
+        isDebuff: true,
+        onTick: (target: any, _effect: any) => {
+            const damage = Math.floor(target.maxHp / 10);
+            target.takeDamage(damage);
+        }
+    }],
+    [StatusEffectType.Weakening, {
+        type: StatusEffectType.Weakening,
+        name: '脱力剤',
+        description: '体力が奪われ、受けるダメージが1.5倍になる',
+        duration: 3,
+        category: 'debuff',
+        isDebuff: true,
+        modifiers: {
+            damageReceived: 1.5
+        }
     }]
 ]);

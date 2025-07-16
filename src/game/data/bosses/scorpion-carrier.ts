@@ -1,0 +1,364 @@
+import { BossData, ActionType, BossAction } from '../../entities/Boss';
+import { StatusEffectType } from '../../systems/StatusEffect';
+
+const scorpionCarrierActions: BossAction[] = [
+    // Normal state actions
+    {
+        type: ActionType.Attack,
+        name: 'はさみ攻撃',
+        description: '大きなはさみで攻撃する',
+        messages: ['<USER>は大きなはさみで<TARGET>を挟みつけようとする！'],
+        damage: 10,
+        hitRate: 0.8,
+        weight: 20
+    },
+    {
+        type: ActionType.Attack,
+        name: '踏みつけ',
+        description: 'タイヤの足で踏みつける',
+        messages: ['<USER>はタイヤの足で<TARGET>を踏みつけようとする！'],
+        damage: 12,
+        hitRate: 0.9,
+        weight: 15
+    },
+    {
+        type: ActionType.Attack,
+        name: 'しっぽ振り回し',
+        description: '強力だが命中率が低い攻撃',
+        messages: ['<USER>は巨大な注射器のような尻尾を振り回す！'],
+        damage: 20,
+        hitRate: 0.6,
+        weight: 10,
+        playerStateCondition: 'normal'
+    },
+    {
+        type: ActionType.StatusAttack,
+        name: 'しっぽ麻酔',
+        description: '尻尾の注射器で麻酔を注入する',
+        messages: ['<USER>は尻尾の注射器で<TARGET>に麻酔を注入しようとする！'],
+        damage: 8,
+        statusEffect: StatusEffectType.Anesthesia,
+        statusChance: 70,
+        hitRate: 0.7,
+        weight: 12,
+        canUse: (_boss, player, _turn) => {
+            return !player.isRestrained() && !player.isCocoon() && !player.isEaten();
+        }
+    },
+    {
+        type: ActionType.RestraintAttack,
+        name: 'はさみキャッチ',
+        description: 'はさみでエルナルを捕まえる',
+        messages: ['<USER>は巨大なはさみで<TARGET>を捕まえようとする！'],
+        damage: 5,
+        weight: 25,
+        canUse: (_boss, player, _turn) => {
+            return (!player.isRestrained() && !player.isCocoon() && !player.isEaten() && Math.random() < 0.8) || player.isKnockedOut();
+        }
+    }
+];
+
+const scorpionCarrierActionsRestrained: BossAction[] = [
+    // Restrained state actions
+    {
+        type: ActionType.StatusAttack,
+        name: '猛毒注射',
+        description: '拘束したエルナルに猛毒を注射する',
+        messages: ['<USER>は拘束した<TARGET>に猛毒を注射する！'],
+        damage: 15,
+        statusEffect: StatusEffectType.ScorpionPoison,
+        statusChance: 90,
+        hitRate: 0.95,
+        weight: 30
+    },
+    {
+        type: ActionType.Attack,
+        name: 'かみつき舐め回し',
+        description: '拘束したエルナルを舐め回す',
+        messages: ['<USER>は拘束した<TARGET>を舐め回す！'],
+        damage: 18,
+        weight: 25
+    },
+    {
+        type: ActionType.Attack,
+        name: 'はさみ攻撃',
+        description: '大きなはさみで攻撃する',
+        messages: ['<USER>は大きなはさみで<TARGET>を挟みつける！'],
+        damage: 12,
+        weight: 20
+    }
+];
+
+const scorpionCarrierActionsKnockoutRestrained: BossAction[] = [
+    // Eating Process - special transition attack
+    {
+        type: ActionType.EatAttack,
+        name: '大胆に丸呑み',
+        description: 'エルナルを丸呑みして体内に運ぶ',
+        messages: [
+            '<USER>は<TARGET>を大胆に丸呑みする！',
+            '<TARGET>がサソリの体内に取り込まれる！'
+        ],
+        weight: 1,
+        canUse: (_boss, player, _turn) => {
+            // Only use when player is knocked out
+            return player.isKnockedOut();
+        }
+    }
+];
+
+const scorpionCarrierActionsEaten: BossAction[] = [
+    // Eaten state actions
+    {
+        type: ActionType.StatusAttack,
+        name: '脱力剤注入',
+        description: '体内注射でエルナルに脱力剤を注入する',
+        messages: ['<USER>は体内の注射器で<TARGET>に脱力剤を注入する！'],
+        damage: 8,
+        statusEffect: StatusEffectType.Weakening,
+        statusChance: 80,
+        hitRate: 0.9,
+        weight: 25,
+        playerStateCondition: 'eaten'
+    },
+    {
+        type: ActionType.DevourAttack,
+        name: '体内マッサージ',
+        description: '体内でエルナルをマッサージして最大HPを吸収',
+        messages: ['<USER>は体内で<TARGET>をマッサージし、エネルギーを吸収する！'],
+        damage: 12, // Max HP reduction amount
+        weight: 30,
+        playerStateCondition: 'eaten',
+        canUse: (_boss, player, _turn) => {
+            return player.isEaten();
+        }
+    },
+    {
+        type: ActionType.DevourAttack,
+        name: '体内締め付け',
+        description: '体内でエルナルを締め付けて最大HPを吸収',
+        messages: ['<USER>は体内で<TARGET>を締め付け、エネルギーを吸収する！'],
+        damage: 15, // Max HP reduction amount
+        weight: 25,
+        playerStateCondition: 'eaten',
+        canUse: (_boss, player, _turn) => {
+            return player.isEaten();
+        }
+    }
+];
+
+export const scorpionCarrierData: BossData = {
+    id: 'scorpion-carrier',
+    name: 'ScorpionCarrier',
+    displayName: '🦂 運び屋のサソリ',
+    description: `砂漠や荒れ地を漂う巨大なサソリ`,
+    questNote: '砂漠を通る商人から報告によると、砂漠には巨大なサソリが生息しているという。足がタイヤになっていて、巨大な注射器のような尻尾を持つ、半機械のような見た目をしている。さまよう人間を様々な方法で捕まえては丸呑みし、その者が望む（と勝手に考える）場所へと運ぶという。',
+    maxHp: 250,
+    attackPower: 8,
+    actions: scorpionCarrierActions,
+    personality: [
+        'んー、迷い人のようだな？',
+        'おまえの足より、オレの足のほうが早いぞ？',
+        '恥ずかしがらずに食べられろ',
+        '薬を打たれた気分はどうだ？'
+    ],
+    aiStrategy: (boss, player, turn) => {
+        // Scorpion Carrier AI Strategy
+        
+        // If player is post-defeated, use special post-defeat actions
+        if (player.isDefeated()) {
+            const postDefeatedActions: BossAction[] = [
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '体内運搬',
+                    description: '体内のエルナルを目的地まで運搬する',
+                    messages: [
+                        '<USER>は体内の<TARGET>を目的地まで運搬している...',
+                        '<TARGET>はサソリの体内で消化されることはないが、エネルギーを吸収され続ける...',
+                        'タイヤの足音が響く中、運搬は続く...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '栄養剤注入',
+                    description: '体内のエルナルに栄養剤を注入する',
+                    messages: [
+                        '<USER>は体内の注射器で<TARGET>に栄養剤を注入する...',
+                        '<TARGET>は強制的に栄養剤を摂取させられる...',
+                        '栄養剤によって<TARGET>の意識が朦朧としてくる...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: 'エネルギー吸収',
+                    description: '体内のエルナルからエネルギーを吸収する',
+                    messages: [
+                        '<USER>は<TARGET>からエネルギーを吸収している...',
+                        '<TARGET>のエネルギーがサソリに吸収されていく...',
+                        'エネルギーを吸収された<TARGET>は動けなくなる...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: 'マナ吸収',
+                    description: '体内のエルナルからマナを吸収する',
+                    messages: [
+                        '<USER>は<TARGET>からマナを吸収している...',
+                        '<TARGET>のマナがサソリに吸収されていく...',
+                        'マナを吸収された<TARGET>は魔法が使えなくなる...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '体内薬剤循環',
+                    description: '体内で薬剤を循環させてエルナルを無力化する',
+                    messages: [
+                        '<USER>は体内で薬剤を循環させている...',
+                        '<TARGET>は薬剤によって完全に無力化される...',
+                        '薬剤の効果で<TARGET>は抵抗する力を失う...'
+                    ],
+                    weight: 1
+                }
+            ];
+            return postDefeatedActions[Math.floor(Math.random() * postDefeatedActions.length)];
+        }
+        
+        // State-based action selection
+        const playerState = boss.getPlayerState(player);
+        
+        // If player is in eaten state, use eaten actions
+        if (playerState === 'eaten') {
+            const eatenActions = scorpionCarrierActionsEaten;
+            
+            if (eatenActions.length > 0) {
+                // Weight-based selection among eaten actions
+                const totalWeight = eatenActions.reduce((sum, action) => sum + action.weight, 0);
+                let random = Math.random() * totalWeight;
+                
+                for (const action of eatenActions) {
+                    random -= action.weight;
+                    if (random <= 0) {
+                        return action;
+                    }
+                }
+                return eatenActions[0];
+            }
+        }
+        
+        // Special condition: eating process (KO)
+        if (player.isKnockedOut() && !player.isRestrained()) {
+            const eatingAttack = scorpionCarrierActionsKnockoutRestrained[0];
+            if (eatingAttack) {
+                return eatingAttack;
+            }
+        }
+        
+        // Knocked out (and restrained) state prioritization
+        if (player.isKnockedOut() && player.isRestrained()) {
+            // Go straight to eating
+            const eatingAttack = scorpionCarrierActionsKnockoutRestrained[0];
+            if (eatingAttack) {
+                return eatingAttack;
+            }
+        }
+        
+        // Restrained state
+        if (player.isRestrained()) {
+            const restrainedActions = scorpionCarrierActionsRestrained.filter(action =>
+                (!action.canUse || action.canUse(boss, player, turn))
+            );
+            if (restrainedActions.length > 0) {
+                return restrainedActions[Math.floor(Math.random() * restrainedActions.length)];
+            }
+        }
+        
+        // Normal state: prioritize restraint attacks
+        // 60% chance to use restraint attacks
+        if (Math.random() < 0.6) {
+            const restraintActions = scorpionCarrierActions.filter(action =>
+                action.type === ActionType.RestraintAttack &&
+                (!action.canUse || action.canUse(boss, player, turn))
+            );
+            if (restraintActions.length > 0) {
+                return restraintActions[Math.floor(Math.random() * restraintActions.length)];
+            }
+        }
+
+        // Otherwise use normal attacks or status attacks
+        const normalActions = scorpionCarrierActions.filter(action =>
+            (!action.canUse || action.canUse(boss, player, turn))
+        );
+        if (normalActions.length > 0) {
+            return normalActions[Math.floor(Math.random() * normalActions.length)];
+        }
+        
+        // Final fallback
+        return scorpionCarrierActions[0];
+    }
+};
+
+// Override dialogue for Scorpion Carrier personality
+scorpionCarrierData.getDialogue = function(situation: 'battle-start' | 'player-restrained' | 'player-cocoon' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') {
+    const dialogues: Record<string, string[]> = {
+        'battle-start': [
+            'んー、迷い人のようだな？',
+            'おまえの足より、オレの足のほうが早いぞ？',
+            '恥ずかしがらずに食べられろ',
+            '薬を打たれた気分はどうだ？'
+        ],
+        'player-restrained': [
+            'はさみに捕まったな',
+            'そのまま大人しくしていろ',
+            '毒を注射してやろうか？',
+            '拘束されて逃げられないな'
+        ],
+        'player-cocoon': [
+            'んー、迷い人のようだな？',
+            'おまえの足より、オレの足のほうが早いぞ？',
+            '恥ずかしがらずに食べられろ',
+            '薬を打たれた気分はどうだ？'
+        ],
+        'player-eaten': [
+            '体内は居心地がいいだろう？',
+            '薬剤でエネルギーを吸収させてもらう',
+            '目的地まで運んでやろう',
+            '体内で消化されることはないが、エネルギーは頂く'
+        ],
+        'player-escapes': [
+            'おっと、逃げられたか',
+            'まだ運搬が終わっていないぞ',
+            'もう一度捕まえてやる',
+            '逃げても無駄だ'
+        ],
+        'low-hp': [
+            'くそっ、機械部分が故障しているか',
+            'まだ運搬の仕事が残っているんだ',
+            'タイヤがパンクしそうだ',
+            '注射器も調子が悪い'
+        ],
+        'victory': [
+            '運搬完了だ',
+            'お疲れ様',
+            'また迷い人を探しに行くか',
+            '次の目的地はどこだろうな'
+        ]
+    };
+    
+    const options = dialogues[situation] || dialogues['battle-start'];
+    return options[Math.floor(Math.random() * options.length)];
+};
+
+// Special finishing move sequence for eaten doomed state
+scorpionCarrierData.finishingMove = function(): string[] {
+    return [
+        'エルナルの最大HPが0になってしまった...',
+        'サソリは体内のエルナルを完全に支配下に置く！',
+        'エルナルはサソリの体内で永遠に運搬され続ける！',
+        'サソリは満足そうに砂漠を歩き始める...',
+        'エルナルは運び屋のサソリの永遠の荷物となった...',
+    ];
+};
