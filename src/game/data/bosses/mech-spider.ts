@@ -226,7 +226,7 @@ export const mechSpiderData: BossData = {
                     messages: [
                         'REPAIR INSPECTION PROTOCOL...',
                         '<USER>が<TARGET>の修理完了を検査している...',
-                        '不整合を検知した<USER>は<TARGET>の修理を続ける...',
+                        '不整合を検知した<USER>は<TARGET>の修理を続ける...'
                     ],
                     weight: 1
                 }
