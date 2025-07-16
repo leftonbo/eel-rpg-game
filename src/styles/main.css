@@ -788,6 +788,35 @@ body {
     transform: none;
 }
 
+/* Disabled skill buttons - using higher specificity instead of !important */
+#skill-panel .btn.disabled,
+#skill-panel .btn:disabled,
+#special-actions .btn.disabled,
+#special-actions .btn:disabled,
+#action-buttons .btn.disabled,
+#action-buttons .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    transform: none;
+    filter: grayscale(50%);
+    background-color: rgba(100, 116, 139, 0.3);
+    border-color: rgba(100, 116, 139, 0.5);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+#skill-panel .btn.disabled:hover,
+#skill-panel .btn:disabled:hover,
+#special-actions .btn.disabled:hover,
+#special-actions .btn:disabled:hover,
+#action-buttons .btn.disabled:hover,
+#action-buttons .btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
+    background-color: rgba(100, 116, 139, 0.3);
+    border-color: rgba(100, 116, 139, 0.5);
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     .game-title {

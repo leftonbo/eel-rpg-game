@@ -442,6 +442,66 @@ export class BattleScene {
                 struggleSkillSpecialBtn.classList.add('d-none');
             }
         }
+        
+        // Update availability of individual skill buttons
+        this.updateIndividualSkillButtons();
+    }
+    
+    /**
+     * Check if a specific skill can be used by the player
+     * 
+     * @param skillType The type of skill to check
+     * @return True if the skill can be used, false otherwise
+     */
+    private canUseSkill(skillType: SkillType): boolean {
+        if (!this.player) return false;
+        
+        // Check basic conditions
+        if (!this.player.canAct() || !this.playerTurn || this.battleEnded) {
+            return false;
+        }
+        
+        // Check if skill is available
+        const availableSkills = this.player.getAvailableSkills();
+        const skill = availableSkills.find(s => s.type === skillType);
+        
+        return skill ? skill.canUse(this.player) : false;
+    }
+    
+    /**
+     * Update individual skill buttons based on player state
+     * 
+     * This method checks if the player can use each skill and updates the button state accordingly.
+     * It also handles visual updates to indicate whether the skill is available or not.
+     * 
+     * This is called after any action that might change skill availability, such as using items or skills, or at the start of each turn.
+     */
+    private updateIndividualSkillButtons(): void {
+        if (!this.player) return;
+        
+        // Check each skill button
+        const skillButtons = [
+            { id: 'power-attack-btn', skillType: SkillType.PowerAttack },
+            { id: 'heal-skill-btn', skillType: SkillType.Heal },
+            { id: 'struggle-skill-btn', skillType: SkillType.Struggle }
+        ];
+        
+        skillButtons.forEach(({ id, skillType }) => {
+            const button = document.getElementById(id) as HTMLButtonElement;
+            if (button) {
+                const canUseSkill = this.canUseSkill(skillType);
+                
+                // Update visual state
+                if (!canUseSkill) {
+                    button.classList.add('disabled');
+                } else {
+                    button.classList.remove('disabled');
+                }
+                
+                // Update native disabled attribute for accessibility
+                button.disabled = !canUseSkill;
+            }
+        });
     }
     
     private playerAttack(): void {
@@ -515,6 +575,12 @@ export class BattleScene {
     
     private useSkill(skillType: SkillType): void {
         if (!this.player || !this.boss || !this.playerTurn) return;
+        
+        // Use centralized skill availability check
+        if (!this.canUseSkill(skillType)) {
+            this.addBattleLogMessage('そのスキルは使用できません', 'system', 'player');
+            return;
+        }
         
         const result = this.player.useSkill(skillType, this.boss);
         
