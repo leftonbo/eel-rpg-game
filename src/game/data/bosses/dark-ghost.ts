@@ -41,7 +41,10 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.RestraintAttack,
         name: '影の縛り',
         description: '影の触手で対象を拘束する',
-        messages: ['<USER>は影の触手で<TARGET>を捕らえようとしてきた！'],
+        messages: [
+            '「もっとじっくり見たいナ！」',
+            '<USER>は影の触手で<TARGET>を捕らえようとしてきた！'
+        ],
         weight: 15,
         hitRate: 0.9,
         canUse: (_boss, player, _turn) => {
@@ -54,7 +57,10 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.Attack,
         name: 'なめまわし',
         description: '拘束中の対象を影の舌でなめまわす（与えたダメージ分回復）',
-        messages: ['<USER>は舌で<TARGET>をなめまわしてきた！'],
+        messages: [
+            '「味見しちゃうヨ...」',
+            '<USER>は舌で<TARGET>をなめまわしてきた！'
+        ],
         damage: 16,
         weight: 30,
         playerStateCondition: 'restrained',
@@ -89,7 +95,10 @@ export const darkGhostData: BossData = {
                 name: '魂の捕食',
                 damage: 18,
                 description: '体内にいる獲物の生命エネルギーを吸収する',
-                messages: ['<USER>は<TARGET>の魂からエネルギーを吸い取っている...'],
+                messages: [
+                    '「キミのタマシイ、おいしいネ...」',
+                    '<USER>は<TARGET>の魂からエネルギーを吸い取っている...'
+                ],
                 weight: 1
             };
         }
@@ -103,7 +112,10 @@ export const darkGhostData: BossData = {
                         type: ActionType.EatAttack,
                         name: '魂の吸引',
                         description: '魂を吸い取るために対象を丸呑みにする',
-                        messages: ['<USER>は大きな口を開け、<TARGET>を吸い込む！'],
+                        messages: [
+                            '「イタダキマース！」',
+                            '<USER>は大きな口を開け、<TARGET>を吸い込む！'
+                        ],
                         weight: 1
                     };
                 }
@@ -115,7 +127,10 @@ export const darkGhostData: BossData = {
                         type: ActionType.RestraintAttack,
                         name: '影の縛り',
                         description: '対象を影の触手で拘束する',
-                        messages: ['<USER>は影の触手で<TARGET>を捕らえようとしてきた！'],
+                        messages: [
+                            '「もっとじっくり見たいナ！」',
+                            '<USER>は影の触手で<TARGET>を捕らえようとしてきた！'
+                        ],
                         weight: 1
                     };
                 } else if (random < 0.85) {
@@ -123,7 +138,10 @@ export const darkGhostData: BossData = {
                         type: ActionType.EatAttack,
                         name: '魂の吸引',
                         description: '魂を吸い取るために対象を丸呑みにする',
-                        messages: ['<USER>は大きな口を開け、<TARGET>を吸い込む！'],
+                        messages: [
+                            '「イタダキマース！」',
+                            '<USER>は大きな口を開け、<TARGET>を吸い込む！'
+                        ],
                         weight: 1
                     };
                 }
@@ -179,46 +197,44 @@ export const darkGhostData: BossData = {
     }
 };
 
+// Add finishing move for doomed player
+darkGhostData.finishingMove = function() {
+    return [
+        '<USER>は<TARGET>の魂ごと吸い取り、<USER>の体に取り込む！',
+        '<TARGET>の魂は<USER>の中に閉じ込められ、満足するまで生命エネルギーを吸われ続けることになった...'
+    ];
+};
+
 // Override dialogue for talkative personality
 darkGhostData.getDialogue = function(situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') {
     const dialogues: Record<string, string[]> = {
         'battle-start': [
-            'ケケケ...なんて美しい魂だろう',
-            'その魂、私にちょうだい',
-            'フフフ...いい獲物が来たね',
-            '魂の匂いが堪らないよ...'
+            'ケケケ...おいしそうな魂だネ！',
+            'そのタマシイ、ボクにちょうだい！',
         ],
         'player-restrained': [
-            'ケケケ...動けないね？',
-            'その絶望した顔、いいよ〜',
-            'もがけばもがくほど美味しくなる',
-            'フフフ...無駄な抵抗だよ',
-            'その恐怖、とても美味しい'
+            'ケケケ...動けないネ？',
+            'その絶望した顔、かわいいヨ！',
+            'もがけばもがくほど美味しくなるヨ',
+            'フフフ...抵抗しても無駄ダヨ',
+            'その恐怖、とても美味そうダネ！'
         ],
         'player-eaten': [
-            'ああ〜美味しい魂だ',
-            'もっと味わわせておくれ',
-            'この絶望...最高だよ',
-            'ゆっくりと魂を吸い取ってあげる',
-            'ケケケ...もう逃げられないよ'
+            '美味しいタマシイの味がするネ...',
+            'キミのタマシイをいただくヨ',
+            'ゆっくりと魂を吸い取ってあげるヨ',
+            'ケケケ...もう逃げられないヨ'
         ],
         'player-escapes': [
-            'ちっ！生意気な...',
-            'まだまだ諦めないよ',
-            'その程度では逃げられない',
-            '今度こそ捕まえてやる',
-            'フン...運が良かっただけだ'
+            'まだまだ諦めないヨ',
+            'その程度では逃げられないヨ',
+            '今度こそ捕まえてあげるネ'
         ],
         'low-hp': [
-            'くっ...まだ負けない！',
-            'この程度で倒れる私じゃない',
-            '魂への渇望は止まらない！',
-            'もっと...もっと魂が欲しい'
         ],
         'victory': [
-            'ケケケ...美味しい魂をありがとう',
-            'また新しい魂を探しに行こうかね',
-            'フフフ...満足だよ'
+            'ケケケ...美味しいタマシイだったヨ',
+            'ボクの中でゆっくりしていってネ'
         ]
     };
     
