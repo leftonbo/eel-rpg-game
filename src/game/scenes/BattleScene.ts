@@ -467,15 +467,10 @@ export class BattleScene {
                 const canUseSkill = skill && skill.canUse(this.player!) && canActAndPlayerTurn;
                 
                 // Enable/disable button
-                button.classList.toggle('disabled', !canUseSkill);
-                
-                // Update button style to indicate disabled state
                 if (!canUseSkill) {
-                    button.style.pointerEvents = 'none';
-                    button.style.opacity = '0.5';
+                    button.classList.add('disabled');
                 } else {
-                    button.style.pointerEvents = '';
-                    button.style.opacity = '';
+                    button.classList.remove('disabled');
                 }
             }
         });
