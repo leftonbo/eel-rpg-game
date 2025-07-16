@@ -41,7 +41,10 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.RestraintAttack,
         name: '影の縛り',
         description: '影の触手で対象を拘束する',
-        messages: ['<USER>は影の触手で<TARGET>を捕らえようとしてきた！'],
+        messages: [
+            '「もっとじっくり見たいナ！」',
+            '<USER>は影の触手で<TARGET>を捕らえようとしてきた！'
+        ],
         weight: 15,
         hitRate: 0.9,
         canUse: (_boss, player, _turn) => {
@@ -54,7 +57,10 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.Attack,
         name: 'なめまわし',
         description: '拘束中の対象を影の舌でなめまわす（与えたダメージ分回復）',
-        messages: ['<USER>は舌で<TARGET>をなめまわしてきた！'],
+        messages: [
+            '「味見しちゃうヨ...」',
+            '<USER>は舌で<TARGET>をなめまわしてきた！'
+        ],
         damage: 16,
         weight: 30,
         playerStateCondition: 'restrained',
@@ -89,7 +95,10 @@ export const darkGhostData: BossData = {
                 name: '魂の捕食',
                 damage: 18,
                 description: '体内にいる獲物の生命エネルギーを吸収する',
-                messages: ['<USER>は<TARGET>の魂からエネルギーを吸い取っている...'],
+                messages: [
+                    '「キミのタマシイ、おいしいネ...」',
+                    '<USER>は<TARGET>の魂からエネルギーを吸い取っている...'
+                ],
                 weight: 1
             };
         }
@@ -103,7 +112,10 @@ export const darkGhostData: BossData = {
                         type: ActionType.EatAttack,
                         name: '魂の吸引',
                         description: '魂を吸い取るために対象を丸呑みにする',
-                        messages: ['<USER>は大きな口を開け、<TARGET>を吸い込む！'],
+                        messages: [
+                            '「イタダキマース！」',
+                            '<USER>は大きな口を開け、<TARGET>を吸い込む！'
+                        ],
                         weight: 1
                     };
                 }
@@ -115,7 +127,10 @@ export const darkGhostData: BossData = {
                         type: ActionType.RestraintAttack,
                         name: '影の縛り',
                         description: '対象を影の触手で拘束する',
-                        messages: ['<USER>は影の触手で<TARGET>を捕らえようとしてきた！'],
+                        messages: [
+                            '「もっとじっくり見たいナ！」',
+                            '<USER>は影の触手で<TARGET>を捕らえようとしてきた！'
+                        ],
                         weight: 1
                     };
                 } else if (random < 0.85) {
@@ -123,7 +138,10 @@ export const darkGhostData: BossData = {
                         type: ActionType.EatAttack,
                         name: '魂の吸引',
                         description: '魂を吸い取るために対象を丸呑みにする',
-                        messages: ['<USER>は大きな口を開け、<TARGET>を吸い込む！'],
+                        messages: [
+                            '「イタダキマース！」',
+                            '<USER>は大きな口を開け、<TARGET>を吸い込む！'
+                        ],
                         weight: 1
                     };
                 }
@@ -177,6 +195,14 @@ export const darkGhostData: BossData = {
         
         return availableActions[0];
     }
+};
+
+// Add finishing move for doomed player
+darkGhostData.finishingMove = function() {
+    return [
+        '<USER>は<TARGET>の魂ごと吸い取り、<USER>の体に取り込む！',
+        '<TARGET>の魂は<USER>の中に閉じ込められ、満足するまで生命エネルギーを吸われ続けることになった...'
+    ];
 };
 
 // Override dialogue for talkative personality
