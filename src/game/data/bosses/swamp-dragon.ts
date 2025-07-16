@@ -88,6 +88,73 @@ export const swampDragonData: BossData = {
     ],
     aiStrategy: (boss, player, turn) => {
         // Swamp Dragon AI Strategy
+
+        // If player is defeated, use special post-defeat actions
+        if (player.isDefeated()) {
+            const postDefeatedActions: BossAction[] = [
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '深い体内での消化活動',
+                    description: '深い体内で消化液を分泌し、エルナルの体力を吸収し続ける',
+                    messages: [
+                        '「グルルル...」',
+                        '<USER>の体内奥深くで消化液がゆっくりと分泌されている...',
+                        '<TARGET>の体が徐々に体力を失っていく...'
+                    ],
+                    statusEffect: StatusEffectType.Weakness,
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '体内圧迫',
+                    description: '体内の壁でエルナルを優しく圧迫し続ける',
+                    messages: [
+                        '「ウォォォ...」',
+                        '<USER>の体内の壁が<TARGET>をゆっくりと圧迫している...',
+                        '<TARGET>は深い体内で身動きが取れない...'
+                    ],
+                    statusEffect: StatusEffectType.Exhausted,
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '体内栄養吸収',
+                    description: '体内でエルナルから栄養を吸収し続ける',
+                    messages: [
+                        '「グルル...」',
+                        '<USER>が<TARGET>から栄養を吸収している...',
+                        '<TARGET>の体力が徐々に奪われていく...'
+                    ],
+                    statusEffect: StatusEffectType.Weakness,
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '体内温熱療法',
+                    description: '体内の温かさでエルナルを包み込み続ける',
+                    messages: [
+                        '「ウォォォ...」',
+                        '<USER>の体内の温かさが<TARGET>を包み込んでいる...',
+                        '<TARGET>は深い体内で意識が朦朧としている...'
+                    ],
+                    statusEffect: StatusEffectType.Sleep,
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '体内マッサージ',
+                    description: '体内の筋肉でエルナルを優しくマッサージし続ける',
+                    messages: [
+                        '「グルル...」',
+                        '<USER>の体内の筋肉が<TARGET>を優しくマッサージしている...',
+                        '<TARGET>は抵抗することができない...'
+                    ],
+                    statusEffect: StatusEffectType.Charm,
+                    weight: 1
+                }
+            ];
+            return postDefeatedActions[Math.floor(Math.random() * postDefeatedActions.length)];
+        }
         
         // If player is eaten, use varied devour actions
         if (player.isEaten()) {

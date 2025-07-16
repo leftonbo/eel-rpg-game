@@ -172,6 +172,68 @@ export const mechSpiderData: BossData = {
     aiStrategy: (boss, player, turn) => {
         // Repair Maniac Spider AI Strategy
         
+        // If player is post-defeated, use special post-defeat actions
+        if (player.isDefeated()) {
+            const postDefeatedActions: BossAction[] = [
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '体内修理装置起動',
+                    description: '体内の修理装置でエルナルに栄養剤を注入する',
+                    messages: [
+                        'REPAIR SYSTEM ACTIVE...',
+                        '<USER>の体内修理装置が<TARGET>に栄養剤を注入している...',
+                        '修理装置に拘束されて動けない<TARGET>は、栄養剤を飲まされ続ける...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '体内マッサージ処理',
+                    description: '体内の機械腕でエルナルをマッサージする',
+                    messages: [
+                        'MASSAGE PROTOCOL INITIATED...',
+                        '<USER>の体内マッサージ機が<TARGET>の体を挟み込む...',
+                        '<TARGET>は機械的なマッサージを受けている...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '無意味な修理作業',
+                    description: '意味のない修理作業をエルナルに施し続ける',
+                    messages: [
+                        'PROCESSING REPAIR SEQUENCE...',
+                        '<USER>が<TARGET>にがらくたのようなパーツを接着しようとする...',
+                        'しかし、糊でくっつけられたパーツはすぐに外れてしまう...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '体内拘束システム',
+                    description: '体内の拘束システムでエルナルを固定し続ける',
+                    messages: [
+                        'RESTRAINT SYSTEM ACTIVE...',
+                        '<USER>の体内拘束システムが<TARGET>を固定している...',
+                        '<TARGET>は機械的な拘束から逃れられない...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '修理完了検査',
+                    description: '修理が完了したかエルナルを検査し続ける',
+                    messages: [
+                        'REPAIR INSPECTION PROTOCOL...',
+                        '<USER>が<TARGET>の修理完了を検査している...',
+                        '不整合を検知した<USER>は<TARGET>の修理を続ける...',
+                    ],
+                    weight: 1
+                }
+            ];
+            return postDefeatedActions[Math.floor(Math.random() * postDefeatedActions.length)];
+        }
+        
         // State-based action selection
         const playerState = boss.getPlayerState(player);
         
