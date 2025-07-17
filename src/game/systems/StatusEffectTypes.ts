@@ -66,7 +66,10 @@ export enum StatusEffectType {
     // Scorpion Carrier effects
     Anesthesia = 'anesthesia',
     ScorpionPoison = 'scorpion-poison',
-    Weakening = 'weakening'
+    Weakening = 'weakening',
+    
+    // Mikan Dragon effects
+    Lethargy = 'lethargy'
 }
 
 export interface StatusEffect {
