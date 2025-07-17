@@ -517,6 +517,7 @@ export const dreamDemonData: BossData = {
     maxHp: 350,
     attackPower: 10,
     actions: dreamDemonActions,
+    icon: '😈',
     personality: [
         'あっ、可愛い獲物が来たンメェ〜！',
         'その魂、とっても美味しそうンメェ〜',

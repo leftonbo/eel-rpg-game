@@ -6,12 +6,51 @@ import { calculateAttackResult } from '../utils/CombatUtils';
 import { calculateBattleResult } from './BattleResultScene';
 
 export class BattleScene {
+    /**
+     * The main game instance that this scene belongs to.
+     * This is used to access the player, bosses, and other game state.
+     */
     private game: Game;
+    
+    /**
+     * The player character in the battle.
+     * This is the entity controlled by the player, which can perform actions.
+     * Initialized when the battle starts and set to null when the battle ends.
+     */
     private player: Player | null = null;
+    
+    /**
+     * The current boss being fought in the battle.
+     * This is the enemy entity that the player must defeat.
+     * Initialized when the battle starts and set to null when the battle ends.
+     */
     private boss: Boss | null = null;
-    private turnCount: number = 0;
+    
+    /**
+     * Tracks the current round number in the battle sequence.
+     * Initialized to 0 at the start of a battle and incremented each round.
+     * "Round" means a complete cycle of player and boss actions.
+     * Round 0 is used for pre-battle state setup.
+     * Round 1 is the first actual round of combat, then it continues incrementing.
+     */
+    private roundCount: number = 0;
+    
+    /**
+     * Indicates whether it is currently the player's turn.
+     * Set to true when the player can take an action, false when the boss is acting.
+     */
     private playerTurn: boolean = true;
+    
+    /**
+     * Indicates whether the battle has ended.
+     * Set to true when the player or boss is defeated, or when the player chooses to end the battle.
+     */
     private battleEnded: boolean = false;
+    
+    /**
+     * The battle log element where messages are displayed.
+     * This is used to show combat actions, results, and system messages.
+     */
     private battleLog: HTMLElement | null = null;
     
     // Battle statistics for experience calculation
@@ -136,8 +175,9 @@ export class BattleScene {
             this.addAgilityExperience(amount);
         };
         
-        this.turnCount = 0;
-        this.playerTurn = true;
+        // Set "Round 0" to make pre-battle state
+        this.roundCount = 0;
+        this.playerTurn = false;
         this.battleEnded = false;
         
         // Reset battle statistics
@@ -157,19 +197,24 @@ export class BattleScene {
         this.player.fullRestore();
         
         this.initializeBattle();
-        this.updateUI();
         
         // Show boss dialogue
         const startDialogue = this.boss.getDialogue('battle-start');
         this.addBattleLogMessage(startDialogue, 'system');
+        
+        // Now it's time to start the battle
+        this.roundCount = 1;
+        this.playerTurn = true;
+        this.addRoundDivider(1);
+        this.updateUI();
     }
     
     private initializeBattle(): void {
         if (!this.boss) return;
         
-        // Clear battle log
+        // Clear battle log and add initial round
         if (this.battleLog) {
-            this.battleLog.innerHTML = '<p class="text-muted">バトル開始！</p>';
+            this.battleLog.innerHTML = '';
         }
         
         // Set boss name
@@ -775,7 +820,7 @@ export class BattleScene {
         }
         
         // Boss AI selects action
-        const action = this.boss.selectAction(this.player, this.turnCount);
+        const action = this.boss.selectAction(this.player, this.roundCount);
         
         if (action) {
             const playerHpBefore = this.player.hp;
@@ -801,9 +846,6 @@ export class BattleScene {
     }
     
     private endBossTurn(): void {
-        this.turnCount++;
-        this.playerTurn = true;
-        
         // Check if player is knocked out for battle stats
         if (this.player && this.player.isKnockedOut()) {
             this.battleStats.wasKnockedOut = true;
@@ -813,6 +855,7 @@ export class BattleScene {
         this.processRoundEnd();
         
         // Start player turn
+        this.playerTurn = true;
         if (this.player) {
             this.player.startTurn();
             
@@ -846,6 +889,12 @@ export class BattleScene {
         messages.forEach(message => {
             this.addBattleLogMessage(message, 'status-effect');
         });
+        
+        // Add count of rounds
+        this.roundCount++;
+        
+        // Add turn count divider to log
+        this.addRoundDivider(this.roundCount);
     }
     
     private checkBattleEnd(): boolean {
@@ -874,21 +923,59 @@ export class BattleScene {
     private addBattleLogMessage(message: string, type: string = '', actor: 'player' | 'boss' | 'system' = 'system'): void {
         if (!this.battleLog) return;
         
-        const messageElement = document.createElement('p');
-        messageElement.textContent = message;
+        // Create message container
+        const messageContainer = document.createElement('div');
+        messageContainer.className = `battle-message ${actor}`;
         
-        if (type) {
-            messageElement.classList.add(type);
+        // Create message content
+        if (actor === 'system') {
+            // System messages are centered without icons
+            const bubble = document.createElement('div');
+            bubble.className = `message-bubble system ${type}`;
+            bubble.textContent = message;
+            messageContainer.appendChild(bubble);
+        } else {
+            // Player and boss messages have icons and bubbles
+            const icon = document.createElement('div');
+            icon.className = `message-icon ${actor}`;
+            
+            // Set icon based on actor
+            if (actor === 'player') {
+                icon.textContent = '🐍'; // Player's eel icon
+            } else if (actor === 'boss') {
+                // Get boss icon from current boss data
+                icon.textContent = this.boss?.icon ?? '👹';
+            }
+            
+            const bubble = document.createElement('div');
+            bubble.className = `message-bubble ${actor} ${type}`;
+            bubble.textContent = message;
+            
+            if (actor === 'player') {
+                messageContainer.appendChild(icon);
+                messageContainer.appendChild(bubble);
+            } else {
+                messageContainer.appendChild(bubble);
+                messageContainer.appendChild(icon);
+            }
         }
         
-        // Add actor-specific styling
-        if (actor === 'player') {
-            messageElement.classList.add('battle-log-player');
-        } else if (actor === 'boss') {
-            messageElement.classList.add('battle-log-boss');
-        }
+        this.battleLog.appendChild(messageContainer);
+        this.battleLog.scrollTop = this.battleLog.scrollHeight;
+    }
+    
+    private addRoundDivider(roundNumber: number): void {
+        if (!this.battleLog) return;
         
-        this.battleLog.appendChild(messageElement);
+        const divider = document.createElement('div');
+        divider.className = 'battle-round-divider';
+        
+        const label = document.createElement('span');
+        label.className = 'battle-round-label';
+        label.textContent = `ラウンド ${roundNumber}`;
+        
+        divider.appendChild(label);
+        this.battleLog.appendChild(divider);
         this.battleLog.scrollTop = this.battleLog.scrollHeight;
     }
     

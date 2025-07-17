@@ -156,6 +156,7 @@ export const scorpionCarrierData: BossData = {
     maxHp: 250,
     attackPower: 8,
     actions: scorpionCarrierActions,
+    icon: '🦂',
     personality: [
         'んー、迷い人のようだな？',
         'おまえの足より、オレの足のほうが早いぞ？',

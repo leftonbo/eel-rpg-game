@@ -28,6 +28,9 @@
     /* Card Border Colors */
     --card-border: #475569;
     --card-border-highlight: #64748b;
+    
+    /* Battle Layout */
+    --battle-log-offset: 300px;
 }
 
 /* Game Styles */
@@ -77,14 +80,181 @@ body {
 }
 
 /* Battle Screen Styles */
+#battle-screen {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#battle-screen .row.h-100 {
+    flex: 1;
+    min-height: 0;
+}
+
 #battle-log {
     font-family: 'Courier New', monospace;
     font-size: 0.95rem;
     line-height: 1.5;
     background-color: var(--battle-log-bg) !important;
     color: var(--log-text) !important;
+    height: calc(100vh - var(--battle-log-offset));
+    min-height: 400px;
+    max-height: calc(100vh - 200px);
 }
 
+/* Round divider styles */
+.battle-round-divider {
+    margin: 1rem 0;
+    text-align: center;
+    position: relative;
+}
+
+.battle-round-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #64748b, transparent);
+}
+
+.battle-round-label {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #374151;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    border-radius: 12px;
+    border: 1px solid #475569;
+    position: relative;
+    z-index: 1;
+}
+
+/* Battle log message container */
+.battle-message {
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.battle-message.system {
+    justify-content: center;
+    margin: 0.75rem 0;
+}
+
+.battle-message.player {
+    justify-content: flex-start;
+}
+
+.battle-message.boss {
+    justify-content: flex-end;
+}
+
+/* Message icon */
+.message-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+}
+
+.message-icon.player {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: white;
+}
+
+.message-icon.boss {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: white;
+}
+
+.message-icon.system {
+    background: linear-gradient(135deg, #64748b, #475569);
+    color: white;
+}
+
+/* Message bubble */
+.message-bubble {
+    max-width: 70%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 12px;
+    position: relative;
+    word-wrap: break-word;
+}
+
+.message-bubble.player {
+    background: rgba(37, 99, 235, 0.15);
+    border: 1px solid rgba(37, 99, 235, 0.3);
+    color: #93c5fd;
+    border-bottom-left-radius: 4px;
+}
+
+.message-bubble.player::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    bottom: 8px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 8px 8px 0;
+    border-color: transparent rgba(37, 99, 235, 0.3) transparent transparent;
+}
+
+.message-bubble.boss {
+    background: rgba(220, 38, 38, 0.15);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    color: #fca5a5;
+    border-bottom-right-radius: 4px;
+}
+
+.message-bubble.boss::before {
+    content: '';
+    position: absolute;
+    right: -8px;
+    bottom: 8px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 8px 8px;
+    border-color: transparent transparent rgba(220, 38, 38, 0.3) transparent;
+}
+
+.message-bubble.system {
+    background: rgba(100, 116, 139, 0.15);
+    border: 1px solid rgba(100, 116, 139, 0.3);
+    color: #cbd5e1;
+    text-align: center;
+    border-radius: 8px;
+}
+
+/* Message type styling */
+.battle-message .message-bubble.damage {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+}
+
+.battle-message .message-bubble.heal {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #86efac;
+}
+
+.battle-message .message-bubble.status-effect {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #fbbf24;
+}
+
+/* Legacy battle log styling (for backwards compatibility) */
 #battle-log p {
     margin: 0.3rem 0;
     padding: 0.4rem 0.7rem;
