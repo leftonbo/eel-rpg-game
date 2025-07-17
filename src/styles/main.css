@@ -560,6 +560,13 @@ body {
     animation: weakening-drain 2.5s ease-in-out infinite alternate;
 }
 
+.status-lethargy {
+    background: rgba(128, 128, 128, 0.4);
+    border-color: #696969;
+    color: #d3d3d3;
+    animation: lethargy-drain 3s ease-in-out infinite alternate;
+}
+
 /* Animations */
 @keyframes pulse {
     from {
@@ -847,6 +854,19 @@ body {
         box-shadow: 0 0 15px rgba(139, 69, 19, 0.8);
         opacity: 0.9;
         filter: saturate(0.5);
+    }
+}
+
+@keyframes lethargy-drain {
+    from {
+        box-shadow: 0 0 5px rgba(128, 128, 128, 0.5);
+        opacity: 0.7;
+        filter: saturate(0.8);
+    }
+    to {
+        box-shadow: 0 0 15px rgba(128, 128, 128, 0.8);
+        opacity: 0.9;
+        filter: saturate(1.1);
     }
 }
 

@@ -158,5 +158,18 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         modifiers: {
             damageReceived: 1.5
         }
+    }],
+    
+    // Mikan Dragon status effects
+    [StatusEffectType.Lethargy, {
+        type: StatusEffectType.Lethargy,
+        name: '脱力',
+        description: '体に力が入らず、攻撃力が大幅に低下',
+        duration: 3,
+        category: 'debuff',
+        isDebuff: true,
+        modifiers: {
+            attackPower: 0.3
+        }
     }]
 ]);
