@@ -161,6 +161,7 @@ export const mechSpiderData: BossData = {
     maxHp: 320,
     attackPower: 10,
     actions: mechSpiderActions,
+    icon: '🕷️',
     personality: [
         'ERROR: 損傷した機械を検出',
         '修理プロトコル開始',
