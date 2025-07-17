@@ -78,6 +78,7 @@ export const swampDragonData: BossData = {
     maxHp: 400,
     attackPower: 18,
     actions: swampDragonActions,
+    icon: '🐲',
     personality: [
         'ふむ...良い匂いだな',
         'グルル...なかなか',

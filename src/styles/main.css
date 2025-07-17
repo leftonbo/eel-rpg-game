@@ -28,6 +28,9 @@
     /* Card Border Colors */
     --card-border: #475569;
     --card-border-highlight: #64748b;
+    
+    /* Battle Layout */
+    --battle-log-offset: 300px;
 }
 
 /* Game Styles */
@@ -94,7 +97,7 @@ body {
     line-height: 1.5;
     background-color: var(--battle-log-bg) !important;
     color: var(--log-text) !important;
-    height: calc(100vh - 300px);
+    height: calc(100vh - var(--battle-log-offset));
     min-height: 400px;
     max-height: calc(100vh - 200px);
 }
@@ -233,22 +236,22 @@ body {
 }
 
 /* Message type styling */
-.message-bubble.damage {
-    background: rgba(239, 68, 68, 0.15) !important;
-    border-color: rgba(239, 68, 68, 0.3) !important;
-    color: #fca5a5 !important;
+.battle-message .message-bubble.damage {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
 }
 
-.message-bubble.heal {
-    background: rgba(34, 197, 94, 0.15) !important;
-    border-color: rgba(34, 197, 94, 0.3) !important;
-    color: #86efac !important;
+.battle-message .message-bubble.heal {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #86efac;
 }
 
-.message-bubble.status-effect {
-    background: rgba(245, 158, 11, 0.15) !important;
-    border-color: rgba(245, 158, 11, 0.3) !important;
-    color: #fbbf24 !important;
+.battle-message .message-bubble.status-effect {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #fbbf24;
 }
 
 /* Legacy battle log styling (for backwards compatibility) */

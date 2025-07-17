@@ -943,15 +943,8 @@ export class BattleScene {
     private getBossIcon(): string {
         if (!this.boss) return '👹';
         
-        // Map boss types to icons based on display name
-        const bossIcons: { [key: string]: string } = {
-            '沼のドラゴン': '🐲',
-            '闇のおばけ': '👻',
-            '機械のクモ': '🕷️',
-            '夢魔ちゃん': '😈'
-        };
-        
-        return bossIcons[this.boss.displayName] || '👹';
+        // Use the icon from boss data directly
+        return this.boss.icon;
     }
     
     /**
