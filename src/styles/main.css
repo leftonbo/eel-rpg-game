@@ -33,6 +33,11 @@
     --battle-log-offset: 300px;
 }
 
+/* Hidden elements for unlock system */
+.unlocked-hidden {
+    display: none !important;
+}
+
 /* Game Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
