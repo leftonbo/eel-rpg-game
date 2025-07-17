@@ -6,6 +6,7 @@ const mikanDragonActions: BossAction[] = [
         type: ActionType.Attack,
         name: '蜜柑の爪',
         description: '蜜柑のような鋭い爪で攻撃',
+        messages: ['<USER>は蜜柑のような鋭い爪で<TARGET>を攻撃した！'],
         damage: 12,
         weight: 25,
         playerStateCondition: 'normal'
@@ -14,6 +15,7 @@ const mikanDragonActions: BossAction[] = [
         type: ActionType.Attack,
         name: '蜜柑の尻尾',
         description: '蜜柑色の尻尾で叩く',
+        messages: ['<USER>は蜜柑色の尻尾で<TARGET>を叩いた！'],
         damage: 15,
         weight: 20,
         playerStateCondition: 'normal'
@@ -22,6 +24,7 @@ const mikanDragonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '蜜柑の香り',
         description: '甘い蜜柑の香りでエルナルを魅了する',
+        messages: ['<USER>は甘い蜜柑の香りを放った！'],
         damage: 8,
         hitRate: 0.9,
         statusEffect: StatusEffectType.Charm,
@@ -37,6 +40,7 @@ const mikanDragonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '蜜柑の粘液',
         description: '蜜柑の汁のような粘液でエルナルをネバネバにする',
+        messages: ['<USER>は口から蜜柑のような粘液を放った！'],
         damage: 10,
         hitRate: 0.95,
         statusEffect: StatusEffectType.Slimed,
@@ -63,7 +67,7 @@ const mikanDragonActions: BossAction[] = [
         description: '舌でエルナルを締め付ける',
         messages: [
             '「フルルル...」',
-            '<USER>は舌で<TARGET>を締め付ける！'
+            '<USER>は巻き付けた舌で<TARGET>を締め付ける！'
         ],
         damage: 18,
         weight: 30,
@@ -75,7 +79,7 @@ const mikanDragonActions: BossAction[] = [
         description: '舌でエルナルを舐めて体力を吸収する',
         messages: [
             '「フルルル...」',
-            '<USER>は<TARGET>を舌で舐めて体力を吸収している！'
+            '<USER>は<TARGET>を体ごとキスして体力を吸収する！'
         ],
         damage: 22,
         weight: 25,
@@ -306,8 +310,8 @@ export const mikanDragonData: BossData = {
 mikanDragonData.finishingMove = function() {
     return [
         '「フルルル...」',
-        '<USER>は<TARGET>を体内の奥深くに送り込む！',
-        '<TARGET>は体内奥深くで蜜柑の汁に満たされ、<USER>の幼体として培養されることになった...'
+        '<USER>の体内触手が<TARGET>を胃袋の奥へと縛り付ける...',
+        '<TARGET>は蜜柑の粘液に満たされれた体内で<USER>の幼体として培養されることになった...'
     ];
 };
 
