@@ -379,20 +379,8 @@ export class BattleScene {
                         btn.classList.toggle('disabled', !this.playerTurn);
                     }
                 } else if (isRestrained) {
-                    // For restrained state, show struggle and stay-still buttons, hide give-up
-                    if (btnId === 'give-up-btn') {
-                        btn.classList.remove('d-none');
-                    } else if (btnId === 'struggle-btn') {
-                        // Check if struggle skill is unlocked
-                        const isStruggleUnlocked = this.player ? this.player.hasSkill('struggle') : false;
-                        if (isStruggleUnlocked) {
-                            btn.style.display = 'block';
-                        } else {
-                            btn.style.display = 'none';
-                        }
-                    } else {
-                        btn.classList.remove('d-none');
-                    }
+                    // For restrained state, show struggle and stay-still buttons
+                    btn.classList.remove('d-none');
                     btn.classList.toggle('disabled', !this.playerTurn);
                 } else {
                     // Normal state, hide all special buttons
