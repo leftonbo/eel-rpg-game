@@ -240,6 +240,9 @@ export class BattleScene {
         
         // Update item counts
         this.updateItemCounts();
+        
+        // Update basic action buttons
+        this.updateBasicActionButtons();
     }
     
     private updatePlayerUI(): void {
@@ -312,8 +315,9 @@ export class BattleScene {
     
     private updateActionAvailability(): void {
         if (!this.player || !this.boss) return;
-        
-        const canAct = this.player.canAct() && this.playerTurn && !this.battleEnded;
+
+        const canAct = this.player.canAct();
+        const canActActually = canAct && this.playerTurn && !this.battleEnded;
         const isRestrained = this.player.isRestrained() || this.player.isEaten() || this.player.isCocoon();
         const isKnockedOut = this.player.isKnockedOut();
         const isDoomed = this.player.isDoomed();
@@ -326,7 +330,7 @@ export class BattleScene {
                 this.actionButtons.classList.add('d-none');
                 this.specialActions.classList.add('d-none');
                 this.battleEndActions.classList.remove('d-none');
-            } else if (isRestrained || isKnockedOut || this.player.statusEffects.isSleeping() || isDoomed || isDefeated) {
+            } else if (isRestrained || isKnockedOut || isDoomed || isDefeated || !this.player.canAct()) {
                 this.actionButtons.classList.add('d-none');
                 this.specialActions.classList.remove('d-none');
                 this.battleEndActions.classList.add('d-none');
@@ -342,7 +346,7 @@ export class BattleScene {
         actionBtns.forEach(btnId => {
             const btn = document.getElementById(btnId);
             if (btn) {
-                btn.classList.toggle('disabled', !canAct || isRestrained);
+                btn.classList.toggle('disabled', !canActActually || isRestrained);
             }
         });
         
@@ -351,24 +355,8 @@ export class BattleScene {
         specialBtns.forEach(btnId => {
             const btn = document.getElementById(btnId);
             if (btn) {
-                if (isDefeated) {
-                    // For defeat state, only show give-up button
-                    if (btnId === 'struggle-btn' || btnId === 'stay-still-btn') {
-                        btn.classList.add('d-none');
-                    } else {
-                        btn.classList.remove('d-none');
-                        btn.classList.toggle('disabled', !this.playerTurn);
-                    }
-                } else if (isDoomed) {
-                    // For doomed state, only show give-up button
-                    if (btnId === 'struggle-btn' || btnId === 'stay-still-btn') {
-                        btn.classList.add('d-none');
-                    } else {
-                        btn.classList.remove('d-none');
-                        btn.classList.toggle('disabled', !this.playerTurn);
-                    }
-                } else if (isKnockedOut) {
-                    // For knocked out state, only show give-up button
+                if (isDefeated || isDoomed || isKnockedOut || !canAct) {
+                    // For knocked out, doomed, and defeated states, only show give-up button
                     if (btnId === 'struggle-btn' || btnId === 'stay-still-btn') {
                         btn.classList.add('d-none');
                     } else {
@@ -376,12 +364,8 @@ export class BattleScene {
                         btn.classList.toggle('disabled', !this.playerTurn);
                     }
                 } else if (isRestrained) {
-                    // For restrained state, show struggle and stay-still buttons, hide give-up
-                    if (btnId === 'give-up-btn') {
-                        btn.classList.remove('d-none');
-                    } else {
-                        btn.classList.remove('d-none');
-                    }
+                    // For restrained state, show struggle and stay-still buttons
+                    btn.classList.remove('d-none');
                     btn.classList.toggle('disabled', !this.playerTurn);
                 } else {
                     // Normal state, hide all special buttons
@@ -396,32 +380,35 @@ export class BattleScene {
         
         // Update heal potion
         const healPotionCount = this.player.getItemCount('heal-potion');
+        const healPotionUnlocked = this.player.unlockedItems.has('heal-potion');
         if (this.healPotionCount) {
             this.healPotionCount.textContent = healPotionCount.toString();
         }
         const healPotionBtn = document.getElementById('heal-potion-btn');
         if (healPotionBtn) {
-            healPotionBtn.style.display = healPotionCount > 0 ? 'block' : 'none';
+            healPotionBtn.style.display = healPotionUnlocked && healPotionCount > 0 ? 'block' : 'none';
         }
         
         // Update adrenaline
         const adrenalineCount = this.player.getItemCount('adrenaline');
+        const adrenalineUnlocked = this.player.unlockedItems.has('adrenaline');
         if (this.adrenalineCount) {
             this.adrenalineCount.textContent = adrenalineCount.toString();
         }
         const adrenalineBtn = document.getElementById('adrenaline-btn');
         if (adrenalineBtn) {
-            adrenalineBtn.style.display = adrenalineCount > 0 ? 'block' : 'none';
+            adrenalineBtn.style.display = adrenalineUnlocked && adrenalineCount > 0 ? 'block' : 'none';
         }
         
         // Update energy drink
         const energyDrinkCount = this.player.getItemCount('energy-drink');
+        const energyDrinkUnlocked = this.player.unlockedItems.has('energy-drink');
         if (this.energyDrinkCount) {
             this.energyDrinkCount.textContent = energyDrinkCount.toString();
         }
         const energyDrinkBtn = document.getElementById('energy-drink-btn');
         if (energyDrinkBtn) {
-            energyDrinkBtn.style.display = energyDrinkCount > 0 ? 'block' : 'none';
+            energyDrinkBtn.style.display = energyDrinkUnlocked && energyDrinkCount > 0 ? 'block' : 'none';
         }
         
         // Update other extended items dynamically
@@ -474,6 +461,43 @@ export class BattleScene {
         });
     }
     
+    /**
+     * Update visibility of basic action buttons based on unlock status
+     */
+    private updateBasicActionButtons(): void {
+        if (!this.player) return;
+        
+        // Check if basic actions are unlocked
+        const hasBasicAttack = true; // Basic attack is always available
+        const hasDefend = this.player.hasSkill('defend'); // Defend skill must be unlocked
+        const hasItemAccess = this.player.unlockedItems.size > 0; // Has any items unlocked
+        const hasSkillAccess = this.player.unlockedSkills.size > 0; // Has any skills unlocked
+        
+        // Update attack button (always visible)
+        const attackBtn = document.getElementById('attack-btn');
+        if (attackBtn) {
+            attackBtn.style.display = hasBasicAttack ? 'block' : 'none';
+        }
+        
+        // Update defend button (might be skill-locked)
+        const defendBtn = document.getElementById('defend-btn');
+        if (defendBtn) {
+            defendBtn.style.display = hasDefend ? 'block' : 'none';
+        }
+        
+        // Update item button (hide if no items are unlocked)
+        const itemBtn = document.getElementById('item-btn');
+        if (itemBtn) {
+            itemBtn.style.display = hasItemAccess ? 'block' : 'none';
+        }
+        
+        // Update skill button (hide if no skills are unlocked)
+        const skillBtn = document.getElementById('skill-btn');
+        if (skillBtn) {
+            skillBtn.style.display = hasSkillAccess ? 'block' : 'none';
+        }
+    }
+    
     private updateSkillButtonVisibility(): void {
         if (!this.player) return;
         
@@ -486,15 +510,18 @@ export class BattleScene {
         // Show/hide struggle skill button in special actions based on state
         const struggleSkillSpecialBtn = document.getElementById('struggle-skill-special-btn');
         if (struggleSkillSpecialBtn) {
+            const isStruggleUnlocked = this.player.hasSkill('struggle');
             const canUseSkill = !this.player.statusEffects.isExhausted() && 
                                !this.player.statusEffects.isKnockedOut() &&
                                !this.player.statusEffects.isDoomed() &&
                                !this.player.statusEffects.isDead();
-            if (canUseSkill) {
-                struggleSkillSpecialBtn.classList.remove('d-none');
-                struggleSkillSpecialBtn.classList.toggle('disabled', !this.playerTurn);
+            
+            // Hide if skill is not unlocked or cannot be used
+            if (!isStruggleUnlocked || !canUseSkill) {
+                struggleSkillSpecialBtn.style.display = 'none';
             } else {
-                struggleSkillSpecialBtn.classList.add('d-none');
+                struggleSkillSpecialBtn.style.display = 'block';
+                struggleSkillSpecialBtn.classList.toggle('disabled', !this.playerTurn);
             }
         }
         
@@ -534,27 +561,39 @@ export class BattleScene {
     private updateIndividualSkillButtons(): void {
         if (!this.player) return;
         
+        // Get unlocked skills from the player
+        const unlockedSkills = this.player.getUnlockedSkills();
+        const unlockedSkillIds = new Set(unlockedSkills.map(skill => skill.id));
+        
         // Check each skill button
         const skillButtons = [
-            { id: 'power-attack-btn', skillType: SkillType.PowerAttack },
-            { id: 'heal-skill-btn', skillType: SkillType.Heal },
-            { id: 'struggle-skill-btn', skillType: SkillType.Struggle }
+            { id: 'power-attack-btn', skillId: 'power-attack', skillType: SkillType.PowerAttack },
+            { id: 'heal-skill-btn', skillId: 'heal', skillType: SkillType.Heal },
+            { id: 'struggle-skill-btn', skillId: 'struggle', skillType: SkillType.Struggle }
         ];
         
-        skillButtons.forEach(({ id, skillType }) => {
+        skillButtons.forEach(({ id, skillId, skillType }) => {
             const button = document.getElementById(id) as HTMLButtonElement;
             if (button) {
+                const isUnlocked = unlockedSkillIds.has(skillId);
                 const canUseSkill = this.canUseSkill(skillType);
                 
-                // Update visual state
-                if (!canUseSkill) {
-                    button.classList.add('disabled');
+                // Hide button if skill is not unlocked
+                if (!isUnlocked) {
+                    button.style.display = 'none';
                 } else {
-                    button.classList.remove('disabled');
+                    button.style.display = 'block';
+                    
+                    // Update visual state
+                    if (!canUseSkill) {
+                        button.classList.add('disabled');
+                    } else {
+                        button.classList.remove('disabled');
+                    }
+                    
+                    // Update native disabled attribute for accessibility
+                    button.disabled = !canUseSkill;
                 }
-                
-                // Update native disabled attribute for accessibility
-                button.disabled = !canUseSkill;
             }
         });
     }

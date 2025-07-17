@@ -67,6 +67,7 @@ export class Player extends Actor {
     constructor() {
         super(PLAYER_NAME, 100, 5, 50);
         this.loadFromSave();
+        this.initializeDefaultUnlocks();
         this.initializeItems();
         this.recalculateStats();
     }
@@ -132,6 +133,20 @@ export class Player extends Actor {
         
         // Update unlocked skills based on ability levels
         this.updateUnlockedSkills();
+    }
+    
+    /**
+     * Initialize default unlocks for basic skills and items
+     */
+    private initializeDefaultUnlocks(): void {
+        // Always unlock basic attack (no skill unlocks needed for basic actions)
+        // Power attack and other skills will be unlocked via ability levels
+        
+        // Always unlock basic heal potion
+        this.unlockedItems.add('heal-potion');
+        
+        // Save if new unlocks were added
+        this.saveToStorage();
     }
     
     private initializeItems(): void {
