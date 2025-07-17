@@ -58,7 +58,6 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
         category: 'debuff',
         isDebuff: true,
         modifiers: {
-            canAct: false,
             actionPriority: ActionPriority.StruggleAction
         }
     }],
@@ -70,7 +69,6 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
         category: 'debuff',
         isDebuff: true,
         modifiers: {
-            canAct: false,
             actionPriority: ActionPriority.StruggleAction
         },
         onTick: (target: any, _effect: any) => {
@@ -89,7 +87,6 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
         category: 'debuff',
         isDebuff: true,
         modifiers: {
-            canAct: false,
             actionPriority: ActionPriority.StruggleAction
         }
     }]
