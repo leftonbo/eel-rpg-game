@@ -1,6 +1,7 @@
 import { Game } from '../Game';
 import { getAllBossData } from '../data/index';
 import { PlayerSaveManager } from '../systems/PlayerSaveData';
+import { AbilityType } from '../systems/AbilitySystem';
 
 export class BossSelectScene {
     private game: Game;
@@ -54,6 +55,15 @@ export class BossSelectScene {
                 this.onConfirmBoss();
             });
         }
+        
+        // Save data management buttons
+        this.initializeSaveDataButtons();
+        
+        // Debug mode controls
+        this.initializeDebugControls();
+        
+        // Initialize modal save data buttons
+        this.initializeModalSaveDataButtons();
     }
     
     enter(): void {
@@ -64,6 +74,9 @@ export class BossSelectScene {
         
         // Update player status display
         this.updatePlayerStatus();
+        
+        // Show/hide debug controls based on debug mode
+        this.updateDebugControlsVisibility();
     }
     
     private updateBossCards(): void {
@@ -213,6 +226,9 @@ export class BossSelectScene {
         
         // Update items tab
         this.updateItemsList();
+        
+        // Update debug controls visibility in modal
+        this.updateDebugControlsVisibilityInModal();
         
         // Show modal
         if (this.playerModal) {
@@ -491,5 +507,254 @@ export class BossSelectScene {
         if (element) {
             element.textContent = value;
         }
+    }
+    
+    /**
+     * Initialize save data management buttons
+     * @deprecated Use initializeModalSaveDataButtons instead
+     */
+    private initializeSaveDataButtons(): void {
+        // Legacy implementation - buttons now removed from main screen
+        // Functionality moved to modal
+    }
+    
+    /**
+     * Initialize debug controls
+     * @deprecated Use initializeModalSaveDataButtons instead
+     */
+    private initializeDebugControls(): void {
+        // Legacy implementation - buttons now removed from main screen
+        // Functionality moved to modal
+    }
+    
+    /**
+     * Update debug controls visibility based on debug mode
+     * @deprecated Use updateDebugControlsVisibilityInModal instead
+     */
+    private updateDebugControlsVisibility(): void {
+        // Legacy implementation - controls now removed from main screen
+        // Functionality moved to modal
+    }
+    
+    /**
+     * Check if debug mode is enabled
+     */
+    private isDebugMode(): boolean {
+        // You can implement your own debug mode detection logic here
+        // For example, check for a URL parameter, localStorage flag, etc.
+        return localStorage.getItem('debug_mode') === 'true' || 
+               window.location.search.includes('debug=true');
+    }
+    
+    /**
+     * Export save data to file
+     */
+    private exportSaveData(): void {
+        try {
+            const saveData = PlayerSaveManager.exportSaveData();
+            const blob = new Blob([saveData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `eel_rpg_save_${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            this.showMessage('セーブデータをエクスポートしました', 'success');
+        } catch (error) {
+            console.error('Export failed:', error);
+            this.showMessage('エクスポートに失敗しました', 'error');
+        }
+    }
+    
+    /**
+     * Import save data from file
+     */
+    private importSaveData(file: File): void {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const content = e.target?.result as string;
+                const success = PlayerSaveManager.importSaveData(content);
+                
+                if (success) {
+                    this.showMessage('セーブデータをインポートしました', 'success');
+                    // Reload the player to reflect imported data
+                    this.game.startGame();
+                } else {
+                    this.showMessage('無効なセーブデータです', 'error');
+                }
+            } catch (error) {
+                console.error('Import failed:', error);
+                this.showMessage('インポートに失敗しました', 'error');
+            }
+        };
+        reader.readAsText(file);
+    }
+    
+    /**
+     * Delete save data
+     */
+    private deleteSaveData(): void {
+        if (confirm('全てのセーブデータを削除しますか？この操作は取り消せません。')) {
+            PlayerSaveManager.clearSaveData();
+            this.showMessage('セーブデータを削除しました', 'success');
+            // Reload the player to reflect cleared data
+            this.game.startGame();
+        }
+    }
+    
+    
+    /**
+     * Initialize modal save data management buttons
+     */
+    private initializeModalSaveDataButtons(): void {
+        // Export save data button (modal)
+        const exportButtonModal = document.getElementById('export-save-btn-modal');
+        if (exportButtonModal) {
+            exportButtonModal.addEventListener('click', () => {
+                this.exportSaveData();
+            });
+        }
+        
+        // Import save data button (modal)
+        const importButtonModal = document.getElementById('import-save-btn-modal');
+        const importFileInputModal = document.getElementById('import-file-input-modal') as HTMLInputElement;
+        if (importButtonModal && importFileInputModal) {
+            importButtonModal.addEventListener('click', () => {
+                importFileInputModal.click();
+            });
+            
+            importFileInputModal.addEventListener('change', (event) => {
+                const file = (event.target as HTMLInputElement).files?.[0];
+                if (file) {
+                    this.importSaveData(file);
+                }
+            });
+        }
+        
+        // Delete save data button (modal)
+        const deleteButtonModal = document.getElementById('delete-save-btn-modal');
+        if (deleteButtonModal) {
+            deleteButtonModal.addEventListener('click', () => {
+                this.deleteSaveData();
+            });
+        }
+        
+        // Set ability button (modal)
+        const setAbilityButtonModal = document.getElementById('set-ability-btn-modal');
+        if (setAbilityButtonModal) {
+            setAbilityButtonModal.addEventListener('click', () => {
+                this.setAbilityLevelFromModal();
+            });
+        }
+        
+        // Set all abilities button (modal)
+        const setAllAbilitiesButtonModal = document.getElementById('set-all-ability-btn-modal');
+        if (setAllAbilitiesButtonModal) {
+            setAllAbilitiesButtonModal.addEventListener('click', () => {
+                this.setAllAbilityLevelsFromModal();
+            });
+        }
+    }
+    
+    /**
+     * Update debug controls visibility in modal
+     */
+    private updateDebugControlsVisibilityInModal(): void {
+        const debugControlsModal = document.getElementById('debug-controls-modal');
+        if (debugControlsModal) {
+            const isDebugMode = this.isDebugMode();
+            debugControlsModal.classList.toggle('d-none', !isDebugMode);
+        }
+    }
+    
+    /**
+     * Set specific ability level from modal
+     */
+    private setAbilityLevelFromModal(): void {
+        const abilitySelect = document.getElementById('ability-type-select-modal') as HTMLSelectElement;
+        const levelInput = document.getElementById('ability-level-input-modal') as HTMLInputElement;
+        const expInput = document.getElementById('ability-exp-input-modal') as HTMLInputElement;
+        
+        if (abilitySelect && levelInput && expInput) {
+            const abilityType = abilitySelect.value as AbilityType;
+            const level = parseInt(levelInput.value);
+            const experience = parseInt(expInput.value);
+            
+            if (isNaN(level) || isNaN(experience) || level < 0 || level > 10 || experience < 0) {
+                this.showMessage('無効な値です', 'error');
+                return;
+            }
+            
+            const player = this.game.getPlayer();
+            const ability = player.abilitySystem.getAbility(abilityType);
+            if (ability) {
+                ability.level = level;
+                ability.experience = experience;
+                player.recalculateStats();
+                player.saveToStorage();
+                this.updatePlayerStatus();
+                this.showMessage(`${this.getAbilityName(abilityType)}を設定しました`, 'success');
+            }
+        }
+    }
+    
+    /**
+     * Set all ability levels from modal
+     */
+    private setAllAbilityLevelsFromModal(): void {
+        const levelInput = document.getElementById('all-ability-level-input-modal') as HTMLInputElement;
+        
+        if (levelInput) {
+            const level = parseInt(levelInput.value);
+            
+            if (isNaN(level) || level < 0 || level > 10) {
+                this.showMessage('無効な値です', 'error');
+                return;
+            }
+            
+            const player = this.game.getPlayer();
+            Object.values(AbilityType).forEach(abilityType => {
+                const ability = player.abilitySystem.getAbility(abilityType);
+                if (ability) {
+                    ability.level = level;
+                    ability.experience = level > 0 ? Math.pow(level, 3) * 50 : 0;
+                }
+            });
+            
+            player.recalculateStats();
+            player.saveToStorage();
+            this.updatePlayerStatus();
+            this.showMessage(`全てのアビリティをレベル${level}に設定しました`, 'success');
+        }
+    }
+    
+    /**
+     * Show message to user
+     */
+    private showMessage(message: string, type: 'success' | 'error'): void {
+        // Create and show a bootstrap alert
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
+        alertDiv.style.top = '20px';
+        alertDiv.style.right = '20px';
+        alertDiv.style.zIndex = '9999';
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(alertDiv);
+        
+        // Auto-remove after 3 seconds
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.parentNode.removeChild(alertDiv);
+            }
+        }, 3000);
     }
 }

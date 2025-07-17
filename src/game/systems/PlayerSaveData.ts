@@ -157,4 +157,63 @@ export class PlayerSaveManager {
         currentData.unlockedSkills = unlockedSkills;
         this.savePlayerData(currentData);
     }
+    
+    /**
+     * Export save data as JSON string
+     */
+    static exportSaveData(): string {
+        const saveData = this.loadPlayerData() || this.createDefaultSaveData();
+        return JSON.stringify(saveData, null, 2);
+    }
+    
+    /**
+     * Import save data from JSON string
+     */
+    static importSaveData(jsonString: string): boolean {
+        try {
+            const importedData = JSON.parse(jsonString);
+            
+            // Validate the imported data structure
+            if (!this.validateSaveDataStructure(importedData)) {
+                throw new Error('Invalid save data structure');
+            }
+            
+            // Migrate if needed
+            const migratedData = importedData.version !== this.CURRENT_VERSION
+                ? this.migrateSaveData(importedData)
+                : importedData;
+            
+            // Save the imported data
+            this.savePlayerData(migratedData);
+            console.log('Save data imported successfully');
+            return true;
+        } catch (error) {
+            console.error('Failed to import save data:', error);
+            return false;
+        }
+    }
+    
+    /**
+     * Validate save data structure
+     */
+    private static validateSaveDataStructure(data: any): boolean {
+        if (!data || typeof data !== 'object') return false;
+        
+        // Check required fields
+        if (!data.abilities || typeof data.abilities !== 'object') return false;
+        if (!data.equipment || typeof data.equipment !== 'object') return false;
+        if (!data.equipment.weapon || typeof data.equipment.weapon !== 'string') return false;
+        if (!data.equipment.armor || typeof data.equipment.armor !== 'string') return false;
+        if (!Array.isArray(data.unlockedItems)) return false;
+        if (!Array.isArray(data.unlockedSkills)) return false;
+        
+        // Check abilities structure
+        for (const [, ability] of Object.entries(data.abilities)) {
+            if (!ability || typeof ability !== 'object') return false;
+            if (typeof (ability as any).level !== 'number') return false;
+            if (typeof (ability as any).experience !== 'number') return false;
+        }
+        
+        return true;
+    }
 }
