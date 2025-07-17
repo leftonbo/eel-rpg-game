@@ -944,8 +944,7 @@ export class BattleScene {
                 icon.textContent = '🐍'; // Player's eel icon
             } else if (actor === 'boss') {
                 // Get boss icon from current boss data
-                const bossIcon = this.getBossIcon();
-                icon.textContent = bossIcon;
+                icon.textContent = this.boss?.icon ?? '👹';
             }
             
             const bubble = document.createElement('div');
@@ -978,13 +977,6 @@ export class BattleScene {
         divider.appendChild(label);
         this.battleLog.appendChild(divider);
         this.battleLog.scrollTop = this.battleLog.scrollHeight;
-    }
-    
-    private getBossIcon(): string {
-        if (!this.boss) return '👹';
-        
-        // Use the icon from boss data directly
-        return this.boss.icon;
     }
     
     /**
