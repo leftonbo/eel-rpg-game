@@ -820,7 +820,7 @@ export class Player extends Actor {
         passiveSkills.forEach(skill => {
             switch (skill.passiveEffect) {
                 case 'regeneration':
-                    const healAmount = Math.max(1, Math.round(this.maxHp / 20));
+                    const healAmount = Math.max(1, Math.round(this.maxHp / 50));
                     if (!this.isKnockedOut() && this.hp < this.maxHp) {
                         this.heal(healAmount);
                     }
