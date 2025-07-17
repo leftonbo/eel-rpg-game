@@ -538,6 +538,28 @@ body {
     animation: enchantment-sparkle 1.5s ease-in-out infinite alternate;
 }
 
+/* Scorpion Carrier status effects */
+.status-anesthesia {
+    background: rgba(192, 192, 192, 0.5);
+    border-color: #c0c0c0;
+    color: #f0f0f0;
+    animation: anesthesia-numb 2s ease-in-out infinite alternate;
+}
+
+.status-scorpion-poison {
+    background: rgba(255, 140, 0, 0.4);
+    border-color: #ff8c00;
+    color: #fff2e0;
+    animation: scorpion-venom 2s ease-in-out infinite alternate;
+}
+
+.status-weakening {
+    background: rgba(139, 69, 19, 0.4);
+    border-color: #8b4513;
+    color: #f5deb3;
+    animation: weakening-drain 2.5s ease-in-out infinite alternate;
+}
+
 /* Animations */
 @keyframes pulse {
     from {
@@ -787,6 +809,44 @@ body {
     100% {
         box-shadow: 0 0 8px rgba(148, 0, 211, 0.6);
         filter: brightness(1);
+    }
+}
+
+/* Scorpion Carrier animations */
+@keyframes anesthesia-numb {
+    from {
+        box-shadow: 0 0 5px rgba(192, 192, 192, 0.5);
+        opacity: 0.8;
+        filter: blur(0px);
+    }
+    to {
+        box-shadow: 0 0 12px rgba(192, 192, 192, 0.8);
+        opacity: 0.9;
+        filter: blur(1px);
+    }
+}
+
+@keyframes scorpion-venom {
+    from {
+        box-shadow: 0 0 6px rgba(255, 140, 0, 0.6);
+        transform: scale(1);
+    }
+    to {
+        box-shadow: 0 0 18px rgba(255, 140, 0, 0.9);
+        transform: scale(1.02);
+    }
+}
+
+@keyframes weakening-drain {
+    from {
+        box-shadow: 0 0 5px rgba(139, 69, 19, 0.5);
+        opacity: 0.8;
+        filter: saturate(1);
+    }
+    to {
+        box-shadow: 0 0 15px rgba(139, 69, 19, 0.8);
+        opacity: 0.9;
+        filter: saturate(0.5);
     }
 }
 
