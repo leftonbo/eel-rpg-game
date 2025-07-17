@@ -7,12 +7,13 @@ export interface PlayerSaveData {
         armor: string;
     };
     unlockedItems: string[];
+    unlockedSkills: string[]; // New: track unlocked skills
     version: number; // For future save data migration
 }
 
 export class PlayerSaveManager {
     private static readonly SAVE_KEY = 'eelfood_player_data';
-    private static readonly CURRENT_VERSION = 1;
+    private static readonly CURRENT_VERSION = 2;
     
     /**
      * Save player data to localStorage
@@ -75,6 +76,7 @@ export class PlayerSaveManager {
                 armor: 'naked'
             },
             unlockedItems: ['heal-potion', 'adrenaline', 'energy-drink'], // Default items
+            unlockedSkills: [], // Default: no skills unlocked, they unlock based on ability levels
             version: this.CURRENT_VERSION
         };
     }
@@ -82,10 +84,21 @@ export class PlayerSaveManager {
     /**
      * Migrate save data from older versions
      */
-    private static migrateSaveData(_oldData: any): PlayerSaveData {
-        // For now, just return default data if version mismatch
-        // In the future, implement proper migration logic here
-        console.log('Creating new save data due to version mismatch');
+    private static migrateSaveData(oldData: any): PlayerSaveData {
+        console.log(`Migrating save data from version ${oldData.version || 'unknown'} to ${this.CURRENT_VERSION}`);
+        
+        // Migration from version 1 to 2: add unlockedSkills field
+        if (oldData.version === 1 || !oldData.version) {
+            const migratedData = {
+                ...oldData,
+                unlockedSkills: [], // Initialize empty skills array
+                version: this.CURRENT_VERSION
+            };
+            return migratedData;
+        }
+        
+        // For unknown versions, return default data
+        console.log('Unknown version, creating new save data');
         return this.createDefaultSaveData();
     }
     
@@ -133,6 +146,15 @@ export class PlayerSaveManager {
     static saveUnlockedItems(unlockedItems: string[]): void {
         const currentData = this.loadPlayerData() || this.createDefaultSaveData();
         currentData.unlockedItems = unlockedItems;
+        this.savePlayerData(currentData);
+    }
+    
+    /**
+     * Quick save just unlocked skills
+     */
+    static saveUnlockedSkills(unlockedSkills: string[]): void {
+        const currentData = this.loadPlayerData() || this.createDefaultSaveData();
+        currentData.unlockedSkills = unlockedSkills;
         this.savePlayerData(currentData);
     }
 }
