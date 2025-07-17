@@ -822,10 +822,7 @@ export class Player extends Actor {
                 case 'regeneration':
                     const healAmount = Math.max(1, Math.round(this.maxHp / 20));
                     if (this.hp < this.maxHp) {
-                        const actualHeal = this.heal(healAmount);
-                        if (actualHeal > 0) {
-                            messages.push(`${this.name}は自然回復でHPが${actualHeal}回復した！`);
-                        }
+                        this.heal(healAmount);
                     }
                     break;
                 // Other passive effects will be handled in specific situations
