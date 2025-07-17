@@ -61,7 +61,12 @@ export enum StatusEffectType {
     Euphoria = 'euphoria',
     Fascination = 'fascination',
     Bliss = 'bliss',
-    Enchantment = 'enchantment'
+    Enchantment = 'enchantment',
+    
+    // Scorpion Carrier effects
+    Anesthesia = 'anesthesia',
+    ScorpionPoison = 'scorpion-poison',
+    Weakening = 'weakening'
 }
 
 export interface StatusEffect {
