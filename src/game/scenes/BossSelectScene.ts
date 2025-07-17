@@ -343,14 +343,14 @@ export class BossSelectScene {
                     const mpCostText = skill.mpCost > 0 ? `MP: ${skill.mpCost}` : 'MP: 0';
                     
                     skillElement.innerHTML = `
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h6 class="mb-1">${skill.name}</h6>
-                                <small class="text-muted">${skill.description}</small>
+                        <div class="skill-header d-flex justify-content-between align-items-start mb-2">
+                            <div class="skill-info flex-grow-1 me-3">
+                                <h6 class="skill-name mb-1">${skill.name}</h6>
+                                <p class="skill-description mb-0">${skill.description}</p>
                             </div>
-                            <div class="text-end">
-                                <span class="badge bg-${categoryColor} mb-1">${this.getSkillCategoryName(skill.category)}</span><br>
-                                <small class="text-muted">${mpCostText}</small>
+                            <div class="skill-meta text-end flex-shrink-0">
+                                <span class="badge bg-${categoryColor} mb-1">${this.getSkillCategoryName(skill.category)}</span>
+                                <div class="skill-cost">${mpCostText}</div>
                             </div>
                         </div>
                         ${this.getSkillDetails(skill)}
@@ -374,12 +374,12 @@ export class BossSelectScene {
                     skillElement.className = 'skill-item mb-3 p-3 border rounded';
                     
                     skillElement.innerHTML = `
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h6 class="mb-1">${skill.name}</h6>
-                                <small class="text-muted">${skill.description}</small>
+                        <div class="skill-header d-flex justify-content-between align-items-start mb-2">
+                            <div class="skill-info flex-grow-1 me-3">
+                                <h6 class="skill-name mb-1">${skill.name}</h6>
+                                <p class="skill-description mb-0">${skill.description}</p>
                             </div>
-                            <div class="text-end">
+                            <div class="skill-meta text-end flex-shrink-0">
                                 <span class="badge bg-info">パッシブ</span>
                             </div>
                         </div>
@@ -448,8 +448,8 @@ export class BossSelectScene {
         
         if (details.length > 0 || unlockCondition) {
             return `
-                <div class="mt-2 pt-2 border-top">
-                    ${details.length > 0 ? `<div class="text-muted"><small>${details.join(' / ')}</small></div>` : ''}
+                <div class="skill-details">
+                    ${details.length > 0 ? `<div class="skill-stats mb-1">${details.join(' / ')}</div>` : ''}
                     ${unlockCondition}
                 </div>
             `;
@@ -467,7 +467,7 @@ export class BossSelectScene {
                 const abilityName = this.getAbilityName(condition.abilityType);
                 return `${abilityName}レベル${condition.requiredLevel}`;
             });
-            return `<div class="text-muted"><small>解放条件: ${conditions.join(', ')}</small></div>`;
+            return `<div class="skill-unlock-condition">解放条件: ${conditions.join(', ')}</div>`;
         }
         return '';
     }

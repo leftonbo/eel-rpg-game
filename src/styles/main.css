@@ -1161,6 +1161,7 @@ footer svg {
     border: 1px solid var(--card-border) !important;
     background: rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
+    padding: 0.75rem !important;
 }
 
 .skill-item:hover {
@@ -1168,22 +1169,47 @@ footer svg {
     border-color: var(--card-border-highlight) !important;
 }
 
-.skill-item h6 {
-    color: var(--status-text);
-    margin-bottom: 0.25rem;
+/* Skill Header Layout */
+.skill-header {
+    min-height: auto;
 }
 
-.skill-item .text-muted {
+.skill-info {
+    min-width: 0; /* Allow text to wrap properly */
+}
+
+.skill-name {
+    color: var(--status-text);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem !important;
+    line-height: 1.2;
+}
+
+.skill-description {
     color: var(--status-text-secondary) !important;
+    font-size: 0.875rem;
+    line-height: 1.3;
+    margin-bottom: 0 !important;
+    word-wrap: break-word;
+}
+
+.skill-meta {
+    min-width: 80px;
+    max-width: 120px;
+}
+
+.skill-cost {
+    color: var(--status-text-secondary) !important;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-top: 0.25rem;
 }
 
 .skill-item .badge {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-}
-
-.skill-item .border-top {
-    border-color: var(--card-border) !important;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+    font-weight: 500;
 }
 
 /* Category-specific skill colors */
@@ -1201,6 +1227,27 @@ footer svg {
 
 .skill-item.passive {
     border-left: 4px solid var(--game-info);
+}
+
+/* Skill Details */
+.skill-details {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--card-border);
+}
+
+.skill-stats {
+    color: var(--status-text-secondary) !important;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem !important;
+}
+
+.skill-unlock-condition {
+    color: var(--status-text-secondary) !important;
+    font-size: 0.75rem;
+    font-style: italic;
+    margin-bottom: 0 !important;
 }
 
 /* Skills tab specific styles */
@@ -1241,4 +1288,57 @@ footer svg {
     padding: 2rem;
     font-style: italic;
     color: var(--status-text-secondary) !important;
+}
+
+/* Responsive design for skills */
+@media (max-width: 768px) {
+    #skills-panel .col-md-6 {
+        padding: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .skill-item {
+        padding: 0.5rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    .skill-header {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+    
+    .skill-meta {
+        margin-top: 0.5rem;
+        align-self: flex-start;
+        min-width: auto;
+        max-width: none;
+    }
+    
+    .skill-cost {
+        margin-top: 0.25rem;
+        display: inline-block;
+        margin-left: 0.5rem;
+    }
+    
+    .skills-list {
+        max-height: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .skill-name {
+        font-size: 0.9rem;
+    }
+    
+    .skill-description {
+        font-size: 0.8rem;
+    }
+    
+    .skill-stats {
+        font-size: 0.75rem;
+    }
+    
+    .skill-unlock-condition {
+        font-size: 0.7rem;
+    }
 }
