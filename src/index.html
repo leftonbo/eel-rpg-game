@@ -86,66 +86,6 @@
                     </div>
                 </div>
                 
-                <!-- Save Data Management Area -->
-                <div class="col-12 mb-4">
-                    <div class="card bg-dark border-secondary">
-                        <div class="card-header">
-                            <h6 class="mb-0">💾 データ管理</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <button id="export-save-btn" class="btn btn-outline-info w-100 mb-2" title="セーブデータをファイルとしてエクスポート">
-                                        📤 データエクスポート
-                                    </button>
-                                </div>
-                                <div class="col-md-4">
-                                    <button id="import-save-btn" class="btn btn-outline-success w-100 mb-2" title="セーブデータをファイルからインポート">
-                                        📥 データインポート
-                                    </button>
-                                    <input type="file" id="import-file-input" accept=".json" style="display: none;">
-                                </div>
-                                <div class="col-md-4">
-                                    <button id="delete-save-btn" class="btn btn-outline-danger w-100 mb-2" title="全てのセーブデータを削除">
-                                        🗑️ データ削除
-                                    </button>
-                                </div>
-                            </div>
-                            <div id="debug-controls" class="mt-3 d-none">
-                                <h6>🔧 デバッグ機能</h6>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label class="form-label">アビリティレベル設定</label>
-                                        <select id="ability-type-select" class="form-select mb-2">
-                                            <option value="combat">⚔️ コンバット</option>
-                                            <option value="toughness">🛡️ タフネス</option>
-                                            <option value="craftwork">🔧 クラフトワーク</option>
-                                            <option value="endurance">💪 エンデュランス</option>
-                                            <option value="agility">🏃 アジリティ</option>
-                                        </select>
-                                        <div class="input-group mb-2">
-                                            <span class="input-group-text">レベル</span>
-                                            <input type="number" id="ability-level-input" class="form-control" min="0" max="10" value="0">
-                                        </div>
-                                        <div class="input-group mb-2">
-                                            <span class="input-group-text">経験値</span>
-                                            <input type="number" id="ability-exp-input" class="form-control" min="0" max="999999" value="0">
-                                        </div>
-                                        <button id="set-ability-btn" class="btn btn-outline-warning w-100">設定</button>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">全アビリティ一括設定</label>
-                                        <div class="input-group mb-2">
-                                            <span class="input-group-text">レベル</span>
-                                            <input type="number" id="all-ability-level-input" class="form-control" min="0" max="10" value="0">
-                                        </div>
-                                        <button id="set-all-ability-btn" class="btn btn-outline-warning w-100">全て設定</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 
                 <!-- Boss Selection Area -->
                 <div class="col-12">
@@ -456,6 +396,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="items-tab" data-bs-toggle="tab" href="#items-panel">アイテム</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="data-management-tab" data-bs-toggle="tab" href="#data-management-panel">データ管理</a>
+                            </li>
                         </ul>
                         
                         <!-- Tab Contents -->
@@ -577,6 +520,88 @@
                                 <h6>所持アイテム</h6>
                                 <div id="item-list">
                                     <!-- Item list will be populated here -->
+                                </div>
+                            </div>
+                            
+                            <!-- Data Management Panel -->
+                            <div class="tab-pane fade" id="data-management-panel">
+                                <h6>💾 データ管理</h6>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="card bg-secondary mb-3">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title">📤 データエクスポート</h6>
+                                                <p class="card-text">セーブデータをファイルとして保存します</p>
+                                                <button id="export-save-btn-modal" class="btn btn-outline-info w-100">
+                                                    エクスポート
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card bg-secondary mb-3">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title">📥 データインポート</h6>
+                                                <p class="card-text">セーブデータをファイルから読み込みます</p>
+                                                <button id="import-save-btn-modal" class="btn btn-outline-success w-100">
+                                                    インポート
+                                                </button>
+                                                <input type="file" id="import-file-input-modal" accept=".json" style="display: none;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card bg-secondary mb-3">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title">🗑️ データ削除</h6>
+                                                <p class="card-text">全てのセーブデータを削除します</p>
+                                                <button id="delete-save-btn-modal" class="btn btn-outline-danger w-100">
+                                                    削除
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="debug-controls-modal" class="mt-3 d-none">
+                                    <h6>🔧 デバッグ機能</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="card bg-secondary">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">アビリティレベル設定</h6>
+                                                    <select id="ability-type-select-modal" class="form-select mb-2">
+                                                        <option value="combat">⚔️ コンバット</option>
+                                                        <option value="toughness">🛡️ タフネス</option>
+                                                        <option value="craftwork">🔧 クラフトワーク</option>
+                                                        <option value="endurance">💪 エンデュランス</option>
+                                                        <option value="agility">🏃 アジリティ</option>
+                                                    </select>
+                                                    <div class="input-group mb-2">
+                                                        <span class="input-group-text">レベル</span>
+                                                        <input type="number" id="ability-level-input-modal" class="form-control" min="0" max="10" value="0">
+                                                    </div>
+                                                    <div class="input-group mb-2">
+                                                        <span class="input-group-text">経験値</span>
+                                                        <input type="number" id="ability-exp-input-modal" class="form-control" min="0" max="999999" value="0">
+                                                    </div>
+                                                    <button id="set-ability-btn-modal" class="btn btn-outline-warning w-100">設定</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card bg-secondary">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">全アビリティ一括設定</h6>
+                                                    <div class="input-group mb-2">
+                                                        <span class="input-group-text">レベル</span>
+                                                        <input type="number" id="all-ability-level-input-modal" class="form-control" min="0" max="10" value="0">
+                                                    </div>
+                                                    <button id="set-all-ability-btn-modal" class="btn btn-outline-warning w-100">全て設定</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -61,6 +61,9 @@ export class BossSelectScene {
         
         // Debug mode controls
         this.initializeDebugControls();
+        
+        // Initialize modal save data buttons
+        this.initializeModalSaveDataButtons();
     }
     
     enter(): void {
@@ -223,6 +226,9 @@ export class BossSelectScene {
         
         // Update items tab
         this.updateItemsList();
+        
+        // Update debug controls visibility in modal
+        this.updateDebugControlsVisibilityInModal();
         
         // Show modal
         if (this.playerModal) {
@@ -505,72 +511,29 @@ export class BossSelectScene {
     
     /**
      * Initialize save data management buttons
+     * @deprecated Use initializeModalSaveDataButtons instead
      */
     private initializeSaveDataButtons(): void {
-        // Export save data button
-        const exportButton = document.getElementById('export-save-btn');
-        if (exportButton) {
-            exportButton.addEventListener('click', () => {
-                this.exportSaveData();
-            });
-        }
-        
-        // Import save data button
-        const importButton = document.getElementById('import-save-btn');
-        const importFileInput = document.getElementById('import-file-input') as HTMLInputElement;
-        if (importButton && importFileInput) {
-            importButton.addEventListener('click', () => {
-                importFileInput.click();
-            });
-            
-            importFileInput.addEventListener('change', (event) => {
-                const file = (event.target as HTMLInputElement).files?.[0];
-                if (file) {
-                    this.importSaveData(file);
-                }
-            });
-        }
-        
-        // Delete save data button
-        const deleteButton = document.getElementById('delete-save-btn');
-        if (deleteButton) {
-            deleteButton.addEventListener('click', () => {
-                this.deleteSaveData();
-            });
-        }
+        // Legacy implementation - buttons now removed from main screen
+        // Functionality moved to modal
     }
     
     /**
      * Initialize debug controls
+     * @deprecated Use initializeModalSaveDataButtons instead
      */
     private initializeDebugControls(): void {
-        // Set ability button
-        const setAbilityButton = document.getElementById('set-ability-btn');
-        if (setAbilityButton) {
-            setAbilityButton.addEventListener('click', () => {
-                this.setAbilityLevel();
-            });
-        }
-        
-        // Set all abilities button
-        const setAllAbilitiesButton = document.getElementById('set-all-ability-btn');
-        if (setAllAbilitiesButton) {
-            setAllAbilitiesButton.addEventListener('click', () => {
-                this.setAllAbilityLevels();
-            });
-        }
+        // Legacy implementation - buttons now removed from main screen
+        // Functionality moved to modal
     }
     
     /**
      * Update debug controls visibility based on debug mode
+     * @deprecated Use updateDebugControlsVisibilityInModal instead
      */
     private updateDebugControlsVisibility(): void {
-        const debugControls = document.getElementById('debug-controls');
-        if (debugControls) {
-            // Check if debug mode is enabled (you can add your own debug mode detection logic here)
-            const isDebugMode = this.isDebugMode();
-            debugControls.classList.toggle('d-none', !isDebugMode);
-        }
+        // Legacy implementation - controls now removed from main screen
+        // Functionality moved to modal
     }
     
     /**
@@ -644,13 +607,78 @@ export class BossSelectScene {
         }
     }
     
+    
     /**
-     * Set specific ability level
+     * Initialize modal save data management buttons
      */
-    private setAbilityLevel(): void {
-        const abilitySelect = document.getElementById('ability-type-select') as HTMLSelectElement;
-        const levelInput = document.getElementById('ability-level-input') as HTMLInputElement;
-        const expInput = document.getElementById('ability-exp-input') as HTMLInputElement;
+    private initializeModalSaveDataButtons(): void {
+        // Export save data button (modal)
+        const exportButtonModal = document.getElementById('export-save-btn-modal');
+        if (exportButtonModal) {
+            exportButtonModal.addEventListener('click', () => {
+                this.exportSaveData();
+            });
+        }
+        
+        // Import save data button (modal)
+        const importButtonModal = document.getElementById('import-save-btn-modal');
+        const importFileInputModal = document.getElementById('import-file-input-modal') as HTMLInputElement;
+        if (importButtonModal && importFileInputModal) {
+            importButtonModal.addEventListener('click', () => {
+                importFileInputModal.click();
+            });
+            
+            importFileInputModal.addEventListener('change', (event) => {
+                const file = (event.target as HTMLInputElement).files?.[0];
+                if (file) {
+                    this.importSaveData(file);
+                }
+            });
+        }
+        
+        // Delete save data button (modal)
+        const deleteButtonModal = document.getElementById('delete-save-btn-modal');
+        if (deleteButtonModal) {
+            deleteButtonModal.addEventListener('click', () => {
+                this.deleteSaveData();
+            });
+        }
+        
+        // Set ability button (modal)
+        const setAbilityButtonModal = document.getElementById('set-ability-btn-modal');
+        if (setAbilityButtonModal) {
+            setAbilityButtonModal.addEventListener('click', () => {
+                this.setAbilityLevelFromModal();
+            });
+        }
+        
+        // Set all abilities button (modal)
+        const setAllAbilitiesButtonModal = document.getElementById('set-all-ability-btn-modal');
+        if (setAllAbilitiesButtonModal) {
+            setAllAbilitiesButtonModal.addEventListener('click', () => {
+                this.setAllAbilityLevelsFromModal();
+            });
+        }
+    }
+    
+    /**
+     * Update debug controls visibility in modal
+     */
+    private updateDebugControlsVisibilityInModal(): void {
+        const debugControlsModal = document.getElementById('debug-controls-modal');
+        if (debugControlsModal) {
+            const isDebugMode = this.isDebugMode();
+            debugControlsModal.classList.toggle('d-none', !isDebugMode);
+        }
+    }
+    
+    /**
+     * Set specific ability level from modal
+     */
+    private setAbilityLevelFromModal(): void {
+        const abilitySelect = document.getElementById('ability-type-select-modal') as HTMLSelectElement;
+        const levelInput = document.getElementById('ability-level-input-modal') as HTMLInputElement;
+        const expInput = document.getElementById('ability-exp-input-modal') as HTMLInputElement;
         
         if (abilitySelect && levelInput && expInput) {
             const abilityType = abilitySelect.value as AbilityType;
@@ -676,10 +704,10 @@ export class BossSelectScene {
     }
     
     /**
-     * Set all ability levels
+     * Set all ability levels from modal
      */
-    private setAllAbilityLevels(): void {
-        const levelInput = document.getElementById('all-ability-level-input') as HTMLInputElement;
+    private setAllAbilityLevelsFromModal(): void {
+        const levelInput = document.getElementById('all-ability-level-input-modal') as HTMLInputElement;
         
         if (levelInput) {
             const level = parseInt(levelInput.value);
