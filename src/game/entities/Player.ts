@@ -3,6 +3,7 @@ import { AbilitySystem, AbilityType, Equipment, WEAPONS, ARMORS } from '../syste
 import { PlayerSaveManager, PlayerSaveData } from '../systems/PlayerSaveData';
 import { updatePlayerItems } from '../data/ExtendedItems';
 import { Actor } from './Actor';
+import { SkillRegistry, SkillData } from '../data/skills';
 
 export enum SkillType {
     PowerAttack = 'power-attack',
@@ -61,6 +62,7 @@ export class Player extends Actor {
     public equippedWeapon: string = 'bare-hands';
     public equippedArmor: string = 'naked';
     public unlockedItems: Set<string> = new Set();
+    public unlockedSkills: Set<string> = new Set();
     
     constructor() {
         super(PLAYER_NAME, 100, 5, 50);
@@ -84,9 +86,13 @@ export class Player extends Actor {
             
             // Load unlocked items
             this.unlockedItems = new Set(saveData.unlockedItems);
+            
+            // Load unlocked skills
+            this.unlockedSkills = new Set(saveData.unlockedSkills || []);
         } else {
             // Initialize with default values
             this.unlockedItems = new Set();
+            this.unlockedSkills = new Set();
         }
     }
     
@@ -101,7 +107,8 @@ export class Player extends Actor {
                 armor: this.equippedArmor
             },
             unlockedItems: Array.from(this.unlockedItems),
-            version: 1
+            unlockedSkills: Array.from(this.unlockedSkills),
+            version: 2
         };
         
         PlayerSaveManager.savePlayerData(saveData);
@@ -122,11 +129,76 @@ export class Player extends Actor {
         
         // Update items based on new ability levels
         updatePlayerItems(this);
+        
+        // Update unlocked skills based on ability levels
+        this.updateUnlockedSkills();
     }
     
     private initializeItems(): void {
         // Initialize items based on ability levels
         updatePlayerItems(this);
+    }
+    
+    /**
+     * Update unlocked skills based on current ability levels
+     */
+    private updateUnlockedSkills(): void {
+        const abilityLevels = new Map<AbilityType, number>();
+        Object.values(AbilityType).forEach(type => {
+            const ability = this.abilitySystem.getAbility(type);
+            abilityLevels.set(type, ability?.level || 0);
+        });
+        
+        const availableSkills = SkillRegistry.getUnlockedSkills(abilityLevels);
+        const previousSize = this.unlockedSkills.size;
+        
+        this.unlockedSkills = new Set(availableSkills);
+        
+        // Save if new skills were unlocked
+        if (this.unlockedSkills.size > previousSize) {
+            this.saveToStorage();
+        }
+    }
+    
+    /**
+     * Get all unlocked skills with their current stats
+     */
+    public getUnlockedSkills(): SkillData[] {
+        const abilityLevels = new Map<AbilityType, number>();
+        Object.values(AbilityType).forEach(type => {
+            const ability = this.abilitySystem.getAbility(type);
+            abilityLevels.set(type, ability?.level || 0);
+        });
+        
+        const skills: SkillData[] = [];
+        this.unlockedSkills.forEach(skillId => {
+            const skill = SkillRegistry.getUpgradedSkill(skillId, abilityLevels);
+            if (skill) {
+                skills.push(skill);
+            }
+        });
+        
+        return skills;
+    }
+    
+    /**
+     * Get unlocked passive skills
+     */
+    public getUnlockedPassiveSkills(): SkillData[] {
+        const abilityLevels = new Map<AbilityType, number>();
+        Object.values(AbilityType).forEach(type => {
+            const ability = this.abilitySystem.getAbility(type);
+            abilityLevels.set(type, ability?.level || 0);
+        });
+        
+        return SkillRegistry.getUnlockedPassiveSkills(abilityLevels);
+    }
+    
+    /**
+     * Check if a specific skill is unlocked
+     */
+    public hasSkill(skillId: string): boolean {
+        return this.unlockedSkills.has(skillId);
     }
     
     getAttackPower(): number {
@@ -281,6 +353,9 @@ export class Player extends Actor {
             this.statusEffects.removeEffect(StatusEffectType.Eaten);
             this.statusEffects.removeEffect(StatusEffectType.Cocoon);
             
+            // Apply escape recovery passive skill
+            this.applyEscapeRecovery();
+            
             // Notify agility experience for successful escape
             if (this.agilityExperienceCallback) {
                 this.agilityExperienceCallback(50);
@@ -353,6 +428,10 @@ export class Player extends Actor {
         const recoveryMessages = this.recoverFromKnockOut();
         messages.push(...recoveryMessages);
         
+        // Apply passive skill effects
+        const passiveMessages = this.applyPassiveSkills();
+        messages.push(...passiveMessages);
+        
         // Call parent processRoundEnd for status effect processing
         const parentMessages = super.processRoundEnd();
         messages.push(...parentMessages);
@@ -423,130 +502,241 @@ export class Player extends Actor {
             }];
         }
         
-        const skills: Skill[] = [
-            {
-                type: SkillType.PowerAttack,
-                name: 'パワーアタック',
-                description: '2.5倍の攻撃力で確実に攻撃（20MP）',
-                mpCost: 20,
-                priority: ActionPriority.NormalAction,
-                damageVarianceMin: -0.2,
-                damageVarianceMax: 0.5,
-                canUse: (player: Player) => !player.statusEffects.isExhausted() && player.statusEffects.canAct(),
-                use: (player: Player, _target?: any) => {
-                    const mpInsufficient = !player.consumeMp(20);
-                    let powerMultiplier = 2.5;
-                    
-                    if (mpInsufficient) {
-                        powerMultiplier = 5.0; // Double effect when MP insufficient
-                    }
-                    
-                    const damage = Math.floor(player.baseAttackPower * powerMultiplier);
-                    return {
-                        success: true,
-                        message: mpInsufficient ? 
-                            `${player.name}は最後の力を振り絞ってパワーアタックを放った！` :
-                            `${player.name}はパワーアタックを放った！`,
-                        damage,
-                        mpCost: mpInsufficient ? 0 : 20
-                    };
-                }
-            },
-            {
-                type: SkillType.Heal,
-                name: 'ヒール',
-                description: 'HPを100回復（30MP）',
-                mpCost: 30,
-                priority: ActionPriority.NormalAction,
-                canUse: (player: Player) => !player.statusEffects.isExhausted() && player.statusEffects.canAct() && player.hp < player.maxHp,
-                use: (player: Player) => {
-                    const mpInsufficient = !player.consumeMp(30);
-                    let healAmount = 100;
-                    
-                    if (mpInsufficient) {
-                        healAmount = 200; // Double effect when MP insufficient
-                    }
-                    
-                    const actualHeal = player.heal(healAmount);
-                    return {
-                        success: true,
-                        message: mpInsufficient ? 
-                            `${player.name}は最後の力でヒールを唱えた！HPが${actualHeal}回復！` :
-                            `${player.name}はヒールを唱えた！HPが${actualHeal}回復！`,
-                        mpCost: mpInsufficient ? 0 : 30
-                    };
-                }
-            },
-            {
-                type: SkillType.Struggle,
-                name: 'あばれる',
-                description: '拘束状態専用：脱出確率2倍（30MP）',
-                mpCost: 30,
-                priority: ActionPriority.StruggleAction,
-                canUse: (player: Player) => !player.statusEffects.isExhausted() && 
-                    (player.statusEffects.isRestrained() || player.statusEffects.isEaten()),
-                use: (player: Player) => {
-                    const mpInsufficient = !player.consumeMp(30);
-                    let successMultiplier = 2;
-                    
-                    if (mpInsufficient) {
-                        successMultiplier = 4; // Double effect when MP insufficient
-                    }
-                    
-                    // Calculate enhanced struggle success rate
-                    let baseSuccessRate = 0.3 + (player.struggleAttempts) * 0.2;
-                    baseSuccessRate = Math.min(baseSuccessRate, 1.0);
-                    
-                    // Apply agility bonus
-                    const agilityBonus = player.abilitySystem.getAgilityEscapeBonus();
-                    baseSuccessRate += agilityBonus;
-                    
-                    const modifier = player.statusEffects.getStruggleModifier();
-                    let finalSuccessRate = baseSuccessRate * modifier * successMultiplier;
-                    finalSuccessRate = Math.min(finalSuccessRate, 1.0);
-                    
-                    const success = Math.random() < finalSuccessRate;
-                    player.struggleAttempts++;
-                    
-                    if (success) {
-                        player.struggleAttempts = 0;
-                        player.statusEffects.removeEffect(StatusEffectType.Restrained);
-                        player.statusEffects.removeEffect(StatusEffectType.Eaten);
-                        
-                        // Notify agility experience for successful escape
-                        if (player.agilityExperienceCallback) {
-                            player.agilityExperienceCallback(100);
-                        }
-                        
-                        return {
-                            success: true,
-                            message: mpInsufficient ? 
-                                `${player.name}は最後の力で激しくあばれた！拘束から脱出した！` :
-                                `${player.name}は激しくあばれた！拘束から脱出した！`,
-                            mpCost: mpInsufficient ? 0 : 30
-                        };
-                    } else {
-                        // Increase future struggle success significantly on failure
-                        player.struggleAttempts += mpInsufficient ? 8 : 4;
-                        
-                        // Notify agility experience for failed escape (2x amount)
-                        if (player.agilityExperienceCallback) {
-                            player.agilityExperienceCallback(400);
-                        }
-                        
-                        return {
-                            success: false,
-                            message: mpInsufficient ? 
-                                `${player.name}は最後の力であばれたが、脱出できなかった...しかし次回の成功率が大幅に上がった！` :
-                                `${player.name}があばれたが、脱出できなかった...次回の成功率が上がった！`,
-                            mpCost: mpInsufficient ? 0 : 30
-                        };
-                    }
-                }
+        // Get unlocked skills from new system
+        const unlockedSkills = this.getUnlockedSkills();
+        const skills: Skill[] = [];
+        
+        // Convert new skill system to old skill interface for compatibility
+        unlockedSkills.forEach(skillData => {
+            const skill = this.convertSkillDataToSkill(skillData);
+            if (skill) {
+                skills.push(skill);
             }
-        ];
+        });
         
         return skills.filter(skill => skill.canUse(this));
+    }
+    
+    /**
+     * Convert new SkillData to old Skill interface for compatibility
+     */
+    private convertSkillDataToSkill(skillData: SkillData): Skill | null {
+        // Map skill IDs to SkillType
+        const skillTypeMap: { [key: string]: SkillType } = {
+            'power-attack': SkillType.PowerAttack,
+            'ultra-smash': SkillType.PowerAttack, // Temporary mapping
+            'struggle': SkillType.Struggle,
+            'defend': SkillType.PowerAttack, // Temporary mapping
+            'stay-still': SkillType.PowerAttack // Temporary mapping
+        };
+        
+        const skillType = skillTypeMap[skillData.id];
+        if (!skillType) return null;
+        
+        return {
+            type: skillType,
+            name: skillData.name,
+            description: skillData.description,
+            mpCost: skillData.mpCost,
+            priority: skillData.priority,
+            hitRate: skillData.hitRate,
+            criticalRate: skillData.criticalRate,
+            damageVarianceMin: skillData.damageVarianceMin,
+            damageVarianceMax: skillData.damageVarianceMax,
+            canUse: (player: Player) => this.canUseSkill(skillData, player),
+            use: (player: Player, target?: any) => this.useSkillData(skillData, player, target)
+        };
+    }
+    
+    /**
+     * Check if a skill can be used
+     */
+    private canUseSkill(skillData: SkillData, player: Player): boolean {
+        // Basic checks
+        if (player.statusEffects.isExhausted()) return false;
+        if (!player.statusEffects.canAct()) return false;
+        
+        // Skill-specific checks
+        switch (skillData.id) {
+            case 'power-attack':
+            case 'ultra-smash':
+                return true;
+            case 'struggle':
+                return player.statusEffects.isRestrained() || player.statusEffects.isEaten();
+            case 'defend':
+                return true;
+            case 'stay-still':
+                return player.statusEffects.isRestrained() || player.statusEffects.isEaten();
+            default:
+                return true;
+        }
+    }
+    
+    /**
+     * Use a skill from the new system
+     */
+    private useSkillData(skillData: SkillData, player: Player, _target?: any): SkillResult {
+        switch (skillData.id) {
+            case 'power-attack':
+                return this.usePowerAttack(skillData, player);
+            case 'ultra-smash':
+                return this.useUltraSmash(skillData, player);
+            case 'struggle':
+                return this.useStruggleSkill(skillData, player);
+            case 'defend':
+                return this.useDefend(skillData, player);
+            case 'stay-still':
+                return this.useStayStill(skillData, player);
+            default:
+                return { success: false, message: 'Unknown skill' };
+        }
+    }
+    
+    /**
+     * Use Power Attack skill
+     */
+    private usePowerAttack(skillData: SkillData, player: Player): SkillResult {
+        const mpInsufficient = !player.consumeMp(skillData.mpCost);
+        let powerMultiplier = skillData.damageMultiplier || 2.5;
+        
+        if (mpInsufficient) {
+            powerMultiplier *= 2; // Double effect when MP insufficient
+        }
+        
+        const damage = Math.floor(player.getAttackPower() * powerMultiplier);
+        return {
+            success: true,
+            message: mpInsufficient ? 
+                `${player.name}は最後の力を振り絞って${skillData.name}を放った！` :
+                `${player.name}は${skillData.name}を放った！`,
+            damage
+        };
+    }
+    
+    /**
+     * Use Ultra Smash skill
+     */
+    private useUltraSmash(skillData: SkillData, player: Player): SkillResult {
+        const mpConsumed = player.mp;
+        player.mp = 0; // Consume all MP
+        
+        const baseDamage = player.getAttackPower();
+        const mpDamage = mpConsumed;
+        const totalDamage = baseDamage + mpDamage;
+        
+        // Add exhaustion effect
+        player.statusEffects.addEffect(StatusEffectType.Exhausted);
+        
+        return {
+            success: true,
+            message: `${player.name}は${skillData.name}を放った！（消費MP: ${mpConsumed}）`,
+            damage: totalDamage
+        };
+    }
+    
+    /**
+     * Use Struggle skill
+     */
+    private useStruggleSkill(skillData: SkillData, player: Player): SkillResult {
+        const mpInsufficient = !player.consumeMp(skillData.mpCost);
+        let successMultiplier = 2;
+        
+        if (mpInsufficient) {
+            successMultiplier = 4; // Double effect when MP insufficient
+        }
+        
+        // Calculate enhanced struggle success rate
+        let baseSuccessRate = 0.3 + (player.struggleAttempts) * 0.2;
+        baseSuccessRate = Math.min(baseSuccessRate, 1.0);
+        
+        // Apply agility bonus
+        const agilityBonus = player.abilitySystem.getAgilityEscapeBonus();
+        baseSuccessRate += agilityBonus;
+        
+        const modifier = player.statusEffects.getStruggleModifier();
+        let finalSuccessRate = baseSuccessRate * modifier * successMultiplier;
+        finalSuccessRate = Math.min(finalSuccessRate, 1.0);
+        
+        const success = Math.random() < finalSuccessRate;
+        player.struggleAttempts++;
+        
+        // Check if agility level 5+ for damage dealing
+        const agilityLevel = player.abilitySystem.getAbility(AbilityType.Agility)?.level || 0;
+        let damageDealt = 0;
+        if (agilityLevel >= 5) {
+            damageDealt = Math.floor(player.getAttackPower() * 1.5);
+        }
+        
+        if (success) {
+            player.struggleAttempts = 0;
+            player.statusEffects.removeEffect(StatusEffectType.Restrained);
+            player.statusEffects.removeEffect(StatusEffectType.Eaten);
+            
+            // Notify agility experience for successful escape
+            if (player.agilityExperienceCallback) {
+                player.agilityExperienceCallback(100);
+            }
+            
+            return {
+                success: true,
+                message: mpInsufficient ? 
+                    `${player.name}は最後の力で激しくあばれた！拘束から脱出した！` :
+                    `${player.name}は激しくあばれた！拘束から脱出した！`,
+                damage: damageDealt
+            };
+        } else {
+            // Increase future struggle success significantly on failure
+            player.struggleAttempts += mpInsufficient ? 8 : 4;
+            
+            // Notify agility experience for failed escape (2x amount)
+            if (player.agilityExperienceCallback) {
+                player.agilityExperienceCallback(400);
+            }
+            
+            return {
+                success: false,
+                message: mpInsufficient ? 
+                    `${player.name}は最後の力であばれたが、脱出できなかった...しかし次回の成功率が大幅に上がった！` :
+                    `${player.name}があばれたが、脱出できなかった...次回の成功率が上がった！`,
+                damage: damageDealt
+            };
+        }
+    }
+    
+    /**
+     * Use Defend skill
+     */
+    private useDefend(skillData: SkillData, player: Player): SkillResult {
+        player.defend();
+        
+        // Check if endurance level 3+ for MP recovery
+        const enduranceLevel = player.abilitySystem.getAbility(AbilityType.Endurance)?.level || 0;
+        if (enduranceLevel >= 3) {
+            player.mp = player.maxMp;
+        }
+        
+        return {
+            success: true,
+            message: `${player.name}は${skillData.name}の構えを取った！`
+        };
+    }
+    
+    /**
+     * Use Stay Still skill
+     */
+    private useStayStill(skillData: SkillData, player: Player): SkillResult {
+        player.stayStill();
+        
+        // Check if endurance level 3+ for MP recovery
+        const enduranceLevel = player.abilitySystem.getAbility(AbilityType.Endurance)?.level || 0;
+        if (enduranceLevel >= 3) {
+            player.mp = player.maxMp;
+        }
+        
+        return {
+            success: true,
+            message: `${player.name}は${skillData.name}して体力を回復した！`
+        };
     }
     
     useSkill(skillType: SkillType, target?: any): SkillResult {
@@ -620,6 +810,59 @@ export class Player extends Actor {
         return result;
     }
 
+    /**
+     * Apply passive skill effects
+     */
+    private applyPassiveSkills(): string[] {
+        const messages: string[] = [];
+        const passiveSkills = this.getUnlockedPassiveSkills();
+        
+        passiveSkills.forEach(skill => {
+            switch (skill.passiveEffect) {
+                case 'regeneration':
+                    const healAmount = Math.max(1, Math.round(this.maxHp / 20));
+                    if (this.hp < this.maxHp) {
+                        const actualHeal = this.heal(healAmount);
+                        if (actualHeal > 0) {
+                            messages.push(`${this.name}は自然回復でHPが${actualHeal}回復した！`);
+                        }
+                    }
+                    break;
+                // Other passive effects will be handled in specific situations
+            }
+        });
+        
+        return messages;
+    }
+    
+    /**
+     * Apply escape recovery passive skill
+     */
+    public applyEscapeRecovery(): string[] {
+        const messages: string[] = [];
+        const passiveSkills = this.getUnlockedPassiveSkills();
+        
+        const hasEscapeRecovery = passiveSkills.some(skill => skill.passiveEffect === 'escape-recovery');
+        if (hasEscapeRecovery) {
+            const lostHp = this.maxHp - this.hp;
+            const recoveryAmount = Math.floor(lostHp * 0.5);
+            if (recoveryAmount > 0) {
+                const actualHeal = this.heal(recoveryAmount);
+                messages.push(`${this.name}は脱出回復でHPが${actualHeal}回復した！`);
+            }
+        }
+        
+        return messages;
+    }
+    
+    /**
+     * Check if defend damage should be 100% cut
+     */
+    public shouldCutDefendDamage(): boolean {
+        const toughnessLevel = this.abilitySystem.getAbility(AbilityType.Toughness)?.level || 0;
+        return toughnessLevel >= 7;
+    }
+    
     /**
      * Reset battle-specific state while preserving progression
      */
