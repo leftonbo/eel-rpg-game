@@ -1150,3 +1150,95 @@ footer a:hover {
 footer svg {
     vertical-align: middle;
 }
+
+/* Skills Display Styles */
+.skills-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.skill-item {
+    border: 1px solid var(--card-border) !important;
+    background: rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+}
+
+.skill-item:hover {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: var(--card-border-highlight) !important;
+}
+
+.skill-item h6 {
+    color: var(--status-text);
+    margin-bottom: 0.25rem;
+}
+
+.skill-item .text-muted {
+    color: var(--status-text-secondary) !important;
+}
+
+.skill-item .badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.skill-item .border-top {
+    border-color: var(--card-border) !important;
+}
+
+/* Category-specific skill colors */
+.skill-item.combat {
+    border-left: 4px solid var(--game-danger);
+}
+
+.skill-item.defense {
+    border-left: 4px solid var(--game-primary);
+}
+
+.skill-item.support {
+    border-left: 4px solid var(--game-success);
+}
+
+.skill-item.passive {
+    border-left: 4px solid var(--game-info);
+}
+
+/* Skills tab specific styles */
+#skills-panel .col-md-6 {
+    padding: 0 0.5rem;
+}
+
+#skills-panel h6 {
+    color: var(--status-text);
+    border-bottom: 2px solid var(--card-border);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Scrollbar styles for skills list */
+.skills-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.skills-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+}
+
+.skills-list::-webkit-scrollbar-thumb {
+    background: var(--game-secondary);
+    border-radius: 3px;
+}
+
+.skills-list::-webkit-scrollbar-thumb:hover {
+    background: var(--game-secondary-hover);
+}
+
+/* Empty state styles */
+#active-skills-list .text-muted,
+#passive-skills-list .text-muted {
+    text-align: center;
+    padding: 2rem;
+    font-style: italic;
+    color: var(--status-text-secondary) !important;
+}

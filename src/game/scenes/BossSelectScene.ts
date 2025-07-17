@@ -208,6 +208,9 @@ export class BossSelectScene {
         // Update equipment tab
         this.updateEquipmentSelections();
         
+        // Update skills tab
+        this.updateSkillsList();
+        
         // Update items tab
         this.updateItemsList();
         
@@ -314,6 +317,175 @@ export class BossSelectScene {
     /**
      * Helper method to update element text content
      */
+    /**
+     * Update skills tab
+     */
+    private updateSkillsList(): void {
+        const player = this.game.getPlayer();
+        const unlockedSkills = player.getUnlockedSkills();
+        const unlockedPassiveSkills = player.getUnlockedPassiveSkills();
+        
+        // Update active skills
+        const activeSkillsList = document.getElementById('active-skills-list');
+        if (activeSkillsList) {
+            activeSkillsList.innerHTML = '';
+            
+            const activeSkills = unlockedSkills.filter(skill => !skill.isPassive);
+            
+            if (activeSkills.length === 0) {
+                activeSkillsList.innerHTML = '<div class="text-muted">解放されたスキルがありません</div>';
+            } else {
+                activeSkills.forEach(skill => {
+                    const skillElement = document.createElement('div');
+                    skillElement.className = 'skill-item mb-3 p-3 border rounded';
+                    
+                    const categoryColor = this.getSkillCategoryColor(skill.category);
+                    const mpCostText = skill.mpCost > 0 ? `MP: ${skill.mpCost}` : 'MP: 0';
+                    
+                    skillElement.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">${skill.name}</h6>
+                                <small class="text-muted">${skill.description}</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-${categoryColor} mb-1">${this.getSkillCategoryName(skill.category)}</span><br>
+                                <small class="text-muted">${mpCostText}</small>
+                            </div>
+                        </div>
+                        ${this.getSkillDetails(skill)}
+                    `;
+                    
+                    activeSkillsList.appendChild(skillElement);
+                });
+            }
+        }
+        
+        // Update passive skills
+        const passiveSkillsList = document.getElementById('passive-skills-list');
+        if (passiveSkillsList) {
+            passiveSkillsList.innerHTML = '';
+            
+            if (unlockedPassiveSkills.length === 0) {
+                passiveSkillsList.innerHTML = '<div class="text-muted">解放されたパッシブスキルがありません</div>';
+            } else {
+                unlockedPassiveSkills.forEach(skill => {
+                    const skillElement = document.createElement('div');
+                    skillElement.className = 'skill-item mb-3 p-3 border rounded';
+                    
+                    skillElement.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">${skill.name}</h6>
+                                <small class="text-muted">${skill.description}</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-info">パッシブ</span>
+                            </div>
+                        </div>
+                        ${this.getSkillUnlockCondition(skill)}
+                    `;
+                    
+                    passiveSkillsList.appendChild(skillElement);
+                });
+            }
+        }
+    }
+    
+    /**
+     * Get skill category color for badge
+     */
+    private getSkillCategoryColor(category: string): string {
+        switch (category) {
+            case 'combat': return 'danger';
+            case 'defense': return 'primary';
+            case 'support': return 'success';
+            case 'passive': return 'info';
+            default: return 'secondary';
+        }
+    }
+    
+    /**
+     * Get skill category name in Japanese
+     */
+    private getSkillCategoryName(category: string): string {
+        switch (category) {
+            case 'combat': return '攻撃';
+            case 'defense': return '防御';
+            case 'support': return '支援';
+            case 'passive': return 'パッシブ';
+            default: return 'その他';
+        }
+    }
+    
+    /**
+     * Get skill details HTML
+     */
+    private getSkillDetails(skill: any): string {
+        const details = [];
+        
+        if (skill.damageMultiplier && skill.damageMultiplier > 1) {
+            details.push(`威力: ${skill.damageMultiplier}倍`);
+        }
+        
+        if (skill.criticalRate && skill.criticalRate > 0.05) {
+            details.push(`クリティカル率: ${Math.round(skill.criticalRate * 100)}%`);
+        }
+        
+        if (skill.hitRate && skill.hitRate < 1) {
+            details.push(`命中率: ${Math.round(skill.hitRate * 100)}%`);
+        }
+        
+        if (skill.healAmount) {
+            details.push(`回復量: ${skill.healAmount}`);
+        }
+        
+        if (skill.healPercentage) {
+            details.push(`回復率: ${Math.round(skill.healPercentage * 100)}%`);
+        }
+        
+        const unlockCondition = this.getSkillUnlockCondition(skill);
+        
+        if (details.length > 0 || unlockCondition) {
+            return `
+                <div class="mt-2 pt-2 border-top">
+                    ${details.length > 0 ? `<div class="text-muted"><small>${details.join(' / ')}</small></div>` : ''}
+                    ${unlockCondition}
+                </div>
+            `;
+        }
+        
+        return '';
+    }
+    
+    /**
+     * Get skill unlock condition HTML
+     */
+    private getSkillUnlockCondition(skill: any): string {
+        if (skill.unlockConditions && skill.unlockConditions.length > 0) {
+            const conditions = skill.unlockConditions.map((condition: any) => {
+                const abilityName = this.getAbilityName(condition.abilityType);
+                return `${abilityName}レベル${condition.requiredLevel}`;
+            });
+            return `<div class="text-muted"><small>解放条件: ${conditions.join(', ')}</small></div>`;
+        }
+        return '';
+    }
+    
+    /**
+     * Get ability name in Japanese
+     */
+    private getAbilityName(abilityType: string): string {
+        switch (abilityType) {
+            case 'combat': return 'コンバット';
+            case 'toughness': return 'タフネス';
+            case 'craftwork': return 'クラフトワーク';
+            case 'endurance': return 'エンデュランス';
+            case 'agility': return 'アジリティ';
+            default: return abilityType;
+        }
+    }
+    
     private updateElement(id: string, value: string): void {
         const element = document.getElementById(id);
         if (element) {
