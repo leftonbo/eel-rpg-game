@@ -315,8 +315,9 @@ export class BattleScene {
     
     private updateActionAvailability(): void {
         if (!this.player || !this.boss) return;
-        
-        const canAct = this.player.canAct() && this.playerTurn && !this.battleEnded;
+
+        const canAct = this.player.canAct();
+        const canActActually = canAct && this.playerTurn && !this.battleEnded;
         const isRestrained = this.player.isRestrained() || this.player.isEaten() || this.player.isCocoon();
         const isKnockedOut = this.player.isKnockedOut();
         const isDoomed = this.player.isDoomed();
@@ -329,7 +330,7 @@ export class BattleScene {
                 this.actionButtons.classList.add('d-none');
                 this.specialActions.classList.add('d-none');
                 this.battleEndActions.classList.remove('d-none');
-            } else if (isRestrained || isKnockedOut || this.player.statusEffects.isSleeping() || isDoomed || isDefeated) {
+            } else if (isRestrained || isKnockedOut || isDoomed || isDefeated || !this.player.canAct()) {
                 this.actionButtons.classList.add('d-none');
                 this.specialActions.classList.remove('d-none');
                 this.battleEndActions.classList.add('d-none');
@@ -345,7 +346,7 @@ export class BattleScene {
         actionBtns.forEach(btnId => {
             const btn = document.getElementById(btnId);
             if (btn) {
-                btn.classList.toggle('disabled', !canAct || isRestrained);
+                btn.classList.toggle('disabled', !canActActually || isRestrained);
             }
         });
         
@@ -354,24 +355,8 @@ export class BattleScene {
         specialBtns.forEach(btnId => {
             const btn = document.getElementById(btnId);
             if (btn) {
-                if (isDefeated) {
-                    // For defeat state, only show give-up button
-                    if (btnId === 'struggle-btn' || btnId === 'stay-still-btn') {
-                        btn.classList.add('d-none');
-                    } else {
-                        btn.classList.remove('d-none');
-                        btn.classList.toggle('disabled', !this.playerTurn);
-                    }
-                } else if (isDoomed) {
-                    // For doomed state, only show give-up button
-                    if (btnId === 'struggle-btn' || btnId === 'stay-still-btn') {
-                        btn.classList.add('d-none');
-                    } else {
-                        btn.classList.remove('d-none');
-                        btn.classList.toggle('disabled', !this.playerTurn);
-                    }
-                } else if (isKnockedOut) {
-                    // For knocked out state, only show give-up button
+                if (isDefeated || isDoomed || isKnockedOut || !canAct) {
+                    // For knocked out, doomed, and defeated states, only show give-up button
                     if (btnId === 'struggle-btn' || btnId === 'stay-still-btn') {
                         btn.classList.add('d-none');
                     } else {
