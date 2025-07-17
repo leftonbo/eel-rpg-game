@@ -13,6 +13,7 @@ export class BattleScene {
     private playerTurn: boolean = true;
     private battleEnded: boolean = false;
     private battleLog: HTMLElement | null = null;
+    private currentRound: number = 0;
     
     // Battle statistics for experience calculation
     private battleStats = {
@@ -137,6 +138,7 @@ export class BattleScene {
         };
         
         this.turnCount = 0;
+        this.currentRound = 1;
         this.playerTurn = true;
         this.battleEnded = false;
         
@@ -167,9 +169,10 @@ export class BattleScene {
     private initializeBattle(): void {
         if (!this.boss) return;
         
-        // Clear battle log
+        // Clear battle log and add initial round
         if (this.battleLog) {
-            this.battleLog.innerHTML = '<p class="text-muted">バトル開始！</p>';
+            this.battleLog.innerHTML = '';
+            this.addRoundDivider(1);
         }
         
         // Set boss name
@@ -812,6 +815,12 @@ export class BattleScene {
         // Process round end effects for both player and boss
         this.processRoundEnd();
         
+        // Add round divider every 2 turns (1 player turn + 1 boss turn)
+        if (this.turnCount % 2 === 0) {
+            this.currentRound++;
+            this.addRoundDivider(this.currentRound);
+        }
+        
         // Start player turn
         if (this.player) {
             this.player.startTurn();
@@ -874,22 +883,75 @@ export class BattleScene {
     private addBattleLogMessage(message: string, type: string = '', actor: 'player' | 'boss' | 'system' = 'system'): void {
         if (!this.battleLog) return;
         
-        const messageElement = document.createElement('p');
-        messageElement.textContent = message;
+        // Create message container
+        const messageContainer = document.createElement('div');
+        messageContainer.className = `battle-message ${actor}`;
         
-        if (type) {
-            messageElement.classList.add(type);
+        // Create message content
+        if (actor === 'system') {
+            // System messages are centered without icons
+            const bubble = document.createElement('div');
+            bubble.className = `message-bubble system ${type}`;
+            bubble.textContent = message;
+            messageContainer.appendChild(bubble);
+        } else {
+            // Player and boss messages have icons and bubbles
+            const icon = document.createElement('div');
+            icon.className = `message-icon ${actor}`;
+            
+            // Set icon based on actor
+            if (actor === 'player') {
+                icon.textContent = '🐍'; // Player's eel icon
+            } else if (actor === 'boss') {
+                // Get boss icon from current boss data
+                const bossIcon = this.getBossIcon();
+                icon.textContent = bossIcon;
+            }
+            
+            const bubble = document.createElement('div');
+            bubble.className = `message-bubble ${actor} ${type}`;
+            bubble.textContent = message;
+            
+            if (actor === 'player') {
+                messageContainer.appendChild(icon);
+                messageContainer.appendChild(bubble);
+            } else {
+                messageContainer.appendChild(bubble);
+                messageContainer.appendChild(icon);
+            }
         }
         
-        // Add actor-specific styling
-        if (actor === 'player') {
-            messageElement.classList.add('battle-log-player');
-        } else if (actor === 'boss') {
-            messageElement.classList.add('battle-log-boss');
-        }
-        
-        this.battleLog.appendChild(messageElement);
+        this.battleLog.appendChild(messageContainer);
         this.battleLog.scrollTop = this.battleLog.scrollHeight;
+    }
+    
+    private addRoundDivider(roundNumber: number): void {
+        if (!this.battleLog) return;
+        
+        const divider = document.createElement('div');
+        divider.className = 'battle-round-divider';
+        
+        const label = document.createElement('span');
+        label.className = 'battle-round-label';
+        label.textContent = `ラウンド ${roundNumber}`;
+        
+        divider.appendChild(label);
+        this.battleLog.appendChild(divider);
+        this.battleLog.scrollTop = this.battleLog.scrollHeight;
+    }
+    
+    private getBossIcon(): string {
+        if (!this.boss) return '👹';
+        
+        // Map boss types to icons based on display name
+        const bossIcons: { [key: string]: string } = {
+            '沼のドラゴン': '🐲',
+            '闇のおばけ': '👻',
+            '機械のクモ': '🕷️',
+            '夢魔ちゃん': '😈'
+        };
+        
+        return bossIcons[this.boss.displayName] || '👹';
     }
     
     /**
