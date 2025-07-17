@@ -9,11 +9,10 @@ export class BattleScene {
     private game: Game;
     private player: Player | null = null;
     private boss: Boss | null = null;
-    private turnCount: number = 0;
+    private roundCount: number = 0;
     private playerTurn: boolean = true;
     private battleEnded: boolean = false;
     private battleLog: HTMLElement | null = null;
-    private currentRound: number = 0;
     
     // Battle statistics for experience calculation
     private battleStats = {
@@ -137,9 +136,9 @@ export class BattleScene {
             this.addAgilityExperience(amount);
         };
         
-        this.turnCount = 0;
-        this.currentRound = 1;
-        this.playerTurn = true;
+        // Set "Round 0" to make pre-battle state
+        this.roundCount = 0;
+        this.playerTurn = false;
         this.battleEnded = false;
         
         // Reset battle statistics
@@ -159,11 +158,16 @@ export class BattleScene {
         this.player.fullRestore();
         
         this.initializeBattle();
-        this.updateUI();
         
         // Show boss dialogue
         const startDialogue = this.boss.getDialogue('battle-start');
         this.addBattleLogMessage(startDialogue, 'system');
+        
+        // Now it's time to start the battle
+        this.roundCount = 1;
+        this.playerTurn = true;
+        this.addRoundDivider(1);
+        this.updateUI();
     }
     
     private initializeBattle(): void {
@@ -172,7 +176,6 @@ export class BattleScene {
         // Clear battle log and add initial round
         if (this.battleLog) {
             this.battleLog.innerHTML = '';
-            this.addRoundDivider(1);
         }
         
         // Set boss name
@@ -778,7 +781,7 @@ export class BattleScene {
         }
         
         // Boss AI selects action
-        const action = this.boss.selectAction(this.player, this.turnCount);
+        const action = this.boss.selectAction(this.player, this.roundCount);
         
         if (action) {
             const playerHpBefore = this.player.hp;
@@ -804,9 +807,6 @@ export class BattleScene {
     }
     
     private endBossTurn(): void {
-        this.turnCount++;
-        this.playerTurn = true;
-        
         // Check if player is knocked out for battle stats
         if (this.player && this.player.isKnockedOut()) {
             this.battleStats.wasKnockedOut = true;
@@ -815,13 +815,8 @@ export class BattleScene {
         // Process round end effects for both player and boss
         this.processRoundEnd();
         
-        // Add round divider every 2 turns (1 player turn + 1 boss turn)
-        if (this.turnCount % 2 === 0) {
-            this.currentRound++;
-            this.addRoundDivider(this.currentRound);
-        }
-        
         // Start player turn
+        this.playerTurn = true;
         if (this.player) {
             this.player.startTurn();
             
@@ -855,6 +850,12 @@ export class BattleScene {
         messages.forEach(message => {
             this.addBattleLogMessage(message, 'status-effect');
         });
+        
+        // Add count of rounds
+        this.roundCount++;
+        
+        // Add turn count divider to log
+        this.addRoundDivider(this.roundCount);
     }
     
     private checkBattleEnd(): boolean {
