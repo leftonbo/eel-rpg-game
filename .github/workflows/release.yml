@@ -1,10 +1,10 @@
 name: Create Release
 
 on:
-  # release/* パターンのタグプッシュ時に実行
+  # release/v* パターンのタグプッシュ時に実行
   push:
     tags:
-      - 'release/*'
+      - 'release/v*'
 
 # GITHUB_TOKENの権限設定
 permissions:
