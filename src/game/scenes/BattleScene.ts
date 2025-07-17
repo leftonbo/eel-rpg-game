@@ -382,6 +382,14 @@ export class BattleScene {
                     // For restrained state, show struggle and stay-still buttons, hide give-up
                     if (btnId === 'give-up-btn') {
                         btn.classList.remove('d-none');
+                    } else if (btnId === 'struggle-btn') {
+                        // Check if struggle skill is unlocked
+                        const isStruggleUnlocked = this.player ? this.player.hasSkill('struggle') : false;
+                        if (isStruggleUnlocked) {
+                            btn.style.display = 'block';
+                        } else {
+                            btn.style.display = 'none';
+                        }
                     } else {
                         btn.classList.remove('d-none');
                     }
@@ -488,7 +496,7 @@ export class BattleScene {
         
         // Check if basic actions are unlocked
         const hasBasicAttack = true; // Basic attack is always available
-        const hasDefend = true; // Defend is always available as a basic action
+        const hasDefend = this.player.hasSkill('defend'); // Defend skill must be unlocked
         const hasItemAccess = this.player.unlockedItems.size > 0; // Has any items unlocked
         const hasSkillAccess = this.player.unlockedSkills.size > 0; // Has any skills unlocked
         
@@ -529,15 +537,18 @@ export class BattleScene {
         // Show/hide struggle skill button in special actions based on state
         const struggleSkillSpecialBtn = document.getElementById('struggle-skill-special-btn');
         if (struggleSkillSpecialBtn) {
+            const isStruggleUnlocked = this.player.hasSkill('struggle');
             const canUseSkill = !this.player.statusEffects.isExhausted() && 
                                !this.player.statusEffects.isKnockedOut() &&
                                !this.player.statusEffects.isDoomed() &&
                                !this.player.statusEffects.isDead();
-            if (canUseSkill) {
-                struggleSkillSpecialBtn.classList.remove('d-none');
-                struggleSkillSpecialBtn.classList.toggle('disabled', !this.playerTurn);
+            
+            // Hide if skill is not unlocked or cannot be used
+            if (!isStruggleUnlocked || !canUseSkill) {
+                struggleSkillSpecialBtn.style.display = 'none';
             } else {
-                struggleSkillSpecialBtn.classList.add('d-none');
+                struggleSkillSpecialBtn.style.display = 'block';
+                struggleSkillSpecialBtn.classList.toggle('disabled', !this.playerTurn);
             }
         }
         
