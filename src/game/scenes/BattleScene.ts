@@ -6,12 +6,51 @@ import { calculateAttackResult } from '../utils/CombatUtils';
 import { calculateBattleResult } from './BattleResultScene';
 
 export class BattleScene {
+    /**
+     * The main game instance that this scene belongs to.
+     * This is used to access the player, bosses, and other game state.
+     */
     private game: Game;
+    
+    /**
+     * The player character in the battle.
+     * This is the entity controlled by the player, which can perform actions.
+     * Initialized when the battle starts and set to null when the battle ends.
+     */
     private player: Player | null = null;
+    
+    /**
+     * The current boss being fought in the battle.
+     * This is the enemy entity that the player must defeat.
+     * Initialized when the battle starts and set to null when the battle ends.
+     */
     private boss: Boss | null = null;
+    
+    /**
+     * Tracks the current round number in the battle sequence.
+     * Initialized to 0 at the start of a battle and incremented each round.
+     * "Round" means a complete cycle of player and boss actions.
+     * Round 0 is used for pre-battle state setup.
+     * Round 1 is the first actual round of combat, then it continues incrementing.
+     */
     private roundCount: number = 0;
+    
+    /**
+     * Indicates whether it is currently the player's turn.
+     * Set to true when the player can take an action, false when the boss is acting.
+     */
     private playerTurn: boolean = true;
+    
+    /**
+     * Indicates whether the battle has ended.
+     * Set to true when the player or boss is defeated, or when the player chooses to end the battle.
+     */
     private battleEnded: boolean = false;
+    
+    /**
+     * The battle log element where messages are displayed.
+     * This is used to show combat actions, results, and system messages.
+     */
     private battleLog: HTMLElement | null = null;
     
     // Battle statistics for experience calculation
