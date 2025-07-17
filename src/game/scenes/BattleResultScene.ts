@@ -1,5 +1,6 @@
 import { Game } from '../Game';
 import { AbilityType } from '../systems/AbilitySystem';
+import { SkillRegistry } from '../data/skills';
 
 export interface BattleResult {
     victory: boolean;
@@ -9,6 +10,7 @@ export interface BattleResult {
         weapons: string[];
         armors: string[];
         items: string[];
+        skills: string[];
     };
 }
 
@@ -129,14 +131,14 @@ export class BattleResultScene {
         
         unlocksContainer.innerHTML = '';
         
-        const { weapons, armors, items } = this.battleResult.newUnlocks;
-        const hasUnlocks = weapons.length > 0 || armors.length > 0 || items.length > 0;
+        const { weapons, armors, items, skills } = this.battleResult.newUnlocks;
+        const hasUnlocks = weapons.length > 0 || armors.length > 0 || items.length > 0 || skills.length > 0;
         
         if (!hasUnlocks) return;
         
         unlocksContainer.innerHTML = '<h5>新しいアンロック！</h5>';
         
-        [...weapons, ...armors, ...items].forEach(unlockName => {
+        [...weapons, ...armors, ...items, ...skills].forEach(unlockName => {
             const unlockDiv = document.createElement('div');
             unlockDiv.className = 'mb-2 p-2 border border-info rounded bg-info bg-opacity-10';
             unlockDiv.innerHTML = `
@@ -192,10 +194,11 @@ export function calculateBattleResult(
     };
     
     const levelUps: { [key: string]: { previousLevel: number; newLevel: number } } = {};
-    const newUnlocks: { weapons: string[]; armors: string[]; items: string[] } = {
+    const newUnlocks: { weapons: string[]; armors: string[]; items: string[]; skills: string[] } = {
         weapons: [],
         armors: [],
-        items: []
+        items: [],
+        skills: []
     };
     
     // Apply experience and check for level ups
@@ -213,6 +216,7 @@ export function calculateBattleResult(
                 newUnlocks.weapons.push(...unlocks.weapons);
                 newUnlocks.armors.push(...unlocks.armors);
                 newUnlocks.items.push(...unlocks.items);
+                newUnlocks.skills.push(...unlocks.skills);
             }
         }
     });
@@ -228,11 +232,12 @@ export function calculateBattleResult(
 /**
  * Check what new equipment/items are unlocked at a given ability level
  */
-function checkNewUnlocks(abilityType: AbilityType, newLevel: number): { weapons: string[]; armors: string[]; items: string[] } {
-    const unlocks: { weapons: string[]; armors: string[]; items: string[] } = {
+function checkNewUnlocks(abilityType: AbilityType, newLevel: number): { weapons: string[]; armors: string[]; items: string[]; skills: string[] } {
+    const unlocks: { weapons: string[]; armors: string[]; items: string[]; skills: string[] } = {
         weapons: [],
         armors: [],
-        items: []
+        items: [],
+        skills: []
     };
     
     if (abilityType === AbilityType.Combat) {
@@ -276,5 +281,32 @@ function checkNewUnlocks(abilityType: AbilityType, newLevel: number): { weapons:
         }
     }
     
+    // Check for skill unlocks
+    const skillUnlocks = checkSkillUnlocks(abilityType, newLevel);
+    unlocks.skills.push(...skillUnlocks);
+    
     return unlocks;
+}
+
+/**
+ * Check what new skills are unlocked at a given ability level
+ */
+function checkSkillUnlocks(abilityType: AbilityType, newLevel: number): string[] {
+    const skillUnlocks: string[] = [];
+    
+    // Get all skills that could be unlocked at this level
+    const allSkills = SkillRegistry.getUnlockedSkills(new Map([[abilityType, newLevel]]));
+    const previousSkills = SkillRegistry.getUnlockedSkills(new Map([[abilityType, newLevel - 1]]));
+    
+    // Find skills that are newly unlocked
+    allSkills.forEach((skillId: string) => {
+        if (!previousSkills.includes(skillId)) {
+            const skill = SkillRegistry.getSkill(skillId);
+            if (skill) {
+                skillUnlocks.push(skill.name);
+            }
+        }
+    });
+    
+    return skillUnlocks;
 }
