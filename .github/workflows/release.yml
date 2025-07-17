@@ -1,10 +1,10 @@
 name: Create Release
 
 on:
-  # release/v* パターンのタグプッシュ時に実行
+  # release/* パターンのタグプッシュ時に実行
   push:
     tags:
-      - 'release/v*'
+      - 'release/*'
 
 # GITHUB_TOKENの権限設定
 permissions:
@@ -37,18 +37,18 @@ jobs:
       run: |
         NODE_ENV=production npm run build
         
-    - name: Create zip archive
-      run: |
-        cd dist
-        zip -r ../eel-rpg-game-${{ github.ref_name }}.zip .
-        cd ..
-        
     - name: Extract version from tag
       id: version
       run: |
         # release/v1.0.0 -> v1.0.0
         VERSION=${GITHUB_REF#refs/tags/release/}
         echo "version=$VERSION" >> $GITHUB_OUTPUT
+        
+    - name: Create zip archive
+      run: |
+        cd dist
+        zip -r ../eel-rpg-game-${{ steps.version.outputs.version }}.zip .
+        cd ..
         
     - name: Create GitHub Release
       env:
@@ -58,4 +58,4 @@ jobs:
           --title "Release ${{ steps.version.outputs.version }}" \
           --generate-notes \
           --prerelease \
-          ./eel-rpg-game-${{ github.ref_name }}.zip
+          ./eel-rpg-game-${{ steps.version.outputs.version }}.zip
