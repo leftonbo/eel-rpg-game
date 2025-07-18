@@ -195,57 +195,6 @@ export const aquaSerpentData: BossData = {
             }
         }
 
-        // If player is defeated, use special post-defeat actions
-        if (player.isDefeated()) {
-            const postDefeatedActions: BossAction[] = [
-                {
-                    type: ActionType.PostDefeatedAttack,
-                    name: '胃液でゆっくり洗われる',
-                    description: '体内で胃液にゆっくりと洗われ続ける',
-                    messages: [
-                        '「シャアアア...」',
-                        '<USER>の体内で<TARGET>がゆっくりと胃液に洗われている...',
-                        '透明な体内から外の深海が見える...'
-                    ],
-                    weight: 1
-                },
-                {
-                    type: ActionType.PostDefeatedAttack,
-                    name: '激しい蠕動運動でさらに奥へ',
-                    description: '体内の筋肉が収縮して更に奥へ運ばれる',
-                    messages: [
-                        '「シャアアア...」',
-                        '<USER>の体内で激しい蠕動運動が起こり、<TARGET>を更に奥へと運んでいる...',
-                        '<TARGET>は抵抗することができない...'
-                    ],
-                    weight: 1
-                },
-                {
-                    type: ActionType.PostDefeatedAttack,
-                    name: 'マッサージされながら深海を眺める',
-                    description: '体内でマッサージされながら透明な体内から深海を眺める',
-                    messages: [
-                        '「シャアアア...」',
-                        '<USER>の体内で<TARGET>が優しくマッサージされている...',
-                        '透明な体内から美しい深海の光景が見える...'
-                    ],
-                    weight: 1
-                },
-                {
-                    type: ActionType.PostDefeatedAttack,
-                    name: '体内で渦を起こされてぐるぐる',
-                    description: '体内で渦を起こされて目を回す',
-                    messages: [
-                        '「シャアアア...」',
-                        '<USER>の体内で激しい渦が起こり、<TARGET>をぐるぐると回転させている...',
-                        '<TARGET>は目を回して意識が朦朧としている...'
-                    ],
-                    weight: 1
-                }
-            ];
-            return postDefeatedActions[Math.floor(Math.random() * postDefeatedActions.length)];
-        }
-
         // Every 10 turns while player is defeated, show re-consumption cycle
         if (player.isDefeated() && turn % 10 === 0) {
             return {
@@ -260,6 +209,53 @@ export const aquaSerpentData: BossData = {
                 ],
                 weight: 1
             };
+        }
+
+        // If player is defeated, use special post-defeat actions
+        if (player.isDefeated()) {
+            const postDefeatedActions: BossAction[] = [
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '胃液でゆっくり洗われる',
+                    description: '体内で胃液にゆっくりと洗われ続ける',
+                    messages: [
+                        '<USER>の体内で<TARGET>がゆっくりと胃液に洗われている...',
+                        '透明な体内から外の深海が見える...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '激しい蠕動運動でさらに奥へ',
+                    description: '体内の筋肉が収縮して更に奥へ運ばれる',
+                    messages: [
+                        '<USER>の体内で激しい蠕動運動が起こり、<TARGET>を更に奥へと運んでいる...',
+                        '<TARGET>は抵抗することができない...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: 'マッサージされながら深海を眺める',
+                    description: '体内でマッサージされながら透明な体内から深海を眺める',
+                    messages: [
+                        '<USER>の体内で<TARGET>が優しくマッサージされている...',
+                        '透明な体内から美しい深海の光景が見える...'
+                    ],
+                    weight: 1
+                },
+                {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '体内で渦を起こされてぐるぐる',
+                    description: '体内で渦を起こされて目を回す',
+                    messages: [
+                        '<USER>の体内で激しい渦が起こり、<TARGET>をぐるぐると回転させている...',
+                        '<TARGET>は目を回して意識が朦朧としている...'
+                    ],
+                    weight: 1
+                }
+            ];
+            return postDefeatedActions[Math.floor(Math.random() * postDefeatedActions.length)];
         }
 
         // If player is eaten, use varied devour actions
