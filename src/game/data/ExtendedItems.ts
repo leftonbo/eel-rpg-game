@@ -65,6 +65,10 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
         use: (player: Player) => {
             if (player.getItemCount('energy-drink') <= 0) return false;
             
+            // Set MP to max
+            player.recoverMp(player.maxMp);
+            
+            // Add energized effect for 3 turns
             player.statusEffects.addEffect(StatusEffectType.Energized);
             player.items.get('energy-drink')!.count--;
             return true;
