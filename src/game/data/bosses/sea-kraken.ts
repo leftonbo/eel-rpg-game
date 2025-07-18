@@ -260,7 +260,7 @@ export const seaKrakenData: BossData = {
 seaKrakenData.finishingMove = function() {
     return [
         '「グルルル...」',
-        '<USER>は<TARGET>を体内の深くに送り込む！',
+        '<USER>の胃袋吸盤が<TARGET>の腕と脚を吸い込み、体全体を吸盤で拘束する！',
         '<TARGET>はイカスミを注入されながら吸盤で吸収され続け、<USER>の体内でエネルギーを永遠に吸収されることになった...'
     ];
 };
