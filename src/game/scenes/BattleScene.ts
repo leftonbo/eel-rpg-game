@@ -1098,8 +1098,8 @@ export class BattleScene {
             this.battleStats.damageDealt,
             this.battleStats.damageTaken,
             this.battleStats.mpSpent,
-            this.battleStats.agilityExperience,
-            this.battleStats.craftworkExperience
+            this.battleStats.craftworkExperience,
+            this.battleStats.agilityExperience
         );
         this.game.showBattleResult(battleResult);
     }
