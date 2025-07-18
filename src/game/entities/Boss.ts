@@ -2,6 +2,7 @@ import { StatusEffectManager, StatusEffectType } from '../systems/StatusEffect';
 import { Player } from './Player';
 import { calculateAttackResult } from '../utils/CombatUtils';
 import { Actor } from './Actor';
+import { Action, ActionTarget, ActionExecutor, ActionResult, DamageParameter, DamageType, TargetStatus, ExtraEffect } from '../systems/Action';
 
 // Message formatter utility
 export function formatMessage(template: string, nameUser: string, nameTarget: string): string {
@@ -461,5 +462,155 @@ export class Boss extends Actor {
         
         const options = dialogues[situation] || dialogues['battle-start'];
         return options[Math.floor(Math.random() * options.length)];
+    }
+
+    /**
+     * BossAction を Action に変換
+     */
+    public convertBossActionToAction(bossAction: BossAction, _target: Actor): Action {
+        const damageParams: DamageParameter[] = [];
+        const extraEffects: ExtraEffect[] = [];
+
+        // ActionType に応じてダメージパラメータと追加効果を設定
+        switch (bossAction.type) {
+            case ActionType.Attack:
+                if (bossAction.damage) {
+                    damageParams.push({
+                        targetStatus: TargetStatus.HP,
+                        type: DamageType.Damage,
+                        formula: (_user: Actor, _target: Actor, userMult: number, _targetMult: number) => {
+                            return (bossAction.damage || this.attackPower) * userMult;
+                        },
+                        fluctuation: 0.2,
+                        absorbRatio: bossAction.healRatio
+                    });
+                }
+                break;
+
+            case ActionType.StatusAttack:
+                // ダメージ + 状態異常
+                if (bossAction.damage) {
+                    damageParams.push({
+                        targetStatus: TargetStatus.HP,
+                        type: DamageType.Damage,
+                        formula: (_user: Actor, _target: Actor, userMult: number, _targetMult: number) => {
+                            return (bossAction.damage || this.attackPower) * userMult;
+                        },
+                        fluctuation: 0.2,
+                        absorbRatio: bossAction.healRatio
+                    });
+                }
+                if (bossAction.statusEffect) {
+                    extraEffects.push({
+                        type: 'apply-state',
+                        state: bossAction.statusEffect,
+                        probability: (bossAction.statusChance || 100) / 100
+                    });
+                }
+                break;
+
+            case ActionType.DevourAttack:
+                // 最大HP吸収
+                if (bossAction.damage) {
+                    damageParams.push({
+                        targetStatus: TargetStatus.MaxHP,
+                        type: DamageType.Damage,
+                        formula: (_user: Actor, _target: Actor, userMult: number, _targetMult: number) => {
+                            return (bossAction.damage || this.attackPower) * userMult;
+                        },
+                        fluctuation: 0.2,
+                        absorbRatio: 1.0 // 100% 吸収
+                    });
+                }
+                break;
+
+            case ActionType.RestraintAttack:
+            case ActionType.EatAttack:
+            case ActionType.CocoonAttack:
+                // 特殊な拘束系攻撃はカスタム関数で処理
+                break;
+        }
+
+        // カスタム関数で複雑な処理を実装
+        const customFunction = (_user: Actor, target: Actor, result: any) => {
+            switch (bossAction.type) {
+                case ActionType.RestraintAttack:
+                    target.statusEffects.addEffect(StatusEffectType.Restrained);
+                    if (target instanceof Player) {
+                        target.struggleAttempts = 0;
+                    }
+                    break;
+
+                case ActionType.EatAttack:
+                    if (target.isRestrained()) {
+                        target.statusEffects.removeEffect(StatusEffectType.Restrained);
+                    }
+                    target.statusEffects.addEffect(StatusEffectType.Eaten);
+                    break;
+
+                case ActionType.CocoonAttack:
+                    if (target.isRestrained()) {
+                        target.statusEffects.removeEffect(StatusEffectType.Restrained);
+                    }
+                    target.statusEffects.addEffect(StatusEffectType.Cocoon);
+                    break;
+
+                case ActionType.CocoonAction:
+                    if (target.statusEffects.isCocoon()) {
+                        const maxHpReduction = bossAction.damage || Math.floor(target.maxHp * 0.1);
+                        target.loseMaxHp(maxHpReduction);
+                        if (bossAction.healRatio) {
+                            this.healFromDamage(maxHpReduction, bossAction.healRatio);
+                            const maxHpGain = Math.floor(maxHpReduction * bossAction.healRatio);
+                            if (maxHpGain > 0) {
+                                this.gainMaxHp(maxHpGain);
+                            }
+                        }
+                    }
+                    break;
+
+                case ActionType.PostDefeatedAttack:
+                    if (bossAction.statusEffect) {
+                        target.statusEffects.addEffect(bossAction.statusEffect);
+                    }
+                    break;
+            }
+            return result;
+        };
+
+        return new Action(
+            bossAction.name,
+            bossAction.description,
+            ActionTarget.Enemy,
+            0, // ボスはMP無制限
+            bossAction.messages || [`${this.displayName}の${bossAction.name}！`],
+            1, // repeat count
+            bossAction.hitRate || 0.95,
+            undefined, // accuracy type (default fixed)
+            bossAction.criticalRate || 0.05,
+            damageParams,
+            extraEffects,
+            customFunction
+        );
+    }
+
+    /**
+     * Action を実行（新しい統一システム）
+     */
+    public executeActionNew(action: Action, target: Actor): ActionResult {
+        return ActionExecutor.execute(action, this, target);
+    }
+
+    /**
+     * AI選択とAction実行の統合メソッド
+     */
+    public selectAndExecuteAction(player: Player, turn: number): ActionResult | null {
+        const selectedBossAction = this.selectAction(player, turn);
+        if (!selectedBossAction) {
+            return null;
+        }
+
+        const action = this.convertBossActionToAction(selectedBossAction, player);
+        return this.executeActionNew(action, player);
     }
 }

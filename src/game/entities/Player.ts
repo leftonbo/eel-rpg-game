@@ -4,6 +4,7 @@ import { PlayerSaveManager, PlayerSaveData } from '../systems/PlayerSaveData';
 import { updatePlayerItems } from '../data/ExtendedItems';
 import { Actor } from './Actor';
 import { SkillRegistry, SkillData } from '../data/skills';
+import { Action, ActionTarget, ActionExecutor, ActionResult, DamageParameter, DamageType, TargetStatus, ExtraEffect } from '../systems/Action';
 
 export enum SkillType {
     PowerAttack = 'power-attack',
@@ -888,5 +889,152 @@ export class Player extends Actor {
         
         // Note: Keep progression data (abilities, equipment, items) intact
         // Also preserve maxHp changes from abilities/equipment
+    }
+
+    /**
+     * 基本攻撃の Action を作成
+     */
+    public createBasicAttackAction(): Action {
+        const damageParams: DamageParameter[] = [{
+            targetStatus: TargetStatus.HP,
+            type: DamageType.Damage,
+            formula: (user: Actor, _target: Actor, userMult: number, _targetMult: number) => {
+                return user.attackPower * userMult;
+            },
+            fluctuation: 0.2
+        }];
+
+        return new Action(
+            '攻撃',
+            '基本的な物理攻撃',
+            ActionTarget.Enemy,
+            0, // MP cost
+            [`${this.name}の攻撃！`],
+            1, // repeat count
+            0.95, // accuracy
+            undefined, // accuracy type (default fixed)
+            0.05, // critical rate
+            damageParams
+        );
+    }
+
+    /**
+     * SkillData を Action に変換
+     */
+    public convertSkillDataToAction(skillData: SkillData, _target: Actor): Action {
+        const damageParams: DamageParameter[] = [];
+
+        // スキルの種類に応じてダメージパラメータを設定
+        switch (skillData.id) {
+            case 'power-attack':
+            case 'ultra-smash':
+                damageParams.push({
+                    targetStatus: TargetStatus.HP,
+                    type: DamageType.Damage,
+                    formula: (user: Actor, _target: Actor, userMult: number, _targetMult: number) => {
+                        const multiplier = skillData.damageMultiplier || 2.5;
+                        return user.attackPower * multiplier * userMult;
+                    },
+                    fluctuation: 0.2
+                });
+                break;
+            case 'defend':
+            case 'stay-still':
+                // 防御やじっとするスキルは回復効果
+                damageParams.push({
+                    targetStatus: TargetStatus.HP,
+                    type: DamageType.Heal,
+                    formula: (_user: Actor, target: Actor, userMult: number, _targetMult: number) => {
+                        return Math.floor(target.maxHp * 0.05) * userMult; // 5% 回復
+                    }
+                });
+                break;
+        }
+
+        const extraEffects: ExtraEffect[] = [];
+        
+        // カスタム関数を使用して特殊効果を実装
+        let customFunction: ((user: Actor, target: Actor, result: any) => any) | undefined;
+
+        switch (skillData.id) {
+            case 'struggle':
+                customFunction = (user: Actor, _target: Actor, result: any) => {
+                    // もがく処理のカスタムロジック
+                    if (user.statusEffects.isRestrained() || user.statusEffects.isEaten() && user instanceof Player) {
+                        const success = (user as Player).attemptStruggle();
+                        if (success) {
+                            result.targetAddStates = result.targetAddStates || [];
+                            // 拘束解除の効果はattemptStruggleで処理される
+                        }
+                    }
+                    return result;
+                };
+                break;
+            case 'defend':
+                customFunction = (user: Actor, _target: Actor, result: any) => {
+                    if (user instanceof Player) {
+                        (user as Player).defend();
+                        const enduranceLevel = (user as Player).abilitySystem.getAbility(AbilityType.Endurance)?.level || 0;
+                        if (enduranceLevel >= 3) {
+                            user.mp = user.maxMp;
+                        }
+                    }
+                    return result;
+                };
+                break;
+        }
+
+        return new Action(
+            skillData.name,
+            skillData.description,
+            ActionTarget.Enemy, // 大部分のスキルは敵対象
+            skillData.mpCost,
+            [`${this.name}は${skillData.name}を使った！`],
+            1, // repeat count
+            skillData.hitRate || 1.0,
+            undefined, // accuracy type (default fixed)
+            skillData.criticalRate || 0.05,
+            damageParams,
+            extraEffects,
+            customFunction
+        );
+    }
+
+    /**
+     * Action を実行（新しい統一システム）
+     */
+    public executeAction(action: Action, target: Actor): ActionResult {
+        return ActionExecutor.execute(action, this, target);
+    }
+
+    /**
+     * 利用可能なスキルを Action として取得
+     */
+    public getAvailableActionsForBattle(target: Actor): Action[] {
+        const actions: Action[] = [];
+
+        // 基本攻撃は常に利用可能
+        actions.push(this.createBasicAttackAction());
+
+        // 状態に応じたスキル取得
+        if (this.isDefeated()) {
+            // 敗北状態では何もできない
+            return [];
+        }
+
+        if (this.statusEffects.isDoomed() || this.statusEffects.isSleeping()) {
+            // 特定の状態では行動不能
+            return [];
+        }
+
+        // 利用可能なスキルを Action に変換
+        const unlockedSkills = this.getUnlockedSkills();
+        for (const skillData of unlockedSkills) {
+            if (this.canUseSkill(skillData, this)) {
+                actions.push(this.convertSkillDataToAction(skillData, target));
+            }
+        }
+
+        return actions;
     }
 }

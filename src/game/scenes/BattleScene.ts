@@ -4,6 +4,7 @@ import { Boss, ActionType, formatMessage } from '../entities/Boss';
 import { StatusEffectType } from '../systems/StatusEffect';
 import { calculateAttackResult } from '../utils/CombatUtils';
 import { calculateBattleResult } from './BattleResultScene';
+import { Action, ActionResult, SingleActionResult, ValueChangeResult, TargetStatus } from '../systems/Action';
 
 export class BattleScene {
     /**
@@ -1139,6 +1140,171 @@ export class BattleScene {
         this.player.statusEffects.removeEffect(StatusEffectType.Doomed);
         this.player.statusEffects.addEffect(StatusEffectType.Dead);
         
+        this.endBossTurn();
+    }
+
+    /**
+     * ActionResult を処理してバトルログに表示
+     */
+    private processActionResult(actionResult: ActionResult, isPlayerAction: boolean = true): void {
+        const actorType = isPlayerAction ? 'player' : 'boss';
+        const user = actionResult.user;
+        const target = actionResult.target;
+        const action = actionResult.action;
+
+        // アクションのメッセージを表示
+        if (action.message && action.message.length > 0) {
+            action.message.forEach(messageTemplate => {
+                const formattedMessage = formatMessage(messageTemplate, user.displayName, target.displayName);
+                this.addBattleLogMessage(formattedMessage, 'action', actorType);
+            });
+        }
+
+        // 各結果を処理
+        actionResult.results.forEach((result, _index) => {
+            this.processSingleActionResult(result, user, target, actorType);
+        });
+    }
+
+    /**
+     * SingleActionResult を処理
+     */
+    private processSingleActionResult(
+        result: SingleActionResult,
+        user: any,
+        target: any,
+        actorType: 'player' | 'boss'
+    ): void {
+        if (!result.success) {
+            this.addBattleLogMessage('しかし、攻撃は外れた！', 'miss', actorType);
+            return;
+        }
+
+        // クリティカルヒットの表示
+        if (result.criticalHit) {
+            this.addBattleLogMessage('痛恨の一撃！', 'critical', actorType);
+        }
+
+        // 対象への変化を処理
+        this.processValueChanges(result.targetValueChange, target, 'damage');
+
+        // 使用者への変化を処理（吸収など）
+        if (result.userValueChange.length > 0) {
+            this.processValueChanges(result.userValueChange, user, 'heal');
+        }
+
+        // 状態異常の追加
+        result.targetAddStates.forEach(state => {
+            const stateName = this.getStatusEffectDisplayName(state);
+            this.addBattleLogMessage(
+                `${target.displayName}が${stateName}状態になった！`, 
+                'status', 
+                actorType
+            );
+        });
+
+        // 状態異常の解除
+        result.targetRemoveStates.forEach(state => {
+            const stateName = this.getStatusEffectDisplayName(state);
+            this.addBattleLogMessage(
+                `${target.displayName}の${stateName}状態が解除された！`, 
+                'heal', 
+                actorType
+            );
+        });
+    }
+
+    /**
+     * 値の変化を処理してメッセージ表示
+     */
+    private processValueChanges(changes: ValueChangeResult[], target: any, messageType: string): void {
+        changes.forEach(change => {
+            if (change.change === 0) return;
+
+            const isPositive = change.change > 0;
+            const absChange = Math.abs(change.change);
+            let message = '';
+
+            switch (change.type) {
+                case TargetStatus.HP:
+                    if (isPositive) {
+                        message = `${target.displayName}のHPが${absChange}回復した！`;
+                    } else {
+                        message = `${target.displayName}に${absChange}のダメージ！`;
+                    }
+                    break;
+                case TargetStatus.MP:
+                    if (isPositive) {
+                        message = `${target.displayName}のMPが${absChange}回復した！`;
+                    } else {
+                        message = `${target.displayName}のMPが${absChange}減少した！`;
+                    }
+                    break;
+                case TargetStatus.MaxHP:
+                    if (isPositive) {
+                        message = `${target.displayName}の最大HPが${absChange}増加した！`;
+                    } else {
+                        message = `${target.displayName}の最大HPが${absChange}減少した！`;
+                    }
+                    break;
+                case TargetStatus.MaxMP:
+                    if (isPositive) {
+                        message = `${target.displayName}の最大MPが${absChange}増加した！`;
+                    } else {
+                        message = `${target.displayName}の最大MPが${absChange}減少した！`;
+                    }
+                    break;
+            }
+
+            if (message) {
+                this.addBattleLogMessage(message, messageType, 'system');
+            }
+        });
+    }
+
+    /**
+     * 状態異常の表示名を取得
+     */
+    private getStatusEffectDisplayName(statusType: StatusEffectType): string {
+        const displayNames: { [key in StatusEffectType]?: string } = {
+            [StatusEffectType.Fire]: '炎上',
+            [StatusEffectType.Poison]: '毒',
+            [StatusEffectType.Charm]: '魅了',
+            [StatusEffectType.Restrained]: '拘束',
+            [StatusEffectType.Eaten]: '捕食',
+            [StatusEffectType.Cocoon]: '繭',
+            [StatusEffectType.Stunned]: '気絶',
+            [StatusEffectType.Defending]: '防御',
+            [StatusEffectType.Invincible]: '無敵',
+            [StatusEffectType.Exhausted]: '疲労'
+        };
+        
+        return displayNames[statusType] || statusType;
+    }
+
+    /**
+     * 新しい Action システムを使用したプレイヤー行動（統合版）
+     */
+    public executePlayerActionNew(action: Action): void {
+        if (!this.player || !this.boss) return;
+
+        const actionResult = this.player.executeAction(action, this.boss);
+        this.processActionResult(actionResult, true);
+
+        this.endPlayerTurn();
+    }
+
+    /**
+     * 新しい Action システムを使用したボス行動（統合版）
+     */
+    public executeBossActionNew(): void {
+        if (!this.player || !this.boss) return;
+
+        const actionResult = this.boss.selectAndExecuteAction(this.player, 1);
+        if (actionResult) {
+            this.processActionResult(actionResult, false);
+        }
+
         this.endBossTurn();
     }
 }
