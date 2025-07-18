@@ -10,7 +10,7 @@ const aquaSerpentActions: BossAction[] = [
         weight: 35,
         playerStateCondition: 'normal',
         statusEffect: StatusEffectType.WaterSoaked,
-        statusEffectChance: 0.25,
+        statusChance: 25,
         hitRate: 0.9
     },
     {
@@ -34,7 +34,7 @@ const aquaSerpentActions: BossAction[] = [
         playerStateCondition: 'normal',
         hitRate: 0.75,
         statusEffect: StatusEffectType.Dizzy,
-        statusEffectChance: 0.3
+        statusChance: 30
     },
     {
         type: ActionType.Attack,
@@ -45,8 +45,8 @@ const aquaSerpentActions: BossAction[] = [
         playerStateCondition: 'normal',
         hitRate: 0.9,
         statusEffect: StatusEffectType.Restrained,
-        statusEffectChance: 0.8,
-        canUse: (boss, player, turn) => {
+        statusChance: 80,
+        canUse: (boss, player) => {
             // Only use when HP is below 30% and has cooldown
             return boss.getHpPercentage() <= 30 && 
                    !boss.hasUsedSpecialMove && 
@@ -65,7 +65,7 @@ const aquaSerpentActions: BossAction[] = [
         ],
         damage: 18,
         weight: 8,
-        canUse: (boss, player, turn) => {
+        canUse: (_, player) => {
             return !player.isRestrained() && !player.isEaten() && Math.random() < 0.35;
         }
     },
@@ -105,8 +105,7 @@ const aquaSerpentActions: BossAction[] = [
         ],
         damage: 22,
         weight: 25,
-        playerStateCondition: 'eaten',
-        drainMaxHp: 8
+        playerStateCondition: 'eaten'
     },
     {
         type: ActionType.DevourAttack,
@@ -119,8 +118,7 @@ const aquaSerpentActions: BossAction[] = [
         ],
         damage: 25,
         weight: 25,
-        playerStateCondition: 'eaten',
-        drainMaxHp: 6
+        playerStateCondition: 'eaten'
     },
     {
         type: ActionType.DevourAttack,
@@ -147,12 +145,11 @@ const aquaSerpentActions: BossAction[] = [
         damage: 35,
         weight: 10,
         playerStateCondition: 'eaten',
-        drainMaxHp: 12,
-        canUse: (boss, player, turn) => {
+        canUse: () => {
             // 20% chance to use and possibly release player
             return Math.random() < 0.2;
         },
-        onUse: (boss, player) => {
+        onUse: (_, player) => {
             // 30% chance to release player after this attack
             if (Math.random() < 0.3) {
                 player.statusEffects.removeEffect(StatusEffectType.Eaten);
