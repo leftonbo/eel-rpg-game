@@ -143,6 +143,7 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
             
             // Full heal
             player.heal(player.maxHp);
+            player.recoverMp(player.maxMp);
             
             // Remove all debuff status effects using the new system
             const removedDebuffs = player.statusEffects.removeDebuffs();
