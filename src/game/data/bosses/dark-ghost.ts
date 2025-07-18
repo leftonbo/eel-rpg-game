@@ -95,7 +95,7 @@ export const darkGhostData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '魂からのエネルギー吸収',
-                    description: '魂だけになった体内の獲物からエネルギーを吸い続ける',
+                    description: '魂だけになった獲物からエネルギーを吸い続ける',
                     messages: [
                         '「ケケケ...」',
                         '<USER>が<TARGET>の魂からエネルギーを吸い取っている...',
