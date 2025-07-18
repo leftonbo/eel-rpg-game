@@ -192,7 +192,7 @@ export const cleanMasterData: BossData = {
     id: 'clean-master',
     name: 'CleanMaster',
     displayName: '🧹 クリーンマスター',
-    description: 'かわいい汎用清掃マスコットロボット',
+    description: 'かわいい清掃マスコットロボット',
     questNote: `とある研究所から逃げ出した清掃ロボットが、街中で「汚れた」人々を捕まえて強制的に清掃しているという報告が入った。このロボットは完璧主義で、一度清掃を始めると「完璧になるまで」絶対に止めないという...`,
     maxHp: 280,
     attackPower: 12,
