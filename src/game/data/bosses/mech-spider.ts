@@ -30,7 +30,7 @@ const mechSpiderActions: BossAction[] = [
         messages: ['<USER>は<TARGET>に噛みついて電気ショックを流す！'],
         damage: 10,
         statusEffect: StatusEffectType.Stunned,
-        statusChance: 30,
+        statusChance: 0.30,
         hitRate: 0.7,
         weight: 12,
         canUse: (_boss, player, _turn) => {
@@ -79,7 +79,7 @@ const mechSpiderActionsRestrained: BossAction[] = [
         messages: ['<USER>は<TARGET>に噛みついて電気ショックを流す！'],
         damage: 10,
         statusEffect: StatusEffectType.Stunned,
-        statusChance: 50,
+        statusChance: 0.50,
         hitRate: 0.95,
         weight: 15
     },

@@ -38,7 +38,7 @@ const scorpionCarrierActions: BossAction[] = [
         messages: ['<USER>は尻尾の注射器で<TARGET>に麻酔を注入しようとする！'],
         damage: 8,
         statusEffect: StatusEffectType.Anesthesia,
-        statusChance: 70,
+        statusChance: 0.70,
         hitRate: 0.7,
         weight: 12,
         canUse: (_boss, player, _turn) => {
@@ -67,7 +67,7 @@ const scorpionCarrierActionsRestrained: BossAction[] = [
         messages: ['<USER>は拘束した<TARGET>に猛毒を注射する！'],
         damage: 15,
         statusEffect: StatusEffectType.ScorpionPoison,
-        statusChance: 90,
+        statusChance: 0.90,
         hitRate: 0.95,
         weight: 30
     },
@@ -116,7 +116,7 @@ const scorpionCarrierActionsEaten: BossAction[] = [
         messages: ['<USER>は体内の注射器で<TARGET>に脱力剤を注入する！'],
         damage: 8,
         statusEffect: StatusEffectType.Weakening,
-        statusChance: 80,
+        statusChance: 0.80,
         hitRate: 0.9,
         weight: 25,
         playerStateCondition: 'eaten'

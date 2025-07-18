@@ -15,7 +15,7 @@ const cleanMasterActions: BossAction[] = [
         hitRate: 0.95,
         weight: 25,
         statusEffect: StatusEffectType.Soapy,
-        statusChance: 30,
+        statusChance: 0.30,
         playerStateCondition: 'normal'
     },
     {
@@ -30,7 +30,7 @@ const cleanMasterActions: BossAction[] = [
         hitRate: 0.8,
         weight: 20,
         statusEffect: StatusEffectType.Spinning,
-        statusChance: 25,
+        statusChance: 0.25,
         playerStateCondition: 'normal'
     },
     {
@@ -71,7 +71,7 @@ const cleanMasterActions: BossAction[] = [
         damage: 5,
         hitRate: 0.95,
         statusEffect: StatusEffectType.Soapy,
-        statusChance: 80,
+        statusChance: 0.80,
         weight: 18
     }
 ];
@@ -101,7 +101,7 @@ const cleanMasterActionsRestrained: BossAction[] = [
         damage: 20,
         weight: 25,
         statusEffect: StatusEffectType.Spinning,
-        statusChance: 40
+        statusChance: 0.40
     },
     {
         type: ActionType.Attack,
@@ -114,7 +114,7 @@ const cleanMasterActionsRestrained: BossAction[] = [
         damage: 12,
         weight: 20,
         statusEffect: StatusEffectType.Soapy,
-        statusChance: 60
+        statusChance: 0.60
     }
 ];
 
@@ -131,7 +131,7 @@ const cleanMasterActionsEaten: BossAction[] = [
         damage: 18,
         weight: 25,
         statusEffect: StatusEffectType.Spinning,
-        statusChance: 80
+        statusChance: 0.80
     },
     {
         type: ActionType.DevourAttack,
@@ -144,7 +144,7 @@ const cleanMasterActionsEaten: BossAction[] = [
         damage: 22,
         weight: 20,
         statusEffect: StatusEffectType.Spinning,
-        statusChance: 90
+        statusChance: 0.90
     },
     {
         type: ActionType.DevourAttack,
@@ -157,7 +157,7 @@ const cleanMasterActionsEaten: BossAction[] = [
         damage: 16,
         weight: 25,
         statusEffect: StatusEffectType.Steamy,
-        statusChance: 70
+        statusChance: 0.70
     },
     {
         type: ActionType.DevourAttack,
@@ -170,7 +170,7 @@ const cleanMasterActionsEaten: BossAction[] = [
         damage: 20,
         weight: 15,
         statusEffect: StatusEffectType.Steamy,
-        statusChance: 60
+        statusChance: 0.60
     },
     {
         type: ActionType.DevourAttack,
