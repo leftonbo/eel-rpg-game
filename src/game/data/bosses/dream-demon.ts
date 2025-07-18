@@ -19,7 +19,7 @@ const dreamDemonActions: BossAction[] = [
         name: '魅惑の眼差し',
         description: '甘い視線で相手を魅了する',
         statusEffect: StatusEffectType.Charm,
-        statusChance: 90,
+        statusChance: 0.90,
         weight: 25,
         messages: ['<USER>は甘い眼差しで<TARGET>を見つめる...', '<TARGET>の心がとろけそうになる...']
     },
@@ -28,7 +28,7 @@ const dreamDemonActions: BossAction[] = [
         name: '麻痺の粉',
         description: '麻痺を誘発する粉末を撒く',
         statusEffect: StatusEffectType.Paralysis,
-        statusChance: 85,
+        statusChance: 0.85,
         weight: 20,
         messages: ['<USER>は光る粉を撒き散らした！', '<TARGET>の体がしびれていく...']
     },
@@ -37,7 +37,7 @@ const dreamDemonActions: BossAction[] = [
         name: '淫毒の吐息',
         description: '甘い毒を含んだ息を吹きかける',
         statusEffect: StatusEffectType.AphrodisiacPoison,
-        statusChance: 90,
+        statusChance: 0.90,
         weight: 25,
         messages: ['<USER>は甘い香りの息を<TARGET>に吹きかけた', '<TARGET>の体が熱くなってきた...']
     },
@@ -46,7 +46,7 @@ const dreamDemonActions: BossAction[] = [
         name: 'ねむけ誘発',
         description: '眠気を誘う魔法をかける',
         statusEffect: StatusEffectType.Drowsiness,
-        statusChance: 80,
+        statusChance: 0.80,
         weight: 20,
         messages: ['<USER>は催眠術をかけてきた', '<TARGET>のまぶたが重くなってきた...']
     },
@@ -55,7 +55,7 @@ const dreamDemonActions: BossAction[] = [
         name: '脱力の呪文',
         description: '力を奪う呪文を唱える',
         statusEffect: StatusEffectType.Weakness,
-        statusChance: 85,
+        statusChance: 0.85,
         weight: 20,
         messages: ['<USER>は呪文を唱えた', '<TARGET>の力が抜けていく...']
     },
@@ -64,7 +64,7 @@ const dreamDemonActions: BossAction[] = [
         name: 'メロメロビーム',
         description: 'ハート型の光線で相手をメロメロにする',
         statusEffect: StatusEffectType.Infatuation,
-        statusChance: 80,
+        statusChance: 0.80,
         weight: 25,
         messages: ['<USER>はハート型の光線を放った！', '<TARGET>は完全にメロメロになってしまった...']
     },
@@ -73,7 +73,7 @@ const dreamDemonActions: BossAction[] = [
         name: '混乱の渦',
         description: '思考を混乱させる魔法',
         statusEffect: StatusEffectType.Confusion,
-        statusChance: 75,
+        statusChance: 0.75,
         weight: 20,
         messages: ['<USER>は不思議な渦を作り出した', '<TARGET>の思考が混乱してきた...']
     },
@@ -82,7 +82,7 @@ const dreamDemonActions: BossAction[] = [
         name: '発情促進',
         description: '発情状態を誘発する魔法',
         statusEffect: StatusEffectType.Arousal,
-        statusChance: 85,
+        statusChance: 0.85,
         weight: 25,
         messages: ['<USER>は妖艶な魔法をかけた', '<TARGET>の体が火照ってきた...']
     },
@@ -91,7 +91,7 @@ const dreamDemonActions: BossAction[] = [
         name: '悩殺ポーズ',
         description: '魅惑的なポーズで相手を悩殺する',
         statusEffect: StatusEffectType.Seduction,
-        statusChance: 80,
+        statusChance: 0.80,
         weight: 20,
         messages: ['<USER>は急接近し深いべろちゅーをしてきた！', '<TARGET>は完全に悩殺されてしまった...']
     },
@@ -100,7 +100,7 @@ const dreamDemonActions: BossAction[] = [
         name: '魔法封印術',
         description: '魔法の使用を封じる',
         statusEffect: StatusEffectType.MagicSeal,
-        statusChance: 90,
+        statusChance: 0.90,
         weight: 15,
         messages: ['<USER>は封印の呪文を唱えた', '<TARGET>の魔力が封じられた！']
     },
@@ -109,7 +109,7 @@ const dreamDemonActions: BossAction[] = [
         name: '快楽の呪い',
         description: '快楽に溺れさせる強力な呪い',
         statusEffect: StatusEffectType.PleasureFall,
-        statusChance: 70,
+        statusChance: 0.70,
         weight: 15,
         messages: ['<USER>は禁断の呪いをかけた...', '<TARGET>は快楽の波に飲み込まれていく...']
     },
@@ -118,7 +118,7 @@ const dreamDemonActions: BossAction[] = [
         name: '淫乱の魔法',
         description: '理性を奪う淫らな魔法',
         statusEffect: StatusEffectType.Lewdness,
-        statusChance: 75,
+        statusChance: 0.75,
         weight: 15,
         messages: ['<USER>は淫らな魔法を唱えた', '<TARGET>の理性が揺らいでいく...']
     },
@@ -127,7 +127,7 @@ const dreamDemonActions: BossAction[] = [
         name: '催眠波動',
         description: '強力な催眠術で意識を奪う',
         statusEffect: StatusEffectType.Hypnosis,
-        statusChance: 60,
+        statusChance: 0.60,
         weight: 10,
         canUse: (_boss, player, _turn) => {
             // Use when player has multiple debuffs
@@ -140,7 +140,7 @@ const dreamDemonActions: BossAction[] = [
         name: '洗脳光線',
         description: '思考を支配する洗脳光線',
         statusEffect: StatusEffectType.Brainwash,
-        statusChance: 50,
+        statusChance: 0.50,
         weight: 8,
         canUse: (_boss, player, _turn) => {
             // Use when player is severely debuffed
@@ -153,7 +153,7 @@ const dreamDemonActions: BossAction[] = [
         name: 'あまあま魔法',
         description: '甘い幸福感で抵抗力を奪う',
         statusEffect: StatusEffectType.Sweet,
-        statusChance: 85,
+        statusChance: 0.85,
         weight: 20,
         messages: ['<USER>は甘い魔法をかけた', '<TARGET>は幸せな気分になった...']
     },
@@ -162,7 +162,7 @@ const dreamDemonActions: BossAction[] = [
         name: 'とろとろ魔法',
         description: '意識をとろけさせる魔法',
         statusEffect: StatusEffectType.Melting,
-        statusChance: 85,
+        statusChance: 0.85,
         weight: 20,
         messages: ['<USER>はとろける魔法をかけた', '<TARGET>の意識がとろけていく...']
     },
@@ -171,7 +171,7 @@ const dreamDemonActions: BossAction[] = [
         name: 'うっとり魔法',
         description: '恍惚状態にする魔法',
         statusEffect: StatusEffectType.Euphoria,
-        statusChance: 80,
+        statusChance: 0.80,
         weight: 18,
         messages: ['<USER>は恍惚の魔法をかけた', '<TARGET>はうっとりとした表情になった...']
     },
@@ -180,7 +180,7 @@ const dreamDemonActions: BossAction[] = [
         name: '魅惑の術',
         description: '深い魅惑状態にする魔法',
         statusEffect: StatusEffectType.Fascination,
-        statusChance: 85,
+        statusChance: 0.85,
         weight: 20,
         messages: ['<USER>は魅惑の術を唱えた', '<TARGET>は深い魅惑に囚われた...']
     },
@@ -189,7 +189,7 @@ const dreamDemonActions: BossAction[] = [
         name: '至福の呪文',
         description: '至福の陶酔状態にする',
         statusEffect: StatusEffectType.Bliss,
-        statusChance: 75,
+        statusChance: 0.75,
         weight: 15,
         messages: ['<USER>は至福の呪文を唱えた', '<TARGET>は至福の表情を浮かべた...']
     },
@@ -198,7 +198,7 @@ const dreamDemonActions: BossAction[] = [
         name: '魅了術',
         description: '強力な魅了魔法で完全支配',
         statusEffect: StatusEffectType.Enchantment,
-        statusChance: 70,
+        statusChance: 0.70,
         weight: 12,
         canUse: (_boss, player, _turn) => {
             // Use when player has multiple debuffs
@@ -249,7 +249,7 @@ const dreamDemonActions: BossAction[] = [
         description: '拘束中の相手に魅惑的なキスをする',
         damage: 1,
         statusEffect: StatusEffectType.Infatuation,
-        statusChance: 95,
+        statusChance: 0.95,
         weight: 30,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>に熱いキスをした...', '<TARGET>は完全にとろけてしまった...']
@@ -260,7 +260,7 @@ const dreamDemonActions: BossAction[] = [
         description: '大きな舌で相手をなめまわす',
         damage: 2,
         statusEffect: StatusEffectType.Arousal,
-        statusChance: 90,
+        statusChance: 0.90,
         weight: 28,
         playerStateCondition: 'restrained',
         messages: ['<USER>は大きな舌で<TARGET>をべろべろとなめまわした', '<TARGET>の体が震えている...']
@@ -271,7 +271,7 @@ const dreamDemonActions: BossAction[] = [
         description: '体を密着させて誘惑する',
         damage: 1,
         statusEffect: StatusEffectType.Seduction,
-        statusChance: 95,
+        statusChance: 0.95,
         weight: 25,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>に体を密着させてきた', '<TARGET>は誘惑に負けそうになっている...']
@@ -282,7 +282,7 @@ const dreamDemonActions: BossAction[] = [
         description: '体を揺さぶって快楽を与える',
         damage: 2,
         statusEffect: StatusEffectType.PleasureFall,
-        statusChance: 80,
+        statusChance: 0.80,
         weight: 20,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>の体をリズミカルに揺さぶった', '<TARGET>は快楽の波に飲み込まれていく...']
@@ -295,7 +295,7 @@ const dreamDemonActions: BossAction[] = [
         description: '体を激しく密着させて圧迫する',
         damage: 1,
         statusEffect: StatusEffectType.Bliss,
-        statusChance: 85,
+        statusChance: 0.85,
         weight: 25,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>に激しく体を押し付けてきた', '<TARGET>は息ができないほど密着されている...']
@@ -306,7 +306,7 @@ const dreamDemonActions: BossAction[] = [
         description: '体を激しく揺さぶって感覚を狂わせる',
         damage: 2,
         statusEffect: StatusEffectType.Lewdness,
-        statusChance: 90,
+        statusChance: 0.90,
         weight: 23,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>を激しく揺さぶった', '<TARGET>の理性が揺らいでいく...']
@@ -317,7 +317,7 @@ const dreamDemonActions: BossAction[] = [
         description: '官能的な動きで相手を魅了する',
         damage: 1,
         statusEffect: StatusEffectType.Fascination,
-        statusChance: 95,
+        statusChance: 0.95,
         weight: 26,
         playerStateCondition: 'restrained',
         messages: ['<USER>は官能的な動きを見せつけてきた', '<TARGET>は目が離せなくなっている...']
@@ -328,7 +328,7 @@ const dreamDemonActions: BossAction[] = [
         description: '激しく愛撫して感覚を麻痺させる',
         damage: 2,
         statusEffect: StatusEffectType.Melting,
-        statusChance: 88,
+        statusChance: 0.88,
         weight: 24,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>を激しく愛撫してきた', '<TARGET>の感覚がとろけていく...']
@@ -339,7 +339,7 @@ const dreamDemonActions: BossAction[] = [
         description: '体重をかけて圧迫し続ける',
         damage: 1,
         statusEffect: StatusEffectType.Euphoria,
-        statusChance: 85,
+        statusChance: 0.85,
         weight: 22,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>に全体重をかけて圧迫してきた', '<TARGET>は恍惚の表情を浮かべている...']
@@ -352,7 +352,7 @@ const dreamDemonActions: BossAction[] = [
         description: '拘束中に強力な魅了をかける',
         damage: 1,
         statusEffect: StatusEffectType.Charm,
-        statusChance: 98,
+        statusChance: 0.98,
         weight: 20,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>を見つめながら強力な魅了をかけた', '<TARGET>の意思が完全に奪われていく...']
@@ -363,7 +363,7 @@ const dreamDemonActions: BossAction[] = [
         description: '拘束中に麻痺効果を与える',
         damage: 1,
         statusEffect: StatusEffectType.Paralysis,
-        statusChance: 95,
+        statusChance: 0.95,
         weight: 18,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>の神経を痺れさせた', '<TARGET>の体が完全に痺れてしまった...']
@@ -374,7 +374,7 @@ const dreamDemonActions: BossAction[] = [
         description: '拘束中に淫毒を注入する',
         damage: 2,
         statusEffect: StatusEffectType.AphrodisiacPoison,
-        statusChance: 98,
+        statusChance: 0.98,
         weight: 22,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>に直接淫毒を注入した', '<TARGET>の体が激しく火照っていく...']
@@ -385,7 +385,7 @@ const dreamDemonActions: BossAction[] = [
         description: '拘束中に強制的に眠らせる',
         damage: 1,
         statusEffect: StatusEffectType.Drowsiness,
-        statusChance: 95,
+        statusChance: 0.95,
         weight: 19,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>の意識を朦朧とさせた', '<TARGET>の意識がだんだん遠のいていく...']
@@ -396,7 +396,7 @@ const dreamDemonActions: BossAction[] = [
         description: '拘束中に力を完全に奪う',
         damage: 1,
         statusEffect: StatusEffectType.Weakness,
-        statusChance: 98,
+        statusChance: 0.98,
         weight: 21,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>の力を吸い取った', '<TARGET>の体から力が完全に抜けていく...']
@@ -407,7 +407,7 @@ const dreamDemonActions: BossAction[] = [
         description: '拘束中に思考を混乱させる',
         damage: 1,
         statusEffect: StatusEffectType.Confusion,
-        statusChance: 95,
+        statusChance: 0.95,
         weight: 18,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>の思考を混乱させた', '<TARGET>は何が何だかわからなくなっている...']
@@ -418,7 +418,7 @@ const dreamDemonActions: BossAction[] = [
         description: '拘束中に魔法を完全封印する',
         damage: 1,
         statusEffect: StatusEffectType.MagicSeal,
-        statusChance: 98,
+        statusChance: 0.98,
         weight: 17,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>の魔力を封印した', '<TARGET>の魔法が使えなくなった...']
@@ -429,7 +429,7 @@ const dreamDemonActions: BossAction[] = [
         description: '拘束中に意識をとろけさせる',
         damage: 2,
         statusEffect: StatusEffectType.Melting,
-        statusChance: 95,
+        statusChance: 0.95,
         weight: 22,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>の意識をとろけさせた', '<TARGET>の思考が液体のようにとろけていく...']
@@ -440,7 +440,7 @@ const dreamDemonActions: BossAction[] = [
         description: '拘束中に恍惚状態にする',
         damage: 1,
         statusEffect: StatusEffectType.Euphoria,
-        statusChance: 92,
+        statusChance: 0.92,
         weight: 19,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>を恍惚状態にした', '<TARGET>はうっとりと夢見心地になっている...']
@@ -451,7 +451,7 @@ const dreamDemonActions: BossAction[] = [
         description: '拘束中に甘い幸福感を与える',
         damage: 1,
         statusEffect: StatusEffectType.Sweet,
-        statusChance: 95,
+        statusChance: 0.95,
         weight: 20,
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>に甘い幸福感を与えた', '<TARGET>は幸せそうな表情を浮かべている...']
@@ -462,7 +462,7 @@ const dreamDemonActions: BossAction[] = [
         description: '拘束中に強制催眠をかける',
         damage: 1,
         statusEffect: StatusEffectType.Hypnosis,
-        statusChance: 90,
+        statusChance: 0.90,
         weight: 15,
         playerStateCondition: 'restrained',
         canUse: (_boss, player, _turn) => {
@@ -476,7 +476,7 @@ const dreamDemonActions: BossAction[] = [
         description: '拘束中に思考を洗脳する',
         damage: 2,
         statusEffect: StatusEffectType.Brainwash,
-        statusChance: 85,
+        statusChance: 0.85,
         weight: 12,
         playerStateCondition: 'restrained',
         canUse: (_boss, player, _turn) => {
@@ -491,7 +491,7 @@ const dreamDemonActions: BossAction[] = [
         name: '眠りのキス',
         description: '拘束中の相手に眠りを誘うキスをする',
         statusEffect: StatusEffectType.Sleep,
-        statusChance: 95,
+        statusChance: 0.95,
         weight: 5,
         playerStateCondition: 'restrained',
         canUse: (_boss, player, _turn) => {
