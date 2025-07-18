@@ -159,18 +159,14 @@ export abstract class Actor {
      * Get HP bar percentage based on max HP (for bar width display)
      */
     getHpBarPercentage(): number {
-        if (this.maxHp <= 0) return 0;
-        
-        return (this.hp / this.maxHp) * 100;
+        return this.getHpPercentage();
     }
 
     /**
      * Get MP bar percentage based on max MP (for bar width display)
      */
     getMpBarPercentage(): number {
-        if (this.maxMp <= 0) return 0;
-
-        return (this.mp / this.maxMp) * 100;
+        return this.getMpPercentage();
     }
 
     /**
