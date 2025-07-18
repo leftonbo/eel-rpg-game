@@ -156,35 +156,21 @@ export abstract class Actor {
     }
 
     /**
-     * Get HP bar percentage based on initial max HP (for bar width display)
-     * If current max HP is higher than initial, use normal percentage to prevent overflow
+     * Get HP bar percentage based on max HP (for bar width display)
      */
     getHpBarPercentage(): number {
-        if (this.initialMaxHp <= 0) return 0;
+        if (this.maxHp <= 0) return 0;
         
-        // If current max HP is higher than initial, use normal percentage
-        if (this.maxHp > this.initialMaxHp) {
-            return this.getHpPercentage();
-        }
-        
-        // If current max HP is lower or equal, use initial max HP as base
-        return (this.hp / this.initialMaxHp) * 100;
+        return (this.hp / this.maxHp) * 100;
     }
 
     /**
-     * Get MP bar percentage based on initial max MP (for bar width display)
-     * If current max MP is higher than initial, use normal percentage to prevent overflow
+     * Get MP bar percentage based on max MP (for bar width display)
      */
     getMpBarPercentage(): number {
-        if (this.initialMaxMp <= 0) return 0;
-        
-        // If current max MP is higher than initial, use normal percentage
-        if (this.maxMp > this.initialMaxMp) {
-            return this.getMpPercentage();
-        }
-        
-        // If current max MP is lower or equal, use initial max MP as base
-        return (this.mp / this.initialMaxMp) * 100;
+        if (this.maxMp <= 0) return 0;
+
+        return (this.mp / this.maxMp) * 100;
     }
 
     /**
