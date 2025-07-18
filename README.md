@@ -87,8 +87,8 @@
 
 ## 技術スタック
 
-- **言語**: TypeScript 5.8
-- **バンドラー**: Webpack 5.100
+- **言語**: TypeScript 5.0
+- **バンドラー**: Webpack 5.88
 - **UI**: Bootstrap 5（CDN）+ カスタムCSS
 - **開発ツール**: ESLint 9.31, TypeScript Compiler
 - **ビルドツール**: ts-loader, css-loader, html-webpack-plugin
