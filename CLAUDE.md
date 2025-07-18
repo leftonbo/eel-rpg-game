@@ -109,3 +109,8 @@ Claude Codeは以下の方針に従ってgitコミットを行うこと
 - `bugfix/` + バグ内容
 - `refactor/` + リファクタリング内容
 - `docs/` + ドキュメント更新内容
+
+### PR 作成時の注意点
+
+- PRタイトルと内容は日本語で記述すること
+- テンプレートは `.github/PULL_REQUEST_TEMPLATE.md` を使用
