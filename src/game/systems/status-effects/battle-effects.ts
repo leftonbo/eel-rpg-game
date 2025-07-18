@@ -180,6 +180,9 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         description: 'イカスミで視界が阻害され、攻撃の命中率が低下',
         duration: 3,
         category: 'debuff',
-        isDebuff: true
+        isDebuff: true,
+        modifiers: {
+            accuracy: 0.7 // Reduces accuracy to 70% of its original value
+        }
     }]
 ]);

@@ -100,6 +100,7 @@ export interface StatusEffectConfig {
         attackPower?: number; // Multiplier for attack power (default: 1.0)
         damageReceived?: number; // Multiplier for damage received (default: 1.0)
         struggleRate?: number; // Multiplier for struggle success rate (default: 1.0)
+        accuracy?: number; // Multiplier for hit accuracy (default: 1.0)
         canAct?: boolean; // Whether the entity can act (default: true)
         canUseSkills?: boolean; // Whether skills can be used (default: true)
         actionPriority?: ActionPriority; // Action priority level
