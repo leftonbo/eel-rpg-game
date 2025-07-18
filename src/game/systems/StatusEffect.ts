@@ -1,6 +1,7 @@
 export { StatusEffectType, ActionPriority } from './StatusEffectTypes';
 export type { StatusEffect, StatusEffectConfig } from './StatusEffectTypes';
 
+import { Actor } from '../entities/Actor';
 import { createStatusEffectConfigs } from './status-effects';
 import { StatusEffectType, StatusEffect, StatusEffectConfig, ActionPriority } from './StatusEffectTypes';
 
@@ -60,7 +61,7 @@ export class StatusEffectManager {
     }
     
     // Apply status effect damages/effects at turn start
-    applyEffects(target: any): string[] {
+    applyEffects(target: Actor): string[] {
         const messages: string[] = [];
         
         for (const [type, effect] of this.effects) {
@@ -82,7 +83,7 @@ export class StatusEffectManager {
     }
     
     // Decrease durations and remove expired effects at turn end
-    decreaseDurations(target: any): string[] {
+    decreaseDurations(target: Actor): string[] {
         const messages: string[] = [];
         const effectsToRemove: StatusEffectType[] = [];
         
@@ -110,7 +111,7 @@ export class StatusEffectManager {
     }
     
     // Legacy method for backward compatibility
-    tickEffects(target: any): void {
+    tickEffects(target: Actor): void {
         this.applyEffects(target);
         this.decreaseDurations(target);
     }

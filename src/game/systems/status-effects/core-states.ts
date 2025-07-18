@@ -1,4 +1,5 @@
-import { StatusEffectType, StatusEffectConfig, ActionPriority } from '../StatusEffectTypes';
+import { Actor } from '@/game/entities/Actor';
+import { StatusEffectType, StatusEffectConfig, ActionPriority, StatusEffect } from '../StatusEffectTypes';
 
 export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new Map([
     [StatusEffectType.Dead, {
@@ -71,7 +72,7 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
         modifiers: {
             actionPriority: ActionPriority.StruggleAction
         },
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             // Reduce max HP each turn to represent shrinking
             const maxHpReduction = Math.floor(target.maxHp * 0.05); // 5% per turn
             if (maxHpReduction > 0) {

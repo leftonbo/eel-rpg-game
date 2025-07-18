@@ -1,4 +1,5 @@
-import { StatusEffectType, StatusEffectConfig } from '../StatusEffectTypes';
+import { Actor } from '@/game/entities/Actor';
+import { StatusEffectType, StatusEffectConfig, StatusEffect } from '../StatusEffectTypes';
 
 export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = new Map([
     [StatusEffectType.Defending, {
@@ -30,7 +31,7 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         duration: 2,
         category: 'debuff',
         isDebuff: true,
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             target.takeDamage(8);
         }
     }],
@@ -63,7 +64,7 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         duration: 3,
         category: 'debuff',
         isDebuff: true,
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             target.takeDamage(3);
         }
     }],
@@ -85,7 +86,7 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         duration: 3,
         category: 'buff',
         isDebuff: false,
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             target.mp = target.maxMp;
         }
     }],
@@ -143,7 +144,7 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         duration: 3,
         category: 'debuff',
         isDebuff: true,
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             const damage = Math.floor(target.maxHp / 10);
             target.takeDamage(damage);
         }
@@ -242,7 +243,7 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         duration: 3,
         category: 'debuff',
         isDebuff: true,
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             target.takeDamage(4);
         }
     }]

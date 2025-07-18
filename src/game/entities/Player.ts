@@ -19,7 +19,7 @@ export interface Skill {
     description: string;
     mpCost: number;
     canUse: (player: Player) => boolean;
-    use: (player: Player, target?: any) => SkillResult;
+    use: (player: Player, target?: Actor) => SkillResult;
     hitRate?: number; // Custom hit rate (0-1)
     criticalRate?: number; // Custom critical hit rate (0-1)
     damageVarianceMin?: number; // Minimum damage variance percentage (default: -20)
@@ -29,6 +29,7 @@ export interface Skill {
 
 export interface SkillResult {
     success: boolean;
+    mpConsumed?: number; // Only for skills that consume MP
     message: string;
     damage?: number; // Only for attack skills
 }
@@ -560,7 +561,7 @@ export class Player extends Actor {
             damageVarianceMin: skillData.damageVarianceMin,
             damageVarianceMax: skillData.damageVarianceMax,
             canUse: (player: Player) => this.canUseSkill(skillData, player),
-            use: (player: Player, target?: any) => this.useSkillData(skillData, player, target)
+            use: (player: Player, target?: Actor) => this.useSkillData(skillData, player, target)
         };
     }
     
@@ -591,7 +592,7 @@ export class Player extends Actor {
     /**
      * Use a skill from the new system
      */
-    private useSkillData(skillData: SkillData, player: Player, _target?: any): SkillResult {
+    private useSkillData(skillData: SkillData, player: Player, _target?: Actor): SkillResult {
         switch (skillData.id) {
             case 'power-attack':
                 return this.usePowerAttack(skillData, player);
@@ -622,6 +623,7 @@ export class Player extends Actor {
         const damage = Math.floor(player.getAttackPower() * powerMultiplier);
         return {
             success: true,
+            mpConsumed: mpInsufficient ? player.mp : skillData.mpCost,
             message: mpInsufficient ? 
                 `${player.name}は最後の力を振り絞って${skillData.name}を放った！` :
                 `${player.name}は${skillData.name}を放った！`,
@@ -645,6 +647,7 @@ export class Player extends Actor {
         
         return {
             success: true,
+            mpConsumed: mpConsumed,
             message: `${player.name}は${skillData.name}を放った！（消費MP: ${mpConsumed}）`,
             damage: totalDamage
         };
@@ -695,6 +698,7 @@ export class Player extends Actor {
             
             return {
                 success: true,
+                mpConsumed: mpInsufficient ? player.mp : skillData.mpCost,
                 message: mpInsufficient ? 
                     `${player.name}は最後の力で激しくあばれた！拘束から脱出した！` :
                     `${player.name}は激しくあばれた！拘束から脱出した！`,
@@ -711,6 +715,7 @@ export class Player extends Actor {
             
             return {
                 success: false,
+                mpConsumed: mpInsufficient ? player.mp : skillData.mpCost,
                 message: mpInsufficient ? 
                     `${player.name}は最後の力であばれたが、脱出できなかった...しかし次回の成功率が大幅に上がった！` :
                     `${player.name}があばれたが、脱出できなかった...次回の成功率が上がった！`,
@@ -755,7 +760,7 @@ export class Player extends Actor {
         };
     }
     
-    useSkill(skillType: SkillType, target?: any): SkillResult {
+    useSkill(skillType: SkillType, target?: Actor): SkillResult {
         const skills = this.getAvailableSkills();
         const skill = skills.find(s => s.type === skillType);
         

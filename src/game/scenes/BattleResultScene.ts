@@ -1,6 +1,7 @@
 import { Game } from '../Game';
 import { AbilityType } from '../systems/AbilitySystem';
 import { SkillRegistry } from '../data/skills';
+import { Player } from '../entities/Player';
 
 export interface BattleResult {
     victory: boolean;
@@ -176,7 +177,7 @@ export class BattleResultScene {
  * Calculate battle result based on player performance
  */
 export function calculateBattleResult(
-    player: any,
+    player: Player,
     victory: boolean,
     damageDealt: number,
     damageTaken: number,

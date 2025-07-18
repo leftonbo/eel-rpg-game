@@ -1,4 +1,5 @@
-import { StatusEffectType, StatusEffectConfig } from '../StatusEffectTypes';
+import { Actor } from '@/game/entities/Actor';
+import { StatusEffectType, StatusEffectConfig, StatusEffect } from '../StatusEffectTypes';
 
 export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = new Map([
     [StatusEffectType.Paralysis, {
@@ -22,7 +23,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
         modifiers: {
             struggleRate: 0.4
         },
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 2);
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
@@ -62,7 +63,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
         modifiers: {
             struggleRate: 0.2
         },
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 3);
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
@@ -90,7 +91,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
         modifiers: {
             struggleRate: 0.25
         },
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 2);
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
@@ -108,7 +109,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
             attackPower: 0.5,
             struggleRate: 0.3
         },
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 2);
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
@@ -138,7 +139,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
             damageReceived: 1.8,
             struggleRate: 0.1
         },
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 4);
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
@@ -156,7 +157,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
             attackPower: 0.6,
             struggleRate: 0.4
         },
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 2);
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
@@ -185,7 +186,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
             canAct: false,
             canUseSkills: false
         },
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 3);
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
@@ -203,7 +204,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
             damageReceived: 1.2,
             struggleRate: 0.6
         },
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 1);
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
@@ -221,7 +222,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
             attackPower: 0.5,
             struggleRate: 0.4
         },
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 2);
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
@@ -239,7 +240,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
             attackPower: 0.6,
             struggleRate: 0.5
         },
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 1);
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
@@ -257,7 +258,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
             attackPower: 0.5,
             struggleRate: 0.3
         },
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 2);
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
@@ -275,7 +276,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
             attackPower: 0.3,
             struggleRate: 0.1
         },
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 3);
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
@@ -293,7 +294,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
             attackPower: 0.2,
             struggleRate: 0.15
         },
-        onTick: (target: any, _effect: any) => {
+        onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 2);
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
