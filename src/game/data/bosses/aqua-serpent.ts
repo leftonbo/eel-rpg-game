@@ -1,5 +1,5 @@
 import { BossData, ActionType, BossAction } from '../../entities/Boss';
-import { StatusEffectType } from '../../systems/StatusEffect';
+import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
 const aquaSerpentActions: BossAction[] = [
     {
@@ -399,6 +399,7 @@ aquaSerpentData.finishingMove = function() {
 
 // Override dialogue for personality
 aquaSerpentData.getDialogue = function(situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') {
+    const DEFAULT_DIALOGUE_SITUATION = 'battle-start';
     const dialogues: Record<string, string[]> = {
         'battle-start': [
             'シャアアア...美しい生命力だ',
@@ -431,6 +432,6 @@ aquaSerpentData.getDialogue = function(situation: 'battle-start' | 'player-restr
         ]
     };
 
-    const options = dialogues[situation] || dialogues['battle-start'];
+    const options = dialogues[situation] || dialogues[DEFAULT_DIALOGUE_SITUATION];
     return options[Math.floor(Math.random() * options.length)];
 };

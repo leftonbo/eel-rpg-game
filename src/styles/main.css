@@ -573,7 +573,7 @@ body {
     animation: lethargy-drain 3s ease-in-out infinite alternate;
 }
 
-/* Sea Kraken status effects */
+/* Sea Kraken and Aqua Serpent status effects */
 .status-vision-impairment {
     background: rgba(75, 0, 130, 0.4);
     border-color: #4b0082;
@@ -594,6 +594,7 @@ body {
     border-color: #ff8c00;
     color: #fff5e6;
     animation: dizzy-spin 3s ease-in-out infinite;
+    will-change: transform;
 }
 
 /* Animations */
