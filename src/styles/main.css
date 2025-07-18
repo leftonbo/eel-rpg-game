@@ -1448,3 +1448,59 @@ footer svg {
         font-size: 0.7rem;
     }
 }
+
+/* Clean Master status effects */
+.status-soapy {
+    background: rgba(176, 224, 230, 0.6);
+    border-color: #87ceeb;
+    color: #0277bd;
+    animation: bubble-float 2s ease-in-out infinite;
+}
+
+.status-spinning {
+    background: rgba(255, 236, 179, 0.6);
+    border-color: #ffc107;
+    color: #f57c00;
+    animation: clean-spin 1s linear infinite;
+}
+
+.status-steamy {
+    background: rgba(255, 205, 210, 0.6);
+    border-color: #ef5350;
+    color: #d32f2f;
+    animation: steam-wave 2s ease-in-out infinite;
+}
+
+/* Clean Master animations */
+@keyframes bubble-float {
+    0%, 100% { 
+        transform: scale(1) translateY(0px);
+        box-shadow: 0 0 8px rgba(176, 224, 230, 0.5);
+    }
+    50% { 
+        transform: scale(1.05) translateY(-2px);
+        box-shadow: 0 0 15px rgba(176, 224, 230, 0.8);
+    }
+}
+
+@keyframes clean-spin {
+    0% { 
+        transform: rotate(0deg);
+        box-shadow: 0 0 8px rgba(255, 193, 7, 0.6);
+    }
+    100% { 
+        transform: rotate(360deg);
+        box-shadow: 0 0 15px rgba(255, 193, 7, 0.8);
+    }
+}
+
+@keyframes steam-wave {
+    0%, 100% { 
+        opacity: 1;
+        box-shadow: 0 0 8px rgba(255, 205, 210, 0.5);
+    }
+    50% { 
+        opacity: 0.7;
+        box-shadow: 0 0 15px rgba(255, 205, 210, 0.8);
+    }
+}

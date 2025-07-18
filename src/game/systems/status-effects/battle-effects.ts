@@ -208,5 +208,42 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         modifiers: {
             accuracy: 0.8 // Reduces accuracy to 80% of its original value
         }
+    }],
+    
+    // Clean Master status effects
+    [StatusEffectType.Soapy, {
+        type: StatusEffectType.Soapy,
+        name: '泡まみれ',
+        description: '石鹸の泡で滑りやすくなり、命中率が低下',
+        duration: 3,
+        category: 'debuff',
+        isDebuff: true,
+        modifiers: {
+            accuracy: 0.7, // Reduces accuracy to 70%
+            struggleRate: 0.8 // Slightly harder to struggle
+        }
+    }],
+    [StatusEffectType.Spinning, {
+        type: StatusEffectType.Spinning,
+        name: '回転中',
+        description: '遠心分離で回転し、命中率が大幅低下',
+        duration: 2,
+        category: 'debuff',
+        isDebuff: true,
+        modifiers: {
+            accuracy: 0.5, // Reduces accuracy to 50%
+            canAct: false // Cannot act during first turn
+        }
+    }],
+    [StatusEffectType.Steamy, {
+        type: StatusEffectType.Steamy,
+        name: '蒸し暑い',
+        description: '温風で蒸し暑くなり、毎ターン軽微ダメージ',
+        duration: 3,
+        category: 'debuff',
+        isDebuff: true,
+        onTick: (target: any, _effect: any) => {
+            target.takeDamage(4);
+        }
     }]
 ]);

@@ -76,7 +76,12 @@ export enum StatusEffectType {
     
     // Aqua Serpent effects
     WaterSoaked = 'water-soaked',
-    Dizzy = 'dizzy'
+    Dizzy = 'dizzy',
+    
+    // Clean Master effects
+    Soapy = 'soapy',
+    Spinning = 'spinning',
+    Steamy = 'steamy'
 }
 
 export interface StatusEffect {
