@@ -573,6 +573,29 @@ body {
     animation: lethargy-drain 3s ease-in-out infinite alternate;
 }
 
+/* Sea Kraken status effects */
+.status-vision-impairment {
+    background: rgba(75, 0, 130, 0.4);
+    border-color: #4b0082;
+    color: #e6e6fa;
+    animation: vision-blur 2s ease-in-out infinite alternate;
+}
+
+/* Aqua Serpent status effects */
+.status-water-soaked {
+    background: rgba(0, 191, 255, 0.4);
+    border-color: #00bfff;
+    color: #e0f7ff;
+    animation: water-drip 2s ease-in-out infinite alternate;
+}
+
+.status-dizzy {
+    background: rgba(255, 140, 0, 0.4);
+    border-color: #ff8c00;
+    color: #fff5e6;
+    animation: dizzy-spin 3s ease-in-out infinite;
+}
+
 /* Animations */
 @keyframes pulse {
     from {
@@ -873,6 +896,53 @@ body {
         box-shadow: 0 0 15px rgba(128, 128, 128, 0.8);
         opacity: 0.9;
         filter: saturate(1.1);
+    }
+}
+
+/* Sea Kraken animations */
+@keyframes vision-blur {
+    from {
+        box-shadow: 0 0 5px rgba(75, 0, 130, 0.5);
+        filter: blur(0px);
+    }
+    to {
+        box-shadow: 0 0 15px rgba(75, 0, 130, 0.8);
+        filter: blur(2px);
+    }
+}
+
+/* Aqua Serpent animations */
+@keyframes water-drip {
+    from {
+        box-shadow: 0 0 5px rgba(0, 191, 255, 0.5);
+        transform: scale(1);
+    }
+    to {
+        box-shadow: 0 0 15px rgba(0, 191, 255, 0.8);
+        transform: scale(1.02);
+    }
+}
+
+@keyframes dizzy-spin {
+    0% {
+        transform: rotate(0deg);
+        box-shadow: 0 0 5px rgba(255, 140, 0, 0.5);
+    }
+    25% {
+        transform: rotate(90deg);
+        box-shadow: 0 0 10px rgba(255, 140, 0, 0.7);
+    }
+    50% {
+        transform: rotate(180deg);
+        box-shadow: 0 0 15px rgba(255, 140, 0, 0.9);
+    }
+    75% {
+        transform: rotate(270deg);
+        box-shadow: 0 0 10px rgba(255, 140, 0, 0.7);
+    }
+    100% {
+        transform: rotate(360deg);
+        box-shadow: 0 0 5px rgba(255, 140, 0, 0.5);
     }
 }
 

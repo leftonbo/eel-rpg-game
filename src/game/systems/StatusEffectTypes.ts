@@ -72,7 +72,11 @@ export enum StatusEffectType {
     Lethargy = 'lethargy',
     
     // Sea Kraken effects
-    VisionImpairment = 'vision-impairment'
+    VisionImpairment = 'vision-impairment',
+    
+    // Aqua Serpent effects
+    WaterSoaked = 'water-soaked',
+    Dizzy = 'dizzy'
 }
 
 export interface StatusEffect {
