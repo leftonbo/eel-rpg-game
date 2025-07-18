@@ -4,7 +4,7 @@ import { PlayerSaveManager, PlayerSaveData } from '../systems/PlayerSaveData';
 import { updatePlayerItems } from '../data/ExtendedItems';
 import { Actor } from './Actor';
 import { SkillRegistry, SkillData } from '../data/skills';
-import { Action, ActionTarget, ActionExecutor, ActionResult, DamageParameter, DamageType, TargetStatus, ExtraEffect } from '../systems/Action';
+import { Action, ActionTarget, ActionExecutor, ActionResult, DamageParameter, DamageType, TargetStatus, ExtraEffect, AccuracyType } from '../systems/Action';
 
 export enum SkillType {
     PowerAttack = 'power-attack',
@@ -21,11 +21,8 @@ export interface Skill {
     mpCost: number;
     canUse: (player: Player) => boolean;
     use: (player: Player, target?: any) => SkillResult;
-    hitRate?: number; // Custom hit rate (0-1)
-    criticalRate?: number; // Custom critical hit rate (0-1)
-    damageVarianceMin?: number; // Minimum damage variance percentage (default: -20)
-    damageVarianceMax?: number; // Maximum damage variance percentage (default: +20)
     priority?: ActionPriority; // Action priority level
+    action?: Action; // Action details if applicable
 }
 
 export interface SkillResult {
@@ -553,14 +550,11 @@ export class Player extends Actor {
             type: skillType,
             name: skillData.name,
             description: skillData.description,
-            mpCost: skillData.mpCost,
+            mpCost: skillData.mpCost || 0,
             priority: skillData.priority,
-            hitRate: skillData.hitRate,
-            criticalRate: skillData.criticalRate,
-            damageVarianceMin: skillData.damageVarianceMin,
-            damageVarianceMax: skillData.damageVarianceMax,
             canUse: (player: Player) => this.canUseSkill(skillData, player),
-            use: (player: Player, target?: any) => this.useSkillData(skillData, player, target)
+            use: (player: Player, target?: any) => this.useSkillData(skillData, player, target),
+            action: skillData.action
         };
     }
     
@@ -612,7 +606,7 @@ export class Player extends Actor {
      * Use Power Attack skill
      */
     private usePowerAttack(skillData: SkillData, player: Player): SkillResult {
-        const mpInsufficient = !player.consumeMp(skillData.mpCost);
+        const mpInsufficient = !player.consumeMp(skillData.mpCost || 0);
         let powerMultiplier = skillData.damageMultiplier || 2.5;
         
         if (mpInsufficient) {
@@ -898,9 +892,7 @@ export class Player extends Actor {
         const damageParams: DamageParameter[] = [{
             targetStatus: TargetStatus.HP,
             type: DamageType.Damage,
-            formula: (user: Actor, _target: Actor, userMult: number, _targetMult: number) => {
-                return user.attackPower * userMult;
-            },
+            formula: ActionExecutor.defaultDamageFormula,
             fluctuation: 0.2
         }];
 
@@ -909,10 +901,10 @@ export class Player extends Actor {
             '基本的な物理攻撃',
             ActionTarget.Enemy,
             0, // MP cost
-            [`${this.name}の攻撃！`],
+            [`<USER>の攻撃！`],
             1, // repeat count
-            0.95, // accuracy
-            undefined, // accuracy type (default fixed)
+            1.0, // accuracy
+            AccuracyType.Evade, // accuracy type
             0.05, // critical rate
             damageParams
         );
@@ -931,9 +923,9 @@ export class Player extends Actor {
                 damageParams.push({
                     targetStatus: TargetStatus.HP,
                     type: DamageType.Damage,
-                    formula: (user: Actor, _target: Actor, userMult: number, _targetMult: number) => {
+                    formula: (user: Actor, target: Actor, userMult: number, targetMult: number) => {
                         const multiplier = skillData.damageMultiplier || 2.5;
-                        return user.attackPower * multiplier * userMult;
+                        return user.attackPower * multiplier * userMult - target.defense * targetMult;
                     },
                     fluctuation: 0.2
                 });

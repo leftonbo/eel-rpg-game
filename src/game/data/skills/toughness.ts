@@ -1,3 +1,4 @@
+import { DamageType, TargetStatus } from '@/game/systems/Action';
 import { AbilityType } from '../../systems/AbilitySystem';
 import { ActionPriority } from '../../systems/StatusEffect';
 import { SkillData, SkillCategory, SkillProgression } from './types';
@@ -9,7 +10,6 @@ export const TOUGHNESS_SKILLS: SkillProgression[] = [
             name: '防御',
             description: '次の攻撃のダメージを軽減する',
             category: SkillCategory.Defense,
-            mpCost: 0,
             priority: ActionPriority.NormalAction,
             unlockConditions: [
                 { abilityType: AbilityType.Toughness, requiredLevel: 1 }
@@ -35,7 +35,23 @@ export const TOUGHNESS_SKILLS: SkillProgression[] = [
             unlockConditions: [
                 { abilityType: AbilityType.Toughness, requiredLevel: 3 }
             ],
-            healPercentage: 0.05 // 5% of max HP
+            action: {
+                accuracy: 1.0,
+                damageParameters: [
+                    {
+                        targetStatus: TargetStatus.HP,
+                        type: DamageType.Heal,
+                        formula: (a, _b, am, _bm) => a.maxHp * 0.05 * am,
+                        fluctuation: 0.1
+                    },
+                    {
+                        targetStatus: TargetStatus.MP,
+                        type: DamageType.Heal,
+                        formula: (a, _b, am, _bm) => a.maxMp * 0.05 * am,
+                        fluctuation: 0.1
+                    }
+                ]
+            }
         },
         upgrades: []
     }

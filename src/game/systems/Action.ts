@@ -62,6 +62,11 @@ export interface DamageParameter {
      * @param targetMult 対象のダメージ倍率
      */
     formula: (user: Actor, target: Actor, userMult: number, targetMult: number) => number;
+    
+    /**
+     * カスタム効力倍率計算
+     */
+    customUserMultiplier?: (user: Actor, target: Actor, isCritical: boolean) => number;
 
     /**
      * ダメージのゆらぎ係数 (デフォルト: 0.2)
@@ -127,201 +132,119 @@ export type ExtraEffect = StateApplyEffect | StateRemoveEffect;
 /**
  * 攻撃やスキルなどの行動を表すクラス
  */
-export class Action {
-    /**
-     * スキル名
-     */
-    public name: string;
-
-    /**
-     * スキルの説明
-     */
-    public description: string;
-
-    /**
-     * 対象 (自分自身か、敵か)
-     */
-    public target: ActionTarget;
-
-    /**
-     * マナ消費量
-     */
-    public mpCost: number;
-
-    /**
-     * 行動時のメッセージ (リストで複数行のメッセージを指定可能)
-     * メッセージはフォーマット指定可能 (例: '<USER>は<TARGET>に<ACTION>を使った！')
-     */
-    public message: string[];
-
+export interface Action {
     /**
      * 繰り返し回数 (通常は1。2以上で「命中判定→ダメージ→特殊効果」の処理を繰り返す)
      * 省略時は 1
      */
-    public repeatCount: number;
+    repeatCount?: number;
 
     /**
      * 成功率 (0.0 - 1.0) 失敗時はダメージや特殊効果は発生しない
      */
-    public accuracy: number;
+    accuracy: number;
 
     /**
      * 成功率計算タイプ ('fixed':固定、または 'evade': 使用者の命中補正と対象の回避率を参照)
      */
-    public accuracyType: AccuracyType;
+    accuracyType?: AccuracyType;
 
     /**
      * クリティカル率 (デフォルト: 0)
      */
-    public criticalRate: number;
+    criticalRate?: number;
 
     /**
      * ダメージ計算パラメータ
      */
-    public damageParameters: DamageParameter[];
+    damageParameters: DamageParameter[];
 
     /**
      * 対象に発生する追加効果のリスト (複数かつ異なるタイプの効果を指定可能)
      */
-    public extraEffects: ExtraEffect[];
+    extraEffects?: ExtraEffect[];
     
     /**
      * カスタム関数 (オプション)
      * 使用者と対象の Actor を引数に取り、SingleActionResult を返す関数
      * この関数は、通常のダメージ計算やステート付与とは異なるカスタム処理を行うために使用されます。
      */
-    public customFunction?: (user: Actor, target: Actor, currentResult: SingleActionResult) => SingleActionResult;
-
-    constructor(
-        name: string,
-        description: string,
-        target: ActionTarget,
-        mpCost: number = 0,
-        message: string[] = [],
-        repeatCount: number = 1,
-        accuracy: number = 1.0,
-        accuracyType: AccuracyType = AccuracyType.Fixed,
-        criticalRate: number = 0,
-        damageParameters: DamageParameter[] = [],
-        extraEffects: ExtraEffect[] = [],
-        customFunction?: (user: Actor, target: Actor, currentResult: SingleActionResult) => SingleActionResult
-    ) {
-        this.name = name;
-        this.description = description;
-        this.target = target;
-        this.mpCost = mpCost;
-        this.message = message;
-        this.repeatCount = repeatCount;
-        this.accuracy = accuracy;
-        this.accuracyType = accuracyType;
-        this.criticalRate = criticalRate;
-        this.damageParameters = damageParameters;
-        this.extraEffects = extraEffects;
-        this.customFunction = customFunction;
-    }
+    customFunction?: (user: Actor, target: Actor, currentResult: SingleActionResult) => SingleActionResult;
 }
 
 /**
- * Action 結果を表すクラス
+ * Action 結果を表すインターフェース
  */
-export class ActionResult {
+export interface ActionResult {
     /**
      * 元となる行動
      */
-    public action: Action;
+    action: Action;
 
     /**
      * 使用者 Actor
      */
-    public user: Actor;
+    user: Actor;
 
     /**
      * 対象 Actor
      */
-    public target: Actor;
+    target: Actor;
 
     /**
      * 各行動の結果
      */
-    public results: SingleActionResult[];
-
-    constructor(action: Action, user: Actor, target: Actor) {
-        this.action = action;
-        this.user = user;
-        this.target = target;
-        this.results = [];
-    }
+    results: SingleActionResult[];
 }
 
 /**
- * 1回分の行動結果を表すクラス
+ * 1回分の行動結果を表すインターフェース
  */
-export class SingleActionResult {
+export interface SingleActionResult {
     /**
      * 行動が成功したかどうか
      */
-    public success: boolean;
+    success: boolean;
 
     /**
      * クリティカルヒットが発生したかどうか
      */
-    public criticalHit: boolean;
+    criticalHit?: boolean;
 
     /**
      * User パラメーターの変化量
      */
-    public userValueChange: ValueChangeResult[];
+    userValueChange?: ValueChangeResult[];
     
     /**
      * Target パラメーターの変化量
      */
-    public targetValueChange: ValueChangeResult[];
+    targetValueChange?: ValueChangeResult[];
 
     /**
      * Target 追加されたステートのリスト
      */
-    public targetAddStates: StatusEffectType[];
+    targetAddStates?: StatusEffectType[];
 
     /**
      * Target 解除されたステートのリスト
      */
-    public targetRemoveStates: StatusEffectType[];
-
-    constructor(
-        success: boolean = false,
-        criticalHit: boolean = false,
-        userValueChange: ValueChangeResult[] = [],
-        targetValueChange: ValueChangeResult[] = [],
-        addStates: StatusEffectType[] = [],
-        removeStates: StatusEffectType[] = []
-    ) {
-        this.success = success;
-        this.criticalHit = criticalHit;
-        this.userValueChange = userValueChange;
-        this.targetValueChange = targetValueChange;
-        this.targetAddStates = addStates;
-        this.targetRemoveStates = removeStates;
-    }
+    targetRemoveStates?: StatusEffectType[];
 }
 
 /**
- * 値の変化結果を表すクラス
+ * 値の変化結果を表すインターフェース
  */
-export class ValueChangeResult {
+export interface ValueChangeResult {
     /**
      * 変化した値の種類 (HP, MP, MaxHP, MaxMP)
      */
-    public type: TargetStatus;
+    type: TargetStatus;
 
     /**
      * 変化量 (正の値は回復、負の値はダメージ)
      */
-    public change: number;
-
-    constructor(type: TargetStatus, change: number) {
-        this.type = type;
-        this.change = change;
-    }
+    change: number;
 }
 
 /**
@@ -345,13 +268,20 @@ export class ActionExecutor {
      * アクションを実行し、結果を返す
      */
     public static execute(action: Action, user: Actor, target: Actor): ActionResult {
-        const result = new ActionResult(action, user, target);
+        const result: ActionResult = {
+            action,
+            user,
+            target,
+            results: []
+        };
 
-        // MP消費チェック
-        if (!user.consumeMp(action.mpCost)) {
-            // MP不足でも実行は継続（MP不足時の特別効果などがある場合）
+        if (action.repeatCount === undefined || action.repeatCount <= 1) {
+            // 単一回の実行
+            const singleResult = this.executeSingle(action, user, target);
+            result.results.push(singleResult);
+            return result;
         }
-
+        
         // repeatCount に応じて繰り返し実行
         for (let i = 0; i < action.repeatCount; i++) {
             const singleResult = this.executeSingle(action, user, target);
@@ -398,7 +328,9 @@ export class ActionExecutor {
 
         if (!isHit) {
             // ミスした場合
-            return new SingleActionResult(false, false, [], [], [], []);
+            return {
+                success: false
+            }
         }
 
         // クリティカル判定
@@ -412,55 +344,65 @@ export class ActionExecutor {
         for (const param of action.damageParameters) {
 
             const damageResult = this.calculateValueChange(param, user, target, isCritical);
-
-            // User のパラメーター変化を記録
-            const userChange = new ValueChangeResult(param.targetStatus, damageResult.valueChange);
-            userValueChanges.push(userChange);
             
-            // Target のパラメーター変化を記録
-            const targetChange = new ValueChangeResult(param.targetStatus, -damageResult.valueChange);
-            targetValueChanges.push(targetChange);
-            
-            // User と Target のステータスを更新
+            // Target のステータスを更新
             switch (param.targetStatus) {
                 case TargetStatus.HP:
-                    target.hp += targetChange.change;
-                    if (param.absorbRatio)
-                        user.hp += Math.round(damageResult.valueChange * param.absorbRatio); // 吸収ダメージは使用者にも適用
+                    target.hp += damageResult.valueChange;
                     break;
                 case TargetStatus.MP:
-                    target.mp += targetChange.change;
-                    if (param.absorbRatio) {
-                        user.mp += Math.round(damageResult.valueChange * param.absorbRatio); // 吸収ダメージは使用者にも適用
-                    }
+                    target.mp += damageResult.valueChange;
                     break;
                 case TargetStatus.MaxHP:
-                    target.maxHp += targetChange.change;
-                    if (param.absorbRatio) {
-                        user.maxHp += Math.round(damageResult.valueChange * param.absorbRatio); // 吸収ダメージは使用者にも適用
-                    }
+                    target.maxHp += damageResult.valueChange;
                     break;
                 case TargetStatus.MaxMP:
-                    target.maxMp += targetChange.change;
-                    if (param.absorbRatio) {
-                        user.maxMp += Math.round(damageResult.valueChange * param.absorbRatio); // 吸収ダメージは使用者にも適用
-                    }
+                    target.maxMp += damageResult.valueChange;
                     break;
+            }
+
+            // Target のパラメーター変化を記録
+            const targetChange: ValueChangeResult = {
+                type: param.targetStatus,
+                change: damageResult.valueChange
+            };
+            targetValueChanges.push(targetChange);
+            
+            // Absorb 効果がある場合は、使用者のパラメータを回復
+            if (param.absorbRatio) {
+                const absorbAmount = Math.round(Math.abs(-damageResult.valueChange) * param.absorbRatio);
+                
+                switch (param.targetStatus) {
+                    case TargetStatus.HP:
+                        user.hp += absorbAmount;
+                        break;
+                    case TargetStatus.MP:
+                        user.mp += absorbAmount;
+                        break;
+                    case TargetStatus.MaxHP:
+                        user.maxHp += absorbAmount;
+                        break;
+                    case TargetStatus.MaxMP:
+                        user.maxMp += absorbAmount;
+                        break;
+                }
             }
         }
 
         // 追加効果処理
-        const effectResult = this.applyExtraEffects(action.extraEffects, user, target);
+        const effectResult = action.extraEffects
+            ? this.applyExtraEffects(action.extraEffects, user, target)
+            : { addStates: [], removeStates: [] };
 
         // 結果をまとめる
-        let result = new SingleActionResult(
-            true,
-            isCritical,
-            userValueChanges,
-            targetValueChanges,
-            effectResult.addStates,
-            effectResult.removeStates
-        );
+        let result: SingleActionResult = {
+            success: true,
+            criticalHit: isCritical,
+            userValueChange: userValueChanges.length > 0 ? userValueChanges : undefined,
+            targetValueChange: targetValueChanges.length > 0 ? targetValueChanges : undefined,
+            targetAddStates: effectResult.addStates.length > 0 ? effectResult.addStates : undefined,
+            targetRemoveStates: effectResult.removeStates.length > 0 ? effectResult.removeStates : undefined
+        };
         
         // カスタム関数が指定されている場合は、結果をさらに処理
         if (action.customFunction) {
@@ -479,8 +421,13 @@ export class ActionExecutor {
         let totalValueChange = 0;
 
         // クリティカル時の倍率を適用
-        const userMult = isCritical ? ActionExecutor.CRITICAL_MULTIPLIER : 1
+        let userMult = isCritical ? ActionExecutor.CRITICAL_MULTIPLIER : 1
         const targetMult = 1; // 対象のダメージ倍率は現在は固定
+        
+        if (param.customUserMultiplier) {
+            // カスタム効力倍率計算が指定されている場合はそれを使用
+            userMult = param.customUserMultiplier(user, target, isCritical);
+        }
         
         // 計算式を実行してベースダメージを取得
         const baseDamage = param.formula(user, target, userMult, targetMult);

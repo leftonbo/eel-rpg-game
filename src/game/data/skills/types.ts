@@ -1,3 +1,4 @@
+import { Action } from '@/game/systems/Action';
 import { AbilityType } from '../../systems/AbilitySystem';
 import { ActionPriority } from '../../systems/StatusEffect';
 
@@ -18,27 +19,17 @@ export interface SkillData {
     name: string;
     description: string;
     category: SkillCategory;
-    mpCost: number;
+    mpCost?: number;
     priority: ActionPriority;
     unlockConditions: UnlockCondition[];
     
-    // Combat skill properties
-    damageMultiplier?: number;
-    hitRate?: number;
-    criticalRate?: number;
-    damageVarianceMin?: number;
-    damageVarianceMax?: number;
+    messages?: string[];
     
-    // Healing skill properties
-    healAmount?: number;
-    healPercentage?: number;
-    
-    // Status effect properties
-    statusEffects?: string[];
+    // Base Action properties
+    action?: Action;
     
     // Special properties
     consumesAllMp?: boolean;
-    causesExhaustion?: boolean;
     
     // Passive skill properties
     isPassive?: boolean;

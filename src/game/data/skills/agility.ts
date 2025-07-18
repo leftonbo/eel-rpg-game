@@ -13,7 +13,12 @@ export const AGILITY_SKILLS: SkillProgression[] = [
             priority: ActionPriority.StruggleAction,
             unlockConditions: [
                 { abilityType: AbilityType.Agility, requiredLevel: 3 }
-            ]
+            ],
+            action:
+            {
+                accuracy: 1.0,
+                damageParameters: []
+            }
         },
         upgrades: [
             {
