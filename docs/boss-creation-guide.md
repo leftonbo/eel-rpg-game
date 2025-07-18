@@ -105,7 +105,7 @@ interface BossAction {
 
 ```typescript
 import { BossData, ActionType, BossAction } from '../../entities/Boss';
-import { StatusEffectType } from '../../systems/StatusEffect';
+import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
 const newBossActions: BossAction[] = [
     {
