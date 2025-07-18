@@ -10,7 +10,7 @@ const aquaSerpentActions: BossAction[] = [
         weight: 35,
         playerStateCondition: 'normal',
         statusEffect: StatusEffectType.WaterSoaked,
-        statusChance: 25,
+        statusChance: 0.25,
         hitRate: 0.9
     },
     {
@@ -34,7 +34,7 @@ const aquaSerpentActions: BossAction[] = [
         playerStateCondition: 'normal',
         hitRate: 0.75,
         statusEffect: StatusEffectType.Dizzy,
-        statusChance: 30
+        statusChance: 0.30
     },
     {
         type: ActionType.Attack,
@@ -45,7 +45,7 @@ const aquaSerpentActions: BossAction[] = [
         playerStateCondition: 'normal',
         hitRate: 0.9,
         statusEffect: StatusEffectType.Restrained,
-        statusChance: 80,
+        statusChance: 0.80,
         canUse: (boss, player) => {
             // Only use when HP is below 30% and has cooldown
             return boss.getHpPercentage() <= 30 && 

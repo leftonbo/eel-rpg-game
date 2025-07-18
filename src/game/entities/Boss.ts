@@ -43,7 +43,7 @@ export interface BossAction {
     onUse?: (boss: Boss, player: Player) => string[]; // Custom action callback
     hitRate?: number; // Attack hit rate (default: 95%)
     criticalRate?: number; // Critical hit rate (default: 5%)
-    statusChance?: number; // Status effect application chance (default: 100%)
+    statusChance?: number; // Status effect application chance (default: 1.0, range: 0.0-1.0)
     playerStateCondition?: 'normal' | 'ko' | 'restrained' | 'cocoon' | 'eaten' | 'defeated'; // Required player state
     healRatio?: number; // HP absorption ratio from damage dealt (0.0 = no healing, 1.0 = 100% healing)
     damageVarianceMin?: number; // Minimum damage variance percentage (default: -20)
@@ -294,7 +294,7 @@ export class Boss extends Actor {
                     }
                     
                     if (!isMiss && action.statusEffect) {
-                        const statusChance = action.statusChance !== undefined ? action.statusChance / 100 : 1.0;
+                        const statusChance = action.statusChance !== undefined ? action.statusChance : 1.0;
                         if (Math.random() < statusChance) {
                             player.statusEffects.addEffect(action.statusEffect);
                             messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
@@ -406,7 +406,7 @@ export class Boss extends Actor {
                     }
 
                     if (action.statusEffect) {
-                        const statusChance = action.statusChance !== undefined ? action.statusChance / 100 : 1.0;
+                        const statusChance = action.statusChance !== undefined ? action.statusChance : 1.0;
                         if (Math.random() < statusChance) {
                             player.statusEffects.addEffect(action.statusEffect);
                             messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);

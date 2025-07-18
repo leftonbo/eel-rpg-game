@@ -67,7 +67,7 @@ interface BossAction {
     canUse?: (boss: Boss, player: Player, turn: number) => boolean;  // 使用条件
     hitRate?: number;               // 命中率（デフォルト: 0.95）
     criticalRate?: number;          // クリティカル率（デフォルト: 0.05）
-    statusChance?: number;          // 状態異常付与確率（デフォルト: 1.0）
+    statusChance?: number;          // 状態異常付与確率（デフォルト: 1.0、範囲: 0.0-1.0）
     playerStateCondition?: string;  // プレイヤー状態条件
     healRatio?: number;             // HP吸収率（0.0-1.0）
     damageVarianceMin?: number;     // ダメージ分散最小値
@@ -267,4 +267,4 @@ aiStrategy: (boss, player, turn) => {
 
 - `StatusEffectType` の定義確認
 - CSS クラスの追加確認
-- `statusChance` の設定確認
+- `statusChance` の設定確認（0.0-1.0の範囲で設定）
