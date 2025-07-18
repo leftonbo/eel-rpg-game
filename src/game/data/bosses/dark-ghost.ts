@@ -107,7 +107,7 @@ export const darkGhostData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '魂の操縦',
-                    description: '魂を操作して体内の獲物を支配し続ける',
+                    description: '魂を操作して獲物を支配し続ける',
                     messages: [
                         '「フフフ...」',
                         '<USER>が<TARGET>の魂を操縦している...',
