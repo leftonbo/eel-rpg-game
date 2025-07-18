@@ -174,8 +174,12 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
         use: (player: Player) => {
             if (player.getItemCount('omamori') <= 0) return false;
             
-            // Can only be used when knocked out, restrained, or eaten
-            if (!player.isKnockedOut() && !player.isRestrained() && !player.isEaten()) {
+            // Can only be used when knocked out, restrained, or eaten, or in special states
+            if (!player.isKnockedOut()
+                && !player.isRestrained()
+                && !player.isEaten()
+                && !player.statusEffects.hasEffect(StatusEffectType.Cocoon)
+                && !player.statusEffects.hasEffect(StatusEffectType.Sleep)) {
                 return false;
             }
             
@@ -184,6 +188,10 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
             player.statusEffects.removeEffect(StatusEffectType.Restrained);
             player.statusEffects.removeEffect(StatusEffectType.Eaten);
             
+            // and also special restraints
+            player.statusEffects.removeEffect(StatusEffectType.Cocoon);
+            player.statusEffects.removeEffect(StatusEffectType.Sleep);
+
             // Full heal
             player.heal(player.maxHp);
             
