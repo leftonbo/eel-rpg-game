@@ -79,7 +79,6 @@ interface BossAction {
     healRatio?: number;             // HP吸収率（0.0-1.0）
     damageVarianceMin?: number;     // ダメージ分散最小値
     damageVarianceMax?: number;     // ダメージ分散最大値
-    maxHpDamage?: number;           // 最大HP吸収量（DevourAttack用）
 }
 ```
 
@@ -155,7 +154,6 @@ const newBossActions: BossAction[] = [
             '<TARGET>の最大HPが減少していく...'
         ],
         damage: 25,
-        maxHpDamage: 5,  // 最大HP吸収量
         weight: 30,
         playerStateCondition: 'eaten'
     },
@@ -538,7 +536,7 @@ aiStrategy: (boss, player, turn) => {
 
 ### 新しい実装（推奨）
 - `src/game/data/bosses/sea-kraken.ts` - 現代的なAI戦略、PostDefeatedAttack、finishingMove、getDialogue の例
-- `src/game/data/bosses/aqua-serpent.ts` - 特殊技管理、maxHpDamage、onUse コールバックの例
+- `src/game/data/bosses/aqua-serpent.ts` - 特殊技管理、onUse コールバックの例
 - `src/game/data/bosses/clean-master.ts` - 新しい状態異常システムの例
 - `src/game/data/bosses/dream-demon.ts` - 多様な状態異常と複雑な行動パターンの例
 

@@ -143,7 +143,6 @@ export const seaKrakenData: BossData = {
                         '<USER>の胃袋の吸盤が<TARGET>を強く吸引している！'
                     ],
                     damage: 30,
-                    maxHpDamage: 8,
                     weight: 1
                 },
                 {
@@ -156,7 +155,6 @@ export const seaKrakenData: BossData = {
                         '<TARGET>は催眠状態になってしまった...'
                     ],
                     damage: 20,
-                    maxHpDamage: 5,
                     statusEffect: StatusEffectType.Charm,
                     weight: 1
                 }
