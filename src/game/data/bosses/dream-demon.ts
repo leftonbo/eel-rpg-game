@@ -518,6 +518,9 @@ export const dreamDemonData: BossData = {
     attackPower: 10,
     actions: dreamDemonActions,
     icon: '😈',
+    guestCharacterInfo: {
+        creator: 'crazybudgie'
+    },
     personality: [
         'あっ、可愛い獲物が来たンメェ〜！',
         'その魂、とっても美味しそうンメェ〜',

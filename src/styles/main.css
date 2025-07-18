@@ -84,6 +84,15 @@ body {
     box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
 }
 
+/* Guest Character Attribution */
+.guest-attribution {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-top: 0.5rem;
+    text-align: center;
+    font-style: italic;
+}
+
 /* Battle Screen Styles */
 #battle-screen {
     height: 100vh;
