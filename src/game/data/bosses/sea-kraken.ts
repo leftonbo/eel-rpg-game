@@ -106,7 +106,7 @@ export const seaKrakenData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '体内イカスミ漬け',
-                    description: 'エルナルをイカスミ漬けにしながら体力を吸収し続ける',
+                    description: '獲物をイカスミ漬けにしながら体力を吸収し続ける',
                     messages: [
                         '「ゴポポポ...」',
                         '<USER>の体内でイカスミが<TARGET>を包み込んでいる...',
@@ -118,7 +118,7 @@ export const seaKrakenData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '胃袋吸盤吸引',
-                    description: '体内の無数の吸盤でエルナルの体力を永遠に吸収し続ける',
+                    description: '体内の無数の吸盤で獲物の体力を永遠に吸収し続ける',
                     messages: [
                         '「シュゥゥゥ...」',
                         '<USER>の胃袋の吸盤が<TARGET>を吸引している...',

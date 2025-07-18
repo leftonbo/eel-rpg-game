@@ -96,7 +96,7 @@ export const swampDragonData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '深い体内での消化活動',
-                    description: '深い体内で消化液を分泌し、エルナルの体力を吸収し続ける',
+                    description: '深い体内で消化液を分泌し、獲物の体力を吸収し続ける',
                     messages: [
                         '「グルルル...」',
                         '<USER>の体内奥深くで消化液がゆっくりと分泌されている...',
@@ -108,7 +108,7 @@ export const swampDragonData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '体内圧迫',
-                    description: '体内の壁でエルナルを優しく圧迫し続ける',
+                    description: '体内の壁で獲物を優しく圧迫し続ける',
                     messages: [
                         '「ウォォォ...」',
                         '<USER>の体内の壁が<TARGET>をゆっくりと圧迫している...',
@@ -120,7 +120,7 @@ export const swampDragonData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '体内栄養吸収',
-                    description: '体内でエルナルから栄養を吸収し続ける',
+                    description: '体内で獲物から栄養を吸収し続ける',
                     messages: [
                         '「グルル...」',
                         '<USER>が<TARGET>から栄養を吸収している...',
@@ -132,7 +132,7 @@ export const swampDragonData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '体内温熱療法',
-                    description: '体内の温かさでエルナルを包み込み続ける',
+                    description: '体内の温かさで獲物を包み込み続ける',
                     messages: [
                         '「ウォォォ...」',
                         '<USER>の体内の温かさが<TARGET>を包み込んでいる...',
@@ -144,7 +144,7 @@ export const swampDragonData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '体内マッサージ',
-                    description: '体内の筋肉でエルナルを優しくマッサージし続ける',
+                    description: '体内の筋肉で獲物を優しくマッサージし続ける',
                     messages: [
                         '「グルル...」',
                         '<USER>の体内の筋肉が<TARGET>を優しくマッサージしている...',
@@ -163,7 +163,7 @@ export const swampDragonData: BossData = {
                 {
                     type: ActionType.DevourAttack,
                     name: '胃液分泌',
-                    description: 'ネバネバな胃液を分泌してエルナルを粘液まみれにする',
+                    description: 'ネバネバな胃液を分泌して獲物を粘液まみれにする',
                     messages: [
                         '「グルルル...」',
                         '<USER>の胃袋が<TARGET>をネバネバな胃液まみれにする！'
