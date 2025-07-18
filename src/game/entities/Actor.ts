@@ -9,6 +9,10 @@ export abstract class Actor {
     public attackPower: number;
     public defense: number = 0;
     public statusEffects: StatusEffectManager = new StatusEffectManager();
+    
+    // Initial stats at battle start (for UI bar display)
+    public initialMaxHp: number = 0;
+    public initialMaxMp: number = 0;
 
     constructor(displayName: string, maxHp: number, attackPower: number, maxMp: number = 0) {
         this.displayName = displayName;
@@ -152,6 +156,20 @@ export abstract class Actor {
     }
 
     /**
+     * Get HP bar percentage based on initial max HP (for bar width display)
+     */
+    getHpBarPercentage(): number {
+        return this.initialMaxHp > 0 ? (this.hp / this.initialMaxHp) * 100 : 0;
+    }
+
+    /**
+     * Get MP bar percentage based on initial max MP (for bar width display)
+     */
+    getMpBarPercentage(): number {
+        return this.initialMaxMp > 0 ? (this.mp / this.initialMaxMp) * 100 : 0;
+    }
+
+    /**
      * Check if actor is defeated
      */
     isDefeated(): boolean {
@@ -171,6 +189,14 @@ export abstract class Actor {
         // Reset HP and MP to maximum
         this.hp = this.maxHp;
         this.mp = this.maxMp;
+    }
+
+    /**
+     * Save initial stats at battle start for UI bar calculation
+     */
+    saveInitialStats(): void {
+        this.initialMaxHp = this.maxHp;
+        this.initialMaxMp = this.maxMp;
     }
 
     /**

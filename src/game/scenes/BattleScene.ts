@@ -221,6 +221,14 @@ export class BattleScene {
         if (this.bossNameElement) {
             this.bossNameElement.textContent = this.boss.displayName;
         }
+        
+        // Save initial stats for HP/MP bar calculation
+        if (this.player) {
+            this.player.saveInitialStats();
+        }
+        if (this.boss) {
+            this.boss.saveInitialStats();
+        }
     }
     
     private updateUI(): void {
@@ -254,14 +262,15 @@ export class BattleScene {
         
         // HP Bar
         if (this.playerHpBar) {
-            const percentage = this.player.getHpPercentage();
-            this.playerHpBar.style.width = `${percentage}%`;
+            const barPercentage = this.player.getHpBarPercentage();
+            const colorPercentage = this.player.getHpPercentage();
+            this.playerHpBar.style.width = `${barPercentage}%`;
             
-            // Change color based on HP
+            // Change color based on HP relative to current max
             this.playerHpBar.className = 'progress-bar';
-            if (percentage > 75) {
+            if (colorPercentage > 75) {
                 this.playerHpBar.classList.add('bg-success');
-            } else if (percentage > 25) {
+            } else if (colorPercentage > 25) {
                 this.playerHpBar.classList.add('bg-warning');
             } else {
                 this.playerHpBar.classList.add('bg-danger');
@@ -274,8 +283,8 @@ export class BattleScene {
         
         // MP Bar
         if (this.playerMpBar) {
-            const mpPercentage = this.player.getMpPercentage();
-            this.playerMpBar.style.width = `${mpPercentage}%`;
+            const mpBarPercentage = this.player.getMpBarPercentage();
+            this.playerMpBar.style.width = `${mpBarPercentage}%`;
         }
         
         // Status Effects
@@ -291,8 +300,8 @@ export class BattleScene {
         
         // HP Bar
         if (this.bossHpBar) {
-            const percentage = this.boss.getHpPercentage();
-            this.bossHpBar.style.width = `${percentage}%`;
+            const barPercentage = this.boss.getHpBarPercentage();
+            this.bossHpBar.style.width = `${barPercentage}%`;
         }
         
         // Status Effects
