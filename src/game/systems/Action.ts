@@ -338,7 +338,7 @@ export class ActionExecutor {
      */
     public static defaultDamageFormula(user: Actor, target: Actor, userMult: number = 1, targetMult: number = 1): number {
         // 基本ダメージ計算式 (例: 攻撃力 - 防御力)
-        return Math.max(1, user.attackPower * userMult - target.defense * targetMult);
+        return user.attackPower * userMult - target.defense * targetMult;
     }
     
     /**
@@ -484,14 +484,6 @@ export class ActionExecutor {
         
         // 計算式を実行してベースダメージを取得
         const baseDamage = param.formula(user, target, userMult, targetMult);
-
-        if (baseDamage <= 0)
-        {
-            return {
-                isCritical: isCritical,
-                valueChange: 0
-            };
-        }
 
         // ダメージのゆらぎを適用
         let finalDamage = baseDamage;
