@@ -235,6 +235,9 @@ export class BossSelectScene {
         // Update debug controls visibility in modal
         this.updateDebugControlsVisibilityInModal();
         
+        // Update skills tab debug controls with current values
+        this.updateSkillsTabDebugControlsValues();
+        
         // Show modal
         if (this.playerModal) {
             this.playerModal.show();
@@ -638,6 +641,49 @@ export class BossSelectScene {
                 this.setAllAbilityLevelsFromModal();
             });
         }
+
+        // Skills tab debug controls event listeners
+        const debugCombatBtn = document.getElementById('debug-combat-btn');
+        if (debugCombatBtn) {
+            debugCombatBtn.addEventListener('click', () => {
+                this.updateAbilityLevelFromSkillsTab('combat');
+            });
+        }
+
+        const debugToughnessBtn = document.getElementById('debug-toughness-btn');
+        if (debugToughnessBtn) {
+            debugToughnessBtn.addEventListener('click', () => {
+                this.updateAbilityLevelFromSkillsTab('toughness');
+            });
+        }
+
+        const debugCraftworkBtn = document.getElementById('debug-craftwork-btn');
+        if (debugCraftworkBtn) {
+            debugCraftworkBtn.addEventListener('click', () => {
+                this.updateAbilityLevelFromSkillsTab('craftwork');
+            });
+        }
+
+        const debugEnduranceBtn = document.getElementById('debug-endurance-btn');
+        if (debugEnduranceBtn) {
+            debugEnduranceBtn.addEventListener('click', () => {
+                this.updateAbilityLevelFromSkillsTab('endurance');
+            });
+        }
+
+        const debugAgilityBtn = document.getElementById('debug-agility-btn');
+        if (debugAgilityBtn) {
+            debugAgilityBtn.addEventListener('click', () => {
+                this.updateAbilityLevelFromSkillsTab('agility');
+            });
+        }
+
+        const debugAllBtn = document.getElementById('debug-all-btn');
+        if (debugAllBtn) {
+            debugAllBtn.addEventListener('click', () => {
+                this.updateAllAbilityLevelsFromSkillsTab();
+            });
+        }
     }
     
     /**
@@ -645,9 +691,15 @@ export class BossSelectScene {
      */
     private updateDebugControlsVisibilityInModal(): void {
         const debugControlsModal = document.getElementById('debug-controls-modal');
+        const debugControlsSkills = document.getElementById('debug-controls-skills');
+        const isDebugMode = this.isDebugMode();
+        
         if (debugControlsModal) {
-            const isDebugMode = this.isDebugMode();
             debugControlsModal.classList.toggle('d-none', !isDebugMode);
+        }
+        
+        if (debugControlsSkills) {
+            debugControlsSkills.classList.toggle('d-none', !isDebugMode);
         }
     }
     
@@ -735,5 +787,77 @@ export class BossSelectScene {
                 alertDiv.parentNode.removeChild(alertDiv);
             }
         }, 3000);
+    }
+
+    /**
+     * Update skills tab debug controls with current values
+     */
+    private updateSkillsTabDebugControlsValues(): void {
+        const player = this.game.getPlayer();
+        const abilityLevels = player.getAbilityLevels();
+        
+        // Update individual ability input fields
+        Object.entries(abilityLevels).forEach(([abilityType, data]) => {
+            const inputElement = document.getElementById(`debug-${abilityType.toLowerCase()}-level`) as HTMLInputElement;
+            if (inputElement) {
+                inputElement.value = data.level.toString();
+            }
+        });
+    }
+
+    /**
+     * Update ability level from skills tab
+     */
+    private updateAbilityLevelFromSkillsTab(abilityType: string): void {
+        const inputElement = document.getElementById(`debug-${abilityType}-level`) as HTMLInputElement;
+        if (!inputElement) return;
+        
+        const level = parseInt(inputElement.value);
+        if (isNaN(level) || level < 0 || level > 10) {
+            this.showMessage('レベルは0から10の間で入力してください', 'error');
+            return;
+        }
+        
+        const player = this.game.getPlayer();
+        const ability = player.abilitySystem.getAbility(abilityType as AbilityType);
+        if (ability) {
+            ability.level = level;
+            ability.experience = level > 0 ? Math.pow(level, 3) * 50 : 0;
+            
+            player.recalculateStats();
+            player.saveToStorage();
+            this.updatePlayerStatus();
+            this.showPlayerDetails(); // Refresh modal content
+            this.showMessage(`${abilityType}をレベル${level}に設定しました`, 'success');
+        }
+    }
+
+    /**
+     * Update all ability levels from skills tab
+     */
+    private updateAllAbilityLevelsFromSkillsTab(): void {
+        const inputElement = document.getElementById('debug-all-level') as HTMLInputElement;
+        if (!inputElement) return;
+        
+        const level = parseInt(inputElement.value);
+        if (isNaN(level) || level < 0 || level > 10) {
+            this.showMessage('レベルは0から10の間で入力してください', 'error');
+            return;
+        }
+        
+        const player = this.game.getPlayer();
+        Object.values(AbilityType).forEach(abilityType => {
+            const ability = player.abilitySystem.getAbility(abilityType);
+            if (ability) {
+                ability.level = level;
+                ability.experience = level > 0 ? Math.pow(level, 3) * 50 : 0;
+            }
+        });
+        
+        player.recalculateStats();
+        player.saveToStorage();
+        this.updatePlayerStatus();
+        this.showPlayerDetails(); // Refresh modal content
+        this.showMessage(`全てのアビリティをレベル${level}に設定しました`, 'success');
     }
 }
