@@ -625,22 +625,6 @@ export class BossSelectScene {
                 this.deleteSaveData();
             });
         }
-        
-        // Set ability button (modal)
-        const setAbilityButtonModal = document.getElementById('set-ability-btn-modal');
-        if (setAbilityButtonModal) {
-            setAbilityButtonModal.addEventListener('click', () => {
-                this.setAbilityLevelFromModal();
-            });
-        }
-        
-        // Set all abilities button (modal)
-        const setAllAbilitiesButtonModal = document.getElementById('set-all-ability-btn-modal');
-        if (setAllAbilitiesButtonModal) {
-            setAllAbilitiesButtonModal.addEventListener('click', () => {
-                this.setAllAbilityLevelsFromModal();
-            });
-        }
 
         // Skills tab debug controls event listeners
         const debugCombatBtn = document.getElementById('debug-combat-btn');
@@ -690,77 +674,11 @@ export class BossSelectScene {
      * Update debug controls visibility in modal
      */
     private updateDebugControlsVisibilityInModal(): void {
-        const debugControlsModal = document.getElementById('debug-controls-modal');
         const debugControlsSkills = document.getElementById('debug-controls-skills');
         const isDebugMode = this.isDebugMode();
         
-        if (debugControlsModal) {
-            debugControlsModal.classList.toggle('d-none', !isDebugMode);
-        }
-        
         if (debugControlsSkills) {
             debugControlsSkills.classList.toggle('d-none', !isDebugMode);
-        }
-    }
-    
-    /**
-     * Set specific ability level from modal
-     */
-    private setAbilityLevelFromModal(): void {
-        const abilitySelect = document.getElementById('ability-type-select-modal') as HTMLSelectElement;
-        const levelInput = document.getElementById('ability-level-input-modal') as HTMLInputElement;
-        const expInput = document.getElementById('ability-exp-input-modal') as HTMLInputElement;
-        
-        if (abilitySelect && levelInput && expInput) {
-            const abilityType = abilitySelect.value as AbilityType;
-            const level = parseInt(levelInput.value);
-            const experience = parseInt(expInput.value);
-            
-            if (isNaN(level) || isNaN(experience) || level < 0 || level > 10 || experience < 0) {
-                this.showMessage('無効な値です', 'error');
-                return;
-            }
-            
-            const player = this.game.getPlayer();
-            const ability = player.abilitySystem.getAbility(abilityType);
-            if (ability) {
-                ability.level = level;
-                ability.experience = experience;
-                player.recalculateStats();
-                player.saveToStorage();
-                this.updatePlayerStatus();
-                this.showMessage(`${this.getAbilityName(abilityType)}を設定しました`, 'success');
-            }
-        }
-    }
-    
-    /**
-     * Set all ability levels from modal
-     */
-    private setAllAbilityLevelsFromModal(): void {
-        const levelInput = document.getElementById('all-ability-level-input-modal') as HTMLInputElement;
-        
-        if (levelInput) {
-            const level = parseInt(levelInput.value);
-            
-            if (isNaN(level) || level < 0 || level > 10) {
-                this.showMessage('無効な値です', 'error');
-                return;
-            }
-            
-            const player = this.game.getPlayer();
-            Object.values(AbilityType).forEach(abilityType => {
-                const ability = player.abilitySystem.getAbility(abilityType);
-                if (ability) {
-                    ability.level = level;
-                    ability.experience = level > 0 ? Math.pow(level, 3) * 50 : 0;
-                }
-            });
-            
-            player.recalculateStats();
-            player.saveToStorage();
-            this.updatePlayerStatus();
-            this.showMessage(`全てのアビリティをレベル${level}に設定しました`, 'success');
         }
     }
     
