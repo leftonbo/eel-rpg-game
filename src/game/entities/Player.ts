@@ -41,6 +41,7 @@ export interface PlayerItem {
     count: number;
     description: string;
     use: (player: Player) => boolean;
+    experienceGain: number; // Experience gain for using the item
 }
 
 export class Player extends Actor {

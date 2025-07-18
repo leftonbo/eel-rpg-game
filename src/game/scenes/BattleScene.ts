@@ -57,9 +57,8 @@ export class BattleScene {
     private battleStats = {
         damageDealt: 0,
         damageTaken: 0,
-        itemsUsed: 0,
         mpSpent: 0,
-        wasKnockedOut: false,
+        craftworkExperience: 0,
         agilityExperience: 0
     };
     
@@ -190,9 +189,8 @@ export class BattleScene {
         this.battleStats = {
             damageDealt: 0,
             damageTaken: 0,
-            itemsUsed: 0,
             mpSpent: 0,
-            wasKnockedOut: false,
+            craftworkExperience: 0,
             agilityExperience: 0
         };
         
@@ -778,14 +776,13 @@ export class BattleScene {
         const success = this.player.useItem(itemName);
         
         if (success) {
-            // Track items used for experience
-            this.battleStats.itemsUsed++;
-            
             // Get display name from player's item data or fallback to predefined names
             let itemDisplayName = itemName;
             const playerItem = this.player.items.get(itemName);
             if (playerItem) {
                 itemDisplayName = playerItem.name;
+                // Track items used for experience
+                this.battleStats.craftworkExperience += playerItem.experienceGain;
             } else {
                 const itemDisplayNames: { [key: string]: string } = {
                     'heal-potion': '回復薬',
@@ -911,11 +908,6 @@ export class BattleScene {
     }
     
     private endBossTurn(): void {
-        // Check if player is knocked out for battle stats
-        if (this.player && this.player.isKnockedOut()) {
-            this.battleStats.wasKnockedOut = true;
-        }
-        
         // Process round end effects for both player and boss
         this.processRoundEnd();
         
@@ -1056,9 +1048,9 @@ export class BattleScene {
         // Check if there's any battle activity worth showing results for
         const hasActivity = this.battleStats.damageDealt > 0 || 
                            this.battleStats.damageTaken > 0 || 
-                           this.battleStats.itemsUsed > 0 || 
                            this.battleStats.mpSpent > 0 || 
-                           this.battleStats.wasKnockedOut;
+                           this.battleStats.agilityExperience > 0 ||
+                           this.battleStats.craftworkExperience > 0;
         
         if (hasActivity) {
             // Show battle result screen
@@ -1067,9 +1059,8 @@ export class BattleScene {
                 false, // not a victory (interrupted)
                 this.battleStats.damageDealt,
                 this.battleStats.damageTaken,
-                this.battleStats.itemsUsed,
                 this.battleStats.mpSpent,
-                this.battleStats.wasKnockedOut,
+                this.battleStats.craftworkExperience,
                 this.battleStats.agilityExperience
             );
             this.game.showBattleResult(battleResult);
@@ -1094,10 +1085,9 @@ export class BattleScene {
             victory,
             this.battleStats.damageDealt,
             this.battleStats.damageTaken,
-            this.battleStats.itemsUsed,
             this.battleStats.mpSpent,
-            this.battleStats.wasKnockedOut,
-            this.battleStats.agilityExperience
+            this.battleStats.agilityExperience,
+            this.battleStats.craftworkExperience
         );
         this.game.showBattleResult(battleResult);
     }
