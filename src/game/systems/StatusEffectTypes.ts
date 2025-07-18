@@ -1,3 +1,5 @@
+import { Actor } from "../entities/Actor";
+
 export enum ActionPriority {
     CannotAct = 'cannot-act',
     StruggleAction = 'struggle-action', 
@@ -97,9 +99,9 @@ export interface StatusEffectConfig {
     name: string;
     description: string;
     duration: number;
-    onApply?: (target: any) => void;
-    onTick?: (target: any, effect: StatusEffect) => void;
-    onRemove?: (target: any) => void;
+    onApply?: (target: Actor) => void;
+    onTick?: (target: Actor, effect: StatusEffect) => void;
+    onRemove?: (target: Actor) => void;
     stackable?: boolean;
     
     // New properties for better organization

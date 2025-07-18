@@ -2,6 +2,7 @@ import { Game } from '../Game';
 import { getAllBossData } from '../data/index';
 import { PlayerSaveManager } from '../systems/PlayerSaveData';
 import { AbilityType } from '../systems/AbilitySystem';
+import { SkillData, UnlockCondition } from '../data/skills';
 
 export class BossSelectScene {
     private game: Game;
@@ -445,7 +446,7 @@ export class BossSelectScene {
     /**
      * Get skill details HTML
      */
-    private getSkillDetails(skill: any): string {
+    private getSkillDetails(skill: SkillData): string {
         const details = [];
         
         if (skill.damageMultiplier && skill.damageMultiplier > 1) {
@@ -485,9 +486,9 @@ export class BossSelectScene {
     /**
      * Get skill unlock condition HTML
      */
-    private getSkillUnlockCondition(skill: any): string {
+    private getSkillUnlockCondition(skill: SkillData): string {
         if (skill.unlockConditions && skill.unlockConditions.length > 0) {
-            const conditions = skill.unlockConditions.map((condition: any) => {
+            const conditions = skill.unlockConditions.map((condition: UnlockCondition) => {
                 const abilityName = this.getAbilityName(condition.abilityType);
                 return `${abilityName}レベル${condition.requiredLevel}`;
             });

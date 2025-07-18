@@ -1,7 +1,7 @@
 import { Game } from '../Game';
 import { Player, SkillType } from '../entities/Player';
 import { Boss, ActionType, formatMessage } from '../entities/Boss';
-import { StatusEffectType } from '../systems/StatusEffect';
+import { StatusEffect, StatusEffectType } from '../systems/StatusEffect';
 import { calculateAttackResult } from '../utils/CombatUtils';
 import { calculateBattleResult } from './BattleResultScene';
 
@@ -330,7 +330,7 @@ export class BattleScene {
         this.updateStatusEffectsUI(this.boss.statusEffects.getAllEffects(), this.bossStatusEffects);
     }
     
-    private updateStatusEffectsUI(effects: any[], container: HTMLElement | null): void {
+    private updateStatusEffectsUI(effects: StatusEffect[], container: HTMLElement | null): void {
         if (!container) return;
         
         container.innerHTML = '';
@@ -725,9 +725,9 @@ export class BattleScene {
             this.addBattleLogMessage(result.message, 'system', 'player');
             
             // Track MP spent for experience
-            const mpCost = (result as any).mpCost;
-            if (mpCost) {
-                this.battleStats.mpSpent += mpCost;
+            const mpConsumed = result.mpConsumed;
+            if (mpConsumed) {
+                this.battleStats.mpSpent += mpConsumed;
             }
             
             // Check if this was a successful struggle skill that broke restraint
@@ -940,24 +940,21 @@ export class BattleScene {
     }
     
     private processRoundEnd(): void {
-        const messages: string[] = [];
-        
         // Process player status effects
         if (this.player) {
             const playerMessages = this.player.processRoundEnd();
-            messages.push(...playerMessages);
+            playerMessages.forEach(message => {
+                this.addBattleLogMessage(message, 'status-effect', 'player');
+            });
         }
         
         // Process boss status effects
         if (this.boss) {
             const bossMessages = this.boss.processRoundEnd();
-            messages.push(...bossMessages);
+            bossMessages.forEach(message => {
+                this.addBattleLogMessage(message, 'status-effect', 'boss');
+            });
         }
-        
-        // Display all messages
-        messages.forEach(message => {
-            this.addBattleLogMessage(message, 'status-effect');
-        });
         
         // Add count of rounds
         this.roundCount++;
