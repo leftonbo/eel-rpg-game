@@ -213,7 +213,8 @@ export function updatePlayerItems(player: Player): void {
                 name: itemData.name,
                 count: currentCount,
                 description: itemData.description,
-                use: itemData.use
+                use: itemData.use,
+                experienceGain: itemData.experienceGain,
             });
         }
     });
