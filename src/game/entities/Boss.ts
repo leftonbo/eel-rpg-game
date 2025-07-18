@@ -40,6 +40,7 @@ export interface BossAction {
     statusDuration?: number;
     weight: number; // Probability weight for AI selection
     canUse?: (boss: Boss, player: Player, turn: number) => boolean;
+    onUse?: (boss: Boss, player: Player) => string[]; // Custom action callback
     hitRate?: number; // Attack hit rate (default: 95%)
     criticalRate?: number; // Critical hit rate (default: 5%)
     statusChance?: number; // Status effect application chance (default: 100%)
@@ -84,6 +85,8 @@ export class Boss extends Actor {
         creator: string;
         source?: string;
     };
+    public hasUsedSpecialMove: boolean = false;
+    public specialMoveCooldown: number = 0;
     
     constructor(data: BossData) {
         // Boss has unlimited MP (無尽蔵) - set to a high value
@@ -424,6 +427,12 @@ export class Boss extends Actor {
                 // Skip action, just return a message
                 messages.push(action.description || `${this.displayName}は行動できない...`);
                 break;
+        }
+        
+        // Execute custom onUse callback if provided
+        if (action.onUse) {
+            const customMessages = action.onUse(this, player);
+            messages.push(...customMessages);
         }
         
         return messages;
