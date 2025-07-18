@@ -746,7 +746,7 @@ export class BossSelectScene {
             player.saveToStorage();
             this.updatePlayerStatus();
             this.showPlayerDetails(); // Refresh modal content
-            this.showMessage(`${abilityType}をレベル${level}に設定しました`, 'success');
+            this.showMessage(`${this.getAbilityName(abilityType)}をレベル${level}に設定しました`, 'success');
         }
     }
 
