@@ -84,7 +84,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Claude Codeは以下の方針に従ってgitコミットを行うこと
 
-- コマンド使用時はシングルクォーテーション `'` を使用すること
 - Claude Code の編集であることが分かるように、コミット文に `Co-Authored-By: Claude <noreply@anthropic.com>` を追記すること
 - 指示された作業1単位が終わるごとにコミットする
 - .gitignore に含まれるファイルはコミットしない
