@@ -42,7 +42,10 @@ export abstract class Actor {
         this.hp = Math.max(0, this.hp - actualDamage);
         
         // If health reaches 0, apply knocked out status
-        if (this.hp <= 0 && !this.statusEffects.hasEffect(StatusEffectType.KnockedOut)) {
+        // ignores if doomed status is already applied
+        if (this.hp <= 0
+            && !this.statusEffects.hasEffect(StatusEffectType.KnockedOut)
+            && !this.statusEffects.hasEffect(StatusEffectType.Doomed)) {
             this.statusEffects.addEffect(StatusEffectType.KnockedOut);
         }
         
@@ -243,6 +246,8 @@ export abstract class Actor {
         // If max HP reaches 0 or below, apply doomed status
         if (this.maxHp <= 0 && !this.statusEffects.hasEffect(StatusEffectType.Doomed)) {
             this.statusEffects.addEffect(StatusEffectType.Doomed);
+            // Remove knocked out status
+            this.statusEffects.removeEffect(StatusEffectType.KnockedOut);
         }
     }
 
