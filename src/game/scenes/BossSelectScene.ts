@@ -97,17 +97,6 @@ export class BossSelectScene {
                 if (textElement) {
                     textElement.textContent = bossData.description;
                 }
-                
-                // Add guest character attribution if available
-                if (bossData.guestCharacterInfo) {
-                    let attributionElement = card.querySelector('.guest-attribution');
-                    if (!attributionElement) {
-                        attributionElement = document.createElement('div');
-                        attributionElement.className = 'guest-attribution';
-                        card.querySelector('.card-body')?.appendChild(attributionElement);
-                    }
-                    attributionElement.textContent = `Guest Character by ${bossData.guestCharacterInfo.creator}`;
-                }
             }
         });
     }
