@@ -9,6 +9,10 @@ export abstract class Actor {
     public attackPower: number;
     public defense: number = 0;
     public statusEffects: StatusEffectManager = new StatusEffectManager();
+    
+    // Initial stats at battle start (for UI bar display)
+    public initialMaxHp: number = 0;
+    public initialMaxMp: number = 0;
 
     constructor(displayName: string, maxHp: number, attackPower: number, maxMp: number = 0) {
         this.displayName = displayName;
@@ -152,6 +156,50 @@ export abstract class Actor {
     }
 
     /**
+     * Get HP bar percentage based on max HP (for bar width display)
+     */
+    getHpBarPercentage(): number {
+        return this.getHpPercentage();
+    }
+
+    /**
+     * Get MP bar percentage based on max MP (for bar width display)
+     */
+    getMpBarPercentage(): number {
+        return this.getMpPercentage();
+    }
+
+    /**
+     * Get HP progress container width percentage (for container resize)
+     */
+    getHpContainerPercentage(): number {
+        if (this.initialMaxHp <= 0) return 100;
+        
+        // If current max HP is higher than initial, keep container at 100%
+        if (this.maxHp > this.initialMaxHp) {
+            return 100;
+        }
+        
+        // If current max HP is lower, shrink container proportionally
+        return (this.maxHp / this.initialMaxHp) * 100;
+    }
+
+    /**
+     * Get MP progress container width percentage (for container resize)
+     */
+    getMpContainerPercentage(): number {
+        if (this.initialMaxMp <= 0) return 100;
+        
+        // If current max MP is higher than initial, keep container at 100%
+        if (this.maxMp > this.initialMaxMp) {
+            return 100;
+        }
+        
+        // If current max MP is lower, shrink container proportionally
+        return (this.maxMp / this.initialMaxMp) * 100;
+    }
+
+    /**
      * Check if actor is defeated
      */
     isDefeated(): boolean {
@@ -171,6 +219,14 @@ export abstract class Actor {
         // Reset HP and MP to maximum
         this.hp = this.maxHp;
         this.mp = this.maxMp;
+    }
+
+    /**
+     * Save initial stats at battle start for UI bar calculation
+     */
+    saveInitialStats(): void {
+        this.initialMaxHp = this.maxHp;
+        this.initialMaxMp = this.maxMp;
     }
 
     /**

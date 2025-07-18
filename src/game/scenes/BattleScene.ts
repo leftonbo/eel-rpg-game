@@ -67,15 +67,18 @@ export class BattleScene {
     private playerHpElement: HTMLElement | null = null;
     private playerMaxHpElement: HTMLElement | null = null;
     private playerHpBar: HTMLElement | null = null;
+    private playerHpProgress: HTMLElement | null = null;
     private playerMpElement: HTMLElement | null = null;
     private playerMaxMpElement: HTMLElement | null = null;
     private playerMpBar: HTMLElement | null = null;
+    private playerMpProgress: HTMLElement | null = null;
     private playerStatusEffects: HTMLElement | null = null;
     
     private bossNameElement: HTMLElement | null = null;
     private bossHpElement: HTMLElement | null = null;
     private bossMaxHpElement: HTMLElement | null = null;
     private bossHpBar: HTMLElement | null = null;
+    private bossHpProgress: HTMLElement | null = null;
     private bossStatusEffects: HTMLElement | null = null;
     
     private actionButtons: HTMLElement | null = null;
@@ -100,15 +103,18 @@ export class BattleScene {
         this.playerHpElement = document.getElementById('player-hp');
         this.playerMaxHpElement = document.getElementById('player-max-hp');
         this.playerHpBar = document.getElementById('player-hp-bar');
+        this.playerHpProgress = document.getElementById('player-hp-progress');
         this.playerMpElement = document.getElementById('player-mp');
         this.playerMaxMpElement = document.getElementById('player-max-mp');
         this.playerMpBar = document.getElementById('player-mp-bar');
+        this.playerMpProgress = document.getElementById('player-mp-progress');
         this.playerStatusEffects = document.getElementById('player-status-effects');
         
         this.bossNameElement = document.getElementById('boss-name');
         this.bossHpElement = document.getElementById('boss-hp');
         this.bossMaxHpElement = document.getElementById('boss-max-hp');
         this.bossHpBar = document.getElementById('boss-hp-bar');
+        this.bossHpProgress = document.getElementById('boss-hp-progress');
         this.bossStatusEffects = document.getElementById('boss-status-effects');
         
         this.actionButtons = document.getElementById('action-buttons');
@@ -221,6 +227,14 @@ export class BattleScene {
         if (this.bossNameElement) {
             this.bossNameElement.textContent = this.boss.displayName;
         }
+        
+        // Save initial stats for HP/MP bar calculation
+        if (this.player) {
+            this.player.saveInitialStats();
+        }
+        if (this.boss) {
+            this.boss.saveInitialStats();
+        }
     }
     
     private updateUI(): void {
@@ -252,16 +266,23 @@ export class BattleScene {
         if (this.playerHpElement) this.playerHpElement.textContent = this.player.hp.toString();
         if (this.playerMaxHpElement) this.playerMaxHpElement.textContent = this.player.maxHp.toString();
         
+        // HP Progress Container
+        if (this.playerHpProgress) {
+            const containerPercentage = this.player.getHpContainerPercentage();
+            this.playerHpProgress.style.width = `${containerPercentage}%`;
+        }
+        
         // HP Bar
         if (this.playerHpBar) {
-            const percentage = this.player.getHpPercentage();
-            this.playerHpBar.style.width = `${percentage}%`;
+            const barPercentage = this.player.getHpBarPercentage();
+            const colorPercentage = this.player.getHpPercentage();
+            this.playerHpBar.style.width = `${barPercentage}%`;
             
-            // Change color based on HP
+            // Change color based on HP relative to current max
             this.playerHpBar.className = 'progress-bar';
-            if (percentage > 75) {
+            if (colorPercentage > 75) {
                 this.playerHpBar.classList.add('bg-success');
-            } else if (percentage > 25) {
+            } else if (colorPercentage > 25) {
                 this.playerHpBar.classList.add('bg-warning');
             } else {
                 this.playerHpBar.classList.add('bg-danger');
@@ -272,10 +293,16 @@ export class BattleScene {
         if (this.playerMpElement) this.playerMpElement.textContent = this.player.mp.toString();
         if (this.playerMaxMpElement) this.playerMaxMpElement.textContent = this.player.maxMp.toString();
         
+        // MP Progress Container
+        if (this.playerMpProgress) {
+            const mpContainerPercentage = this.player.getMpContainerPercentage();
+            this.playerMpProgress.style.width = `${mpContainerPercentage}%`;
+        }
+        
         // MP Bar
         if (this.playerMpBar) {
-            const mpPercentage = this.player.getMpPercentage();
-            this.playerMpBar.style.width = `${mpPercentage}%`;
+            const mpBarPercentage = this.player.getMpBarPercentage();
+            this.playerMpBar.style.width = `${mpBarPercentage}%`;
         }
         
         // Status Effects
@@ -289,10 +316,16 @@ export class BattleScene {
         if (this.bossHpElement) this.bossHpElement.textContent = this.boss.hp.toString();
         if (this.bossMaxHpElement) this.bossMaxHpElement.textContent = this.boss.maxHp.toString();
         
+        // HP Progress Container
+        if (this.bossHpProgress) {
+            const containerPercentage = this.boss.getHpContainerPercentage();
+            this.bossHpProgress.style.width = `${containerPercentage}%`;
+        }
+        
         // HP Bar
         if (this.bossHpBar) {
-            const percentage = this.boss.getHpPercentage();
-            this.bossHpBar.style.width = `${percentage}%`;
+            const barPercentage = this.boss.getHpBarPercentage();
+            this.bossHpBar.style.width = `${barPercentage}%`;
         }
         
         // Status Effects

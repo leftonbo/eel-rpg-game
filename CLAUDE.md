@@ -1,5 +1,7 @@
 # CLAUDE.md
 
+use context 7
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## 開発コマンド
@@ -82,6 +84,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Claude Codeは以下の方針に従ってgitコミットを行うこと
 
+- コマンド使用時はシングルクォーテーション `'` を使用すること
 - Claude Code の編集であることが分かるように、コミット文に `Co-Authored-By: Claude <noreply@anthropic.com>` を追記すること
 - 指示された作業1単位が終わるごとにコミットする
 - .gitignore に含まれるファイルはコミットしない
@@ -109,3 +112,9 @@ Claude Codeは以下の方針に従ってgitコミットを行うこと
 - `bugfix/` + バグ内容
 - `refactor/` + リファクタリング内容
 - `docs/` + ドキュメント更新内容
+
+### PR 作成時の注意点
+
+- コマンド使用時はシングルクォーテーション `'` を使用すること
+- PRタイトルと内容は日本語で記述すること
+- テンプレートは `.github/PULL_REQUEST_TEMPLATE.md` を使用

@@ -1,5 +1,7 @@
 # GitHub Copilot Instructions
 
+use context 7
+
 この指示書は、GitHub
 Copilotがeel-rpg-gameプロジェクトで効果的にコード補完を行うためのガイドラインです。
 
@@ -128,3 +130,17 @@ src/
     - 🚚 ファイル・フォルダ整理
     - 🍱 画像や音声などリソース周りの変更
 - Co-Authored-By: Claude記載時はClaude Code使用
+
+## PRテンプレート
+
+[pull_request_template.md](./pull_request_template.md) を参照してください。
+
+## PRレビュー時の指示
+
+- レビューは日本語で行うこと
+- 以下のprefixを使用すること
+  - [must] - 必須の修正
+  - [imo] - 個人的な意見
+  - [nits] - 細かい指摘
+  - [ask] - 質問
+  - [fyi] - 参考情報
