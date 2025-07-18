@@ -1,4 +1,4 @@
-import { DamageType, TargetStatus } from '@/game/systems/Action';
+// import { DamageType, TargetStatus } from '@/game/systems/Action';
 import { AbilityType } from '../../systems/AbilitySystem';
 import { ActionPriority } from '../../systems/StatusEffect';
 import { SkillData, SkillCategory, SkillProgression } from './types';
@@ -35,23 +35,7 @@ export const TOUGHNESS_SKILLS: SkillProgression[] = [
             unlockConditions: [
                 { abilityType: AbilityType.Toughness, requiredLevel: 3 }
             ],
-            action: {
-                accuracy: 1.0,
-                damageParameters: [
-                    {
-                        targetStatus: TargetStatus.HP,
-                        type: DamageType.Heal,
-                        formula: (a, _b, am, _bm) => a.maxHp * 0.05 * am,
-                        fluctuation: 0.1
-                    },
-                    {
-                        targetStatus: TargetStatus.MP,
-                        type: DamageType.Heal,
-                        formula: (a, _b, am, _bm) => a.maxMp * 0.05 * am,
-                        fluctuation: 0.1
-                    }
-                ]
-            }
+            // Action は Player.convertSkillDataToAction で動的に生成される
         },
         upgrades: []
     }

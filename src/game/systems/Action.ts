@@ -132,44 +132,97 @@ export type ExtraEffect = StateApplyEffect | StateRemoveEffect;
 /**
  * 攻撃やスキルなどの行動を表すクラス
  */
-export interface Action {
+export class Action {
+    /**
+     * 行動の名前
+     */
+    public name: string;
+
+    /**
+     * 行動の説明
+     */
+    public description: string;
+
+    /**
+     * 対象の種類
+     */
+    public target: ActionTarget;
+
+    /**
+     * MP消費量
+     */
+    public mpCost: number;
+
+    /**
+     * メッセージ
+     */
+    public message: string[];
+
     /**
      * 繰り返し回数 (通常は1。2以上で「命中判定→ダメージ→特殊効果」の処理を繰り返す)
      * 省略時は 1
      */
-    repeatCount?: number;
+    public repeatCount: number;
 
     /**
      * 成功率 (0.0 - 1.0) 失敗時はダメージや特殊効果は発生しない
      */
-    accuracy: number;
+    public accuracy: number;
 
     /**
      * 成功率計算タイプ ('fixed':固定、または 'evade': 使用者の命中補正と対象の回避率を参照)
      */
-    accuracyType?: AccuracyType;
+    public accuracyType: AccuracyType;
 
     /**
      * クリティカル率 (デフォルト: 0)
      */
-    criticalRate?: number;
+    public criticalRate: number;
 
     /**
      * ダメージ計算パラメータ
      */
-    damageParameters: DamageParameter[];
+    public damageParameters: DamageParameter[];
 
     /**
      * 対象に発生する追加効果のリスト (複数かつ異なるタイプの効果を指定可能)
      */
-    extraEffects?: ExtraEffect[];
+    public extraEffects: ExtraEffect[];
     
     /**
      * カスタム関数 (オプション)
      * 使用者と対象の Actor を引数に取り、SingleActionResult を返す関数
      * この関数は、通常のダメージ計算やステート付与とは異なるカスタム処理を行うために使用されます。
      */
-    customFunction?: (user: Actor, target: Actor, currentResult: SingleActionResult) => SingleActionResult;
+    public customFunction?: (user: Actor, target: Actor, currentResult: SingleActionResult) => SingleActionResult;
+
+    constructor(
+        name: string,
+        description: string,
+        target: ActionTarget,
+        mpCost: number,
+        message: string[],
+        repeatCount: number = 1,
+        accuracy: number = 1.0,
+        accuracyType: AccuracyType = AccuracyType.Fixed,
+        criticalRate: number = 0.0,
+        damageParameters: DamageParameter[] = [],
+        extraEffects: ExtraEffect[] = [],
+        customFunction?: (user: Actor, target: Actor, currentResult: SingleActionResult) => SingleActionResult
+    ) {
+        this.name = name;
+        this.description = description;
+        this.target = target;
+        this.mpCost = mpCost;
+        this.message = message;
+        this.repeatCount = repeatCount;
+        this.accuracy = accuracy;
+        this.accuracyType = accuracyType;
+        this.criticalRate = criticalRate;
+        this.damageParameters = damageParameters;
+        this.extraEffects = extraEffects;
+        this.customFunction = customFunction;
+    }
 }
 
 /**
@@ -275,7 +328,12 @@ export class ActionExecutor {
             results: []
         };
 
-        if (action.repeatCount === undefined || action.repeatCount <= 1) {
+        // MP消費チェック
+        if (!user.consumeMp(action.mpCost)) {
+            // MP不足でも実行は継続
+        }
+
+        if (action.repeatCount <= 1) {
             // 単一回の実行
             const singleResult = this.executeSingle(action, user, target);
             result.results.push(singleResult);

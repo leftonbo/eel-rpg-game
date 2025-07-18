@@ -14,11 +14,7 @@ export const AGILITY_SKILLS: SkillProgression[] = [
             unlockConditions: [
                 { abilityType: AbilityType.Agility, requiredLevel: 3 }
             ],
-            action:
-            {
-                accuracy: 1.0,
-                damageParameters: []
-            }
+            // Action は Player.convertSkillDataToAction で動的に生成される
         },
         upgrades: [
             {

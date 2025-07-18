@@ -356,7 +356,7 @@ export class BossSelectScene {
                     skillElement.className = 'skill-item mb-3 p-3 border rounded';
                     
                     const categoryColor = this.getSkillCategoryColor(skill.category);
-                    const mpCostText = skill.mpCost > 0 ? `MP: ${skill.mpCost}` : 'MP: 0';
+                    const mpCostText = (skill.mpCost || 0) > 0 ? `MP: ${skill.mpCost || 0}` : 'MP: 0';
                     
                     skillElement.innerHTML = `
                         <div class="skill-header d-flex justify-content-between align-items-start mb-2">

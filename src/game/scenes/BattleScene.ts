@@ -729,39 +729,18 @@ export class BattleScene {
             
             // Apply damage if applicable with custom variance
             if (result.damage && result.damage > 0) {
-                const skills = this.player.getAvailableSkills();
-                const skill = skills.find(s => s.type === skillType);
+                // Skills have their own damage calculation through the Action system
                 
                 let finalDamage = result.damage;
-                if (skill && skill.damageVarianceMin !== undefined && skill.damageVarianceMax !== undefined) {
-                    // Apply parameters for skills
-                    const attackResult = calculateAttackResult(
-                        result.damage, 
-                        false, // Skills are never guaranteed hits
-                        skill.hitRate, // Use skill's custom hit rate if available
-                        skill.criticalRate, // Use skill's custom critical rate if
-                        skill.damageVarianceMin,
-                        skill.damageVarianceMax
-                    );
-                    finalDamage = attackResult.damage;
-                    
-                    if (attackResult.isCritical) {
-                        this.addBattleLogMessage(`${result.message} ${attackResult.message}`, 'system', 'player');
-                    }
-                } else {
-                    // Use default variance for skills without custom settings
-                    const attackResult = calculateAttackResult(result.damage, false);
-                    finalDamage = attackResult.damage;
-                    
-                    if (attackResult.isCritical) {
-                        this.addBattleLogMessage(`${result.message} ${attackResult.message}`, 'system', 'player');
-                    }
-                }
+                // Skills have their own damage calculation through the Action system
+                // No need for additional variance calculation here
                 
-                const actualDamage = this.boss.takeDamage(finalDamage);
-                // Track damage dealt for experience
-                this.battleStats.damageDealt += actualDamage;
-                this.addBattleLogMessage(`${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage', 'player');
+                if (finalDamage > 0) {
+                    const actualDamage = this.boss.takeDamage(finalDamage);
+                    // Track damage dealt for experience
+                    this.battleStats.damageDealt += actualDamage;
+                    this.addBattleLogMessage(`${this.boss.displayName}に${actualDamage}のダメージ！`, 'damage', 'player');
+                }
             }
         } else {
             // If skill failed, show message
@@ -1186,32 +1165,38 @@ export class BattleScene {
         }
 
         // 対象への変化を処理
-        this.processValueChanges(result.targetValueChange, target, 'damage');
+        if (result.targetValueChange && result.targetValueChange.length > 0) {
+            this.processValueChanges(result.targetValueChange, target, 'damage');
+        }
 
         // 使用者への変化を処理（吸収など）
-        if (result.userValueChange.length > 0) {
+        if (result.userValueChange && result.userValueChange.length > 0) {
             this.processValueChanges(result.userValueChange, user, 'heal');
         }
 
         // 状態異常の追加
-        result.targetAddStates.forEach(state => {
-            const stateName = this.getStatusEffectDisplayName(state);
-            this.addBattleLogMessage(
-                `${target.displayName}が${stateName}状態になった！`, 
-                'status', 
-                actorType
-            );
-        });
+        if (result.targetAddStates) {
+            result.targetAddStates.forEach(state => {
+                const stateName = this.getStatusEffectDisplayName(state);
+                this.addBattleLogMessage(
+                    `${target.displayName}が${stateName}状態になった！`, 
+                    'status', 
+                    actorType
+                );
+            });
+        }
 
         // 状態異常の解除
-        result.targetRemoveStates.forEach(state => {
-            const stateName = this.getStatusEffectDisplayName(state);
-            this.addBattleLogMessage(
-                `${target.displayName}の${stateName}状態が解除された！`, 
-                'heal', 
-                actorType
-            );
-        });
+        if (result.targetRemoveStates) {
+            result.targetRemoveStates.forEach(state => {
+                const stateName = this.getStatusEffectDisplayName(state);
+                this.addBattleLogMessage(
+                    `${target.displayName}の${stateName}状態が解除された！`, 
+                    'heal', 
+                    actorType
+                );
+            });
+        }
     }
 
     /**

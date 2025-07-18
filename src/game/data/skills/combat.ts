@@ -1,4 +1,4 @@
-import { AccuracyType, DamageType, TargetStatus } from '@/game/systems/Action';
+// import { AccuracyType, DamageType, TargetStatus } from '@/game/systems/Action';
 import { AbilityType } from '../../systems/AbilitySystem';
 import { ActionPriority } from '../../systems/StatusEffect';
 import { SkillCategory, SkillProgression } from './types';
@@ -15,19 +15,7 @@ export const COMBAT_SKILLS: SkillProgression[] = [
             unlockConditions: [
                 { abilityType: AbilityType.Combat, requiredLevel: 3 }
             ],
-            action: {
-                accuracy: 1.0,
-                accuracyType: AccuracyType.Evade,
-                criticalRate: 0.10, // Base 5% critical rate + 5% from skill
-                damageParameters: [
-                    {
-                        targetStatus: TargetStatus.HP,
-                        type: DamageType.Damage,
-                        formula: (a, b, am, bm) => a.attackPower * am * 2.5 - b.defense * bm,
-                        fluctuation: 0.3,
-                    }
-                ]
-            }
+            // Action は Player.convertSkillDataToAction で動的に生成される
         },
         upgrades: [
             {
@@ -56,25 +44,7 @@ export const COMBAT_SKILLS: SkillProgression[] = [
                 { abilityType: AbilityType.Combat, requiredLevel: 9 }
             ],
             consumesAllMp: true,
-            action: {
-                accuracy: 1.0,
-                accuracyType: AccuracyType.Fixed,
-                criticalRate: 0.50, // Base 5% critical rate + 45% from skill
-                damageParameters: [
-                    {
-                        targetStatus: TargetStatus.HP,
-                        type: DamageType.Damage,
-                        formula: (user, target, userMult, targetMult) => {
-                            // MPを全て消費してその分のダメージを与える
-                            const mpDamage = user.mp * userMult;
-                            // 通常の攻撃力ダメージを計算
-                            const baseDamage = user.attackPower * userMult - target.defense * targetMult;
-                            return baseDamage + mpDamage; // 合計ダメージ
-                        },
-                        fluctuation: 0.3
-                    }
-                ]
-            }
+            // Action は Player.convertSkillDataToAction で動的に生成される
         },
         upgrades: []
     }

@@ -2,7 +2,7 @@ import { StatusEffectManager, StatusEffectType } from '../systems/StatusEffect';
 import { Player } from './Player';
 import { calculateAttackResult } from '../utils/CombatUtils';
 import { Actor } from './Actor';
-import { Action, ActionTarget, ActionExecutor, ActionResult, DamageParameter, DamageType, TargetStatus, ExtraEffect } from '../systems/Action';
+import { Action, ActionTarget, ActionExecutor, ActionResult, DamageParameter, DamageType, TargetStatus, ExtraEffect, AccuracyType } from '../systems/Action';
 
 // Message formatter utility
 export function formatMessage(template: string, nameUser: string, nameTarget: string): string {
@@ -586,7 +586,7 @@ export class Boss extends Actor {
             bossAction.messages || [`${this.displayName}の${bossAction.name}！`],
             1, // repeat count
             bossAction.hitRate || 0.95,
-            undefined, // accuracy type (default fixed)
+            AccuracyType.Fixed, // accuracy type (default fixed)
             bossAction.criticalRate || 0.05,
             damageParams,
             extraEffects,

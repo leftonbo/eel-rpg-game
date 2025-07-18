@@ -607,7 +607,7 @@ export class Player extends Actor {
      */
     private usePowerAttack(skillData: SkillData, player: Player): SkillResult {
         const mpInsufficient = !player.consumeMp(skillData.mpCost || 0);
-        let powerMultiplier = skillData.damageMultiplier || 2.5;
+        let powerMultiplier = 2.5; // デフォルト値
         
         if (mpInsufficient) {
             powerMultiplier *= 2; // Double effect when MP insufficient
@@ -648,7 +648,7 @@ export class Player extends Actor {
      * Use Struggle skill
      */
     private useStruggleSkill(skillData: SkillData, player: Player): SkillResult {
-        const mpInsufficient = !player.consumeMp(skillData.mpCost);
+        const mpInsufficient = !player.consumeMp(skillData.mpCost || 0);
         let successMultiplier = 2;
         
         if (mpInsufficient) {
@@ -924,7 +924,7 @@ export class Player extends Actor {
                     targetStatus: TargetStatus.HP,
                     type: DamageType.Damage,
                     formula: (user: Actor, target: Actor, userMult: number, targetMult: number) => {
-                        const multiplier = skillData.damageMultiplier || 2.5;
+                        const multiplier = 2.5; // デフォルト値
                         return user.attackPower * multiplier * userMult - target.defense * targetMult;
                     },
                     fluctuation: 0.2
@@ -980,12 +980,12 @@ export class Player extends Actor {
             skillData.name,
             skillData.description,
             ActionTarget.Enemy, // 大部分のスキルは敵対象
-            skillData.mpCost,
+            skillData.mpCost || 0,
             [`${this.name}は${skillData.name}を使った！`],
             1, // repeat count
-            skillData.hitRate || 1.0,
-            undefined, // accuracy type (default fixed)
-            skillData.criticalRate || 0.05,
+            1.0, // デフォルト命中率
+            AccuracyType.Fixed, // accuracy type (default fixed)
+            0.05, // デフォルトクリティカル率
             damageParams,
             extraEffects,
             customFunction
