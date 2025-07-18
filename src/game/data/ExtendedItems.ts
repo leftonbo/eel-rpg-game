@@ -58,8 +58,8 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
             if (craftworkLevel < 1) return 0;
             
             let count = 1; // Base count
-            if (craftworkLevel >= 3) count++; // Level 3: +1
-            if (craftworkLevel >= 5) count++; // Level 5: +1
+            if (craftworkLevel >= 2) count++; // Level 2: +1
+            if (craftworkLevel >= 4) count++; // Level 4: +1
             return count;
         },
         use: (player: Player) => {
@@ -75,44 +75,20 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
         }
     },
     
-    // Grenade (unlocked at CraftWork level 2)
-    {
-        id: 'grenade',
-        name: '手投げ爆弾',
-        description: 'ターン消費せずにボスに攻撃力50のダメージを与える',
-        requiredLevel: 2,
-        abilityType: AbilityType.CraftWork,
-        experienceGain: 100,
-        getCount: (player: Player) => {
-            const craftworkLevel = player.abilitySystem.getAbility(AbilityType.CraftWork)?.level || 0;
-            if (craftworkLevel < 2) return 0;
-            
-            let count = 1; // Base count
-            if (craftworkLevel >= 6) count++; // Level 6: +1
-            return count;
-        },
-        use: (player: Player) => {
-            // This will be handled specially in battle scene to damage boss
-            if (player.getItemCount('grenade') <= 0) return false;
-            player.items.get('grenade')!.count--;
-            return true;
-        }
-    },
-    
-    // Adrenaline Shot (unlocked at CraftWork level 4)
+    // Adrenaline Shot (unlocked at CraftWork level 3)
     {
         id: 'adrenaline',
         name: 'アドレナリン注射',
         description: '次のターンまで無敵になる',
-        requiredLevel: 4,
+        requiredLevel: 3,
         abilityType: AbilityType.CraftWork,
         experienceGain: 75,
         getCount: (player: Player) => {
             const craftworkLevel = player.abilitySystem.getAbility(AbilityType.CraftWork)?.level || 0;
-            if (craftworkLevel < 4) return 0;
+            if (craftworkLevel < 3) return 0;
             
             let count = 1; // Base count
-            if (craftworkLevel >= 8) count++; // Level 8: +1
+            if (craftworkLevel >= 6) count++; // Level 6: +1
             if (craftworkLevel >= 9) count++; // Level 9: +1
             return count;
         },
@@ -125,18 +101,21 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
         }
     },
     
-    // Elixir (unlocked at CraftWork level 7)
+    // Elixir (unlocked at CraftWork level 5)
     {
         id: 'elixir',
         name: 'エリクサー',
         description: 'HPを100%回復し、状態異常を解除、元気ドリンクの効果を得る',
-        requiredLevel: 7,
+        requiredLevel: 5,
         abilityType: AbilityType.CraftWork,
         experienceGain: 150,
         getCount: (player: Player) => {
             const craftworkLevel = player.abilitySystem.getAbility(AbilityType.CraftWork)?.level || 0;
-            if (craftworkLevel < 7) return 0;
-            return 1;
+            if (craftworkLevel < 5) return 0;
+            
+            let count = 1; // Base count
+            if (craftworkLevel >= 8) count++; // Level 8: +1
+            return count;
         },
         use: (player: Player) => {
             if (player.getItemCount('elixir') <= 0) return false;
@@ -159,18 +138,21 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
         }
     },
     
-    // Omamori (unlocked at CraftWork level 10)
+    // Omamori (unlocked at CraftWork level 7)
     {
         id: 'omamori',
         name: 'おまもり',
         description: '行動不能状態・拘束中・食べられ中にのみ使える。即座にそれらの状態を解除し、HPを100%回復し、状態異常を解除',
-        requiredLevel: 10,
+        requiredLevel: 7,
         abilityType: AbilityType.CraftWork,
         experienceGain: 200,
         getCount: (player: Player) => {
             const craftworkLevel = player.abilitySystem.getAbility(AbilityType.CraftWork)?.level || 0;
-            if (craftworkLevel < 10) return 0;
-            return 1;
+            if (craftworkLevel < 7) return 0;
+
+            let count = 1; // Base count
+            if (craftworkLevel >= 10) count++; // Level 10: +1
+            return count;
         },
         use: (player: Player) => {
             if (player.getItemCount('omamori') <= 0) return false;
