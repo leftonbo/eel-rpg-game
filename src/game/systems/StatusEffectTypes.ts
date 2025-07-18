@@ -69,7 +69,10 @@ export enum StatusEffectType {
     Weakening = 'weakening',
     
     // Mikan Dragon effects
-    Lethargy = 'lethargy'
+    Lethargy = 'lethargy',
+    
+    // Sea Kraken effects
+    VisionImpairment = 'vision-impairment'
 }
 
 export interface StatusEffect {
