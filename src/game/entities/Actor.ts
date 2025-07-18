@@ -157,16 +157,64 @@ export abstract class Actor {
 
     /**
      * Get HP bar percentage based on initial max HP (for bar width display)
+     * If current max HP is higher than initial, use normal percentage to prevent overflow
      */
     getHpBarPercentage(): number {
-        return this.initialMaxHp > 0 ? (this.hp / this.initialMaxHp) * 100 : 0;
+        if (this.initialMaxHp <= 0) return 0;
+        
+        // If current max HP is higher than initial, use normal percentage
+        if (this.maxHp > this.initialMaxHp) {
+            return this.getHpPercentage();
+        }
+        
+        // If current max HP is lower or equal, use initial max HP as base
+        return (this.hp / this.initialMaxHp) * 100;
     }
 
     /**
      * Get MP bar percentage based on initial max MP (for bar width display)
+     * If current max MP is higher than initial, use normal percentage to prevent overflow
      */
     getMpBarPercentage(): number {
-        return this.initialMaxMp > 0 ? (this.mp / this.initialMaxMp) * 100 : 0;
+        if (this.initialMaxMp <= 0) return 0;
+        
+        // If current max MP is higher than initial, use normal percentage
+        if (this.maxMp > this.initialMaxMp) {
+            return this.getMpPercentage();
+        }
+        
+        // If current max MP is lower or equal, use initial max MP as base
+        return (this.mp / this.initialMaxMp) * 100;
+    }
+
+    /**
+     * Get HP progress container width percentage (for container resize)
+     */
+    getHpContainerPercentage(): number {
+        if (this.initialMaxHp <= 0) return 100;
+        
+        // If current max HP is higher than initial, keep container at 100%
+        if (this.maxHp > this.initialMaxHp) {
+            return 100;
+        }
+        
+        // If current max HP is lower, shrink container proportionally
+        return (this.maxHp / this.initialMaxHp) * 100;
+    }
+
+    /**
+     * Get MP progress container width percentage (for container resize)
+     */
+    getMpContainerPercentage(): number {
+        if (this.initialMaxMp <= 0) return 100;
+        
+        // If current max MP is higher than initial, keep container at 100%
+        if (this.maxMp > this.initialMaxMp) {
+            return 100;
+        }
+        
+        // If current max MP is lower, shrink container proportionally
+        return (this.maxMp / this.initialMaxMp) * 100;
     }
 
     /**
