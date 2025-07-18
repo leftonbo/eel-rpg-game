@@ -95,7 +95,7 @@ export const darkGhostData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '魂からのエネルギー吸収',
-                    description: '魂だけになったエルナルからエネルギーを吸い続ける',
+                    description: '魂だけになった体内の獲物からエネルギーを吸い続ける',
                     messages: [
                         '「ケケケ...」',
                         '<USER>が<TARGET>の魂からエネルギーを吸い取っている...',
@@ -107,7 +107,7 @@ export const darkGhostData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '魂の操縦',
-                    description: '魂を操作してエルナルを支配し続ける',
+                    description: '魂を操作して体内の獲物を支配し続ける',
                     messages: [
                         '「フフフ...」',
                         '<USER>が<TARGET>の魂を操縦している...',

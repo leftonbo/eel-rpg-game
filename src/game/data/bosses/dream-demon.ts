@@ -592,7 +592,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '夢中での永遠の愛撫',
-                    description: '夢の中で永遠にエルナルを愛で続ける',
+                    description: '夢の中で永遠に獲物を愛で続ける',
                     messages: [
                         '<USER>は夢の中で<TARGET>を永遠に愛でている...',
                         '<TARGET>は夢の中で<USER>に愛撫され続けている...',
@@ -604,7 +604,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '夢中での甘い拘束',
-                    description: '夢の中でエルナルを甘く拘束し続ける',
+                    description: '夢の中で獲物を甘く拘束し続ける',
                     messages: [
                         '<USER>は夢の中で<TARGET>を甘く拘束している...',
                         '<TARGET>は夢の拘束から逃れることができない...',
@@ -616,7 +616,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '夢中での至福体験',
-                    description: '夢の中でエルナルに至福を与え続ける',
+                    description: '夢の中で獲物に至福を与え続ける',
                     messages: [
                         '<USER>は夢の中で<TARGET>に至福を与えている...',
                         '<TARGET>は夢の中で至福に包まれている...',
@@ -628,7 +628,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '夢中での魅了術',
-                    description: '夢の中でエルナルを魅了し続ける',
+                    description: '夢の中で獲物を魅了し続ける',
                     messages: [
                         '<USER>は夢の中で<TARGET>を魅了している...',
                         '<TARGET>は夢の中で<USER>に魅了され続けている...',
@@ -640,7 +640,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '夢中での甘い支配',
-                    description: '夢の中でエルナルを甘く支配し続ける',
+                    description: '夢の中で獲物を甘く支配し続ける',
                     messages: [
                         '<USER>は夢の中で<TARGET>を甘く支配している...',
                         '<TARGET>は夢の中で<USER>に支配されている...',

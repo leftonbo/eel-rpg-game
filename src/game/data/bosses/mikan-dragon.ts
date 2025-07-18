@@ -23,7 +23,7 @@ const mikanDragonActions: BossAction[] = [
     {
         type: ActionType.StatusAttack,
         name: '蜜柑の香り',
-        description: '甘い蜜柑の香りでエルナルを魅了する',
+        description: '甘い蜜柑の香りで獲物を魅了する',
         messages: ['<USER>は甘い蜜柑の香りを放った！'],
         damage: 8,
         hitRate: 0.9,
@@ -39,7 +39,7 @@ const mikanDragonActions: BossAction[] = [
     {
         type: ActionType.StatusAttack,
         name: '蜜柑の粘液',
-        description: '蜜柑の汁のような粘液でエルナルをネバネバにする',
+        description: '蜜柑の汁のような粘液で獲物をネバネバにする',
         messages: ['<USER>は口から蜜柑のような粘液を放った！'],
         damage: 10,
         hitRate: 0.95,
@@ -49,7 +49,7 @@ const mikanDragonActions: BossAction[] = [
     {
         type: ActionType.RestraintAttack,
         name: '蜜柑の舌巻き付け',
-        description: '長い舌でエルナルを拘束する',
+        description: '長い舌で獲物を拘束する',
         messages: [
             '「フルルル...」',
             '<USER>は長い舌で<TARGET>を巻き付けてきた！'
@@ -64,7 +64,7 @@ const mikanDragonActions: BossAction[] = [
     {
         type: ActionType.Attack,
         name: '蜜柑しぼり',
-        description: '舌でエルナルを締め付ける',
+        description: '舌で獲物を締め付ける',
         messages: [
             '「フルルル...」',
             '<USER>は巻き付けた舌で<TARGET>を締め付ける！'
@@ -76,7 +76,7 @@ const mikanDragonActions: BossAction[] = [
     {
         type: ActionType.Attack,
         name: '蜜柑のキス',
-        description: '舌でエルナルを舐めて体力を吸収する',
+        description: '舌で獲物を舐めて体力を吸収する',
         messages: [
             '「フルルル...」',
             '<USER>は<TARGET>を体ごとキスして体力を吸収する！'
@@ -128,7 +128,7 @@ export const mikanDragonData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '蜜柑汁培養',
-                    description: 'エルナルの体を蜜柑の汁で満たし、培養し続ける',
+                    description: '獲物の体を蜜柑の汁で満たし、培養し続ける',
                     messages: [
                         '「フルルル...」',
                         '<USER>の体内で蜜柑の汁が<TARGET>を培養している...',
@@ -140,7 +140,7 @@ export const mikanDragonData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '蜜柑触手愛撫',
-                    description: '体内触手でエルナルを優しく愛撫し続ける',
+                    description: '体内触手で獲物を優しく愛撫し続ける',
                     messages: [
                         '「フルルル...」',
                         '<USER>の体内触手が<TARGET>を優しく愛撫している...',
@@ -152,7 +152,7 @@ export const mikanDragonData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '蜜柑同族化',
-                    description: '蜜柑の汁を注入してエルナルを同族化させる',
+                    description: '蜜柑の汁を注入して獲物を同族化させる',
                     messages: [
                         '「フルルル...」',
                         '<USER>が<TARGET>に大量の蜜柑汁を注入している...',
@@ -215,7 +215,7 @@ export const mikanDragonData: BossData = {
                     return {
                         type: ActionType.EatAttack,
                         name: '蜜柑の丸呑み',
-                        description: '拘束したエルナルを丸呑みする',
+                        description: '拘束した獲物を丸呑みする',
                         messages: [
                             '「フルルル...」',
                             '<USER>が大きな口を開け、<TARGET>を丸呑みにする！'
@@ -230,7 +230,7 @@ export const mikanDragonData: BossData = {
                     return {
                         type: ActionType.RestraintAttack,
                         name: '蜜柑の舌巻き付け',
-                        description: '長い舌でエルナルを拘束する',
+                        description: '長い舌で獲物を拘束する',
                         messages: [
                             '「フルルル...」',
                             '<USER>は長い舌で<TARGET>を巻き付けてきた！'
@@ -241,7 +241,7 @@ export const mikanDragonData: BossData = {
                     return {
                         type: ActionType.EatAttack,
                         name: '蜜柑の丸呑み',
-                        description: '拘束したエルナルを丸呑みする',
+                        description: '拘束した獲物を丸呑みする',
                         messages: [
                             '「フルルル...」',
                             '<USER>が大きな口を開け、<TARGET>を丸呑みにする！'

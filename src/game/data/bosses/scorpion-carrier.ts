@@ -48,7 +48,7 @@ const scorpionCarrierActions: BossAction[] = [
     {
         type: ActionType.RestraintAttack,
         name: 'はさみキャッチ',
-        description: 'はさみでエルナルを捕まえる',
+        description: 'はさみで対象を捕まえる',
         messages: ['<USER>は巨大なはさみで<TARGET>を捕まえようとする！'],
         damage: 5,
         weight: 25,
@@ -63,7 +63,7 @@ const scorpionCarrierActionsRestrained: BossAction[] = [
     {
         type: ActionType.StatusAttack,
         name: '猛毒注射',
-        description: '拘束したエルナルに猛毒を注射する',
+        description: '拘束した対象に猛毒を注射する',
         messages: ['<USER>は拘束した<TARGET>に猛毒を注射する！'],
         damage: 15,
         statusEffect: StatusEffectType.ScorpionPoison,
@@ -74,7 +74,7 @@ const scorpionCarrierActionsRestrained: BossAction[] = [
     {
         type: ActionType.Attack,
         name: 'かみつき舐め回し',
-        description: '拘束したエルナルを舐め回す',
+        description: '拘束した対象を舐め回す',
         messages: ['<USER>は拘束した<TARGET>を舐め回す！'],
         damage: 18,
         weight: 25
@@ -94,7 +94,7 @@ const scorpionCarrierActionsKnockoutRestrained: BossAction[] = [
     {
         type: ActionType.EatAttack,
         name: '大胆に丸呑み',
-        description: 'エルナルを丸呑みして体内に運ぶ',
+        description: '対象を丸呑みして体内に運ぶ',
         messages: [
             '<USER>は<TARGET>を大胆に丸呑みする！',
             '<TARGET>がサソリの体内に取り込まれる！'
@@ -112,7 +112,7 @@ const scorpionCarrierActionsEaten: BossAction[] = [
     {
         type: ActionType.StatusAttack,
         name: '脱力剤注入',
-        description: '体内注射でエルナルに脱力剤を注入する',
+        description: '生き物に体内注射で脱力剤を注入する',
         messages: ['<USER>は体内の注射器で<TARGET>に脱力剤を注入する！'],
         damage: 8,
         statusEffect: StatusEffectType.Weakening,
@@ -124,7 +124,7 @@ const scorpionCarrierActionsEaten: BossAction[] = [
     {
         type: ActionType.DevourAttack,
         name: '体内マッサージ',
-        description: '体内でエルナルをマッサージして最大HPを吸収',
+        description: '体内の生き物にマッサージして最大HPを吸収',
         messages: ['<USER>は体内で<TARGET>をマッサージし、エネルギーを吸収する！'],
         damage: 12, // Max HP reduction amount
         weight: 30,
@@ -136,7 +136,7 @@ const scorpionCarrierActionsEaten: BossAction[] = [
     {
         type: ActionType.DevourAttack,
         name: '体内締め付け',
-        description: '体内でエルナルを締め付けて最大HPを吸収',
+        description: '体内で生き物を締め付けて最大HPを吸収',
         messages: ['<USER>は体内で<TARGET>を締め付け、エネルギーを吸収する！'],
         damage: 15, // Max HP reduction amount
         weight: 25,
@@ -172,7 +172,7 @@ export const scorpionCarrierData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '体内運搬',
-                    description: '体内のエルナルを目的地まで運搬する',
+                    description: '体内の生き物を目的地まで運搬する',
                     messages: [
                         '<USER>は体内の<TARGET>を目的地まで運搬している...',
                         '<TARGET>はサソリの体内で消化されることはないが、エネルギーを吸収され続ける...',
@@ -183,7 +183,7 @@ export const scorpionCarrierData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '栄養剤注入',
-                    description: '体内のエルナルに栄養剤を注入する',
+                    description: '体内の生き物に栄養剤を注入する',
                     messages: [
                         '<USER>は体内の注射器で<TARGET>に栄養剤を注入する...',
                         '<TARGET>は強制的に栄養剤を摂取させられる...',
@@ -194,7 +194,7 @@ export const scorpionCarrierData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: 'エネルギー吸収',
-                    description: '体内のエルナルからエネルギーを吸収する',
+                    description: '体内の生き物からエネルギーを吸収する',
                     messages: [
                         '<USER>は<TARGET>からエネルギーを吸収している...',
                         '<TARGET>のエネルギーがサソリに吸収されていく...',
@@ -205,7 +205,7 @@ export const scorpionCarrierData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: 'マナ吸収',
-                    description: '体内のエルナルからマナを吸収する',
+                    description: '体内の生き物からマナを吸収する',
                     messages: [
                         '<USER>は<TARGET>からマナを吸収している...',
                         '<TARGET>のマナがサソリに吸収されていく...',
@@ -216,7 +216,7 @@ export const scorpionCarrierData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '体内薬剤循環',
-                    description: '体内で薬剤を循環させてエルナルを無力化する',
+                    description: '体内で薬剤を循環させて生き物を無力化する',
                     messages: [
                         '<USER>は体内で薬剤を循環させている...',
                         '<TARGET>は薬剤によって完全に無力化される...',
@@ -356,10 +356,9 @@ scorpionCarrierData.getDialogue = function(situation: 'battle-start' | 'player-r
 // Special finishing move sequence for eaten doomed state
 scorpionCarrierData.finishingMove = function(): string[] {
     return [
-        'エルナルの最大HPが0になってしまった...',
-        'サソリは体内のエルナルを完全に支配下に置く！',
-        'エルナルはサソリの体内で永遠に運搬され続ける！',
+        'サソリは体内の<TARGET>を完全に支配下に置く！',
+        '<TARGET>はサソリの体内で永遠に運搬され続ける！',
         'サソリは満足そうに砂漠を歩き始める...',
-        'エルナルは運び屋のサソリの永遠の荷物となった...',
+        '<TARGET>は運び屋のサソリの永遠の荷物となった...',
     ];
 };

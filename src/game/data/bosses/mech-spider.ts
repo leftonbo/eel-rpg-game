@@ -98,7 +98,7 @@ const mechSpiderActionsKnockoutRestrained: BossAction[] = [
     {
         type: ActionType.CocoonAttack,
         name: '縮小プロセス',
-        description: 'エルナルを繭にして縮小液で満たす',
+        description: '捕まえた対象を繭にして縮小液で満たす',
         messages: [
             '<USER>は<TARGET>を合成糸でぐるぐる巻きにし始める！',
             '<TARGET>が繭の中に閉じ込められ、内部が縮小液で満たされる！'
@@ -116,7 +116,7 @@ const mechSpiderActionsCocoon: BossAction[] = [
     {
         type: ActionType.CocoonAction,
         name: '繭の抱擁',
-        description: '繭状態のエルナルをゆらゆら揺らして縮小させる',
+        description: '繭状態の対象をゆらゆら揺らして縮小させる',
         messages: ['<USER>は繭を優しく抱擁し、ゆらゆらと揺らしている...'],
         damage: 10, // Max HP reduction amount
         weight: 30,
@@ -179,7 +179,7 @@ export const mechSpiderData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '体内修理装置起動',
-                    description: '体内の修理装置でエルナルに栄養剤を注入する',
+                    description: '体内の修理装置で生命体に栄養剤を注入する',
                     messages: [
                         'REPAIR SYSTEM ACTIVE...',
                         '<USER>の体内修理装置が<TARGET>に栄養剤を注入している...',
@@ -190,7 +190,7 @@ export const mechSpiderData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '体内マッサージ処理',
-                    description: '体内の機械腕でエルナルをマッサージする',
+                    description: '体内の機械腕で生命体をマッサージする',
                     messages: [
                         'MASSAGE PROTOCOL INITIATED...',
                         '<USER>の体内マッサージ機が<TARGET>の体を挟み込む...',
@@ -201,7 +201,7 @@ export const mechSpiderData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '無意味な修理作業',
-                    description: '意味のない修理作業をエルナルに施し続ける',
+                    description: '意味のない修理作業を生命体に施し続ける',
                     messages: [
                         'PROCESSING REPAIR SEQUENCE...',
                         '<USER>が<TARGET>にがらくたのようなパーツを接着しようとする...',
@@ -212,7 +212,7 @@ export const mechSpiderData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '体内拘束システム',
-                    description: '体内の拘束システムでエルナルを固定し続ける',
+                    description: '体内の拘束システムで生命体を固定し続ける',
                     messages: [
                         'RESTRAINT SYSTEM ACTIVE...',
                         '<USER>の体内拘束システムが<TARGET>を固定している...',
@@ -223,7 +223,7 @@ export const mechSpiderData: BossData = {
                 {
                     type: ActionType.PostDefeatedAttack,
                     name: '修理完了検査',
-                    description: '修理が完了したかエルナルを検査し続ける',
+                    description: '修理が完了したか生命体を検査し続ける',
                     messages: [
                         'REPAIR INSPECTION PROTOCOL...',
                         '<USER>が<TARGET>の修理完了を検査している...',
@@ -380,10 +380,10 @@ mechSpiderData.getDialogue = function(situation: 'battle-start' | 'player-restra
 // Special finishing move sequence for cocoon doomed state
 mechSpiderData.finishingMove = function(): string[] {
     return [
-        'エルナルは繭の中で完全に小さくなってしまった...',
-        '機械のクモは繭に噛みつき、中身をエルナルごと吸い上げる！',
-        'エルナルが機械のクモの体内に取り込まれた！',
-        '機械のクモは体内のエルナルを合成糸で拘束し、体内修理装置に縛りつける！',
-        '修理装置に縛り付けられたエルナルは、機械のクモが満足するまで意味のない修理をされ続ける...',
+        '<TARGET>は繭の中で完全に小さくなってしまった...',
+        '機械のクモは繭に噛みつき、中身を<TARGET>ごと吸い上げる！',
+        '<TARGET>が機械のクモの体内に取り込まれた！',
+        '機械のクモは体内の<TARGET>を合成糸で拘束し、体内修理装置に縛りつける！',
+        '修理装置に縛り付けられた<TARGET>は、機械のクモが満足するまで意味のない修理をされ続ける...',
     ];
 };
