@@ -97,6 +97,17 @@ export class BossSelectScene {
                 if (textElement) {
                     textElement.textContent = bossData.description;
                 }
+                
+                // Add guest character attribution if available
+                if (bossData.guestCharacterInfo) {
+                    let attributionElement = card.querySelector('.guest-attribution');
+                    if (!attributionElement) {
+                        attributionElement = document.createElement('div');
+                        attributionElement.className = 'guest-attribution';
+                        card.querySelector('.card-body')?.appendChild(attributionElement);
+                    }
+                    attributionElement.textContent = `Guest Character by ${bossData.guestCharacterInfo.creator}`;
+                }
             }
         });
     }
@@ -149,6 +160,17 @@ export class BossSelectScene {
                     </div>
                 </div>
             `;
+        }
+        
+        // Add guest character attribution if available
+        const modalGuestInfo = document.getElementById('modal-boss-guest-info');
+        if (modalGuestInfo) {
+            if (bossData.guestCharacterInfo) {
+                modalGuestInfo.innerHTML = `<small class="text-muted">Guest Character by ${bossData.guestCharacterInfo.creator}</small>`;
+                modalGuestInfo.classList.remove('d-none');
+            } else {
+                modalGuestInfo.classList.add('d-none');
+            }
         }
     }
     
