@@ -59,7 +59,7 @@ interface BossAction {
     type: ActionType;               // 行動タイプ
     name: string;                   // 行動名
     description: string;            // 行動説明
-    messages?: string[];            // メッセージ（<USER>, <TARGET>, <SKILL>を使用）
+    messages?: string[];            // メッセージ（<USER>, <TARGET>, <ACTION>を使用）
     damage?: number;                // ダメージ量
     statusEffect?: StatusEffectType; // 状態異常タイプ
     statusDuration?: number;        // 状態異常持続ターン

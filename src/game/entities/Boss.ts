@@ -15,7 +15,7 @@ export function formatMessageSkill(template: string, boss: Boss, player: Player,
     return template
         .replace(/<USER>/g, boss.displayName)
         .replace(/<TARGET>/g, player.name)
-        .replace(/<SKILL>/g, action.name)
+        .replace(/<ACTION>/g, action.name)
 }
 
 export enum ActionType {
@@ -34,7 +34,7 @@ export interface BossAction {
     type: ActionType;
     name: string;
     description: string;
-    messages?: string[]; // Optional messages with format specifiers: <USER>, <TARGET>, <SKILL>
+    messages?: string[]; // Optional messages with format specifiers: <USER>, <TARGET>, <ACTION>
     damage?: number;
     statusEffect?: StatusEffectType;
     statusDuration?: number;
