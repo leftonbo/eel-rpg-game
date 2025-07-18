@@ -56,12 +56,6 @@ export class BossSelectScene {
             });
         }
         
-        // Save data management buttons
-        this.initializeSaveDataButtons();
-        
-        // Debug mode controls
-        this.initializeDebugControls();
-        
         // Initialize modal save data buttons
         this.initializeModalSaveDataButtons();
     }
@@ -76,7 +70,7 @@ export class BossSelectScene {
         this.updatePlayerStatus();
         
         // Show/hide debug controls based on debug mode
-        this.updateDebugControlsVisibility();
+        this.updateDebugControlsVisibilityInModal();
     }
     
     private updateBossCards(): void {
@@ -149,6 +143,17 @@ export class BossSelectScene {
                     </div>
                 </div>
             `;
+        }
+        
+        // Add guest character attribution if available
+        const modalGuestInfo = document.getElementById('modal-boss-guest-info');
+        if (modalGuestInfo) {
+            if (bossData.guestCharacterInfo) {
+                modalGuestInfo.innerHTML = `<small class="text-muted">Guest Character by ${bossData.guestCharacterInfo.creator}</small>`;
+                modalGuestInfo.classList.remove('d-none');
+            } else {
+                modalGuestInfo.classList.add('d-none');
+            }
         }
     }
     
@@ -509,32 +514,6 @@ export class BossSelectScene {
         }
     }
     
-    /**
-     * Initialize save data management buttons
-     * @deprecated Use initializeModalSaveDataButtons instead
-     */
-    private initializeSaveDataButtons(): void {
-        // Legacy implementation - buttons now removed from main screen
-        // Functionality moved to modal
-    }
-    
-    /**
-     * Initialize debug controls
-     * @deprecated Use initializeModalSaveDataButtons instead
-     */
-    private initializeDebugControls(): void {
-        // Legacy implementation - buttons now removed from main screen
-        // Functionality moved to modal
-    }
-    
-    /**
-     * Update debug controls visibility based on debug mode
-     * @deprecated Use updateDebugControlsVisibilityInModal instead
-     */
-    private updateDebugControlsVisibility(): void {
-        // Legacy implementation - controls now removed from main screen
-        // Functionality moved to modal
-    }
     
     /**
      * Check if debug mode is enabled

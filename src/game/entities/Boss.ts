@@ -63,6 +63,10 @@ export interface BossData {
     getDialogue?: (situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') => string;
     finishingMove?: () => string[];
     icon?: string;
+    guestCharacterInfo?: {
+        creator: string;
+        source?: string;
+    };
 }
 
 export class Boss extends Actor {
@@ -76,6 +80,10 @@ export class Boss extends Actor {
     public specialDialogues: Map<string, string> = new Map();
     public finishingMove?: () => string[];
     public icon: string;
+    public guestCharacterInfo?: {
+        creator: string;
+        source?: string;
+    };
     
     constructor(data: BossData) {
         // Boss has unlimited MP (無尽蔵) - set to a high value
@@ -89,6 +97,7 @@ export class Boss extends Actor {
         this.aiStrategy = data.aiStrategy;
         this.finishingMove = data.finishingMove;
         this.icon = data.icon || '👹';
+        this.guestCharacterInfo = data.guestCharacterInfo;
     }
 
     /**
