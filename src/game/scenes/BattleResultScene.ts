@@ -271,10 +271,9 @@ function checkNewUnlocks(abilityType: AbilityType, newLevel: number): { weapons:
     if (abilityType === AbilityType.CraftWork) {
         const itemUnlocks: { [level: number]: string } = {
             1: '元気ドリンク',
-            2: '手投げ爆弾',
-            4: 'アドレナリン注射',
-            7: 'エリクサー',
-            10: 'おまもり'
+            3: 'アドレナリン注射',
+            5: 'エリクサー',
+            7: 'おまもり'
         };
         if (itemUnlocks[newLevel]) {
             unlocks.items.push(itemUnlocks[newLevel]);
