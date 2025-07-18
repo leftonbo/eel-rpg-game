@@ -1,5 +1,7 @@
 # GitHub Copilot Instructions
 
+use context 7
+
 この指示書は、GitHub
 Copilotがeel-rpg-gameプロジェクトで効果的にコード補完を行うためのガイドラインです。
 
