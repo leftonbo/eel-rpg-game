@@ -112,7 +112,7 @@ const scorpionCarrierActionsEaten: BossAction[] = [
     {
         type: ActionType.StatusAttack,
         name: '脱力剤注入',
-        description: '生き物に体内注射で脱力剤を注入する',
+        description: '体内の生き物に脱力剤を注入する',
         messages: ['<USER>は体内の注射器で<TARGET>に脱力剤を注入する！'],
         damage: 8,
         statusEffect: StatusEffectType.Weakening,
