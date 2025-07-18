@@ -395,9 +395,21 @@ export class BattleScene {
                         btn.classList.toggle('disabled', !this.playerTurn);
                     }
                 } else if (isRestrained) {
-                    // For restrained state, show struggle and stay-still buttons
-                    btn.classList.remove('d-none');
-                    btn.classList.toggle('disabled', !this.playerTurn);
+                    // For restrained state, show struggle and stay-still buttons (if unlocked)
+                    if (btnId === 'stay-still-btn') {
+                        // Only show stay-still button if the skill is unlocked
+                        const hasStayStillSkill = this.player?.hasSkill('stay-still') ?? false;
+                        if (hasStayStillSkill) {
+                            btn.classList.remove('d-none');
+                            btn.classList.toggle('disabled', !this.playerTurn);
+                        } else {
+                            btn.classList.add('d-none');
+                        }
+                    } else {
+                        // Show other buttons normally
+                        btn.classList.remove('d-none');
+                        btn.classList.toggle('disabled', !this.playerTurn);
+                    }
                 } else {
                     // Normal state, hide all special buttons
                     btn.classList.add('d-none');
