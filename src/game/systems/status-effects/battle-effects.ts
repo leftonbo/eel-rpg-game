@@ -33,6 +33,14 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         isDebuff: true,
         onTick: (target: Actor, _effect: StatusEffect) => {
             target.takeDamage(8);
+        },
+        messages: {
+            onApplyPlayer: '{name}は火だるま状態になった！',
+            onApplyBoss: '{name}は火だるま状態になった！',
+            onTickPlayer: '{name}は火だるま状態で{damage}のダメージを受けた！',
+            onTickBoss: '{name}は火だるま状態で{damage}のダメージを受けた！',
+            onRemovePlayer: '{name}の火だるま状態が回復した',
+            onRemoveBoss: '{name}の火だるま状態が回復した'
         }
     }],
     [StatusEffectType.Charm, {
@@ -66,6 +74,14 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         isDebuff: true,
         onTick: (target: Actor, _effect: StatusEffect) => {
             target.takeDamage(3);
+        },
+        messages: {
+            onApplyPlayer: '{name}は毒状態になった！',
+            onApplyBoss: '{name}は毒状態になった！',
+            onTickPlayer: '{name}は毒により{damage}のダメージを受けた！',
+            onTickBoss: '{name}は毒により{damage}のダメージを受けた！',
+            onRemovePlayer: '{name}の毒が抜けた',
+            onRemoveBoss: '{name}の毒が抜けた'
         }
     }],
     [StatusEffectType.Invincible, {
@@ -147,6 +163,14 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         onTick: (target: Actor, _effect: StatusEffect) => {
             const damage = Math.floor(target.maxHp / 10);
             target.takeDamage(damage);
+        },
+        messages: {
+            onApplyPlayer: '{name}は強力なサソリ毒に冒された！',
+            onApplyBoss: '{name}は強力なサソリ毒に冒された！',
+            onTickPlayer: '{name}はサソリ毒により{damage}のダメージを受けた！',
+            onTickBoss: '{name}はサソリ毒により{damage}のダメージを受けた！',
+            onRemovePlayer: '{name}の体からサソリ毒が抜けた',
+            onRemoveBoss: '{name}の体からサソリ毒が抜けた'
         }
     }],
     [StatusEffectType.Weakening, {
@@ -245,6 +269,14 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         isDebuff: true,
         onTick: (target: Actor, _effect: StatusEffect) => {
             target.takeDamage(4);
+        },
+        messages: {
+            onApplyPlayer: '{name}は蒸し暑さに包まれた！',
+            onApplyBoss: '{name}は蒸し暑さに包まれた！',
+            onTickPlayer: '{name}は熱風により{damage}のダメージを受けた！',
+            onTickBoss: '{name}は熱風により{damage}のダメージを受けた！',
+            onRemovePlayer: '{name}を包む蒸し暑さが収まった',
+            onRemoveBoss: '{name}を包む蒸し暑さが収まった'
         }
     }]
 ]);
