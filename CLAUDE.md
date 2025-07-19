@@ -52,11 +52,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### 新ボス追加手順
 
-1. `src/game/data/bosses/new-boss.ts` 作成
-2. BossDataインターフェースに従い設定（HP、攻撃力、actions配列）
-3. aiStrategy関数でボス固有の戦術実装
-4. `src/game/data/index.ts` にエクスポート追加
-5. `src/index.html` のボス選択画面にカード追加
+新ボスの追加方法については、[包括的なボス追加ガイド](docs/boss-creation-guide.md)を参照してください。
+
+概要：
+1. `src/game/data/bosses/{boss-id}.ts` でボスデータ作成
+2. `src/game/data/index.ts` にエクスポート追加
+3. `src/index.html` のボス選択画面にカード追加
+4. 必要に応じて新しい状態異常を追加
 
 ### 状態異常追加
 
@@ -69,7 +71,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - Player.ts: maxHp=100, baseAttackPower=5
 - 状態異常ダメージ: 火だるま=8, 毒=3（毎ターン）
-- ボスHP: 沼のドラゴン=200, 闇のおばけ=150, 機械のクモ=180
+- 現在のボス（9体）: 沼のドラゴン=400, 闇のおばけ=150, 機械のクモ=180, ドリームデーモン=240, スコーピオンキャリア=260, みかんドラゴン=320, 海のクラーケン=350, アクアサーペント=350, クリーンマスター=280
 - コミット時はgitmojiと日本語メッセージを使用
 
 ## TypeScript設定
@@ -116,4 +118,4 @@ Claude Codeは以下の方針に従ってgitコミットを行うこと
 
 - コマンド使用時はシングルクォーテーション `'` を使用すること
 - PRタイトルと内容は日本語で記述すること
-- テンプレートは `.github/PULL_REQUEST_TEMPLATE.md` を使用
+- テンプレートは [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) を使用
