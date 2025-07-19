@@ -49,7 +49,7 @@ const aquaSerpentActions: BossAction[] = [
         canUse: (boss, player) => {
             // Only use when HP is below 30% and has cooldown
             return boss.getHpPercentage() <= 30 && 
-                   !boss.hasUsedSpecialMove && 
+                   !boss.getCustomVariable<boolean>('hasUsedSpecialMove') && 
                    !player.isRestrained() && 
                    !player.isEaten();
         }
@@ -178,20 +178,25 @@ export const aquaSerpentData: BossData = {
         'シャアアア...美味しそうだ',
         '透明な体内で...ゆっくりと味わおう'
     ],
+    customVariables: {
+        hasUsedSpecialMove: false,
+        specialMoveCooldown: 0
+    },
     aiStrategy: (boss, player, turn) => {
         // Mark special move as used when using 深海の審判
         const specialMove = aquaSerpentActions.find(action => action.name === '深海の審判');
-        if (specialMove && boss.getHpPercentage() <= 30 && !boss.hasUsedSpecialMove) {
-            boss.hasUsedSpecialMove = true;
-            boss.specialMoveCooldown = 20;
+        if (specialMove && boss.getHpPercentage() <= 30 && !boss.getCustomVariable<boolean>('hasUsedSpecialMove')) {
+            boss.setCustomVariable('hasUsedSpecialMove', true);
+            boss.setCustomVariable('specialMoveCooldown', 20);
             return specialMove;
         }
 
         // Reset special move cooldown
-        if (boss.specialMoveCooldown && boss.specialMoveCooldown > 0) {
-            boss.specialMoveCooldown--;
-            if (boss.specialMoveCooldown <= 0) {
-                boss.hasUsedSpecialMove = false;
+        const cooldown = boss.getCustomVariable<number>('specialMoveCooldown');
+        if (cooldown && cooldown > 0) {
+            boss.setCustomVariable('specialMoveCooldown', cooldown - 1);
+            if (cooldown - 1 <= 0) {
+                boss.setCustomVariable('hasUsedSpecialMove', false);
             }
         }
 
