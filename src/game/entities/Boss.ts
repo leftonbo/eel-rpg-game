@@ -68,6 +68,17 @@ export interface BossData {
         creator: string;
         source?: string;
     };
+    /**
+     * ボス固有のカスタム変数
+     * AI戦略で使用する状態管理や行動制御のための変数を定義
+     * @example
+     * {
+     *   fireBreathCooldown: 0,    // 火のブレス攻撃のクールダウン
+     *   aggressionLevel: 1,       // 攻撃性レベル（1-3）
+     *   enrageThreshold: 30,      // 怒り状態発動のHP閾値
+     *   specialMoveUsed: false    // 特殊技使用フラグ
+     * }
+     */
     customVariables?: Record<string, any>;
 }
 
@@ -88,6 +99,11 @@ export class Boss extends Actor {
     };
     public hasUsedSpecialMove: boolean = false;
     public specialMoveCooldown: number = 0;
+    /**
+     * ボス固有のカスタム変数
+     * AI戦略での状態管理、クールダウン管理、行動制御などに使用
+     * ボスデータの初期値をコピーして初期化される
+     */
     public customVariables: Record<string, any> = {};
     
     constructor(data: BossData) {
@@ -171,10 +187,23 @@ export class Boss extends Actor {
 
     /**
      * 数値型カスタム変数を増減する
+     * 既存の値が数値でない場合はTypeErrorを投げる
+     * 変数が存在しない場合は0として扱う
+     * @param key 変数名
+     * @param delta 増減値
+     * @returns 変更後の値
+     * @throws {TypeError} 既存の値が数値型でない場合
      */
     modifyCustomVariable(key: string, delta: number): number {
-        const currentValue = this.getCustomVariable<number>(key) || 0;
-        const newValue = currentValue + delta;
+        const currentValue = this.getCustomVariable(key);
+        
+        // 変数が存在する場合は型チェック
+        if (currentValue !== undefined && typeof currentValue !== 'number') {
+            throw new TypeError(`Cannot modify custom variable '${key}': existing value is not a number (current type: ${typeof currentValue})`);
+        }
+        
+        const numericValue = currentValue ?? 0;
+        const newValue = numericValue + delta;
         this.setCustomVariable(key, newValue);
         return newValue;
     }
