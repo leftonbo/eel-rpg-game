@@ -288,13 +288,11 @@ export class Boss extends Actor {
     }
     
     private calculateActionDamage(action: BossAction): number | undefined {
-        if (action.damageFormula)
-        {
+        if (action.damageFormula) {
             return action.damageFormula(this); // Use damage formula if provided
         }
         
-        if (action.damage)
-        {
+        if (action.damage) {
             return action.damage; // Use fixed damage if provided [deprecated]
         }
         
