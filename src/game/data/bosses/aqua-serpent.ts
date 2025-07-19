@@ -40,6 +40,11 @@ const aquaSerpentActions: BossAction[] = [
         type: ActionType.Attack,
         name: '深海の審判',
         description: '海水を操り巨大な水の檻を作成',
+        messages: [
+            '「シャアアアアアア...」',
+            '<USER>の体が青白く光り、海水が天高く舞い上がる！',
+            '巨大な水の檻が<TARGET>を包み込み、深海の圧力で押し潰そうとする！'
+        ],
         damage: 45,
         weight: 5,
         playerStateCondition: 'normal',
