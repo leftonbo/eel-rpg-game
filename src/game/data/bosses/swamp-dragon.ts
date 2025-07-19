@@ -40,7 +40,7 @@ const swampDragonActions: BossAction[] = [
             '<USER>は尻尾で<TARGET>を巻き付けてきた！',
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.9,
-        weight: 5,
+        weight: 10,
         canUse: (_boss, player, _turn) => {
             // Only use restraint if player isn't already restrained and occasionally
             return !player.isRestrained() && !player.isEaten() && Math.random() < 0.3;
