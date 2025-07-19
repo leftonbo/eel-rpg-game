@@ -35,7 +35,7 @@ export interface BossAction {
     name: string;
     description: string;
     messages?: string[]; // Optional messages with format specifiers: <USER>, <TARGET>, <ACTION>
-    damage?: number;
+    damage?: number;  // [Deprecated] Fixed damage value (use damageFormula instead)
     damageFormula?: (actor: Actor) => number; // Function to calculate damage based on actor's stats
     statusEffect?: StatusEffectType;
     statusDuration?: number;
