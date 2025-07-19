@@ -66,7 +66,8 @@ interface BossAction {
     name: string;                   // 行動名
     description: string;            // 行動説明
     messages?: string[];            // メッセージ（<USER>, <TARGET>, <ACTION>を使用）
-    damage?: number;                // ダメージ量
+    damage?: number;                // [非推奨] 固定ダメージ量（damageFormulaを使用推奨）
+    damageFormula?: (user: Boss) => number; // ダメージ計算式（ボスのステータスに基づく）
     statusEffect?: StatusEffectType; // 状態異常タイプ
     statusDuration?: number;        // 状態異常持続ターン
     weight: number;                 // AI選択重み
@@ -160,7 +161,7 @@ const newBossActions: BossAction[] = [
         type: ActionType.Attack,
         name: '基本攻撃',
         description: '基本的な攻撃',
-        damage: 15,
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.2),
         weight: 40,
         playerStateCondition: 'normal'
     },
@@ -173,7 +174,7 @@ const newBossActions: BossAction[] = [
             '<USER>が<TARGET>の生命力を吸収している...',
             '<TARGET>の最大HPが減少していく...'
         ],
-        damage: 25,
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 2.0),
         weight: 30,
         playerStateCondition: 'eaten'
     },
@@ -181,7 +182,7 @@ const newBossActions: BossAction[] = [
         type: ActionType.Attack,
         name: '特殊攻撃',
         description: '特殊な効果を持つ攻撃',
-        damage: 20,
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.6),
         weight: 20,
         playerStateCondition: 'normal',
         onUse: (boss, player) => {
