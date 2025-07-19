@@ -1,4 +1,4 @@
-import { BossData, ActionType, BossAction } from '../../entities/Boss';
+import { BossData, ActionType, BossAction, Boss } from '../../entities/Boss';
 import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
 const mechSpiderActions: BossAction[] = [
@@ -8,7 +8,7 @@ const mechSpiderActions: BossAction[] = [
         name: 'レーザーショット',
         description: '精密なレーザーで攻撃する',
         messages: ['<USER>は精密なレーザーで<TARGET>を狙撃する！'],
-        damage: 10,
+        damageFormula: (user: Boss) => user.attackPower * 1.0,
         hitRate: 0.9,
         weight: 20
     },
@@ -17,7 +17,7 @@ const mechSpiderActions: BossAction[] = [
         name: 'クモキック',
         description: '強力だが不正確な蹴り攻撃',
         messages: ['<USER>は機械の脚で<TARGET>を蹴り飛ばそうとする！'],
-        damage: 15,
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.5),
         hitRate: 0.6,
         weight: 15,
         playerStateCondition: 'normal'
@@ -28,7 +28,7 @@ const mechSpiderActions: BossAction[] = [
         name: 'ショックバイト',
         description: '噛みついて電気ショックを与える',
         messages: ['<USER>は<TARGET>に噛みついて電気ショックを流す！'],
-        damage: 10,
+        damageFormula: (user: Boss) => user.attackPower * 1.0,
         statusEffect: StatusEffectType.Stunned,
         statusChance: 0.30,
         hitRate: 0.7,
@@ -42,7 +42,7 @@ const mechSpiderActions: BossAction[] = [
         name: 'スパイダーグラブ',
         description: '抱きしめるように拘束する',
         messages: ['<USER>は機械の腕で<TARGET>を抱きしめて拘束しようとする！'],
-        damage: 15,
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.5),
         weight: 25,
         canUse: (_boss, player, _turn) => {
             return (!player.isRestrained() && !player.isCocoon() && !player.isEaten() && Math.random() < 0.6) || player.isKnockedOut();
@@ -68,7 +68,7 @@ const mechSpiderActionsRestrained: BossAction[] = [
         name: 'クモキック',
         description: '強力だが不正確な蹴り攻撃',
         messages: ['<USER>は機械の脚で<TARGET>を蹴りつける！'],
-        damage: 15,
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.5),
         weight: 20
     },
     {
@@ -77,7 +77,7 @@ const mechSpiderActionsRestrained: BossAction[] = [
         name: 'ショックバイト',
         description: '噛みついて電気ショックを与える',
         messages: ['<USER>は<TARGET>に噛みついて電気ショックを流す！'],
-        damage: 10,
+        damageFormula: (user: Boss) => user.attackPower * 1.0,
         statusEffect: StatusEffectType.Stunned,
         statusChance: 0.50,
         hitRate: 0.95,
@@ -88,7 +88,7 @@ const mechSpiderActionsRestrained: BossAction[] = [
         name: 'スパイダーハグ',
         description: '抱きしめるように締め付ける',
         messages: ['<USER>は機械の腕で<TARGET>を締め付ける！'],
-        damage: 18,
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.8),
         weight: 25
     }
 ];
@@ -118,7 +118,7 @@ const mechSpiderActionsCocoon: BossAction[] = [
         name: '繭の抱擁',
         description: '繭状態の対象をゆらゆら揺らして縮小させる',
         messages: ['<USER>は繭を優しく抱擁し、ゆらゆらと揺らしている...'],
-        damage: 10, // Max HP reduction amount
+        damageFormula: (user: Boss) => user.attackPower * 1.0, // Max HP reduction amount
         weight: 30,
         playerStateCondition: 'cocoon',
         canUse: (_boss, player, _turn) => {
@@ -130,7 +130,7 @@ const mechSpiderActionsCocoon: BossAction[] = [
         name: '繭の圧縮',
         description: '繭を抱きしめて縮小液を馴染ませる',
         messages: ['<USER>は繭を強く抱きしめ、縮小液を<TARGET>に馴染ませる！'],
-        damage: 18, // Max HP reduction amount
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.8), // Max HP reduction amount
         weight: 25,
         playerStateCondition: 'cocoon',
         canUse: (_boss, player, _turn) => {
@@ -142,7 +142,7 @@ const mechSpiderActionsCocoon: BossAction[] = [
         name: '縮小液循環',
         description: '繭内部の縮小液を循環させてエネルギーを得る',
         messages: ['<USER>は繭内部の縮小液を循環させ、<TARGET>のエネルギーを吸収する！'],
-        damage: 15, // Max HP reduction amount
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.5), // Max HP reduction amount
         healRatio: 2.0, // Heal 2x the amount reduced + gain max HP
         weight: 20,
         playerStateCondition: 'cocoon',
