@@ -32,6 +32,25 @@ export function applyCustomDamageVariance(baseDamage: number, minVariance: numbe
 
 /**
  * 攻撃結果を計算する（ミス、クリティカル、通常攻撃）
+ * @param baseDamage 基本ダメージ（小数点を許可）
+ * @param isTargetKnockedOut ターゲットが行動不能かどうか
+ * @param customHitRate カスタムヒット率（デフォルトは1.0）
+ * @param customCriticalRate カスタムクリティカル率（デフォルトは0.0）
+ * @param damageVarianceMin ダメージの最小ゆらぎ（デフォルトは-0.2）
+ * @param damageVarianceMax ダメージの最大ゆらぎ（デフォルトは0.2）
+ * @returns 攻撃結果オブジェクト
+ * @property {number} damage - 実際のダメージ
+ * @property {boolean} isMiss - ミスしたかどうか
+ * @property {boolean} isCritical - クリティカルヒットかどうか
+ * @property {string} message - 攻撃メッセージ（現在は空文字列）
+ * @remarks
+ * - `baseDamage` が0以下の場合、ダメージは0として扱われます。
+ * - `isTargetKnockedOut` がtrueの場合、ヒット率は1.0（必ずヒット）になります。
+ * - `customHitRate` と `customCriticalRate` を指定することで、ヒット率とクリティカル率をカスタマイズできます。
+ * - `damageVarianceMin` と `damageVarianceMax` を指定することで、ダメージのゆらぎをカスタマイズできます。
+ * - クリティカルヒットの場合、ダメージは通常の3倍になります。
+ * - ミスした場合、ダメージは0になります。
+ * - ダメージは最終計算時に四捨五入されます。
  */
 export function calculateAttackResult(
     baseDamage: number, 
