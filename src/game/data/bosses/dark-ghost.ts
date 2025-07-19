@@ -6,7 +6,7 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.Attack,
         name: '影の爪',
         description: '闇から現れる爪で攻撃',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.8),
+        damageFormula: (user: Boss) => user.attackPower * 0.8,
         hitRate: 0.95,
         weight: 20,
         playerStateCondition: 'normal'
@@ -15,7 +15,7 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '魅惑の囁き',
         description: '心を惑わす声で魅了する',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.4),
+        damageFormula: (user: Boss) => user.attackPower * 0.4,
         hitRate: 0.95,
         statusEffect: StatusEffectType.Charm,
         weight: 30
@@ -24,7 +24,7 @@ const darkGhostActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '毒の息',
         description: '有毒な息を吐く',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.7),
+        damageFormula: (user: Boss) => user.attackPower * 0.7,
         hitRate: 0.95,
         statusEffect: StatusEffectType.Poison,
         weight: 25
@@ -61,7 +61,7 @@ const darkGhostActions: BossAction[] = [
             '「味見しちゃうヨ...」',
             '<USER>は舌で<TARGET>をなめまわしてきた！'
         ],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.3),
+        damageFormula: (user: Boss) => user.attackPower * 1.3,
         weight: 30,
         playerStateCondition: 'restrained',
         healRatio: 1.0
@@ -161,7 +161,7 @@ export const darkGhostData: BossData = {
             return {
                 type: ActionType.DevourAttack,
                 name: '魂の捕食',
-                damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.5),
+                damageFormula: (user: Boss) => user.attackPower * 1.5,
                 description: '体内にいる獲物の生命エネルギーを吸収する',
                 messages: [
                     '「キミのタマシイ、おいしいネ...」',

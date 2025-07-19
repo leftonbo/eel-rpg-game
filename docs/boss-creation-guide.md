@@ -161,7 +161,7 @@ const newBossActions: BossAction[] = [
         type: ActionType.Attack,
         name: '基本攻撃',
         description: '基本的な攻撃',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.2),
+        damageFormula: (user: Boss) => user.attackPower * 1.2,
         weight: 40,
         playerStateCondition: 'normal'
     },
@@ -174,7 +174,7 @@ const newBossActions: BossAction[] = [
             '<USER>が<TARGET>の生命力を吸収している...',
             '<TARGET>の最大HPが減少していく...'
         ],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 2.0),
+        damageFormula: (user: Boss) => user.attackPower * 2.0,
         weight: 30,
         playerStateCondition: 'eaten'
     },
@@ -182,7 +182,7 @@ const newBossActions: BossAction[] = [
         type: ActionType.Attack,
         name: '特殊攻撃',
         description: '特殊な効果を持つ攻撃',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.6),
+        damageFormula: (user: Boss) => user.attackPower * 1.6,
         weight: 20,
         playerStateCondition: 'normal',
         onUse: (boss, player) => {

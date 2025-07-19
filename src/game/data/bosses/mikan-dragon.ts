@@ -7,7 +7,7 @@ const mikanDragonActions: BossAction[] = [
         name: '蜜柑の爪',
         description: '蜜柑のような鋭い爪で攻撃',
         messages: ['<USER>は蜜柑のような鋭い爪で<TARGET>を攻撃した！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.9),
+        damageFormula: (user: Boss) => user.attackPower * 0.9,
         weight: 25,
         playerStateCondition: 'normal'
     },
@@ -16,7 +16,7 @@ const mikanDragonActions: BossAction[] = [
         name: '蜜柑の尻尾',
         description: '蜜柑色の尻尾で叩く',
         messages: ['<USER>は蜜柑色の尻尾で<TARGET>を叩いた！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.1),
+        damageFormula: (user: Boss) => user.attackPower * 1.1,
         weight: 20,
         playerStateCondition: 'normal'
     },
@@ -25,7 +25,7 @@ const mikanDragonActions: BossAction[] = [
         name: '蜜柑の香り',
         description: '甘い蜜柑の香りで獲物を魅了する',
         messages: ['<USER>は甘い蜜柑の香りを放った！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.6),
+        damageFormula: (user: Boss) => user.attackPower * 0.6,
         hitRate: 0.9,
         statusEffect: StatusEffectType.Charm,
         weight: 30,
@@ -41,7 +41,7 @@ const mikanDragonActions: BossAction[] = [
         name: '蜜柑の粘液',
         description: '蜜柑の汁のような粘液で獲物をネバネバにする',
         messages: ['<USER>は口から蜜柑のような粘液を放った！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.7),
+        damageFormula: (user: Boss) => user.attackPower * 0.7,
         hitRate: 0.95,
         statusEffect: StatusEffectType.Slimed,
         weight: 25
@@ -69,7 +69,7 @@ const mikanDragonActions: BossAction[] = [
             '「フルルル...」',
             '<USER>は巻き付けた舌で<TARGET>を締め付ける！'
         ],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.3),
+        damageFormula: (user: Boss) => user.attackPower * 1.3,
         weight: 30,
         playerStateCondition: 'restrained'
     },
@@ -81,7 +81,7 @@ const mikanDragonActions: BossAction[] = [
             '「フルルル...」',
             '<USER>は<TARGET>を体ごとキスして体力を吸収する！'
         ],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.6),
+        damageFormula: (user: Boss) => user.attackPower * 1.6,
         weight: 25,
         playerStateCondition: 'restrained',
         healRatio: 1.0
@@ -94,7 +94,7 @@ const mikanDragonActions: BossAction[] = [
             '「フルルル...」',
             '<USER>は舌を<TARGET>の口に入れて蜜柑の汁を注入している！'
         ],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.1),
+        damageFormula: (user: Boss) => user.attackPower * 1.1,
         statusEffect: StatusEffectType.Charm,
         weight: 20,
         playerStateCondition: 'restrained'
@@ -176,7 +176,7 @@ export const mikanDragonData: BossData = {
                         '「フルルル...」',
                         '<USER>の体内触手が<TARGET>の口に蜜柑汁を注入している！'
                     ],
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.4),
+                    damageFormula: (user: Boss) => user.attackPower * 1.4,
                     statusEffect: StatusEffectType.Charm,
                     weight: 1
                 },
@@ -188,7 +188,7 @@ export const mikanDragonData: BossData = {
                         '「フルルル...」',
                         '<USER>の胃壁が<TARGET>を蜜柑の果肉のように優しくマッサージしている！'
                     ],
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.8),
+                    damageFormula: (user: Boss) => user.attackPower * 1.8,
                     weight: 1
                 },
                 {
@@ -199,7 +199,7 @@ export const mikanDragonData: BossData = {
                         '「フルルル...」',
                         '<USER>の体内触手が<TARGET>をくすぐっている！'
                     ],
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.6),
+                    damageFormula: (user: Boss) => user.attackPower * 1.6,
                     statusEffect: StatusEffectType.Lethargy,
                     weight: 1
                 }

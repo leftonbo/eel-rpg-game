@@ -17,7 +17,7 @@ const mechSpiderActions: BossAction[] = [
         name: 'クモキック',
         description: '強力だが不正確な蹴り攻撃',
         messages: ['<USER>は機械の脚で<TARGET>を蹴り飛ばそうとする！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.5),
+        damageFormula: (user: Boss) => user.attackPower * 1.5,
         hitRate: 0.6,
         weight: 15,
         playerStateCondition: 'normal'
@@ -42,7 +42,7 @@ const mechSpiderActions: BossAction[] = [
         name: 'スパイダーグラブ',
         description: '抱きしめるように拘束する',
         messages: ['<USER>は機械の腕で<TARGET>を抱きしめて拘束しようとする！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.5),
+        damageFormula: (user: Boss) => user.attackPower * 1.5,
         weight: 25,
         canUse: (_boss, player, _turn) => {
             return (!player.isRestrained() && !player.isCocoon() && !player.isEaten() && Math.random() < 0.6) || player.isKnockedOut();
@@ -68,7 +68,7 @@ const mechSpiderActionsRestrained: BossAction[] = [
         name: 'クモキック',
         description: '強力だが不正確な蹴り攻撃',
         messages: ['<USER>は機械の脚で<TARGET>を蹴りつける！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.5),
+        damageFormula: (user: Boss) => user.attackPower * 1.5,
         weight: 20
     },
     {
@@ -88,7 +88,7 @@ const mechSpiderActionsRestrained: BossAction[] = [
         name: 'スパイダーハグ',
         description: '抱きしめるように締め付ける',
         messages: ['<USER>は機械の腕で<TARGET>を締め付ける！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.8),
+        damageFormula: (user: Boss) => user.attackPower * 1.8,
         weight: 25
     }
 ];
@@ -130,7 +130,7 @@ const mechSpiderActionsCocoon: BossAction[] = [
         name: '繭の圧縮',
         description: '繭を抱きしめて縮小液を馴染ませる',
         messages: ['<USER>は繭を強く抱きしめ、縮小液を<TARGET>に馴染ませる！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.8), // Max HP reduction amount
+        damageFormula: (user: Boss) => user.attackPower * 1.8, // Max HP reduction amount
         weight: 25,
         playerStateCondition: 'cocoon',
         canUse: (_boss, player, _turn) => {
@@ -142,7 +142,7 @@ const mechSpiderActionsCocoon: BossAction[] = [
         name: '縮小液循環',
         description: '繭内部の縮小液を循環させてエネルギーを得る',
         messages: ['<USER>は繭内部の縮小液を循環させ、<TARGET>のエネルギーを吸収する！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.5), // Max HP reduction amount
+        damageFormula: (user: Boss) => user.attackPower * 1.5, // Max HP reduction amount
         healRatio: 2.0, // Heal 2x the amount reduced + gain max HP
         weight: 20,
         playerStateCondition: 'cocoon',

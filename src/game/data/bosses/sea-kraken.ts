@@ -14,7 +14,7 @@ const seaKrakenActions: BossAction[] = [
         type: ActionType.Attack,
         name: '叩きつけ',
         description: '触腕を大きく振り上げて叩きつける',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.9),
+        damageFormula: (user: Boss) => user.attackPower * 1.9,
         weight: 20,
         hitRate: 0.65,
         playerStateCondition: 'normal',
@@ -25,7 +25,7 @@ const seaKrakenActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: 'イカスミブレス',
         description: '前方にイカスミを吐き出し、視界を奪う',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.8),
+        damageFormula: (user: Boss) => user.attackPower * 0.8,
         hitRate: 0.9,
         statusEffect: StatusEffectType.VisionImpairment,
         weight: 25,
@@ -43,7 +43,7 @@ const seaKrakenActions: BossAction[] = [
             '「グルルル...」',
             '<USER>の触腕が<TARGET>に巻き付いた！',
         ],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.9),
+        damageFormula: (user: Boss) => user.attackPower * 0.9,
         weight: 10,
         canUse: (_boss, player, _turn) => {
             return !player.isRestrained() && !player.isEaten() && Math.random() < 0.4;
@@ -58,7 +58,7 @@ const seaKrakenActions: BossAction[] = [
             '<USER>の触腕が<TARGET>を強く吸引する！',
             'エネルギーが吸収されていく...'
         ],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.3),
+        damageFormula: (user: Boss) => user.attackPower * 1.3,
         weight: 40,
         playerStateCondition: 'restrained',
         healRatio: 0.8
@@ -72,7 +72,7 @@ const seaKrakenActions: BossAction[] = [
             '<USER>が触腕を<TARGET>の口に入れてイカスミを注入した！',
             '<TARGET>は催眠効果で魅了されてしまう...'
         ],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.5),
+        damageFormula: (user: Boss) => user.attackPower * 0.5,
         weight: 30,
         playerStateCondition: 'restrained',
         statusEffect: StatusEffectType.Charm
@@ -142,7 +142,7 @@ export const seaKrakenData: BossData = {
                         '「シュゥゥゥ...」',
                         '<USER>の胃袋の吸盤が<TARGET>を強く吸引している！'
                     ],
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 2.0),
+                    damageFormula: (user: Boss) => user.attackPower * 2.0,
                     weight: 1
                 },
                 {
@@ -154,7 +154,7 @@ export const seaKrakenData: BossData = {
                         '<USER>の体内でイカスミが<TARGET>を包み込む！',
                         '<TARGET>は催眠状態になってしまった...'
                     ],
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.3),
+                    damageFormula: (user: Boss) => user.attackPower * 1.3,
                     statusEffect: StatusEffectType.Charm,
                     weight: 1
                 }

@@ -7,7 +7,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.Attack,
         name: '魔法の触手',
         description: '小さな触手で軽く攻撃',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.8),
+        damageFormula: (user: Boss) => user.attackPower * 0.8,
         hitRate: 0.95,
         weight: 15,
         playerStateCondition: 'normal'
@@ -247,7 +247,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '悩殺キス',
         description: '拘束中の相手に魅惑的なキスをする',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.1),
+        damageFormula: (user: Boss) => user.attackPower * 0.1,
         statusEffect: StatusEffectType.Infatuation,
         statusChance: 0.95,
         weight: 30,
@@ -258,7 +258,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: 'べろちゅ攻撃',
         description: '大きな舌で相手をなめまわす',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.2),
+        damageFormula: (user: Boss) => user.attackPower * 0.2,
         statusEffect: StatusEffectType.Arousal,
         statusChance: 0.90,
         weight: 28,
@@ -269,7 +269,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '体密着攻撃',
         description: '体を密着させて誘惑する',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.1),
+        damageFormula: (user: Boss) => user.attackPower * 0.1,
         statusEffect: StatusEffectType.Seduction,
         statusChance: 0.95,
         weight: 25,
@@ -280,7 +280,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '揺さぶり攻撃',
         description: '体を揺さぶって快楽を与える',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.2),
+        damageFormula: (user: Boss) => user.attackPower * 0.2,
         statusEffect: StatusEffectType.PleasureFall,
         statusChance: 0.80,
         weight: 20,
@@ -293,7 +293,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '激しい密着',
         description: '体を激しく密着させて圧迫する',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.1),
+        damageFormula: (user: Boss) => user.attackPower * 0.1,
         statusEffect: StatusEffectType.Bliss,
         statusChance: 0.85,
         weight: 25,
@@ -304,7 +304,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '激しい揺さぶり',
         description: '体を激しく揺さぶって感覚を狂わせる',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.2),
+        damageFormula: (user: Boss) => user.attackPower * 0.2,
         statusEffect: StatusEffectType.Lewdness,
         statusChance: 0.90,
         weight: 23,
@@ -315,7 +315,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '官能的な動き',
         description: '官能的な動きで相手を魅了する',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.1),
+        damageFormula: (user: Boss) => user.attackPower * 0.1,
         statusEffect: StatusEffectType.Fascination,
         statusChance: 0.95,
         weight: 26,
@@ -326,7 +326,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '激しい愛撫',
         description: '激しく愛撫して感覚を麻痺させる',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.2),
+        damageFormula: (user: Boss) => user.attackPower * 0.2,
         statusEffect: StatusEffectType.Melting,
         statusChance: 0.88,
         weight: 24,
@@ -337,7 +337,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '圧迫攻撃',
         description: '体重をかけて圧迫し続ける',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.1),
+        damageFormula: (user: Boss) => user.attackPower * 0.1,
         statusEffect: StatusEffectType.Euphoria,
         statusChance: 0.85,
         weight: 22,
@@ -350,7 +350,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '拘束魅了',
         description: '拘束中に強力な魅了をかける',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.1),
+        damageFormula: (user: Boss) => user.attackPower * 0.1,
         statusEffect: StatusEffectType.Charm,
         statusChance: 0.98,
         weight: 20,
@@ -361,7 +361,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '拘束麻痺',
         description: '拘束中に麻痺効果を与える',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.1),
+        damageFormula: (user: Boss) => user.attackPower * 0.1,
         statusEffect: StatusEffectType.Paralysis,
         statusChance: 0.95,
         weight: 18,
@@ -372,7 +372,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '拘束淫毒',
         description: '拘束中に淫毒を注入する',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.2),
+        damageFormula: (user: Boss) => user.attackPower * 0.2,
         statusEffect: StatusEffectType.AphrodisiacPoison,
         statusChance: 0.98,
         weight: 22,
@@ -383,7 +383,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '拘束睡眠誘導',
         description: '拘束中に強制的に眠らせる',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.1),
+        damageFormula: (user: Boss) => user.attackPower * 0.1,
         statusEffect: StatusEffectType.Drowsiness,
         statusChance: 0.95,
         weight: 19,
@@ -394,7 +394,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '拘束脱力',
         description: '拘束中に力を完全に奪う',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.1),
+        damageFormula: (user: Boss) => user.attackPower * 0.1,
         statusEffect: StatusEffectType.Weakness,
         statusChance: 0.98,
         weight: 21,
@@ -405,7 +405,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '拘束混乱',
         description: '拘束中に思考を混乱させる',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.1),
+        damageFormula: (user: Boss) => user.attackPower * 0.1,
         statusEffect: StatusEffectType.Confusion,
         statusChance: 0.95,
         weight: 18,
@@ -416,7 +416,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '拘束魔法封印',
         description: '拘束中に魔法を完全封印する',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.1),
+        damageFormula: (user: Boss) => user.attackPower * 0.1,
         statusEffect: StatusEffectType.MagicSeal,
         statusChance: 0.98,
         weight: 17,
@@ -427,7 +427,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '拘束とろとろ',
         description: '拘束中に意識をとろけさせる',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.2),
+        damageFormula: (user: Boss) => user.attackPower * 0.2,
         statusEffect: StatusEffectType.Melting,
         statusChance: 0.95,
         weight: 22,
@@ -438,7 +438,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '拘束うっとり',
         description: '拘束中に恍惚状態にする',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.1),
+        damageFormula: (user: Boss) => user.attackPower * 0.1,
         statusEffect: StatusEffectType.Euphoria,
         statusChance: 0.92,
         weight: 19,
@@ -449,7 +449,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '拘束あまあま',
         description: '拘束中に甘い幸福感を与える',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.1),
+        damageFormula: (user: Boss) => user.attackPower * 0.1,
         statusEffect: StatusEffectType.Sweet,
         statusChance: 0.95,
         weight: 20,
@@ -460,7 +460,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '拘束催眠',
         description: '拘束中に強制催眠をかける',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.1),
+        damageFormula: (user: Boss) => user.attackPower * 0.1,
         statusEffect: StatusEffectType.Hypnosis,
         statusChance: 0.90,
         weight: 15,
@@ -474,7 +474,7 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '拘束洗脳',
         description: '拘束中に思考を洗脳する',
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.2),
+        damageFormula: (user: Boss) => user.attackPower * 0.2,
         statusEffect: StatusEffectType.Brainwash,
         statusChance: 0.85,
         weight: 12,
@@ -540,7 +540,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.DevourAttack,
                     name: '胃壁圧迫',
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.8),
+                    damageFormula: (user: Boss) => user.attackPower * 1.8,
                     description: '胃壁で獲物を圧迫して生気を搾り取る',
                     messages: [
                         '<USER>の胃壁が<TARGET>を優しく圧迫してきた...',
@@ -551,7 +551,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.DevourAttack,
                     name: '消化液愛撫',
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 2.0),
+                    damageFormula: (user: Boss) => user.attackPower * 2.0,
                     description: '特殊な消化液で獲物を愛撫しながら消化する',
                     messages: [
                         '<USER>の甘い消化液が<TARGET>を包み込んだ...',
@@ -562,7 +562,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.DevourAttack,
                     name: '胃内マッサージ',
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.6),
+                    damageFormula: (user: Boss) => user.attackPower * 1.6,
                     description: '胃の内側から優しくマッサージして生気を吸収',
                     messages: [
                         '<USER>は胃の中で<TARGET>を優しくマッサージしている...',
@@ -573,7 +573,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.DevourAttack,
                     name: '生気直接吸収',
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 2.2),
+                    damageFormula: (user: Boss) => user.attackPower * 2.2,
                     description: '体内で直接生気を吸い取る',
                     messages: [
                         '<USER>は<TARGET>の生気を直接ちゅーちゅーと吸い取り始めた...',
@@ -659,7 +659,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.DevourAttack,
                     name: '夢中激しい密着',
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.6),
+                    damageFormula: (user: Boss) => user.attackPower * 0.6,
                     description: '夢の中で体を激しく密着させて生気を吸い取る',
                     messages: [
                         '<USER>は夢の中で<TARGET>に激しく体を密着させた',
@@ -671,7 +671,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.DevourAttack,
                     name: '夢中魔力べろちゅー',
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.7),
+                    damageFormula: (user: Boss) => user.attackPower * 0.7,
                     description: '夢の中で魔力を込めたべろちゅーで生気を吸い取る',
                     messages: [
                         '<USER>は夢の中で魔力を込めて<TARGET>にべろちゅーをした',
@@ -683,7 +683,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.DevourAttack,
                     name: '夢中抱き着き攻撃',
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.5),
+                    damageFormula: (user: Boss) => user.attackPower * 0.5,
                     description: '夢の中で抱き着いて激しく動きながら生気を吸い取る',
                     messages: [
                         '<USER>は夢の中で<TARGET>に抱き着いて激しく動いた',
@@ -695,7 +695,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.DevourAttack,
                     name: '夢中触手愛撫',
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.6),
+                    damageFormula: (user: Boss) => user.attackPower * 0.6,
                     description: '夢の中で触手を使って愛撫しながら生気を吸い取る',
                     messages: [
                         '<USER>は夢の中で無数の触手で<TARGET>を愛撫した',
@@ -707,7 +707,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.DevourAttack,
                     name: '夢中魔法圧迫',
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.7),
+                    damageFormula: (user: Boss) => user.attackPower * 0.7,
                     description: '夢の中で魔法の力で圧迫しながら生気を吸い取る',
                     messages: [
                         '<USER>は夢の中で魔法の力で<TARGET>を圧迫した',
@@ -719,7 +719,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.DevourAttack,
                     name: '夢中激しい揺さぶり',
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.5),
+                    damageFormula: (user: Boss) => user.attackPower * 0.5,
                     description: '夢の中で激しく揺さぶりながら生気を吸い取る',
                     messages: [
                         '<USER>は夢の中で<TARGET>を激しく揺さぶった',
@@ -731,7 +731,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.DevourAttack,
                     name: '夢中魅惑の舞',
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.6),
+                    damageFormula: (user: Boss) => user.attackPower * 0.6,
                     description: '夢の中で魅惑的な舞を踊りながら生気を吸い取る',
                     messages: [
                         '<USER>は夢の中で<TARGET>の周りで魅惑的な舞を踊った',
@@ -743,7 +743,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.DevourAttack,
                     name: '夢中魔力注入',
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.7),
+                    damageFormula: (user: Boss) => user.attackPower * 0.7,
                     description: '夢の中で魔力を注入しながら生気を吸い取る',
                     messages: [
                         '<USER>は夢の中で<TARGET>に直接魔力を注入した',
@@ -755,7 +755,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.DevourAttack,
                     name: '夢中甘い誘惑',
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.5),
+                    damageFormula: (user: Boss) => user.attackPower * 0.5,
                     description: '夢の中で甘い誘惑をしながら生気を吸い取る',
                     messages: [
                         '<USER>は夢の中で<TARGET>に甘い誘惑をささやいた',
@@ -767,7 +767,7 @@ export const dreamDemonData: BossData = {
                 {
                     type: ActionType.DevourAttack,
                     name: '夢中完全支配',
-                    damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.6),
+                    damageFormula: (user: Boss) => user.attackPower * 0.6,
                     description: '夢の中で完全に支配しながら生気を吸い取る',
                     messages: [
                         '<USER>は夢の中で<TARGET>を完全に支配した',

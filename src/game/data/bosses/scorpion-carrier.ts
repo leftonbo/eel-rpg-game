@@ -8,7 +8,7 @@ const scorpionCarrierActions: BossAction[] = [
         name: 'はさみ攻撃',
         description: '大きなはさみで攻撃する',
         messages: ['<USER>は大きなはさみで<TARGET>を挟みつけようとする！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.25),
+        damageFormula: (user: Boss) => user.attackPower * 1.25,
         hitRate: 0.8,
         weight: 20
     },
@@ -17,7 +17,7 @@ const scorpionCarrierActions: BossAction[] = [
         name: '踏みつけ',
         description: 'タイヤの足で踏みつける',
         messages: ['<USER>はタイヤの足で<TARGET>を踏みつけようとする！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.5),
+        damageFormula: (user: Boss) => user.attackPower * 1.5,
         hitRate: 0.9,
         weight: 15
     },
@@ -26,7 +26,7 @@ const scorpionCarrierActions: BossAction[] = [
         name: 'しっぽ振り回し',
         description: '強力だが命中率が低い攻撃',
         messages: ['<USER>は巨大な注射器のような尻尾を振り回す！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 2.5),
+        damageFormula: (user: Boss) => user.attackPower * 2.5,
         hitRate: 0.6,
         weight: 10,
         playerStateCondition: 'normal'
@@ -50,7 +50,7 @@ const scorpionCarrierActions: BossAction[] = [
         name: 'はさみキャッチ',
         description: 'はさみで対象を捕まえる',
         messages: ['<USER>は巨大なはさみで<TARGET>を捕まえようとする！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.6),
+        damageFormula: (user: Boss) => user.attackPower * 0.6,
         weight: 25,
         canUse: (_boss, player, _turn) => {
             return (!player.isRestrained() && !player.isCocoon() && !player.isEaten() && Math.random() < 0.8) || player.isKnockedOut();
@@ -65,7 +65,7 @@ const scorpionCarrierActionsRestrained: BossAction[] = [
         name: '猛毒注射',
         description: '拘束した対象に猛毒を注射する',
         messages: ['<USER>は拘束した<TARGET>に猛毒を注射する！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.9),
+        damageFormula: (user: Boss) => user.attackPower * 1.9,
         statusEffect: StatusEffectType.ScorpionPoison,
         statusChance: 0.90,
         hitRate: 0.95,
@@ -76,7 +76,7 @@ const scorpionCarrierActionsRestrained: BossAction[] = [
         name: 'かみつき舐め回し',
         description: '拘束した対象を舐め回す',
         messages: ['<USER>は拘束した<TARGET>を舐め回す！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 2.25),
+        damageFormula: (user: Boss) => user.attackPower * 2.25,
         weight: 25
     },
     {
@@ -84,7 +84,7 @@ const scorpionCarrierActionsRestrained: BossAction[] = [
         name: 'はさみ攻撃',
         description: '大きなはさみで攻撃する',
         messages: ['<USER>は大きなはさみで<TARGET>を挟みつける！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.5),
+        damageFormula: (user: Boss) => user.attackPower * 1.5,
         weight: 20
     }
 ];
@@ -126,7 +126,7 @@ const scorpionCarrierActionsEaten: BossAction[] = [
         name: '体内マッサージ',
         description: '体内の生き物にマッサージして最大HPを吸収',
         messages: ['<USER>は体内で<TARGET>をマッサージし、エネルギーを吸収する！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.5), // Max HP reduction amount
+        damageFormula: (user: Boss) => user.attackPower * 1.5, // Max HP reduction amount
         weight: 30,
         playerStateCondition: 'eaten',
         canUse: (_boss, player, _turn) => {
@@ -138,7 +138,7 @@ const scorpionCarrierActionsEaten: BossAction[] = [
         name: '体内締め付け',
         description: '体内で生き物を締め付けて最大HPを吸収',
         messages: ['<USER>は体内で<TARGET>を締め付け、エネルギーを吸収する！'],
-        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.9), // Max HP reduction amount
+        damageFormula: (user: Boss) => user.attackPower * 1.9, // Max HP reduction amount
         weight: 25,
         playerStateCondition: 'eaten',
         canUse: (_boss, player, _turn) => {
