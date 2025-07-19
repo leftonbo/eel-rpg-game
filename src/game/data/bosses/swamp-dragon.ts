@@ -1,4 +1,4 @@
-import { BossData, ActionType, BossAction } from '../../entities/Boss';
+import { BossData, ActionType, BossAction, Boss } from '../../entities/Boss';
 import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
 const swampDragonActions: BossAction[] = [
@@ -6,7 +6,7 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.Attack,
         name: 'クロー攻撃',
         description: '鋭い爪で引っ掻く',
-        damage: 18,
+        damageFormula: (user: Boss) => user.attackPower,
         weight: 40,
         playerStateCondition: 'normal'
     },
@@ -14,7 +14,7 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.Attack,
         name: '噛みつき',
         description: '強力な顎で噛みつく',
-        damageFormula: (user) => Math.floor(user.attackPower * 1.5),
+        damageFormula: (user: Boss) => user.attackPower * 1.5,
         weight: 25,
         hitRate: 0.7,
         criticalRate: 0.08,
@@ -26,7 +26,7 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '炎のブレス',
         description: '灼熱の炎を吐く',
-        damageFormula: (user) => Math.floor(user.attackPower * 1.3),
+        damageFormula: (user: Boss) => user.attackPower * 1.3,
         hitRate: 0.9,
         statusEffect: StatusEffectType.Fire,
         weight: 25
@@ -39,8 +39,8 @@ const swampDragonActions: BossAction[] = [
             '「グルル...」',
             '<USER>は尻尾で<TARGET>を巻き付けてきた！',
         ],
-        damage: 16,
-        weight: 5,
+        damageFormula: (user: Boss) => user.attackPower * 0.9,
+        weight: 10,
         canUse: (_boss, player, _turn) => {
             // Only use restraint if player isn't already restrained and occasionally
             return !player.isRestrained() && !player.isEaten() && Math.random() < 0.3;
@@ -54,7 +54,7 @@ const swampDragonActions: BossAction[] = [
             '「グオオオ...」',
             '<USER>は<TARGET>を尻尾で締め付ける！'
         ],
-        damage: 18,
+        damageFormula: (user: Boss) => user.attackPower,
         weight: 40,
         playerStateCondition: 'restrained'
     },
@@ -62,7 +62,7 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.Attack,
         name: 'べろちゅー',
         description: '拘束中の獲物を舌でキスする（与えたダメージ分回復）',
-        damage: 24,
+        damageFormula: (user: Boss) => user.attackPower * 1.3,
         weight: 30,
         playerStateCondition: 'restrained',
         healRatio: 1.0
@@ -191,7 +191,7 @@ export const swampDragonData: BossData = {
                         '「グルルル...」',
                         '<USER>の胃袋が<TARGET>をネバネバな胃液まみれにする！'
                     ],
-                    damage: 16,
+                    damageFormula: (user: Boss) => user.attackPower * 0.9,
                     statusEffect: StatusEffectType.Slimed,
                     weight: 1
                 },
@@ -203,7 +203,7 @@ export const swampDragonData: BossData = {
                         '「ウォォォ...」',
                         '<USER>の胃壁が<TARGET>の体を圧迫する！'
                     ],
-                    damage: 25,
+                    damageFormula: (user: Boss) => user.attackPower * 1.4,
                     weight: 1
                 },
                 {
@@ -214,7 +214,7 @@ export const swampDragonData: BossData = {
                         '「グルル...」',
                         '<USER>の胃壁が<TARGET>を優しくマッサージしている...'
                     ],
-                    damage: 25,
+                    damageFormula: (user: Boss) => user.attackPower * 1.4,
                     weight: 1
                 },
                 {
@@ -225,7 +225,7 @@ export const swampDragonData: BossData = {
                         '「ガオー...」',
                         '<USER>がお腹を揺らして<TARGET>を翻弄している...'
                     ],
-                    damage: 25,
+                    damageFormula: (user: Boss) => user.attackPower * 1.4,
                     weight: 1
                 }
             ];

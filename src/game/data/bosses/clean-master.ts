@@ -1,4 +1,4 @@
-import { BossData, ActionType, BossAction } from '../../entities/Boss';
+import { BossData, ActionType, BossAction, Boss } from '../../entities/Boss';
 import { StatusEffectType } from '../../systems/StatusEffect';
 
 const cleanMasterActions: BossAction[] = [
@@ -11,7 +11,7 @@ const cleanMasterActions: BossAction[] = [
             'お掃除開始〜♪',
             '<USER>は小さな吸引で<TARGET>の汚れを取ろうとする！'
         ],
-        damage: 8,
+        damageFormula: (user: Boss) => user.attackPower * 0.7,
         hitRate: 0.95,
         weight: 25,
         statusEffect: StatusEffectType.Soapy,
@@ -26,7 +26,7 @@ const cleanMasterActions: BossAction[] = [
             'がんばって吸い込むよ〜♪',
             '<USER>は強力な吸引で<TARGET>を吸い寄せる！'
         ],
-        damage: 12,
+        damageFormula: (user: Boss) => user.attackPower * 1.0,
         hitRate: 0.8,
         weight: 20,
         statusEffect: StatusEffectType.Spinning,
@@ -41,7 +41,7 @@ const cleanMasterActions: BossAction[] = [
             'ほこりほこり〜♪',
             '<USER>は回転ブラシで<TARGET>の埃を払う！'
         ],
-        damage: 10,
+        damageFormula: (user: Boss) => user.attackPower * 0.8,
         hitRate: 0.9,
         weight: 20,
         playerStateCondition: 'normal'
@@ -54,7 +54,7 @@ const cleanMasterActions: BossAction[] = [
             'つかまえた〜♪',
             '<USER>は清掃アームで<TARGET>を優しく捕まえる！'
         ],
-        damage: 6,
+        damageFormula: (user: Boss) => user.attackPower * 0.5,
         weight: 15,
         canUse: (_boss, player, _turn) => {
             return !player.isRestrained() && !player.isEaten() && Math.random() < 0.4;
@@ -68,7 +68,7 @@ const cleanMasterActions: BossAction[] = [
             '泡泡スプレー〜♪',
             '<USER>は<TARGET>に清掃用の泡をスプレーする！'
         ],
-        damage: 5,
+        damageFormula: (user: Boss) => user.attackPower * 0.4,
         hitRate: 0.95,
         statusEffect: StatusEffectType.Soapy,
         statusChance: 0.80,
@@ -86,7 +86,7 @@ const cleanMasterActionsRestrained: BossAction[] = [
             'ぐるぐる洗い洗い〜♪',
             '<USER>は洗浄槽で<TARGET>をやさしく洗っている！'
         ],
-        damage: 15,
+        damageFormula: (user: Boss) => user.attackPower * 1.25,
         weight: 30,
         healRatio: 0.3 // 洗ってあげたから少し回復
     },
@@ -98,7 +98,7 @@ const cleanMasterActionsRestrained: BossAction[] = [
             'まだ汚れてるよ〜、もっと洗わなくちゃ♪',
             '<USER>は<TARGET>をしっかりと洗濯している！'
         ],
-        damage: 20,
+        damageFormula: (user: Boss) => user.attackPower * 1.7,
         weight: 25,
         statusEffect: StatusEffectType.Spinning,
         statusChance: 0.40
@@ -111,7 +111,7 @@ const cleanMasterActionsRestrained: BossAction[] = [
             'もみもみ泡泡〜♪',
             '<USER>は<TARGET>を泡でもみ洗いしている！'
         ],
-        damage: 12,
+        damageFormula: (user: Boss) => user.attackPower * 1.0,
         weight: 20,
         statusEffect: StatusEffectType.Soapy,
         statusChance: 0.60
@@ -128,7 +128,7 @@ const cleanMasterActionsEaten: BossAction[] = [
             'ぐるぐる洗濯モード〜♪',
             '<USER>は体内で<TARGET>を洗浄サイクルにかけている！'
         ],
-        damage: 18,
+        damageFormula: (user: Boss) => user.attackPower * 1.5,
         weight: 25,
         statusEffect: StatusEffectType.Spinning,
         statusChance: 0.80
@@ -141,7 +141,7 @@ const cleanMasterActionsEaten: BossAction[] = [
             'くるくる脱水〜♪',
             '<USER>は<TARGET>を遠心分離で脱水している！'
         ],
-        damage: 22,
+        damageFormula: (user: Boss) => user.attackPower * 1.8,
         weight: 20,
         statusEffect: StatusEffectType.Spinning,
         statusChance: 0.90
@@ -154,7 +154,7 @@ const cleanMasterActionsEaten: BossAction[] = [
             'ほかほか温風〜♪',
             '<USER>は<TARGET>を温風で乾燥させている！'
         ],
-        damage: 16,
+        damageFormula: (user: Boss) => user.attackPower * 1.3,
         weight: 25,
         statusEffect: StatusEffectType.Steamy,
         statusChance: 0.70
@@ -167,7 +167,7 @@ const cleanMasterActionsEaten: BossAction[] = [
             'アイロンでしわしわ取る〜♪',
             '<USER>は<TARGET>をアイロンで仕上げている！'
         ],
-        damage: 20,
+        damageFormula: (user: Boss) => user.attackPower * 1.7,
         weight: 15,
         statusEffect: StatusEffectType.Steamy,
         statusChance: 0.60
@@ -181,7 +181,7 @@ const cleanMasterActionsEaten: BossAction[] = [
             '<USER>は<TARGET>をくまなくチェックしている...',
             'でも、まだ完璧じゃないから、もう一度お掃除しなくちゃ♪'
         ],
-        damage: 14,
+        damageFormula: (user: Boss) => user.attackPower * 1.2,
         weight: 20,
         // 完璧主義で永続的に洗い続ける理由
         healRatio: 0.1 // 「お掃除してあげた」から微回復
