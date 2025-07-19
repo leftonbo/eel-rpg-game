@@ -1,4 +1,4 @@
-import { BossData, ActionType, BossAction } from '../../entities/Boss';
+import { Boss, BossData, ActionType, BossAction } from '../../entities/Boss';
 import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
 const aquaSerpentActions: BossAction[] = [
@@ -6,7 +6,7 @@ const aquaSerpentActions: BossAction[] = [
         type: ActionType.Attack,
         name: '水圧ブレス',
         description: '口から高圧水流を発射',
-        damage: 22,
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.1),
         weight: 35,
         playerStateCondition: 'normal',
         statusEffect: StatusEffectType.WaterSoaked,
@@ -17,7 +17,7 @@ const aquaSerpentActions: BossAction[] = [
         type: ActionType.Attack,
         name: '津波の一撃',
         description: '尻尾で水を巻き上げて叩きつける',
-        damage: 32,
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.6),
         weight: 25,
         playerStateCondition: 'normal',
         hitRate: 0.8,
@@ -29,7 +29,7 @@ const aquaSerpentActions: BossAction[] = [
         type: ActionType.Attack,
         name: '渦潮スラム',
         description: '長い体をうねらせて全身で攻撃',
-        damage: 26,
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.3),
         weight: 30,
         playerStateCondition: 'normal',
         hitRate: 0.75,
@@ -45,7 +45,7 @@ const aquaSerpentActions: BossAction[] = [
             '<USER>の体が青白く光り、海水が天高く舞い上がる！',
             '巨大な水の檻が<TARGET>を包み込み、深海の圧力で押し潰そうとする！'
         ],
-        damage: 45,
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 2.25),
         weight: 5,
         playerStateCondition: 'normal',
         hitRate: 0.9,
@@ -68,7 +68,7 @@ const aquaSerpentActions: BossAction[] = [
             '<USER>が長い体を<TARGET>に巻き付けてきた！',
             '<TARGET>は海蛇の抱擁に捕らわれてしまった...'
         ],
-        damage: 18,
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.9),
         weight: 8,
         canUse: (_, player) => {
             return !player.isRestrained() && !player.isEaten() && Math.random() < 0.35;
@@ -82,7 +82,7 @@ const aquaSerpentActions: BossAction[] = [
             '「シャアアア...」',
             '<USER>が<TARGET>を口づけで包み込み、体力を吸収している...'
         ],
-        damage: 28,
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.4),
         weight: 40,
         playerStateCondition: 'restrained',
         healRatio: 1.2
@@ -95,7 +95,7 @@ const aquaSerpentActions: BossAction[] = [
             '「シャアアア...」',
             '<USER>が<TARGET>をゆっくりと締めつけている...'
         ],
-        damage: 20,
+        damageFormula: (user: Boss) => user.attackPower * 1.0,
         weight: 35,
         playerStateCondition: 'restrained'
     },
@@ -108,7 +108,7 @@ const aquaSerpentActions: BossAction[] = [
             '<USER>の体内で激しい胃液の嵐が巻き起こる！',
             '<TARGET>の最大HPが吸収されていく...'
         ],
-        damage: 22,
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.1),
         weight: 25,
         playerStateCondition: 'eaten'
     },
@@ -121,7 +121,7 @@ const aquaSerpentActions: BossAction[] = [
             '<USER>の体内の壁が<TARGET>を奥へと押し流している...',
             '<TARGET>の最大HPが吸収されていく...'
         ],
-        damage: 25,
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.25),
         weight: 25,
         playerStateCondition: 'eaten'
     },
@@ -133,7 +133,7 @@ const aquaSerpentActions: BossAction[] = [
             '「シャアアア...」',
             '<USER>の体内で神秘的な光が強くなり、<TARGET>を幻惑している...'
         ],
-        damage: 15,
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 0.75),
         weight: 20,
         playerStateCondition: 'eaten',
         statusEffect: StatusEffectType.Charm
@@ -147,7 +147,7 @@ const aquaSerpentActions: BossAction[] = [
             '<USER>の体内で巨大な渦が発生し、<TARGET>の生命力を激しく吸収している！',
             '<TARGET>の最大HPが大幅に吸収されていく...'
         ],
-        damage: 35,
+        damageFormula: (user: Boss) => Math.floor(user.attackPower * 1.75),
         weight: 10,
         playerStateCondition: 'eaten',
         canUse: () => {
