@@ -68,6 +68,7 @@ export interface BossData {
         creator: string;
         source?: string;
     };
+    customVariables?: Record<string, any>;
 }
 
 export class Boss extends Actor {
@@ -87,6 +88,7 @@ export class Boss extends Actor {
     };
     public hasUsedSpecialMove: boolean = false;
     public specialMoveCooldown: number = 0;
+    public customVariables: Record<string, any> = {};
     
     constructor(data: BossData) {
         // Boss has unlimited MP (無尽蔵) - set to a high value
@@ -101,6 +103,7 @@ export class Boss extends Actor {
         this.finishingMove = data.finishingMove;
         this.icon = data.icon || '👹';
         this.guestCharacterInfo = data.guestCharacterInfo;
+        this.customVariables = data.customVariables ? { ...data.customVariables } : {};
     }
 
     /**
@@ -136,6 +139,58 @@ export class Boss extends Actor {
         
         const healAmount = Math.floor(damage * ratio);
         return this.heal(healAmount);
+    }
+
+    /**
+     * カスタム変数を取得する
+     */
+    getCustomVariable<T = any>(key: string): T | undefined {
+        return this.customVariables[key] as T;
+    }
+
+    /**
+     * カスタム変数を設定する
+     */
+    setCustomVariable<T = any>(key: string, value: T): void {
+        this.customVariables[key] = value;
+    }
+
+    /**
+     * カスタム変数が存在するかチェック
+     */
+    hasCustomVariable(key: string): boolean {
+        return key in this.customVariables;
+    }
+
+    /**
+     * カスタム変数を削除する
+     */
+    removeCustomVariable(key: string): void {
+        delete this.customVariables[key];
+    }
+
+    /**
+     * 数値型カスタム変数を増減する
+     */
+    modifyCustomVariable(key: string, delta: number): number {
+        const currentValue = this.getCustomVariable<number>(key) || 0;
+        const newValue = currentValue + delta;
+        this.setCustomVariable(key, newValue);
+        return newValue;
+    }
+
+    /**
+     * 全てのカスタム変数を取得
+     */
+    getAllCustomVariables(): Record<string, any> {
+        return { ...this.customVariables };
+    }
+
+    /**
+     * カスタム変数をリセット
+     */
+    resetCustomVariables(): void {
+        this.customVariables = {};
     }
     
     
