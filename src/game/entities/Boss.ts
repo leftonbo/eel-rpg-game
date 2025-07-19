@@ -160,8 +160,12 @@ export class Boss extends Actor {
     /**
      * カスタム変数を取得する
      */
-    getCustomVariable<T = any>(key: string): T | undefined {
-        return this.customVariables[key] as T;
+    getCustomVariable<T = any>(key: string, defaultValue?: T): T {
+        const value = this.customVariables[key];
+        if (value === undefined) {
+            return defaultValue as T;
+        }
+        return value as T;
     }
 
     /**
