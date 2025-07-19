@@ -36,6 +36,7 @@ export interface BossAction {
     description: string;
     messages?: string[]; // Optional messages with format specifiers: <USER>, <TARGET>, <ACTION>
     damage?: number;
+    damageFormula?: (actor: Actor) => number; // Function to calculate damage based on actor's stats
     statusEffect?: StatusEffectType;
     statusDuration?: number;
     weight: number; // Probability weight for AI selection
@@ -307,7 +308,7 @@ export class Boss extends Actor {
         switch (action.type) {
             case ActionType.Attack:
                 {
-                    const baseDamage = action.damage || this.attackPower;
+                    const baseDamage = action.damageFormula ? action.damageFormula(this) : (action.damage || this.attackPower);
                     const attackResult = calculateAttackResult(
                         baseDamage, 
                         player.isKnockedOut(), 
@@ -346,9 +347,10 @@ export class Boss extends Actor {
                 // Check for invincible status first
                 {
                     let isMiss = false;
-                    if (action.damage && action.damage > 0) {
+                    const baseDamage = action.damageFormula ? action.damageFormula(this) : action.damage;
+                    if (baseDamage && baseDamage > 0) {
                         const attackResult = calculateAttackResult(
-                            action.damage, 
+                            baseDamage, 
                             player.isKnockedOut(), 
                             action.hitRate, 
                             action.criticalRate,
@@ -411,8 +413,9 @@ export class Boss extends Actor {
                 
             case ActionType.CocoonAction:
                 if (player.statusEffects.isCocoon()) {
-                    const baseDamage = action.damage || 0;
-                    const maxHpReduction = action.damage || Math.floor(player.maxHp * 0.1); // Default 10% max HP reduction
+                    const calculatedDamage = action.damageFormula ? action.damageFormula(this) : action.damage;
+                    const baseDamage = calculatedDamage || 0;
+                    const maxHpReduction = calculatedDamage || Math.floor(player.maxHp * 0.1); // Default 10% max HP reduction
                     
                     if (maxHpReduction > 0) {
                         player.loseMaxHp(maxHpReduction);
@@ -454,7 +457,7 @@ export class Boss extends Actor {
             case ActionType.DevourAttack:
                 {
                     // Apply variance to absorption amount
-                    const baseAbsorption = action.damage || this.attackPower;
+                    const baseAbsorption = action.damageFormula ? action.damageFormula(this) : (action.damage || this.attackPower);
                     const statusAttackResult = calculateAttackResult(
                         baseAbsorption, 
                         player.isKnockedOut(), 
