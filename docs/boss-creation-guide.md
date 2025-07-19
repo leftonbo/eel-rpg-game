@@ -112,18 +112,38 @@ interface BossAction {
 
 ```typescript
 export class Boss extends Actor {
-    public hasUsedSpecialMove: boolean = false;  // 特殊技使用フラグ
-    public specialMoveCooldown: number = 0;      // 特殊技クールダウン
-    // ... その他のプロパティ
+    /**
+     * ボス固有のカスタム変数
+     * AI戦略での状態管理、クールダウン管理、行動制御などに使用
+     * ボスデータの初期値をコピーして初期化される
+     */
+    public customVariables: Record<string, any> = {};
+    
+    getCustomVariable<T = any>(key: string): T | undefined;
+    setCustomVariable<T = any>(key: string, value: T): void;
+    // ... その他のメソッド
 }
 ```
 
-### 特殊技管理
+### customVariablesでの特殊技管理
 
-- `hasUsedSpecialMove`: 特殊技を使用済みかどうかのフラグ
-- `specialMoveCooldown`: 特殊技使用後のクールダウンターン数
+ボス固有の変数を管理するにはcustomVariablesシステムを使用します：
 
-これらのプロパティは、強力な特殊技を一度だけ使用可能にしたい場合や、使用後に一定ターン使用不可にしたい場合に使用します。
+```typescript
+// ボスデータで初期値を定義
+customVariables: {
+    hasUsedSpecialMove: false,   // 特殊技使用フラグ
+    specialMoveCooldown: 0       // クールダウンターン数
+},
+
+// AI戦略で使用
+if (!boss.getCustomVariable<boolean>('hasUsedSpecialMove')) {
+    boss.setCustomVariable('hasUsedSpecialMove', true);
+    boss.setCustomVariable('specialMoveCooldown', 20);
+}
+```
+
+このシステムで、強力な特殊技を一度だけ使用可能にしたり、使用後に一定ターン使用不可にしたりできます。
 
 ## 実装手順
 
@@ -372,19 +392,20 @@ export {
 
 ```typescript
 aiStrategy: (boss, player, turn) => {
-    // 特殊技管理の例
+    // customVariablesでの特殊技管理の例
     const specialMove = actions.find(action => action.name === '特殊技名');
-    if (specialMove && boss.getHpPercentage() <= 30 && !boss.hasUsedSpecialMove) {
-        boss.hasUsedSpecialMove = true;
-        boss.specialMoveCooldown = 15;  // 15ターンクールダウン
+    if (specialMove && boss.getHpPercentage() <= 30 && !boss.getCustomVariable<boolean>('hasUsedSpecialMove')) {
+        boss.setCustomVariable('hasUsedSpecialMove', true);
+        boss.setCustomVariable('specialMoveCooldown', 15);  // 15ターンクールダウン
         return specialMove;
     }
 
-    // クールダウン管理
-    if (boss.specialMoveCooldown && boss.specialMoveCooldown > 0) {
-        boss.specialMoveCooldown--;
-        if (boss.specialMoveCooldown <= 0) {
-            boss.hasUsedSpecialMove = false;
+    // customVariablesでのクールダウン管理
+    const cooldown = boss.getCustomVariable<number>('specialMoveCooldown');
+    if (cooldown && cooldown > 0) {
+        boss.setCustomVariable('specialMoveCooldown', cooldown - 1);
+        if (cooldown - 1 <= 0) {
+            boss.setCustomVariable('hasUsedSpecialMove', false);
         }
     }
 
@@ -536,7 +557,7 @@ aiStrategy: (boss, player, turn) => {
 
 ### 新しい実装（推奨）
 - `src/game/data/bosses/sea-kraken.ts` - 現代的なAI戦略、PostDefeatedAttack、finishingMove、getDialogue の例
-- `src/game/data/bosses/aqua-serpent.ts` - 特殊技管理、onUse コールバックの例
+- `src/game/data/bosses/aqua-serpent.ts` - customVariablesでの特殊技管理、onUse コールバックの例
 - `src/game/data/bosses/clean-master.ts` - 新しい状態異常システムの例
 - `src/game/data/bosses/dream-demon.ts` - 多様な状態異常と複雑な行動パターンの例
 
