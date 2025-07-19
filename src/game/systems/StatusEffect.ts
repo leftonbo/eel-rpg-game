@@ -2,6 +2,7 @@ export { StatusEffectType, ActionPriority } from './StatusEffectTypes';
 export type { StatusEffect, StatusEffectConfig } from './StatusEffectTypes';
 
 import { Actor } from '../entities/Actor';
+import { Player } from '../entities/Player';
 import { createStatusEffectConfigs } from './status-effects';
 import { StatusEffectType, StatusEffect, StatusEffectConfig, ActionPriority } from './StatusEffectTypes';
 
@@ -296,9 +297,8 @@ export class StatusEffectManager {
     
     // Helper method for Actor type detection
     private static isPlayerActor(target: Actor): boolean {
-        // Use a more robust check than constructor.name
-        // Check for Player-specific properties that don't exist on Boss
-        return 'name' in target && typeof (target as any).name === 'string';
+        // Check if the target is an instance of Player
+        return target instanceof Player;
     }
     
     // Message generation helper methods
