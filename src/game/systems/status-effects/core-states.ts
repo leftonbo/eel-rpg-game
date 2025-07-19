@@ -60,6 +60,12 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
         isDebuff: true,
         modifiers: {
             actionPriority: ActionPriority.StruggleAction
+        },
+        messages: {
+            onApplyPlayer: '{name}は拘束された！',
+            onApplyBoss: '{name}は拘束された！',
+            onRemovePlayer: '{name}は拘束から逃れた！',
+            onRemoveBoss: '{name}は拘束から逃れた！'
         }
     }],
     [StatusEffectType.Cocoon, {
@@ -78,6 +84,14 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
             if (maxHpReduction > 0) {
                 target.loseMaxHp(maxHpReduction);
             }
+        },
+        messages: {
+            onApplyPlayer: '{name}は繭に包まれてしまった！',
+            onApplyBoss: '{name}は繭に包まれた！',
+            onTickPlayer: '{name}の体が縮小していく…',
+            onTickBoss: '{name}の体が縮小していく…',
+            onRemovePlayer: '{name}は繭から脱出した！',
+            onRemoveBoss: '{name}は繭から脱出した！'
         }
     }],
     [StatusEffectType.Eaten, {
@@ -89,6 +103,12 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
         isDebuff: true,
         modifiers: {
             actionPriority: ActionPriority.StruggleAction
+        },
+        messages: {
+            onApplyPlayer: '{name}は食べられてしまった！',
+            onApplyBoss: '{name}は食べられた！',
+            onRemovePlayer: '{name}は何とか脱出した！',
+            onRemoveBoss: '{name}は脱出した！'
         }
     }]
 ]);

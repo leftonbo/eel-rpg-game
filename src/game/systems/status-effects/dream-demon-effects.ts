@@ -28,6 +28,14 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
             }
+        },
+        messages: {
+            onApplyPlayer: '{name}は淫毒に冒された！',
+            onApplyBoss: '{name}は淫毒に冒された！',
+            onTickPlayer: '{name}は淫毒により体力が奪われている…',
+            onTickBoss: '{name}は淫毒により体力が奪われている…',
+            onRemovePlayer: '{name}は淫毒から回復した',
+            onRemoveBoss: '{name}は淫毒から回復した'
         }
     }],
     [StatusEffectType.Drowsiness, {
@@ -68,6 +76,14 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
             }
+        },
+        messages: {
+            onApplyPlayer: '{name}はメロメロ状態になった！',
+            onApplyBoss: '{name}はメロメロ状態になった！',
+            onTickPlayer: '{name}はメロメロ状態で判断力が鈍っている…',
+            onTickBoss: '{name}はメロメロ状態で判断力が鈍っている…',
+            onRemovePlayer: '{name}はメロメロ状態から回復した',
+            onRemoveBoss: '{name}はメロメロ状態から回復した'
         }
     }],
     [StatusEffectType.Confusion, {

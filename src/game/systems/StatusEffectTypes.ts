@@ -94,6 +94,23 @@ export interface StatusEffect {
     stackable?: boolean;
 }
 
+export interface StatusEffectMessages {
+    // Messages when effect is applied
+    onApplyPlayer?: string; // For when Player receives the effect
+    onApplyBoss?: string; // For when Boss receives the effect
+    
+    // Messages during effect tick (damage/effect)
+    onTickPlayer?: string; // Template: use {damage} for damage amount
+    onTickBoss?: string; // Template: use {damage} for damage amount
+    
+    // Messages when effect is removed
+    onRemovePlayer?: string; // For when Player's effect is removed
+    onRemoveBoss?: string; // For when Boss's effect is removed
+    
+    // Hide specific messages by setting to empty string ""
+    // If undefined, uses default message generation
+}
+
 export interface StatusEffectConfig {
     type: StatusEffectType;
     name: string;
@@ -116,4 +133,7 @@ export interface StatusEffectConfig {
         canUseSkills?: boolean; // Whether skills can be used (default: true)
         actionPriority?: ActionPriority; // Action priority level
     };
+    
+    // Custom messages for different actor types
+    messages?: StatusEffectMessages;
 }

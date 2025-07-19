@@ -2,6 +2,7 @@ export { StatusEffectType, ActionPriority } from './StatusEffectTypes';
 export type { StatusEffect, StatusEffectConfig } from './StatusEffectTypes';
 
 import { Actor } from '../entities/Actor';
+import { Player } from '../entities/Player';
 import { createStatusEffectConfigs } from './status-effects';
 import { StatusEffectType, StatusEffect, StatusEffectConfig, ActionPriority } from './StatusEffectTypes';
 
@@ -74,7 +75,10 @@ export class StatusEffectManager {
                 const damage = oldHp - target.hp;
                 
                 if (damage > 0) {
-                    messages.push(`${effect.name}によって${damage}のダメージ！`);
+                    const message = this.generateTickMessage(target, effect, damage, config);
+                    if (message) {
+                        messages.push(message);
+                    }
                 }
             }
         }
@@ -93,7 +97,13 @@ export class StatusEffectManager {
                 effect.duration--;
                 if (effect.duration <= 0) {
                     effectsToRemove.push(type);
-                    messages.push(`${effect.name}が解除された`);
+                    const config = StatusEffectManager.configs.get(type);
+                    if (config) {
+                        const message = this.generateRemoveMessage(target, effect, config);
+                        if (message) {
+                            messages.push(message);
+                        }
+                    }
                 }
             }
         }
@@ -283,5 +293,58 @@ export class StatusEffectManager {
         }
         
         return highestPriority;
+    }
+    
+    // Helper method for Actor type detection
+    private static isPlayerActor(target: Actor): boolean {
+        // Check if the target is an instance of Player
+        return target instanceof Player;
+    }
+    
+    // Message generation helper methods
+    private generateTickMessage(target: Actor, effect: StatusEffect, damage: number, config: StatusEffectConfig): string | null {
+        const isPlayer = StatusEffectManager.isPlayerActor(target);
+        const messages = config.messages;
+        
+        if (messages) {
+            const template = isPlayer ? messages.onTickPlayer : messages.onTickBoss;
+            if (template === "") return null; // Empty string means hide message
+            if (template) {
+                return this.formatMessageTemplate(template, target, damage);
+            }
+        }
+        
+        // Default message if no custom template
+        return `${effect.name}によって${damage}のダメージ！`;
+    }
+    
+    private generateRemoveMessage(target: Actor, effect: StatusEffect, config: StatusEffectConfig): string | null {
+        const isPlayer = StatusEffectManager.isPlayerActor(target);
+        const messages = config?.messages;
+        
+        if (messages) {
+            const template = isPlayer ? messages.onRemovePlayer : messages.onRemoveBoss;
+            if (template === "") return null; // Empty string means hide message
+            if (template) {
+                return this.formatMessageTemplate(template, target);
+            }
+        }
+        
+        // Default message if no custom template
+        return `${effect.name}が解除された`;
+    }
+    
+    private formatMessageTemplate(template: string, target: Actor, damage?: number): string {
+        return template.replace(/{(\w+)}/g, (_match, variable) => {
+            switch (variable) {
+                case 'name':
+                    return target.displayName;
+                case 'damage':
+                    return damage?.toString() || '0';
+                default:
+                    console.warn(`Unknown template variable: {${variable}}`);
+                    return `{${variable}}`; // Keep original if unknown
+            }
+        });
     }
 }
