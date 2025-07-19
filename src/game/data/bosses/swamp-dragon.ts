@@ -87,8 +87,31 @@ export const swampDragonData: BossData = {
         'グルルル...',
         'この匂い...悪くない'
     ],
+    customVariables: {
+        fireBreathCooldown: 0,
+        aggressionLevel: 1,
+        hasUsedFinisher: false,
+        restraintAttempts: 0
+    },
     aiStrategy: (boss, player, turn) => {
         // Swamp Dragon AI Strategy
+        
+        // カスタム変数を使用してクールダウン管理
+        const fireBreathCooldown = boss.getCustomVariable<number>('fireBreathCooldown') || 0;
+        const aggressionLevel = boss.getCustomVariable<number>('aggressionLevel') || 1;
+        
+        // クールダウンを減らす
+        if (fireBreathCooldown > 0) {
+            boss.setCustomVariable('fireBreathCooldown', fireBreathCooldown - 1);
+        }
+        
+        // 体力に応じてアグレッションレベルを調整
+        const hpPercentage = boss.getHpPercentage();
+        if (hpPercentage < 30) {
+            boss.setCustomVariable('aggressionLevel', 3);
+        } else if (hpPercentage < 60) {
+            boss.setCustomVariable('aggressionLevel', 2);
+        }
 
         // If player is defeated, use special post-defeat actions
         if (player.isDefeated()) {
@@ -229,6 +252,8 @@ export const swampDragonData: BossData = {
                 // Normal + Knocked Out: 70% chance to restrain, 20% to eat directly
                 const random = Math.random();
                 if (random < 0.7) {
+                    // 拘束試行回数を記録
+                    boss.modifyCustomVariable('restraintAttempts', 1);
                     return {
                         type: ActionType.RestraintAttack,
                         name: '尻尾巻き付き',
@@ -254,16 +279,18 @@ export const swampDragonData: BossData = {
             }
         }
         
-        // Use fire breath more often when player is restrained
-        if (player.isRestrained() && !player.statusEffects.hasEffect(StatusEffectType.Fire)) {
+        // Use fire breath more often when player is restrained (only if not on cooldown)
+        if (player.isRestrained() && !player.statusEffects.hasEffect(StatusEffectType.Fire) && fireBreathCooldown === 0) {
             const fireBreath = swampDragonActions.find(action => action.statusEffect === StatusEffectType.Fire);
-            if (fireBreath && Math.random() < 0.7) {
+            if (fireBreath && Math.random() < 0.7 * aggressionLevel) {
+                // 火のブレス使用時にクールダウンを設定
+                boss.setCustomVariable('fireBreathCooldown', 3);
                 return fireBreath;
             }
         }
         
-        // Prefer powerful attacks when player has high HP
-        if (player.getHpPercentage() > 50) {
+        // Prefer powerful attacks when player has high HP (chance influenced by aggression level)
+        if (player.getHpPercentage() > 50 && Math.random() < 0.5 + (0.2 * aggressionLevel)) {
             const currentPlayerState = boss.getPlayerState(player);
             const highDamageActions = swampDragonActions.filter(action => 
                 action.type === ActionType.Attack && 
