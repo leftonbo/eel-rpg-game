@@ -1,3 +1,6 @@
+/**
+ * 攻撃結果のインターフェース
+ */
 export interface AttackResult {
     damage: number;
     isMiss: boolean;
@@ -7,6 +10,7 @@ export interface AttackResult {
 
 /**
  * ダメージにランダムなゆらぎを適用する（±20%）
+ * @param baseDamage 基本ダメージ（小数点を許可）
  * @returns ゆらぎを適用したダメージ(小数点は処理されない)
  */
 export function applyDamageVariance(baseDamage: number): number {
@@ -15,7 +19,7 @@ export function applyDamageVariance(baseDamage: number): number {
 
 /**
  * ダメージにカスタムゆらぎを適用する
- * @param baseDamage 基本ダメージ
+ * @param baseDamage 基本ダメージ（小数点を許可）
  * @param minVariance 最小ゆらぎ倍率 例: -0.2
  * @param maxVariance 最大ゆらぎ倍率 例: +0.5
  * @returns ゆらぎを適用したダメージ(小数点は処理されない)
