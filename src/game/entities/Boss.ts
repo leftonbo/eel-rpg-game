@@ -287,8 +287,18 @@ export class Boss extends Actor {
         return 'normal';
     }
     
-    private calculateActionDamage(action: BossAction): number {
-        return action.damageFormula ? action.damageFormula(this) : (action.damage || this.attackPower);
+    private calculateActionDamage(action: BossAction): number | undefined {
+        if (action.damageFormula)
+        {
+            return action.damageFormula(this); // Use damage formula if provided
+        }
+        
+        if (action.damage)
+        {
+            return action.damage; // Use fixed damage if provided [deprecated]
+        }
+        
+        return undefined; // No damage defined
     }
     
     executeAction(action: BossAction, player: Player): string[] {
@@ -314,7 +324,7 @@ export class Boss extends Actor {
         switch (action.type) {
             case ActionType.Attack:
                 {
-                    const baseDamage = this.calculateActionDamage(action);
+                    const baseDamage = this.calculateActionDamage(action) || this.attackPower;
                     const attackResult = calculateAttackResult(
                         baseDamage, 
                         player.isKnockedOut(), 
@@ -462,7 +472,7 @@ export class Boss extends Actor {
             case ActionType.DevourAttack:
                 {
                     // Apply variance to absorption amount
-                    const baseAbsorption = this.calculateActionDamage(action);
+                    const baseAbsorption = this.calculateActionDamage(action) || Math.floor(player.maxHp * 0.1); // Default 10% max HP absorption
                     const statusAttackResult = calculateAttackResult(
                         baseAbsorption, 
                         player.isKnockedOut(), 
