@@ -97,8 +97,6 @@ export class Boss extends Actor {
         creator: string;
         source?: string;
     };
-    public hasUsedSpecialMove: boolean = false;
-    public specialMoveCooldown: number = 0;
     /**
      * ボス固有のカスタム変数
      * AI戦略での状態管理、クールダウン管理、行動制御などに使用
