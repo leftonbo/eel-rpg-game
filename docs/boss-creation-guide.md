@@ -161,7 +161,7 @@ const newBossActions: BossAction[] = [
         type: ActionType.Attack,
         name: '基本攻撃',
         description: '基本的な攻撃',
-        damageFormula: (user: Boss) => user.attackPower * 1.2,
+        damageFormula: (user: Boss) => user.attackPower,
         weight: 40,
         playerStateCondition: 'normal'
     },
