@@ -14,7 +14,7 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.Attack,
         name: '噛みつき',
         description: '強力な顎で噛みつく',
-        damage: 30,
+        damageFormula: (actor) => Math.floor(actor.attackPower * 1.5),
         weight: 25,
         hitRate: 0.7,
         criticalRate: 0.08,
@@ -26,7 +26,7 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '炎のブレス',
         description: '灼熱の炎を吐く',
-        damage: 24,
+        damageFormula: (actor) => Math.floor(actor.attackPower * 1.3),
         hitRate: 0.9,
         statusEffect: StatusEffectType.Fire,
         weight: 25

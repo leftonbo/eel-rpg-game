@@ -2,6 +2,7 @@ export { StatusEffectType, ActionPriority } from './StatusEffectTypes';
 export type { StatusEffect, StatusEffectConfig } from './StatusEffectTypes';
 
 import { Actor } from '../entities/Actor';
+import { Player } from '../entities/Player';
 import { createStatusEffectConfigs } from './status-effects';
 import { StatusEffectType, StatusEffect, StatusEffectConfig, ActionPriority } from './StatusEffectTypes';
 
@@ -294,9 +295,15 @@ export class StatusEffectManager {
         return highestPriority;
     }
     
+    // Helper method for Actor type detection
+    private static isPlayerActor(target: Actor): boolean {
+        // Check if the target is an instance of Player
+        return target instanceof Player;
+    }
+    
     // Message generation helper methods
     private generateTickMessage(target: Actor, effect: StatusEffect, damage: number, config: StatusEffectConfig): string | null {
-        const isPlayer = target.constructor.name === 'Player';
+        const isPlayer = StatusEffectManager.isPlayerActor(target);
         const messages = config.messages;
         
         if (messages) {
@@ -312,7 +319,7 @@ export class StatusEffectManager {
     }
     
     private generateRemoveMessage(target: Actor, effect: StatusEffect, config: StatusEffectConfig): string | null {
-        const isPlayer = target.constructor.name === 'Player';
+        const isPlayer = StatusEffectManager.isPlayerActor(target);
         const messages = config?.messages;
         
         if (messages) {
@@ -328,8 +335,16 @@ export class StatusEffectManager {
     }
     
     private formatMessageTemplate(template: string, target: Actor, damage?: number): string {
-        return template
-            .replace(/{name}/g, target.displayName)
-            .replace(/{damage}/g, damage?.toString() || '0');
+        return template.replace(/{(\w+)}/g, (_match, variable) => {
+            switch (variable) {
+                case 'name':
+                    return target.displayName;
+                case 'damage':
+                    return damage?.toString() || '0';
+                default:
+                    console.warn(`Unknown template variable: {${variable}}`);
+                    return `{${variable}}`; // Keep original if unknown
+            }
+        });
     }
 }
