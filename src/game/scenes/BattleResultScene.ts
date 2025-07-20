@@ -284,7 +284,7 @@ export function calculateBattleResult(
     }
 
     // Calculate skill experience
-    const skillExperience = player.trophySystem.calculateSkillExperience(bossId, skillsReceived, requiredLevel);
+    const skillExperience = player.trophySystem.calculateSkillExperience(skillsReceived, requiredLevel);
     explorerExperience += skillExperience;
     
     const experienceGained: { [key: string]: number } = {

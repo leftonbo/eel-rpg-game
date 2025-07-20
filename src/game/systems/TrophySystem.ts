@@ -18,7 +18,6 @@ export interface BattleMemorial {
     bossId: string;
     hasWon: boolean;
     hasLost: boolean;
-    skillsReceived: Set<string>; // スキル名のセット
 }
 
 export class TrophySystem {
@@ -90,19 +89,12 @@ export class TrophySystem {
     /**
      * スキル体験経験値を計算（記念品ではなく直接経験値）
      */
-    public calculateSkillExperience(bossId: string, skillsReceived: string[], requiredLevel: number): number {
-        const memorial = this.getBattleMemorial(bossId);
-        const newSkills = skillsReceived.filter(skill => !memorial.skillsReceived.has(skill));
-        
-        if (newSkills.length === 0) {
-            return 0;
+    public calculateSkillExperience(skillsReceived: string[], requiredLevel: number): number {
+        if (skillsReceived.length === 0) {
+            return 0; // スキルがない場合は経験値なし
         }
-        
-        // 新しく受けたスキルを記録
-        newSkills.forEach(skill => memorial.skillsReceived.add(skill));
-        this.saveToStorage();
-        
-        return newSkills.length * 20 * (requiredLevel + 1);
+
+        return skillsReceived.length * 20 * (requiredLevel + 1);
     }
     
     /**
@@ -113,8 +105,7 @@ export class TrophySystem {
             this.battleMemorials.set(bossId, {
                 bossId,
                 hasWon: false,
-                hasLost: false,
-                skillsReceived: new Set<string>()
+                hasLost: false
             });
         }
         return this.battleMemorials.get(bossId)!;
@@ -155,8 +146,7 @@ export class TrophySystem {
                     this.battleMemorials.set(bossId, {
                         bossId,
                         hasWon: memorial.hasWon,
-                        hasLost: memorial.hasLost,
-                        skillsReceived: new Set(memorial.skillsReceived || [])
+                        hasLost: memorial.hasLost
                     });
                 });
             }
@@ -180,8 +170,7 @@ export class TrophySystem {
                 memorialData[bossId] = {
                     bossId: memorial.bossId,
                     hasWon: memorial.hasWon,
-                    hasLost: memorial.hasLost,
-                    skillsReceived: Array.from(memorial.skillsReceived)
+                    hasLost: memorial.hasLost
                 };
             });
             
@@ -215,8 +204,7 @@ export class TrophySystem {
         
         data.memorials.forEach(memorial => {
             this.battleMemorials.set(memorial.bossId, {
-                ...memorial,
-                skillsReceived: new Set(memorial.skillsReceived)
+                ...memorial
             });
         });
         
