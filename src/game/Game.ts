@@ -25,9 +25,10 @@ export class Game {
     private battleResultScene: BattleResultScene;
     
     constructor() {
-        // Check for debug mode from URL parameters or localStorage
+        // Check for debug mode from webpack environment, URL parameters, or localStorage
         const urlParams = new URLSearchParams(window.location.search);
-        this.debugMode = urlParams.get('debug') === 'true' || 
+        this.debugMode = (typeof DEBUG !== 'undefined' && DEBUG) ||
+                        urlParams.get('debug') === 'true' || 
                         localStorage.getItem('debug_mode') === 'true';
         
         this.titleScene = new TitleScene(this);

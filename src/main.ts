@@ -1,11 +1,12 @@
 import './styles/main.css';
 import { Game } from './game/Game';
 
-// Declare bootstrap as a global variable
+// Declare global variables
 declare global {
     interface Window {
         bootstrap: any;
     }
+    const DEBUG: boolean;
 }
 
 // Initialize the game when the DOM is loaded
