@@ -25,9 +25,54 @@ interface BootstrapWindow extends Window {
 
 declare let window: BootstrapWindow;
 
+/**
+ * モーダルユーティリティクラス
+ * ブラウザ標準のalert、confirm、promptをBootstrapモーダルで置き換える機能を提供
+ * 
+ * @class ModalUtils
+ * @description Bootstrap 5を使用してモーダルダイアログとトースト通知を管理するためのユーティリティクラス
+ * 
+ * @example
+ * ```typescript
+ * // トースト通知の表示
+ * ModalUtils.showToast('保存しました！', 'success');
+ * 
+ * // アラートの表示
+ * await ModalUtils.showAlert('エラーが発生しました', 'error');
+ * 
+ * // 確認ダイアログ
+ * const result = await ModalUtils.showConfirm('削除しますか？');
+ * if (result) {
+ *     // 削除処理
+ * }
+ * 
+ * // 入力ダイアログ
+ * const name = await ModalUtils.showPrompt('名前を入力してください');
+ * if (name) {
+ *     console.log('入力された名前:', name);
+ * }
+ * ```
+ */
 export class ModalUtils {
     /**
-     * Show a toast notification (replacement for showMessage)
+     * トースト通知を表示する
+     * 
+     * @static
+     * @param {string} message - 表示するメッセージ
+     * @param {'success' | 'error' | 'info' | 'warning'} [type='info'] - トーストのタイプ
+     * @returns {void}
+     * 
+     * @example
+     * ```typescript
+     * // 成功メッセージ
+     * ModalUtils.showToast('保存しました！', 'success');
+     * 
+     * // エラーメッセージ
+     * ModalUtils.showToast('エラーが発生しました', 'error');
+     * 
+     * // 情報メッセージ（デフォルト）
+     * ModalUtils.showToast('処理を開始しました');
+     * ```
      */
     static showToast(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info'): void {
         const toastContainer = document.getElementById('toast-container');
@@ -66,7 +111,30 @@ export class ModalUtils {
     }
 
     /**
-     * Show alert modal (replacement for alert())
+     * アラートモーダルを表示する（alert()の代替）
+     * 
+     * @static
+     * @async
+     * @param {string} message - 表示するメッセージ
+     * @param {string} [title='通知'] - モーダルのタイトル
+     * @returns {Promise<void>} ユーザーがOKボタンを押すかモーダルを閉じた時に解決されるPromise
+     * 
+     * @example
+     * ```typescript
+     * // 基本的な使用方法
+     * await ModalUtils.showAlert('処理が完了しました');
+     * 
+     * // カスタムタイトルを指定
+     * await ModalUtils.showAlert('エラーが発生しました', 'エラー');
+     * 
+     * // 非同期処理での使用
+     * try {
+     *     await someAsyncOperation();
+     *     await ModalUtils.showAlert('成功しました！');
+     * } catch (error) {
+     *     await ModalUtils.showAlert('処理に失敗しました', 'エラー');
+     * }
+     * ```
      */
     static async showAlert(message: string, title: string = '通知'): Promise<void> {
         return new Promise((resolve) => {
@@ -90,7 +158,28 @@ export class ModalUtils {
     }
 
     /**
-     * Show confirm modal (replacement for confirm())
+     * 確認モーダルを表示する（confirm()の代替）
+     * 
+     * @static
+     * @async
+     * @param {string} message - 確認メッセージ
+     * @param {string} [title='確認'] - モーダルのタイトル
+     * @returns {Promise<boolean>} OKが押された場合true、キャンセルまたはモーダルが閉じられた場合false
+     * 
+     * @example
+     * ```typescript
+     * // 基本的な確認ダイアログ
+     * const confirmed = await ModalUtils.showConfirm('本当に削除しますか？');
+     * if (confirmed) {
+     *     deleteItem();
+     * }
+     * 
+     * // カスタムタイトルを指定
+     * const result = await ModalUtils.showConfirm('変更を保存しますか？', '保存確認');
+     * if (result) {
+     *     saveChanges();
+     * }
+     * ```
      */
     static async showConfirm(message: string, title: string = '確認'): Promise<boolean> {
         return new Promise((resolve) => {
@@ -134,7 +223,33 @@ export class ModalUtils {
     }
 
     /**
-     * Show prompt modal (replacement for prompt())
+     * 入力モーダルを表示する（prompt()の代替）
+     * 
+     * @static
+     * @async
+     * @param {string} message - 入力を促すメッセージ
+     * @param {string} [defaultValue=''] - 入力フィールドのデフォルト値
+     * @param {string} [title='入力'] - モーダルのタイトル
+     * @param {string} [inputType='text'] - 入力フィールドのタイプ（text, password, numberなど）
+     * @returns {Promise<string | null>} 入力された値（文字列）、キャンセルされた場合はnull
+     * 
+     * @example
+     * ```typescript
+     * // 基本的な文字列入力
+     * const name = await ModalUtils.showPrompt('お名前を入力してください');
+     * if (name) {
+     *     console.log('入力された名前:', name);
+     * }
+     * 
+     * // デフォルト値を指定
+     * const email = await ModalUtils.showPrompt('メールアドレス', 'user@example.com');
+     * 
+     * // パスワード入力
+     * const password = await ModalUtils.showPrompt('パスワード', '', 'パスワード入力', 'password');
+     * 
+     * // 数値入力
+     * const age = await ModalUtils.showPrompt('年齢', '20', '年齢入力', 'number');
+     * ```
      */
     static async showPrompt(message: string, defaultValue: string = '', title: string = '入力', inputType: string = 'text'): Promise<string | null> {
         return new Promise((resolve) => {
@@ -197,7 +312,42 @@ export class ModalUtils {
     }
 
     /**
-     * Show select modal (replacement for prompt() with predefined options)
+     * 選択モーダルを表示する（事前定義された選択肢からの選択）
+     * 
+     * @static
+     * @async
+     * @param {string} message - 選択を促すメッセージ
+     * @param {{ value: string; text: string }[]} options - 選択肢の配列（valueは値、textは表示テキスト）
+     * @param {string} [title='選択'] - モーダルのタイトル
+     * @returns {Promise<string | null>} 選択された値、キャンセルされた場合はnull
+     * 
+     * @example
+     * ```typescript
+     * // 基本的な選択ダイアログ
+     * const difficulty = await ModalUtils.showSelect(
+     *     '難易度を選択してください',
+     *     [
+     *         { value: 'easy', text: '簡単' },
+     *         { value: 'normal', text: '普通' },
+     *         { value: 'hard', text: '難しい' }
+     *     ],
+     *     '難易度選択'
+     * );
+     * 
+     * if (difficulty) {
+     *     console.log('選択された難易度:', difficulty);
+     * }
+     * 
+     * // 言語選択の例
+     * const language = await ModalUtils.showSelect(
+     *     '言語を選択してください',
+     *     [
+     *         { value: 'ja', text: '日本語' },
+     *         { value: 'en', text: 'English' },
+     *         { value: 'zh', text: '中文' }
+     *     ]
+     * );
+     * ```
      */
     static async showSelect(message: string, options: { value: string; text: string }[], title: string = '選択'): Promise<string | null> {
         return new Promise((resolve) => {
@@ -251,6 +401,14 @@ export class ModalUtils {
         });
     }
 
+    /**
+     * トーストのタイプに応じたBootstrap背景クラスを取得する
+     * 
+     * @private
+     * @static
+     * @param {string} type - トーストのタイプ
+     * @returns {string} Bootstrapの背景クラス名
+     */
     private static getToastBgClass(type: string): string {
         switch (type) {
             case 'success': return 'bg-success';
@@ -261,6 +419,14 @@ export class ModalUtils {
         }
     }
 
+    /**
+     * トーストのタイプに応じたアイコンを取得する
+     * 
+     * @private
+     * @static
+     * @param {string} type - トーストのタイプ
+     * @returns {string} アイコン文字（絵文字）
+     */
     private static getToastIcon(type: string): string {
         switch (type) {
             case 'success': return '✅';
@@ -271,6 +437,14 @@ export class ModalUtils {
         }
     }
 
+    /**
+     * トーストのタイプに応じたタイトルを取得する
+     * 
+     * @private
+     * @static
+     * @param {string} type - トーストのタイプ
+     * @returns {string} 日本語のタイトル
+     */
     private static getToastTitle(type: string): string {
         switch (type) {
             case 'success': return '成功';
@@ -282,7 +456,28 @@ export class ModalUtils {
     }
 
     /**
-     * Show custom variable add modal
+     * カスタム変数追加モーダルを表示する（デバッグ用）
+     * 
+     * @static
+     * @async
+     * @returns {Promise<{key: string, value: string | number | boolean} | null>} 入力されたキーと値のオブジェクト、キャンセルされた場合はnull
+     * 
+     * @description デバッグモーダルでボスのカスタム変数を追加するためのモーダルです。
+     *              値は数値、ブール値、文字列の自動判定が行われます。
+     * 
+     * @example
+     * ```typescript
+     * // カスタム変数の追加
+     * const result = await ModalUtils.showCustomVarModal();
+     * if (result) {
+     *     console.log('キー:', result.key);
+     *     console.log('値:', result.value, 'タイプ:', typeof result.value);
+     *     
+     *     // 例: { key: 'attackCount', value: 5 } → 数値型
+     *     // 例: { key: 'isActive', value: true } → ブール型
+     *     // 例: { key: 'description', value: 'test' } → 文字列型
+     * }
+     * ```
      */
     static async showCustomVarModal(): Promise<{key: string, value: string | number | boolean} | null> {
         return new Promise((resolve) => {
@@ -382,7 +577,33 @@ export class ModalUtils {
     }
 
     /**
-     * Show status effect add modal
+     * ステータス効果追加モーダルを表示する（デバッグ用）
+     * 
+     * @static
+     * @async
+     * @param {'player' | 'boss'} target - ステータス効果を適用するターゲット（プレイヤーまたはボス）
+     * @param {string[]} statusTypes - 選択可能なステータス効果タイプの配列
+     * @returns {Promise<{type: string, duration: number} | null>} 選択されたステータス効果タイプと持続ターン数、キャンセルされた場合はnull
+     * 
+     * @description デバッグモーダルでプレイヤーまたはボスにステータス効果を追加するためのモーダルです。
+     *              ターン数は1〜99の範囲で入力できます。
+     * 
+     * @example
+     * ```typescript
+     * // プレイヤーにステータス効果を追加
+     * const statusTypes = ['fire', 'poison', 'charm', 'slow'];
+     * const result = await ModalUtils.showStatusEffectModal('player', statusTypes);
+     * if (result) {
+     *     console.log('選択されたステータス効果:', result.type);
+     *     console.log('持続ターン数:', result.duration);
+     *     
+     *     // 例: { type: 'fire', duration: 5 }
+     *     player.statusEffectManager.addEffect(result.type, result.duration);
+     * }
+     * 
+     * // ボスにステータス効果を追加
+     * const bossResult = await ModalUtils.showStatusEffectModal('boss', statusTypes);
+     * ```
      */
     static async showStatusEffectModal(target: 'player' | 'boss', statusTypes: string[]): Promise<{type: string, duration: number} | null> {
         return new Promise((resolve) => {
