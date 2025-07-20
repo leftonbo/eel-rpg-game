@@ -1393,49 +1393,24 @@ export class BattleScene {
         // Get all available status effect types
         const statusTypes = Object.values(StatusEffectType);
         
-        // Create options for the select modal
-        const options = statusTypes.map((type, index) => ({
-            value: index.toString(),
-            text: type
-        }));
+        const result = await ModalUtils.showStatusEffectModal(target, statusTypes);
+        if (!result) return;
         
-        const selectedIndex = await ModalUtils.showSelect(
-            'ステータス効果を選択してください:',
-            options,
-            'ステータス効果の追加'
-        );
-        
-        if (selectedIndex === null) return;
-        
-        const typeIndex = parseInt(selectedIndex);
-        if (typeIndex < 0 || typeIndex >= statusTypes.length) {
-            ModalUtils.showAlert('無効な選択です');
-            return;
-        }
-        
-        const duration = await ModalUtils.showPrompt('持続ターン数を入力してください:', '3', '持続ターン数の入力', 'number');
-        if (duration === null) return;
-        
-        const durationNum = parseInt(duration);
-        if (isNaN(durationNum) || durationNum < 1) {
-            ModalUtils.showAlert('無効なターン数です');
-            return;
-        }
-        
-        const effectType = statusTypes[typeIndex];
+        const { type: effectType, duration: durationNum } = result;
+        const statusEffectType = effectType as StatusEffectType;
         
         if (target === 'player' && this.player) {
-            this.player.statusEffects.addEffect(effectType);
+            this.player.statusEffects.addEffect(statusEffectType);
             // Manually set duration after adding
-            const effect = this.player.statusEffects.getEffect(effectType);
+            const effect = this.player.statusEffects.getEffect(statusEffectType);
             if (effect) {
                 effect.duration = durationNum;
             }
             this.refreshDebugPlayerStatusEffects();
         } else if (target === 'boss' && this.boss) {
-            this.boss.statusEffects.addEffect(effectType);
+            this.boss.statusEffects.addEffect(statusEffectType);
             // Manually set duration after adding
-            const effect = this.boss.statusEffects.getEffect(effectType);
+            const effect = this.boss.statusEffects.getEffect(statusEffectType);
             if (effect) {
                 effect.duration = durationNum;
             }
@@ -1447,19 +1422,10 @@ export class BattleScene {
      * Show add custom var dialog
      */
     private async showAddCustomVarDialog(): Promise<void> {
-        const key = await ModalUtils.showPrompt('変数名を入力してください:', '', '変数名の入力');
-        if (!key) return;
+        const result = await ModalUtils.showCustomVarModal();
+        if (!result) return;
         
-        const value = await ModalUtils.showPrompt('値を入力してください:', '', '値の入力');
-        if (value === null) return;
-        
-        // Try to parse as number or boolean
-        let parsedValue: any = value;
-        if (!isNaN(Number(value))) {
-            parsedValue = Number(value);
-        } else if (value.toLowerCase() === 'true' || value.toLowerCase() === 'false') {
-            parsedValue = value.toLowerCase() === 'true';
-        }
+        const { key, value: parsedValue } = result;
         
         this.boss?.setCustomVariable(key, parsedValue);
         this.refreshDebugBossCustomVars();
@@ -1513,11 +1479,11 @@ export class BattleScene {
             // Update battle UI to reflect changes
             this.updateUI();
             
-            ModalUtils.showAlert('変更が適用されました！');
+            ModalUtils.showToast('変更が適用されました！', 'success');
             
         } catch (error) {
             console.error('Error applying debug changes:', error);
-            ModalUtils.showAlert('変更の適用中にエラーが発生しました');
+            ModalUtils.showToast('変更の適用中にエラーが発生しました', 'error');
         }
     }
 }

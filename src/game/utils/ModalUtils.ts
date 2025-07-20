@@ -258,4 +258,205 @@ export class ModalUtils {
             default: return '情報';
         }
     }
+
+    /**
+     * Show custom variable add modal
+     */
+    static async showCustomVarModal(): Promise<{key: string, value: any} | null> {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('custom-var-modal') as HTMLElement;
+            const keyInput = document.getElementById('custom-var-key') as HTMLInputElement;
+            const valueInput = document.getElementById('custom-var-value') as HTMLInputElement;
+            const errorDiv = document.getElementById('custom-var-error') as HTMLElement;
+            const addBtn = document.getElementById('custom-var-add-btn') as HTMLButtonElement;
+            
+            // Clear previous values and errors
+            keyInput.value = '';
+            valueInput.value = '';
+            keyInput.classList.remove('is-invalid');
+            valueInput.classList.remove('is-invalid');
+            errorDiv.classList.add('d-none');
+
+            const bootstrapModal = new (window as any).bootstrap.Modal(modal);
+            
+            const showError = (message: string) => {
+                errorDiv.textContent = message;
+                errorDiv.classList.remove('d-none');
+                
+                // Shake effect
+                modal.querySelector('.modal-dialog')?.classList.add('modal-shake');
+                setTimeout(() => {
+                    modal.querySelector('.modal-dialog')?.classList.remove('modal-shake');
+                }, 600);
+            };
+
+            const validateAndSubmit = () => {
+                const key = keyInput.value.trim();
+                const value = valueInput.value.trim();
+                
+                // Reset error states
+                keyInput.classList.remove('is-invalid');
+                valueInput.classList.remove('is-invalid');
+                errorDiv.classList.add('d-none');
+
+                if (!key) {
+                    showError('変数名を入力してください');
+                    keyInput.classList.add('is-invalid');
+                    keyInput.focus();
+                    return;
+                }
+
+                if (!value) {
+                    showError('値を入力してください');
+                    valueInput.classList.add('is-invalid');
+                    valueInput.focus();
+                    return;
+                }
+
+                // Parse value
+                let parsedValue: any = value;
+                if (!isNaN(Number(value))) {
+                    parsedValue = Number(value);
+                } else if (value.toLowerCase() === 'true' || value.toLowerCase() === 'false') {
+                    parsedValue = value.toLowerCase() === 'true';
+                }
+
+                // Success - close modal and return result
+                cleanup();
+                bootstrapModal.hide();
+                resolve({ key, value: parsedValue });
+            };
+
+            const cleanup = () => {
+                addBtn.removeEventListener('click', validateAndSubmit);
+                keyInput.removeEventListener('keydown', handleEnter);
+                valueInput.removeEventListener('keydown', handleEnter);
+                modal.removeEventListener('hidden.bs.modal', handleHidden);
+            };
+
+            const handleEnter = (e: KeyboardEvent) => {
+                if (e.key === 'Enter') {
+                    validateAndSubmit();
+                }
+            };
+
+            const handleHidden = () => {
+                cleanup();
+                resolve(null);
+            };
+
+            addBtn.addEventListener('click', validateAndSubmit);
+            keyInput.addEventListener('keydown', handleEnter);
+            valueInput.addEventListener('keydown', handleEnter);
+            modal.addEventListener('hidden.bs.modal', handleHidden);
+            
+            bootstrapModal.show();
+            
+            // Focus first input after modal is shown
+            setTimeout(() => {
+                keyInput.focus();
+            }, 300);
+        });
+    }
+
+    /**
+     * Show status effect add modal
+     */
+    static async showStatusEffectModal(target: 'player' | 'boss', statusTypes: string[]): Promise<{type: string, duration: number} | null> {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('status-effect-modal') as HTMLElement;
+            const titleElement = document.getElementById('status-effect-modal-title') as HTMLElement;
+            const typeSelect = document.getElementById('status-effect-type') as HTMLSelectElement;
+            const durationInput = document.getElementById('status-effect-duration') as HTMLInputElement;
+            const errorDiv = document.getElementById('status-effect-error') as HTMLElement;
+            const addBtn = document.getElementById('status-effect-add-btn') as HTMLButtonElement;
+            
+            // Set title
+            titleElement.textContent = `${target === 'player' ? 'プレイヤー' : 'ボス'}のステータス効果を追加`;
+            
+            // Populate status types
+            typeSelect.innerHTML = '';
+            statusTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                typeSelect.appendChild(option);
+            });
+            
+            // Reset values and errors
+            durationInput.value = '3';
+            durationInput.classList.remove('is-invalid');
+            errorDiv.classList.add('d-none');
+
+            const bootstrapModal = new (window as any).bootstrap.Modal(modal);
+            
+            const showError = (message: string) => {
+                errorDiv.textContent = message;
+                errorDiv.classList.remove('d-none');
+                
+                // Shake effect
+                modal.querySelector('.modal-dialog')?.classList.add('modal-shake');
+                setTimeout(() => {
+                    modal.querySelector('.modal-dialog')?.classList.remove('modal-shake');
+                }, 600);
+            };
+
+            const validateAndSubmit = () => {
+                const type = typeSelect.value;
+                const duration = parseInt(durationInput.value);
+                
+                // Reset error states
+                durationInput.classList.remove('is-invalid');
+                errorDiv.classList.add('d-none');
+
+                if (isNaN(duration) || duration < 1) {
+                    showError('有効なターン数を入力してください（1以上）');
+                    durationInput.classList.add('is-invalid');
+                    durationInput.focus();
+                    return;
+                }
+
+                if (duration > 99) {
+                    showError('ターン数は99以下で入力してください');
+                    durationInput.classList.add('is-invalid');
+                    durationInput.focus();
+                    return;
+                }
+
+                // Success - close modal and return result
+                cleanup();
+                bootstrapModal.hide();
+                resolve({ type, duration });
+            };
+
+            const cleanup = () => {
+                addBtn.removeEventListener('click', validateAndSubmit);
+                durationInput.removeEventListener('keydown', handleEnter);
+                modal.removeEventListener('hidden.bs.modal', handleHidden);
+            };
+
+            const handleEnter = (e: KeyboardEvent) => {
+                if (e.key === 'Enter') {
+                    validateAndSubmit();
+                }
+            };
+
+            const handleHidden = () => {
+                cleanup();
+                resolve(null);
+            };
+
+            addBtn.addEventListener('click', validateAndSubmit);
+            durationInput.addEventListener('keydown', handleEnter);
+            modal.addEventListener('hidden.bs.modal', handleHidden);
+            
+            bootstrapModal.show();
+            
+            // Focus duration input after modal is shown
+            setTimeout(() => {
+                durationInput.focus();
+                durationInput.select();
+            }, 300);
+        });
+    }
 }
