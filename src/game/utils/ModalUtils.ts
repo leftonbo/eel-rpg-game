@@ -3,6 +3,28 @@
  * Replaces browser's alert(), confirm(), prompt() with Bootstrap modals
  */
 
+// Bootstrap interface definitions for type safety
+interface BootstrapModal {
+    show(): void;
+    hide(): void;
+    dispose(): void;
+}
+
+interface BootstrapToast {
+    show(): void;
+    hide(): void;
+    dispose(): void;
+}
+
+interface BootstrapWindow extends Window {
+    bootstrap: {
+        Modal: new (element: HTMLElement, options?: any) => BootstrapModal;
+        Toast: new (element: HTMLElement, options?: any) => BootstrapToast;
+    };
+}
+
+declare let window: BootstrapWindow;
+
 export class ModalUtils {
     /**
      * Show a toast notification (replacement for showMessage)
@@ -34,7 +56,7 @@ export class ModalUtils {
         setTimeout(() => {
             const toastElement = document.getElementById(toastId);
             if (toastElement) {
-                const toast = new (window as any).bootstrap.Toast(toastElement);
+                const toast = new window.bootstrap.Toast(toastElement);
                 toast.hide();
                 setTimeout(() => {
                     toastElement.remove();
@@ -55,7 +77,7 @@ export class ModalUtils {
             titleElement.textContent = title;
             bodyElement.textContent = message;
 
-            const bootstrapModal = new (window as any).bootstrap.Modal(modal);
+            const bootstrapModal = new window.bootstrap.Modal(modal);
             
             const handleHidden = () => {
                 modal.removeEventListener('hidden.bs.modal', handleHidden);
@@ -81,7 +103,7 @@ export class ModalUtils {
             titleElement.textContent = title;
             bodyElement.textContent = message;
 
-            const bootstrapModal = new (window as any).bootstrap.Modal(modal);
+            const bootstrapModal = new window.bootstrap.Modal(modal);
             
             const handleResult = (result: boolean) => {
                 return () => {
@@ -128,7 +150,7 @@ export class ModalUtils {
             inputElement.type = inputType;
             inputElement.value = defaultValue;
 
-            const bootstrapModal = new (window as any).bootstrap.Modal(modal);
+            const bootstrapModal = new window.bootstrap.Modal(modal);
             
             const handleResult = (getResult: () => string | null) => {
                 return () => {
@@ -198,7 +220,7 @@ export class ModalUtils {
                 selectElement.appendChild(optionElement);
             });
 
-            const bootstrapModal = new (window as any).bootstrap.Modal(modal);
+            const bootstrapModal = new window.bootstrap.Modal(modal);
             
             const handleResult = (getResult: () => string | null) => {
                 return () => {
@@ -262,7 +284,7 @@ export class ModalUtils {
     /**
      * Show custom variable add modal
      */
-    static async showCustomVarModal(): Promise<{key: string, value: any} | null> {
+    static async showCustomVarModal(): Promise<{key: string, value: string | number | boolean} | null> {
         return new Promise((resolve) => {
             const modal = document.getElementById('custom-var-modal') as HTMLElement;
             const keyInput = document.getElementById('custom-var-key') as HTMLInputElement;
@@ -277,7 +299,7 @@ export class ModalUtils {
             valueInput.classList.remove('is-invalid');
             errorDiv.classList.add('d-none');
 
-            const bootstrapModal = new (window as any).bootstrap.Modal(modal);
+            const bootstrapModal = new window.bootstrap.Modal(modal);
             
             const showError = (message: string) => {
                 errorDiv.textContent = message;
@@ -314,7 +336,7 @@ export class ModalUtils {
                 }
 
                 // Parse value
-                let parsedValue: any = value;
+                let parsedValue: string | number | boolean = value;
                 if (!isNaN(Number(value))) {
                     parsedValue = Number(value);
                 } else if (value.toLowerCase() === 'true' || value.toLowerCase() === 'false') {
@@ -388,7 +410,7 @@ export class ModalUtils {
             durationInput.classList.remove('is-invalid');
             errorDiv.classList.add('d-none');
 
-            const bootstrapModal = new (window as any).bootstrap.Modal(modal);
+            const bootstrapModal = new window.bootstrap.Modal(modal);
             
             const showError = (message: string) => {
                 errorDiv.textContent = message;
