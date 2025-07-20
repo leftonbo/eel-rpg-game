@@ -532,7 +532,7 @@ export class ModalUtils {
 
                 // Parse value
                 let parsedValue: string | number | boolean = value;
-                if (!isNaN(Number(value))) {
+                if (!Number.isNaN(Number(value))) {
                     parsedValue = Number(value);
                 } else if (value.toLowerCase() === 'true' || value.toLowerCase() === 'false') {
                     parsedValue = value.toLowerCase() === 'true';
