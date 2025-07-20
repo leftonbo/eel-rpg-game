@@ -41,7 +41,7 @@ export interface BossAction {
     statusDuration?: number;
     weight: number; // Probability weight for AI selection
     canUse?: (boss: Boss, player: Player, turn: number) => boolean;
-    onUse?: (boss: Boss, player: Player) => string[]; // Custom action callback
+    onUse?: (boss: Boss, player: Player, turn: number) => string[]; // Custom action callback
     hitRate?: number; // Attack hit rate (default: 95%)
     criticalRate?: number; // Critical hit rate (default: 5%)
     statusChance?: number; // Status effect application chance (default: 1.0, range: 0.0-1.0)
@@ -299,7 +299,7 @@ export class Boss extends Actor {
         return undefined; // No damage defined
     }
     
-    executeAction(action: BossAction, player: Player): string[] {
+    executeAction(action: BossAction, player: Player, turn: number = 0): string[] {
         const messages = [];
         
         // Process custom messages if provided
@@ -531,7 +531,7 @@ export class Boss extends Actor {
         
         // Execute custom onUse callback if provided
         if (action.onUse) {
-            const customMessages = action.onUse(this, player);
+            const customMessages = action.onUse(this, player, turn);
             messages.push(...customMessages);
         }
         

@@ -955,7 +955,7 @@ export class BattleScene {
         
         if (action) {
             const playerHpBefore = this.player.hp;
-            const messages = this.boss.executeAction(action, this.player);
+            const messages = this.boss.executeAction(action, this.player, this.roundCount);
             
             // Track damage taken for experience
             if (this.player.hp < playerHpBefore) {

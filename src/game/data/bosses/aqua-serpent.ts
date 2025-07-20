@@ -154,7 +154,7 @@ const aquaSerpentActions: BossAction[] = [
             // 20% chance to use and possibly release player
             return Math.random() < 0.2;
         },
-        onUse: (_, player) => {
+        onUse: (_, player, _turn) => {
             // 30% chance to release player after this attack
             if (Math.random() < 0.3) {
                 player.statusEffects.removeEffect(StatusEffectType.Eaten);

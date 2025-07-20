@@ -216,6 +216,7 @@ export const darkGhostData: BossData = {
                     onUse: (boss, _player, turn) => {
                         // Record when this action was used
                         (boss as any).lastMemoryErosionTurn = turn;
+                        return [];
                     }
                 }
             ];
