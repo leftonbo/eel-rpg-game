@@ -51,6 +51,19 @@ export interface BossAction {
     damageVarianceMax?: number; // Maximum damage variance percentage (default: +20)
 }
 
+/**
+ * 記念品テンプレート定義
+ * 各ボスの勝利・敗北時記念品の内部データ
+ */
+export interface TrophyTemplate {
+    /** 記念品名 */
+    name: string;
+    /** 記念品の説明 */
+    description: string;
+    /** エクスプローラー経験値 */
+    explorerExp: number;
+}
+
 export interface BossData {
     id: string;
     name: string;
@@ -86,6 +99,16 @@ export interface BossData {
      * 未指定の場合は 0 として扱われ、最初から利用可能
      */
     explorerLevelRequired?: number;
+    /**
+     * 勝利時記念品テンプレート
+     * 「外側から採れるもの」の設定
+     */
+    victoryTrophy?: TrophyTemplate;
+    /**
+     * 敗北時記念品テンプレート  
+     * 「内側（体内）から採れるもの」の設定
+     */
+    defeatTrophy?: TrophyTemplate;
 }
 
 export class Boss extends Actor {

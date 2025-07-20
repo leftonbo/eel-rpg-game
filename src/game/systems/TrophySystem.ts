@@ -31,19 +31,23 @@ export class TrophySystem {
     /**
      * 初回勝利記念品を獲得
      */
-    public awardVictoryTrophy(bossId: string, bossName: string, requiredLevel: number): Trophy | null {
+    public awardVictoryTrophy(bossId: string, bossName: string, requiredLevel: number, trophyTemplate?: { name: string, description: string, explorerExp: number }): Trophy | null {
         const memorial = this.getBattleMemorial(bossId);
         if (memorial.hasWon) {
             return null; // 既に勝利済み
         }
         
         const trophyId = `${bossId}-victory`;
-        const explorerExp = (requiredLevel + 1) ** 2 * 100;
+        
+        // Use template data if provided, otherwise fallback to default
+        const trophyName = trophyTemplate?.name || `${bossName}のたてがみ`;
+        const trophyDescription = trophyTemplate?.description || `${bossName}に初回勝利した記念品`;
+        const explorerExp = trophyTemplate?.explorerExp || (requiredLevel + 1) ** 2 * 100;
         
         const trophy: Trophy = {
             id: trophyId,
-            name: `${bossName}のたてがみ`,
-            description: `${bossName}に初回勝利した記念品`,
+            name: trophyName,
+            description: trophyDescription,
             bossId,
             type: TrophyType.Victory,
             explorerExp,
@@ -60,19 +64,23 @@ export class TrophySystem {
     /**
      * 初回敗北記念品を獲得
      */
-    public awardDefeatTrophy(bossId: string, bossName: string, requiredLevel: number): Trophy | null {
+    public awardDefeatTrophy(bossId: string, bossName: string, requiredLevel: number, trophyTemplate?: { name: string, description: string, explorerExp: number }): Trophy | null {
         const memorial = this.getBattleMemorial(bossId);
         if (memorial.hasLost) {
             return null; // 既に敗北済み
         }
         
         const trophyId = `${bossId}-defeat`;
-        const explorerExp = (requiredLevel + 1) ** 2 * 100;
+        
+        // Use template data if provided, otherwise fallback to default
+        const trophyName = trophyTemplate?.name || `${bossName}の粘液`;
+        const trophyDescription = trophyTemplate?.description || `${bossName}に初回敗北した記念品`;
+        const explorerExp = trophyTemplate?.explorerExp || (requiredLevel + 1) ** 2 * 100;
         
         const trophy: Trophy = {
             id: trophyId,
-            name: `${bossName}の粘液`,
-            description: `${bossName}に初回敗北した記念品`,
+            name: trophyName,
+            description: trophyDescription,
             bossId,
             type: TrophyType.Defeat,
             explorerExp,

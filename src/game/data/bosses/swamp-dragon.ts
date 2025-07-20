@@ -80,6 +80,16 @@ export const swampDragonData: BossData = {
     actions: swampDragonActions,
     icon: '🐲',
     explorerLevelRequired: 0,
+    victoryTrophy: {
+        name: '沼竜のたてがみ',
+        description: '沼のドラゴンの立派なたてがみ。荒々しい戦いの証として威厳を放っている。',
+        explorerExp: 100
+    },
+    defeatTrophy: {
+        name: '沼のような粘液',
+        description: '沼のドラゴンの体内から採取した特殊な粘液。沼地の神秘的な力が宿っている。',
+        explorerExp: 100
+    },
     personality: [
         'ふむ...良い匂いだな',
         'グルル...なかなか',

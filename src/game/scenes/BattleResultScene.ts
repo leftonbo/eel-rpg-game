@@ -269,13 +269,13 @@ export function calculateBattleResult(
     if (bossData) {
         // Award victory/defeat trophies (only if battle was not interrupted)
         if (status === BattleResultStatus.Victory) {
-            const victoryTrophy = player.trophySystem.awardVictoryTrophy(bossId, bossData.displayName, requiredLevel);
+            const victoryTrophy = player.trophySystem.awardVictoryTrophy(bossId, bossData.displayName, requiredLevel, bossData.victoryTrophy);
             if (victoryTrophy) {
                 trophies.push(victoryTrophy);
                 explorerExperience += victoryTrophy.explorerExp;
             }
         } else if (status === BattleResultStatus.Defeat) {
-            const defeatTrophy = player.trophySystem.awardDefeatTrophy(bossId, bossData.displayName, requiredLevel);
+            const defeatTrophy = player.trophySystem.awardDefeatTrophy(bossId, bossData.displayName, requiredLevel, bossData.defeatTrophy);
             if (defeatTrophy) {
                 trophies.push(defeatTrophy);
                 explorerExperience += defeatTrophy.explorerExp;
