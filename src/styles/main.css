@@ -1592,7 +1592,3 @@ footer svg {
 .d-none-important {
     display: none !important;
 }
-
-.z-index-9999 {
-    z-index: 9999;
-}

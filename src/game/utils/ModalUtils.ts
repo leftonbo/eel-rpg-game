@@ -14,12 +14,19 @@ interface BootstrapToast {
     show(): void;
     hide(): void;
     dispose(): void;
+    isShown(): boolean;
+}
+
+interface ToastOptions {
+    animation?: boolean;
+    autohide?: boolean;
+    delay?: number;
 }
 
 interface BootstrapWindow extends Window {
     bootstrap: {
         Modal: new (element: HTMLElement, options?: any) => BootstrapModal;
-        Toast: new (element: HTMLElement, options?: any) => BootstrapToast;
+        Toast: new (element: HTMLElement, options?: ToastOptions) => BootstrapToast;
     };
 }
 
@@ -65,17 +72,17 @@ export class ModalUtils {
         MODAL_FOCUS_DELAY: 300,
         /** エラー表示時のシェイク効果時間（ミリ秒） */
         ERROR_SHAKE_DURATION: 600,
-        /** トースト非表示アニメーション時間（ミリ秒） */
-        TOAST_HIDE_ANIMATION: 300,
     } as const;
 
     /**
-     * トースト通知を表示する
+     * トースト通知を表示する（Bootstrap 5公式API使用）
      * 
      * @static
      * @param {string} message - 表示するメッセージ
      * @param {'success' | 'error' | 'info' | 'warning'} [type='info'] - トーストのタイプ
      * @returns {void}
+     * 
+     * @description Bootstrap 5の公式Toast APIを使用してスムーズなアニメーションを実現
      * 
      * @example
      * ```typescript
@@ -97,12 +104,20 @@ export class ModalUtils {
         const bgClass = this.getToastBgClass(type);
         const iconClass = this.getToastIcon(type);
 
+        // Bootstrap 5公式のToast構造（右下からのスライドイン用）
         const toastHtml = `
-            <div id="${toastId}" class="toast show" role="alert">
+            <div id="${toastId}" 
+                 class="toast hide" 
+                 role="alert" 
+                 aria-live="assertive" 
+                 aria-atomic="true"
+                 data-bs-delay="${ModalUtils.TIMING.TOAST_AUTO_HIDE}"
+                 data-bs-animation="true"
+                 data-bs-autohide="true">
                 <div class="toast-header ${bgClass} text-white">
                     <span class="me-2">${iconClass}</span>
                     <strong class="me-auto">${this.getToastTitle(type)}</strong>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="閉じる"></button>
                 </div>
                 <div class="toast-body">
                     ${message}
@@ -112,17 +127,23 @@ export class ModalUtils {
 
         toastContainer.insertAdjacentHTML('beforeend', toastHtml);
 
-        // Auto-remove after 4 seconds
-        setTimeout(() => {
-            const toastElement = document.getElementById(toastId);
-            if (toastElement) {
-                const toast = new window.bootstrap.Toast(toastElement);
-                toast.hide();
-                setTimeout(() => {
-                    toastElement.remove();
-                }, ModalUtils.TIMING.TOAST_HIDE_ANIMATION);
-            }
-        }, ModalUtils.TIMING.TOAST_AUTO_HIDE);
+        const toastElement = document.getElementById(toastId);
+        if (toastElement) {
+            // Bootstrap Toast インスタンスを作成
+            const toast = new window.bootstrap.Toast(toastElement, {
+                animation: true,
+                autohide: true,
+                delay: ModalUtils.TIMING.TOAST_AUTO_HIDE
+            });
+
+            // hidden.bs.toastイベントでDOM要素を削除
+            toastElement.addEventListener('hidden.bs.toast', () => {
+                toastElement.remove();
+            });
+
+            // Toast を表示
+            toast.show();
+        }
     }
 
     /**
