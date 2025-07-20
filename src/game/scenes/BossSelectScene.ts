@@ -250,6 +250,9 @@ export class BossSelectScene {
         // Update items tab
         this.updateItemsList();
         
+        // Update explorer tab
+        this.updateExplorerTab();
+        
         // Update debug controls visibility in modal
         this.updateDebugControlsVisibilityInModal();
         
@@ -763,5 +766,87 @@ export class BossSelectScene {
         this.updatePlayerStatus();
         this.showPlayerDetails(); // Refresh modal content
         ModalUtils.showToast(`全てのアビリティをレベル ${level} に設定しました`, 'success');
+    }
+
+    /**
+     * Update explorer tab with current stats and trophies
+     */
+    private updateExplorerTab(): void {
+        const player = this.game.getPlayer();
+        const abilityLevels = player.getAbilityLevels();
+        const explorerData = abilityLevels[AbilityType.Explorer];
+        
+        if (explorerData) {
+            this.updateElement('explorer-level', explorerData.level.toString());
+            this.updateElement('explorer-exp', explorerData.experience.toString());
+            this.updateElement('explorer-next', (explorerData.experience + explorerData.experienceToNext).toString());
+            
+            // Update progress bar
+            const progressElement = document.getElementById('explorer-progress');
+            if (progressElement && explorerData.experienceToNext > 0) {
+                const percentage = (explorerData.experience / (explorerData.experience + explorerData.experienceToNext)) * 100;
+                progressElement.style.width = `${percentage}%`;
+            }
+        }
+        
+        // Update statistics
+        const allBossData = getAllBossData();
+        const unlockedCount = allBossData.filter(boss => 
+            (boss.explorerLevelRequired || 0) <= player.getExplorerLevel()
+        ).length;
+        
+        this.updateElement('unlocked-bosses-count', unlockedCount.toString());
+        
+        const allTrophies = player.trophySystem.getAllTrophies();
+        this.updateElement('total-trophies-count', allTrophies.length.toString());
+        
+        const totalExplorerExp = explorerData?.experience || 0;
+        this.updateElement('total-explorer-exp', totalExplorerExp.toString());
+        
+        // Update trophies collection
+        this.updateTrophiesCollection(allTrophies);
+    }
+    
+    /**
+     * Update trophies collection display
+     */
+    private updateTrophiesCollection(trophies: any[]): void {
+        const trophiesContainer = document.getElementById('trophies-collection');
+        const noTrophiesMessage = document.getElementById('no-trophies-message');
+        
+        if (!trophiesContainer || !noTrophiesMessage) return;
+        
+        if (trophies.length === 0) {
+            trophiesContainer.innerHTML = '';
+            noTrophiesMessage.style.display = 'block';
+            return;
+        }
+        
+        noTrophiesMessage.style.display = 'none';
+        trophiesContainer.innerHTML = '';
+        
+        trophies.forEach(trophy => {
+            const trophyCard = document.createElement('div');
+            trophyCard.className = 'col-md-6 mb-3';
+            
+            const typeIcon = trophy.type === 'victory' ? '🏆' : '💀';
+            const typeClass = trophy.type === 'victory' ? 'success' : 'info';
+            const dateStr = new Date(trophy.dateObtained).toLocaleDateString('ja-JP');
+            
+            trophyCard.innerHTML = `
+                <div class="card bg-secondary">
+                    <div class="card-body">
+                        <h6 class="card-title d-flex justify-content-between align-items-center">
+                            ${typeIcon} ${trophy.name}
+                            <span class="badge bg-${typeClass}">+${trophy.explorerExp} EXP</span>
+                        </h6>
+                        <p class="card-text small">${trophy.description}</p>
+                        <small class="text-muted">獲得日: ${dateStr}</small>
+                    </div>
+                </div>
+            `;
+            
+            trophiesContainer.appendChild(trophyCard);
+        });
     }
 }
