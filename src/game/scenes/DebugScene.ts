@@ -257,10 +257,20 @@ export class DebugScene {
         const effectType = statusTypes[typeIndex];
         
         if (target === 'player' && this.player) {
-            this.player.statusEffects.addEffect(effectType, durationNum);
+            this.player.statusEffects.addEffect(effectType);
+            // Manually set duration after adding
+            const effect = this.player.statusEffects.getEffect(effectType);
+            if (effect) {
+                effect.duration = durationNum;
+            }
             this.refreshPlayerStatusEffects();
         } else if (target === 'boss' && this.boss) {
-            this.boss.statusEffects.addEffect(effectType, durationNum);
+            this.boss.statusEffects.addEffect(effectType);
+            // Manually set duration after adding
+            const effect = this.boss.statusEffects.getEffect(effectType);
+            if (effect) {
+                effect.duration = durationNum;
+            }
             this.refreshBossStatusEffects();
         }
     }
