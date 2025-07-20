@@ -172,70 +172,78 @@ export const darkGhostData: BossData = {
                 },
                 {
                     type: ActionType.DevourAttack,
-                    name: '恐怖の注入',
+                    name: '魂の引き抜き',
                     damageFormula: (user: Boss) => user.attackPower * 1.0,
-                    description: '恐怖を心に注ぎ込み魂の抵抗力を削ぐ',
+                    description: '体内にいる獲物の魂を影の触手で引き抜こうとする',
                     messages: [
-                        '「怖がれば怖がるほど美味しくなるヨ...」',
-                        '<USER>は<TARGET>の心に恐怖を注ぎ込んでいる...',
-                        '<TARGET>は得体の知れない恐怖に包まれた！'
+                        '「ユックリと引き抜いてあげるヨ...」',
+                        '<USER>が影の触手で<TARGET>の魂を引き抜こうとしている...',
+                        '<TARGET>の魂が少しずつ引っ張られている...'
                     ],
-                    statusEffect: StatusEffectType.Paralysis,
                     weight: 25
                 },
                 {
                     type: ActionType.DevourAttack,
                     name: '絶望の囁き',
                     damageFormula: (user: Boss) => user.attackPower * 0.8,
-                    description: '絶望的な言葉で心を折り魂を弱らせる',
+                    description: '絶望的な言葉で心を折り恐怖を植え付ける',
                     messages: [
                         '「もう誰も助けに来ないヨ...」',
                         '<USER>が<TARGET>の心に絶望を囁いている...',
-                        '<TARGET>は深い絶望に沈んでいく...'
+                        '<TARGET>は深い恐怖に支配された！'
                     ],
-                    statusEffect: StatusEffectType.Exhausted,
+                    statusEffect: StatusEffectType.Fear,
                     weight: 20
                 },
                 {
                     type: ActionType.DevourAttack,
                     name: '記憶の侵食',
                     damageFormula: (user: Boss) => user.attackPower * 0.6,
-                    description: '大切な記憶を蝕み精神的支柱を奪う',
+                    description: '大切な記憶を蝕みスキルの記憶を奪う',
                     messages: [
                         '「大切な記憶、消してあげるネ...」',
                         '<USER>が<TARGET>の記憶を侵食している...',
-                        '<TARGET>の大切な思い出が薄れていく...'
+                        '<TARGET>はスキルの使い方を忘れてしまった...'
                     ],
-                    statusEffect: StatusEffectType.Charm,
-                    weight: 15
-                },
-                {
-                    type: ActionType.DevourAttack,
-                    name: '悪夢の投影',
-                    damageFormula: (user: Boss) => user.attackPower * 1.2,
-                    description: '最悪の悪夢を見せて精神を混乱させる',
-                    messages: [
-                        '「キミの一番嫌な夢を見せてあげるヨ...」',
-                        '<USER>が<TARGET>に悪夢を投影している...',
-                        '<TARGET>は恐ろしい悪夢に囚われた！'
-                    ],
-                    statusEffect: StatusEffectType.Poison,
-                    weight: 10
+                    statusEffect: StatusEffectType.Oblivion,
+                    weight: 15,
+                    cooldown: 20,
+                    canUse: (boss, _player, _turn) => {
+                        // Check if this action was used in the last 20 turns
+                        const lastUsed = (boss as any).lastMemoryErosionTurn || -21;
+                        return (turn - lastUsed) >= 20;
+                    },
+                    onUse: (boss, _player, turn) => {
+                        // Record when this action was used
+                        (boss as any).lastMemoryErosionTurn = turn;
+                    }
                 }
             ];
             
-            // Weighted random selection from eaten actions
-            const totalWeight = eatenActions.reduce((sum, action) => sum + action.weight, 0);
+            // Filter available actions based on canUse condition
+            const availableActions = eatenActions.filter(action => {
+                if (action.canUse) {
+                    return action.canUse(boss, player, turn);
+                }
+                return true;
+            });
+            
+            // Weighted random selection from available actions
+            const totalWeight = availableActions.reduce((sum, action) => sum + action.weight, 0);
             let random = Math.random() * totalWeight;
             
-            for (const action of eatenActions) {
+            for (const action of availableActions) {
                 random -= action.weight;
                 if (random <= 0) {
+                    // Execute onUse callback if available
+                    if (action.onUse) {
+                        action.onUse(boss, player, turn);
+                    }
                     return action;
                 }
             }
             
-            return eatenActions[0];
+            return availableActions[0] || eatenActions[0];
         }
         
         // Strategic actions based on player state
