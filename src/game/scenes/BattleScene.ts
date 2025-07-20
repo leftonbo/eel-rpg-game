@@ -1140,7 +1140,7 @@ export class BattleScene {
         // Show battle result screen
         const battleResult = calculateBattleResult(
             this.player,
-            this.boss.id,
+            this.boss,
             status,
             this.battleStats.damageDealt,
             this.battleStats.damageTaken,

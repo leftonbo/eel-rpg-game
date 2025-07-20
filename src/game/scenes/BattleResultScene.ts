@@ -4,6 +4,7 @@ import { SkillRegistry } from '../data/skills';
 import { Player } from '../entities/Player';
 import { getBossData, getAllBossData } from '../data/index';
 import { Trophy } from '../systems/TrophySystem';
+import { Boss } from '../entities/Boss';
 
 export enum BattleResultStatus {
     Interrupted = 'interrupted',
@@ -249,7 +250,7 @@ export class BattleResultScene {
  */
 export function calculateBattleResult(
     player: Player,
-    bossId: string,
+    boss: Boss,
     status: BattleResultStatus,
     damageDealt: number,
     damageTaken: number,
@@ -259,6 +260,7 @@ export function calculateBattleResult(
     skillsReceived: string[] = []
 ): BattleResult {
     // Calculate explorer experience from trophies and skill experience
+    const bossId = boss.id;
     const bossData = getBossData(bossId);
     const requiredLevel = bossData?.explorerLevelRequired || 0;
     const trophies: Trophy[] = [];
