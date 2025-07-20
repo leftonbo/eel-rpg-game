@@ -2,11 +2,12 @@ import { Game } from '../Game';
 import { AbilityType } from '../systems/AbilitySystem';
 import { SkillRegistry } from '../data/skills';
 import { Player } from '../entities/Player';
-import { getBossData } from '../data/index';
+import { getBossData, getAllBossData } from '../data/index';
 import { Trophy } from '../systems/TrophySystem';
 
 export interface BattleResult {
     victory: boolean;
+    interrupted: boolean;
     experienceGained: { [key: string]: number };
     levelUps: { [key: string]: { previousLevel: number; newLevel: number } };
     newUnlocks: {
@@ -16,6 +17,7 @@ export interface BattleResult {
         skills: string[];
     };
     trophies: Trophy[];
+    newBossUnlocks: string[];
 }
 
 export class BattleResultScene {
@@ -68,6 +70,9 @@ export class BattleResultScene {
         
         // Display trophies
         this.displayTrophies();
+        
+        // Display new boss unlocks
+        this.displayNewBossUnlocks();
         
         // Show continue button
         const continueButton = document.getElementById('battle-result-continue-btn');
@@ -188,6 +193,30 @@ export class BattleResultScene {
     }
     
     /**
+     * Display newly unlocked bosses
+     */
+    private displayNewBossUnlocks(): void {
+        const bossUnlockContainer = document.getElementById('new-boss-unlocks');
+        if (!bossUnlockContainer || !this.battleResult || this.battleResult.newBossUnlocks.length === 0) {
+            return;
+        }
+        
+        bossUnlockContainer.innerHTML = '<h5>🔓 新ボス解禁</h5>';
+        
+        this.battleResult.newBossUnlocks.forEach(bossName => {
+            const unlockDiv = document.createElement('div');
+            unlockDiv.className = 'mb-3 p-3 border border-warning rounded bg-warning bg-opacity-10';
+            unlockDiv.innerHTML = `
+                <div class="text-center">
+                    <div class="h6 text-warning">🌟 ${bossName} が解禁されました！</div>
+                    <div class="small text-muted">ボス選択画面で新しい挑戦が可能になりました</div>
+                </div>
+            `;
+            bossUnlockContainer.appendChild(unlockDiv);
+        });
+    }
+    
+    /**
      * Get display name for ability type
      */
     private getAbilityDisplayName(abilityType: AbilityType): string {
@@ -222,7 +251,8 @@ export function calculateBattleResult(
     mpSpent: number,
     craftworkExperience: number = 0,
     agilityExperience: number = 0,
-    skillsReceived: string[] = []
+    skillsReceived: string[] = [],
+    interrupted: boolean = false
 ): BattleResult {
     // Calculate explorer experience from trophies and skill experience
     const bossData = getBossData(bossId);
@@ -230,8 +260,8 @@ export function calculateBattleResult(
     const trophies: Trophy[] = [];
     let explorerExperience = 0;
     
-    if (bossData) {
-        // Award victory/defeat trophies
+    if (bossData && !interrupted) {
+        // Award victory/defeat trophies (only if battle was not interrupted)
         if (victory) {
             const victoryTrophy = player.trophySystem.awardVictoryTrophy(bossId, bossData.displayName, requiredLevel);
             if (victoryTrophy) {
@@ -267,6 +297,10 @@ export function calculateBattleResult(
         items: [],
         skills: []
     };
+    const newBossUnlocks: string[] = [];
+    
+    // Store previous explorer level to check for boss unlocks
+    const previousExplorerLevel = player.getExplorerLevel();
     
     // Apply experience and check for level ups
     Object.entries(experienceGained).forEach(([abilityType, exp]) => {
@@ -284,16 +318,25 @@ export function calculateBattleResult(
                 newUnlocks.armors.push(...unlocks.armors);
                 newUnlocks.items.push(...unlocks.items);
                 newUnlocks.skills.push(...unlocks.skills);
+                
+                // Check for new boss unlocks if explorer level increased
+                if (abilityType === AbilityType.Explorer) {
+                    const newExplorerLevel = result.newLevel;
+                    const bossUnlocks = checkNewBossUnlocks(previousExplorerLevel, newExplorerLevel);
+                    newBossUnlocks.push(...bossUnlocks);
+                }
             }
         }
     });
     
     return {
         victory,
+        interrupted,
         experienceGained,
         levelUps,
         newUnlocks,
-        trophies
+        trophies,
+        newBossUnlocks
     };
 }
 
@@ -376,4 +419,22 @@ function checkSkillUnlocks(abilityType: AbilityType, newLevel: number): string[]
     });
     
     return skillUnlocks;
+}
+
+/**
+ * Check what new bosses are unlocked when explorer level increases
+ */
+function checkNewBossUnlocks(previousLevel: number, newLevel: number): string[] {
+    const newlyUnlockedBosses: string[] = [];
+    const allBossData = getAllBossData();
+    
+    allBossData.forEach(boss => {
+        const requiredLevel = boss.explorerLevelRequired || 0;
+        // Check if this boss was locked before but is unlocked now
+        if (requiredLevel > previousLevel && requiredLevel <= newLevel) {
+            newlyUnlockedBosses.push(boss.displayName);
+        }
+    });
+    
+    return newlyUnlockedBosses;
 }

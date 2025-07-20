@@ -1128,7 +1128,9 @@ export class BattleScene {
                 this.battleStats.damageTaken,
                 this.battleStats.mpSpent,
                 this.battleStats.craftworkExperience,
-                this.battleStats.agilityExperience
+                this.battleStats.agilityExperience,
+                [], // no skills received
+                true // interrupted = true
             );
             this.game.showBattleResult(battleResult);
         } else {
@@ -1155,7 +1157,9 @@ export class BattleScene {
             this.battleStats.damageTaken,
             this.battleStats.mpSpent,
             this.battleStats.craftworkExperience,
-            this.battleStats.agilityExperience
+            this.battleStats.agilityExperience,
+            [], // no skills received
+            false // interrupted = false (normal completion)
         );
         this.game.showBattleResult(battleResult);
     }
