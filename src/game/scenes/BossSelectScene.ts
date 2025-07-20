@@ -101,15 +101,14 @@ export class BossSelectScene {
                     }
                 }
                 
-                // Add/remove locked state styling
+                // Show/hide boss cards based on unlock status
                 if (isUnlocked) {
+                    card.classList.remove('d-none');
                     card.classList.remove('boss-card-locked');
                     (card as HTMLElement).style.pointerEvents = 'auto';
                     (card as HTMLElement).style.opacity = '1';
                 } else {
-                    card.classList.add('boss-card-locked');
-                    (card as HTMLElement).style.pointerEvents = 'none';
-                    (card as HTMLElement).style.opacity = '0.5';
+                    card.classList.add('d-none');
                 }
             }
         });
@@ -238,6 +237,21 @@ export class BossSelectScene {
                 const nextLevelExp = Math.pow(data.level + 1, 3) * 50 - (data.level > 0 ? Math.pow(data.level, 3) * 50 : 0);
                 const percentage = (currentLevelExp / nextLevelExp) * 100;
                 progressElement.style.width = `${percentage}%`;
+            }
+            
+            // Special handling for explorer ability in stats tab
+            if (abilityType === 'explorer') {
+                this.updateElement('explorer-level-stats', data.level.toString());
+                this.updateElement('explorer-exp-stats', data.experience.toString());
+                this.updateElement('explorer-next-stats', (data.experience + data.experienceToNext).toString());
+                
+                const statsProgressElement = document.getElementById('explorer-progress-stats');
+                if (statsProgressElement && data.experienceToNext > 0) {
+                    const currentLevelExp = data.experience - (data.level > 0 ? Math.pow(data.level, 3) * 50 : 0);
+                    const nextLevelExp = Math.pow(data.level + 1, 3) * 50 - (data.level > 0 ? Math.pow(data.level, 3) * 50 : 0);
+                    const percentage = (currentLevelExp / nextLevelExp) * 100;
+                    statsProgressElement.style.width = `${percentage}%`;
+                }
             }
         });
         
