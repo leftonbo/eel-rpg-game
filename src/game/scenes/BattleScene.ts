@@ -90,6 +90,19 @@ export class BattleScene {
     private adrenalineCount: HTMLElement | null = null;
     private energyDrinkCount: HTMLElement | null = null;
     
+    // Debug Modal
+    private debugModal: any = null; // Bootstrap modal for debug
+    private debugPlayerHpInput: HTMLInputElement | null = null;
+    private debugPlayerMaxHpInput: HTMLInputElement | null = null;
+    private debugPlayerMpInput: HTMLInputElement | null = null;
+    private debugPlayerMaxMpInput: HTMLInputElement | null = null;
+    private debugBossHpInput: HTMLInputElement | null = null;
+    private debugBossMaxHpInput: HTMLInputElement | null = null;
+    private debugBossNameElement: HTMLElement | null = null;
+    private debugPlayerStatusEffectsContainer: HTMLElement | null = null;
+    private debugBossStatusEffectsContainer: HTMLElement | null = null;
+    private debugBossCustomVarsContainer: HTMLElement | null = null;
+    
     constructor(game: Game) {
         this.game = game;
         this.init();
@@ -125,6 +138,24 @@ export class BattleScene {
         this.healPotionCount = document.getElementById('heal-potion-count');
         this.adrenalineCount = document.getElementById('adrenaline-count');
         this.energyDrinkCount = document.getElementById('energy-drink-count');
+        
+        // Debug modal elements
+        this.debugPlayerHpInput = document.getElementById('debug-player-hp') as HTMLInputElement;
+        this.debugPlayerMaxHpInput = document.getElementById('debug-player-max-hp') as HTMLInputElement;
+        this.debugPlayerMpInput = document.getElementById('debug-player-mp') as HTMLInputElement;
+        this.debugPlayerMaxMpInput = document.getElementById('debug-player-max-mp') as HTMLInputElement;
+        this.debugBossHpInput = document.getElementById('debug-boss-hp') as HTMLInputElement;
+        this.debugBossMaxHpInput = document.getElementById('debug-boss-max-hp') as HTMLInputElement;
+        this.debugBossNameElement = document.getElementById('debug-boss-name');
+        this.debugPlayerStatusEffectsContainer = document.getElementById('debug-player-status-effects');
+        this.debugBossStatusEffectsContainer = document.getElementById('debug-boss-status-effects');
+        this.debugBossCustomVarsContainer = document.getElementById('debug-boss-custom-vars');
+        
+        // Initialize debug modal
+        const debugModalElement = document.getElementById('debug-modal');
+        if (debugModalElement && window.bootstrap) {
+            this.debugModal = new window.bootstrap.Modal(debugModalElement);
+        }
         
         // Setup event listeners
         this.setupEventListeners();
@@ -167,7 +198,24 @@ export class BattleScene {
         
         // Debug button
         document.getElementById('debug-btn')?.addEventListener('click', () => {
-            this.showDebugScreen();
+            this.showDebugModal();
+        });
+        
+        // Debug modal buttons
+        document.getElementById('debug-apply-changes')?.addEventListener('click', () => {
+            this.applyDebugChanges();
+        });
+        
+        document.getElementById('debug-add-player-status')?.addEventListener('click', () => {
+            this.showAddStatusEffectDialog('player');
+        });
+        
+        document.getElementById('debug-add-boss-status')?.addEventListener('click', () => {
+            this.showAddStatusEffectDialog('boss');
+        });
+        
+        document.getElementById('debug-add-custom-var')?.addEventListener('click', () => {
+            this.showAddCustomVarDialog();
         });
     }
     
@@ -1164,9 +1212,305 @@ export class BattleScene {
     }
     
     /**
-     * Show debug screen
+     * Show debug modal
      */
-    private showDebugScreen(): void {
-        this.game.showDebugScreen();
+    private showDebugModal(): void {
+        if (!this.debugModal || !this.player || !this.boss) return;
+        
+        // Populate current values
+        this.refreshDebugUI();
+        
+        // Show modal
+        this.debugModal.show();
+    }
+    
+    /**
+     * Refresh debug UI with current values
+     */
+    private refreshDebugUI(): void {
+        if (!this.player || !this.boss) return;
+        
+        // Update player fields
+        if (this.debugPlayerHpInput) this.debugPlayerHpInput.value = this.player.hp.toString();
+        if (this.debugPlayerMaxHpInput) this.debugPlayerMaxHpInput.value = this.player.maxHp.toString();
+        if (this.debugPlayerMpInput) this.debugPlayerMpInput.value = this.player.mp.toString();
+        if (this.debugPlayerMaxMpInput) this.debugPlayerMaxMpInput.value = this.player.maxMp.toString();
+        
+        // Update boss fields
+        if (this.debugBossHpInput) this.debugBossHpInput.value = this.boss.hp.toString();
+        if (this.debugBossMaxHpInput) this.debugBossMaxHpInput.value = this.boss.maxHp.toString();
+        if (this.debugBossNameElement) this.debugBossNameElement.textContent = `👹 ${this.boss.displayName}`;
+        
+        // Update status effects
+        this.refreshDebugPlayerStatusEffects();
+        this.refreshDebugBossStatusEffects();
+        
+        // Update custom variables
+        this.refreshDebugBossCustomVars();
+    }
+    
+    /**
+     * Refresh debug player status effects
+     */
+    private refreshDebugPlayerStatusEffects(): void {
+        if (!this.player || !this.debugPlayerStatusEffectsContainer) return;
+        
+        this.debugPlayerStatusEffectsContainer.innerHTML = '';
+        
+        const effects = this.player.statusEffects.getAllEffects();
+        effects.forEach(effect => {
+            this.createDebugStatusEffectElement(effect, 'player', this.debugPlayerStatusEffectsContainer!);
+        });
+    }
+    
+    /**
+     * Refresh debug boss status effects
+     */
+    private refreshDebugBossStatusEffects(): void {
+        if (!this.boss || !this.debugBossStatusEffectsContainer) return;
+        
+        this.debugBossStatusEffectsContainer.innerHTML = '';
+        
+        const effects = this.boss.statusEffects.getAllEffects();
+        effects.forEach(effect => {
+            this.createDebugStatusEffectElement(effect, 'boss', this.debugBossStatusEffectsContainer!);
+        });
+    }
+    
+    /**
+     * Create debug status effect element
+     */
+    private createDebugStatusEffectElement(effect: StatusEffect, target: 'player' | 'boss', container: HTMLElement): void {
+        const div = document.createElement('div');
+        div.className = 'debug-status-effect d-flex align-items-center justify-content-between bg-secondary p-2 mb-1 rounded';
+        
+        const info = document.createElement('span');
+        info.textContent = `${effect.name} (${effect.duration}ターン)`;
+        info.className = 'me-2';
+        
+        const controls = document.createElement('div');
+        
+        // Duration input
+        const durationInput = document.createElement('input');
+        durationInput.type = 'number';
+        durationInput.value = effect.duration.toString();
+        durationInput.className = 'form-control form-control-sm me-2';
+        durationInput.style.width = '60px';
+        durationInput.min = '1';
+        durationInput.addEventListener('change', () => {
+            effect.duration = parseInt(durationInput.value) || 1;
+        });
+        
+        // Remove button
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = '×';
+        removeBtn.className = 'btn btn-sm btn-outline-danger';
+        removeBtn.addEventListener('click', () => {
+            if (target === 'player' && this.player) {
+                this.player.statusEffects.removeEffect(effect.type);
+            } else if (target === 'boss' && this.boss) {
+                this.boss.statusEffects.removeEffect(effect.type);
+            }
+            this.refreshDebugPlayerStatusEffects();
+            this.refreshDebugBossStatusEffects();
+        });
+        
+        controls.appendChild(durationInput);
+        controls.appendChild(removeBtn);
+        controls.className = 'd-flex align-items-center';
+        
+        div.appendChild(info);
+        div.appendChild(controls);
+        container.appendChild(div);
+    }
+    
+    /**
+     * Refresh debug boss custom vars
+     */
+    private refreshDebugBossCustomVars(): void {
+        if (!this.boss || !this.debugBossCustomVarsContainer) return;
+        
+        this.debugBossCustomVarsContainer.innerHTML = '';
+        
+        const customVars = this.boss.getAllCustomVariables();
+        Object.entries(customVars).forEach(([key, value]) => {
+            this.createDebugCustomVarElement(key, value, this.debugBossCustomVarsContainer!);
+        });
+    }
+    
+    /**
+     * Create debug custom var element
+     */
+    private createDebugCustomVarElement(key: string, value: any, container: HTMLElement): void {
+        const div = document.createElement('div');
+        div.className = 'debug-custom-var d-flex align-items-center justify-content-between bg-secondary p-2 mb-1 rounded';
+        
+        const keySpan = document.createElement('span');
+        keySpan.textContent = key;
+        keySpan.className = 'me-2 fw-bold';
+        
+        const controls = document.createElement('div');
+        controls.className = 'd-flex align-items-center';
+        
+        // Value input
+        const valueInput = document.createElement('input');
+        valueInput.type = typeof value === 'number' ? 'number' : 'text';
+        valueInput.value = value.toString();
+        valueInput.className = 'form-control form-control-sm me-2';
+        valueInput.style.width = '100px';
+        valueInput.addEventListener('change', () => {
+            let newValue: any = valueInput.value;
+            if (typeof value === 'number') {
+                newValue = parseFloat(newValue) || 0;
+            } else if (typeof value === 'boolean') {
+                newValue = newValue.toLowerCase() === 'true';
+            }
+            this.boss?.setCustomVariable(key, newValue);
+        });
+        
+        // Remove button
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = '×';
+        removeBtn.className = 'btn btn-sm btn-outline-danger';
+        removeBtn.addEventListener('click', () => {
+            this.boss?.removeCustomVariable(key);
+            this.refreshDebugBossCustomVars();
+        });
+        
+        controls.appendChild(valueInput);
+        controls.appendChild(removeBtn);
+        
+        div.appendChild(keySpan);
+        div.appendChild(controls);
+        container.appendChild(div);
+    }
+    
+    /**
+     * Show add status effect dialog
+     */
+    private showAddStatusEffectDialog(target: 'player' | 'boss'): void {
+        // Get all available status effect types
+        const statusTypes = Object.values(StatusEffectType);
+        
+        // Create a simple prompt for now (could be enhanced with a proper modal)
+        const selectedType = prompt(
+            `ステータス効果を選択してください:\n${statusTypes.map((type, index) => `${index + 1}. ${type}`).join('\n')}`,
+            '1'
+        );
+        
+        if (!selectedType) return;
+        
+        const typeIndex = parseInt(selectedType) - 1;
+        if (typeIndex < 0 || typeIndex >= statusTypes.length) {
+            alert('無効な選択です');
+            return;
+        }
+        
+        const duration = prompt('持続ターン数を入力してください:', '3');
+        if (!duration) return;
+        
+        const durationNum = parseInt(duration);
+        if (isNaN(durationNum) || durationNum < 1) {
+            alert('無効なターン数です');
+            return;
+        }
+        
+        const effectType = statusTypes[typeIndex];
+        
+        if (target === 'player' && this.player) {
+            this.player.statusEffects.addEffect(effectType);
+            // Manually set duration after adding
+            const effect = this.player.statusEffects.getEffect(effectType);
+            if (effect) {
+                effect.duration = durationNum;
+            }
+            this.refreshDebugPlayerStatusEffects();
+        } else if (target === 'boss' && this.boss) {
+            this.boss.statusEffects.addEffect(effectType);
+            // Manually set duration after adding
+            const effect = this.boss.statusEffects.getEffect(effectType);
+            if (effect) {
+                effect.duration = durationNum;
+            }
+            this.refreshDebugBossStatusEffects();
+        }
+    }
+    
+    /**
+     * Show add custom var dialog
+     */
+    private showAddCustomVarDialog(): void {
+        const key = prompt('変数名を入力してください:');
+        if (!key) return;
+        
+        const value = prompt('値を入力してください:');
+        if (value === null) return;
+        
+        // Try to parse as number or boolean
+        let parsedValue: any = value;
+        if (!isNaN(Number(value))) {
+            parsedValue = Number(value);
+        } else if (value.toLowerCase() === 'true' || value.toLowerCase() === 'false') {
+            parsedValue = value.toLowerCase() === 'true';
+        }
+        
+        this.boss?.setCustomVariable(key, parsedValue);
+        this.refreshDebugBossCustomVars();
+    }
+    
+    /**
+     * Apply debug changes
+     */
+    private applyDebugChanges(): void {
+        if (!this.player || !this.boss) return;
+        
+        try {
+            // Apply player changes
+            if (this.debugPlayerHpInput) {
+                const hp = parseInt(this.debugPlayerHpInput.value) || 0;
+                this.player.hp = Math.max(0, Math.min(hp, this.player.maxHp));
+            }
+            
+            if (this.debugPlayerMaxHpInput) {
+                const maxHp = parseInt(this.debugPlayerMaxHpInput.value) || 1;
+                this.player.maxHp = Math.max(1, maxHp);
+                // Adjust current HP if it exceeds new max
+                this.player.hp = Math.min(this.player.hp, this.player.maxHp);
+            }
+            
+            if (this.debugPlayerMpInput) {
+                const mp = parseInt(this.debugPlayerMpInput.value) || 0;
+                this.player.mp = Math.max(0, Math.min(mp, this.player.maxMp));
+            }
+            
+            if (this.debugPlayerMaxMpInput) {
+                const maxMp = parseInt(this.debugPlayerMaxMpInput.value) || 0;
+                this.player.maxMp = Math.max(0, maxMp);
+                // Adjust current MP if it exceeds new max
+                this.player.mp = Math.min(this.player.mp, this.player.maxMp);
+            }
+            
+            // Apply boss changes
+            if (this.debugBossHpInput) {
+                const hp = parseInt(this.debugBossHpInput.value) || 0;
+                this.boss.hp = Math.max(0, Math.min(hp, this.boss.maxHp));
+            }
+            
+            if (this.debugBossMaxHpInput) {
+                const maxHp = parseInt(this.debugBossMaxHpInput.value) || 1;
+                this.boss.maxHp = Math.max(1, maxHp);
+                // Adjust current HP if it exceeds new max
+                this.boss.hp = Math.min(this.boss.hp, this.boss.maxHp);
+            }
+            
+            // Update battle UI to reflect changes
+            this.updateUI();
+            
+            alert('変更が適用されました！');
+            
+        } catch (error) {
+            console.error('Error applying debug changes:', error);
+            alert('変更の適用中にエラーが発生しました');
+        }
     }
 }

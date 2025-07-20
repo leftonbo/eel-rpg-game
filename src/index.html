@@ -685,22 +685,15 @@
             </div>
         </div>
         
-        <!-- Debug Screen -->
-        <div id="debug-screen" class="scene d-none">
-            <div class="container-fluid h-100">
-                <div class="row h-100">
-                    <!-- Header -->
-                    <div class="col-12 mb-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h2 class="text-warning">🔧 デバッグコンソール</h2>
-                            <button id="debug-back-to-battle-btn" class="btn btn-outline-secondary">
-                                ← バトルに戻る
-                            </button>
-                        </div>
+        <!-- Debug Modal -->
+        <div class="modal fade" id="debug-modal" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-warning">🔧 デバッグコンソール</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
-                    
-                    <!-- Debug Content -->
-                    <div class="col-12">
+                    <div class="modal-body">
                         <div class="row">
                             <!-- Player Debug Panel -->
                             <div class="col-md-6 mb-4">
@@ -783,15 +776,12 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Apply Changes Button -->
-                        <div class="row">
-                            <div class="col-12 text-center">
-                                <button id="debug-apply-changes" class="btn btn-success btn-lg">
-                                    ✅ 変更を適用
-                                </button>
-                            </div>
-                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                        <button id="debug-apply-changes" class="btn btn-success">
+                            ✅ 変更を適用
+                        </button>
                     </div>
                 </div>
             </div>

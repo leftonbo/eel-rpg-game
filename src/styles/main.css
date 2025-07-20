@@ -1505,10 +1505,7 @@ footer svg {
     }
 }
 
-/* Debug Screen Styles */
-#debug-screen {
-    background: linear-gradient(135deg, #1e293b, #0f172a);
-}
+/* Debug Modal Styles */
 
 .debug-status-effect {
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1546,17 +1543,17 @@ footer svg {
     box-shadow: 0 0 0 0.2rem rgba(8, 145, 178, 0.25);
 }
 
-#debug-screen .card {
+#debug-modal .card {
     border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-#debug-screen .btn {
+#debug-modal .btn {
     transition: all 0.2s ease;
 }
 
-#debug-screen .btn:hover {
+#debug-modal .btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }

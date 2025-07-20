@@ -10,8 +10,7 @@ export enum GameState {
     Title = 'title',
     BossSelect = 'boss-select',
     Battle = 'battle',
-    BattleResult = 'battle-result',
-    Debug = 'debug'
+    BattleResult = 'battle-result'
 }
 
 export class Game {
@@ -24,7 +23,6 @@ export class Game {
     private bossSelectScene: BossSelectScene;
     private battleScene: BattleScene;
     private battleResultScene: BattleResultScene;
-    private debugScene: any; // Will be typed properly when DebugScene is created
     
     constructor() {
         // Check for debug mode from URL parameters
@@ -35,7 +33,6 @@ export class Game {
         this.bossSelectScene = new BossSelectScene(this);
         this.battleScene = new BattleScene(this);
         this.battleResultScene = new BattleResultScene(this);
-        // debugScene will be initialized lazily when needed
         
         this.init();
     }
@@ -51,7 +48,6 @@ export class Game {
         document.getElementById('boss-select-screen')?.classList.add('d-none');
         document.getElementById('battle-screen')?.classList.add('d-none');
         document.getElementById('battle-result-screen')?.classList.add('d-none');
-        document.getElementById('debug-screen')?.classList.add('d-none');
         
         this.currentState = newState;
         
@@ -75,12 +71,6 @@ export class Game {
             case GameState.BattleResult:
                 document.getElementById('battle-result-screen')?.classList.remove('d-none');
                 // BattleResultScene.enter() will be called separately with result data
-                break;
-                
-            case GameState.Debug:
-                document.getElementById('debug-screen')?.classList.remove('d-none');
-                this.initializeDebugScene();
-                this.debugScene?.enter();
                 break;
         }
     }
@@ -134,32 +124,5 @@ export class Game {
      */
     isDebugMode(): boolean {
         return this.debugMode;
-    }
-    
-    /**
-     * Initialize debug scene lazily
-     */
-    private async initializeDebugScene(): Promise<void> {
-        if (!this.debugScene) {
-            // Dynamically import DebugScene to avoid circular dependencies
-            const { DebugScene } = await import('./scenes/DebugScene');
-            this.debugScene = new DebugScene(this);
-        }
-    }
-    
-    /**
-     * Navigate to debug screen (only available in debug mode)
-     */
-    showDebugScreen(): void {
-        if (this.debugMode) {
-            this.setState(GameState.Debug);
-        }
-    }
-    
-    /**
-     * Return to battle from debug screen
-     */
-    returnToBattle(): void {
-        this.setState(GameState.Battle);
     }
 }
