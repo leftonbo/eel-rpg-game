@@ -251,6 +251,9 @@ export class BattleScene {
         // Reset battle-specific state for safety
         this.player.resetBattleState();
         
+        // Reset boss skill tracking for Explorer experience calculation
+        this.boss.resetUsedSkillNames();
+        
         // Fully restore player HP and MP at battle start
         this.player.fullRestore();
         
@@ -1144,7 +1147,7 @@ export class BattleScene {
             this.battleStats.mpSpent,
             this.battleStats.craftworkExperience,
             this.battleStats.agilityExperience,
-            []  // TODO: insert skills boss used
+            this.boss.getUsedSkillNames()  // Get skills boss used during battle
         );
         this.game.showBattleResult(battleResult);
     }

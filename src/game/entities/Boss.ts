@@ -103,6 +103,13 @@ export class Boss extends Actor {
         creator: string;
         source?: string;
     };
+    
+    /**
+     * 一度でも使用したスキル名
+     * プレイヤーのエクスプローラー経験値計算で使用する
+     */
+    public usedSkillNames: string[] = [];
+    
     /**
      * ボス固有のカスタム変数
      * AI戦略での状態管理、クールダウン管理、行動制御などに使用
@@ -230,6 +237,29 @@ export class Boss extends Actor {
         this.customVariables = {};
     }
     
+    /**
+     * 使用したスキル名を記録
+     */
+    addUsedSkill(skillName: string): void {
+        if (!this.usedSkillNames.includes(skillName)) {
+            this.usedSkillNames.push(skillName);
+        }
+    }
+    
+    /**
+     * 使用したスキル名一覧を取得
+     */
+    getUsedSkillNames(): string[] {
+        return [...this.usedSkillNames];
+    }
+    
+    /**
+     * 使用したスキル名をリセット
+     */
+    resetUsedSkillNames(): void {
+        this.usedSkillNames = [];
+    }
+    
     
     
     selectAction(player: Player, turn: number): BossAction | null {
@@ -306,6 +336,9 @@ export class Boss extends Actor {
     
     executeAction(action: BossAction, player: Player, turn: number = 0): string[] {
         const messages = [];
+        
+        // Record skill usage for Explorer experience calculation
+        this.addUsedSkill(action.name);
         
         // Process custom messages if provided
         if (action.messages && action.messages.length > 0) {
