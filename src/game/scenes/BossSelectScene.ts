@@ -519,15 +519,6 @@ export class BossSelectScene {
     }
     
     
-    /**
-     * Check if debug mode is enabled
-     */
-    private isDebugMode(): boolean {
-        // You can implement your own debug mode detection logic here
-        // For example, check for a URL parameter, localStorage flag, etc.
-        return localStorage.getItem('debug_mode') === 'true' || 
-               window.location.search.includes('debug=true');
-    }
     
     /**
      * Export save data to file
@@ -676,7 +667,7 @@ export class BossSelectScene {
      */
     private updateDebugControlsVisibilityInModal(): void {
         const debugControlsSkills = document.getElementById('debug-controls-skills');
-        const isDebugMode = this.isDebugMode();
+        const isDebugMode = this.game.isDebugMode();
         
         if (debugControlsSkills) {
             debugControlsSkills.classList.toggle('d-none', !isDebugMode);

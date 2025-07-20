@@ -284,6 +284,7 @@
                                 <button id="defend-btn" class="btn btn-primary">🛡️ 防御</button>
                                 <button id="skill-btn" class="btn btn-warning">⚡ スキル</button>
                                 <button id="item-btn" class="btn btn-success">💊 アイテム</button>
+                                <button id="debug-btn" class="btn btn-outline-info d-none">🔧 デバッグ</button>
                             </div>
                             
                             <!-- Skill Panel (hidden by default) -->
@@ -679,6 +680,108 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Debug Modal -->
+        <div class="modal fade" id="debug-modal" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-warning">🔧 デバッグコンソール</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- Player Debug Panel -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card bg-primary">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">🐍 プレイヤー</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Player HP/MP -->
+                                        <div class="row mb-3">
+                                            <div class="col-6">
+                                                <label class="form-label">HP</label>
+                                                <input type="number" id="debug-player-hp" class="form-control" min="0">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label">最大HP</label>
+                                                <input type="number" id="debug-player-max-hp" class="form-control" min="1">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-6">
+                                                <label class="form-label">MP</label>
+                                                <input type="number" id="debug-player-mp" class="form-control" min="0">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label">最大MP</label>
+                                                <input type="number" id="debug-player-max-mp" class="form-control" min="0">
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Status Effects -->
+                                        <h6>ステータス効果</h6>
+                                        <div id="debug-player-status-effects" class="mb-3">
+                                            <!-- Status effects will be populated here -->
+                                        </div>
+                                        <button id="debug-add-player-status" class="btn btn-sm btn-outline-light">
+                                            ステータス効果を追加
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Boss Debug Panel -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card bg-danger">
+                                    <div class="card-header">
+                                        <h5 id="debug-boss-name" class="mb-0">👹 ボス</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Boss HP -->
+                                        <div class="row mb-3">
+                                            <div class="col-6">
+                                                <label class="form-label">HP</label>
+                                                <input type="number" id="debug-boss-hp" class="form-control" min="0">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label">最大HP</label>
+                                                <input type="number" id="debug-boss-max-hp" class="form-control" min="1">
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Status Effects -->
+                                        <h6>ステータス効果</h6>
+                                        <div id="debug-boss-status-effects" class="mb-3">
+                                            <!-- Status effects will be populated here -->
+                                        </div>
+                                        <button id="debug-add-boss-status" class="btn btn-sm btn-outline-light">
+                                            ステータス効果を追加
+                                        </button>
+                                        
+                                        <!-- Custom Variables -->
+                                        <h6 class="mt-4">カスタム変数</h6>
+                                        <div id="debug-boss-custom-vars" class="mb-3">
+                                            <!-- Custom variables will be populated here -->
+                                        </div>
+                                        <button id="debug-add-custom-var" class="btn btn-sm btn-outline-light">
+                                            変数を追加
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                        <button id="debug-apply-changes" class="btn btn-success">
+                            ✅ 変更を適用
+                        </button>
                     </div>
                 </div>
             </div>

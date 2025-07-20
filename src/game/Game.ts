@@ -17,6 +17,7 @@ export class Game {
     private currentState: GameState = GameState.Title;
     private player: Player = new Player();
     private currentBoss: Boss | null = null;
+    private debugMode: boolean = false;
     
     private titleScene: TitleScene;
     private bossSelectScene: BossSelectScene;
@@ -24,6 +25,11 @@ export class Game {
     private battleResultScene: BattleResultScene;
     
     constructor() {
+        // Check for debug mode from URL parameters or localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        this.debugMode = urlParams.get('debug') === 'true' || 
+                        localStorage.getItem('debug_mode') === 'true';
+        
         this.titleScene = new TitleScene(this);
         this.bossSelectScene = new BossSelectScene(this);
         this.battleScene = new BattleScene(this);
@@ -112,5 +118,12 @@ export class Game {
     
     getCurrentState(): GameState {
         return this.currentState;
+    }
+    
+    /**
+     * Check if debug mode is enabled
+     */
+    isDebugMode(): boolean {
+        return this.debugMode;
     }
 }
