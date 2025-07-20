@@ -55,6 +55,21 @@ declare let window: BootstrapWindow;
  */
 export class ModalUtils {
     /**
+     * タイミング定数
+     * モーダルやトーストの動作に関するタイミングを定義
+     */
+    private static readonly TIMING = {
+        /** トースト自動消去時間（ミリ秒） */
+        TOAST_AUTO_HIDE: 4000,
+        /** モーダル表示後のフォーカス遅延時間（ミリ秒） */
+        MODAL_FOCUS_DELAY: 300,
+        /** エラー表示時のシェイク効果時間（ミリ秒） */
+        ERROR_SHAKE_DURATION: 600,
+        /** トースト非表示アニメーション時間（ミリ秒） */
+        TOAST_HIDE_ANIMATION: 300,
+    } as const;
+
+    /**
      * トースト通知を表示する
      * 
      * @static
@@ -105,9 +120,9 @@ export class ModalUtils {
                 toast.hide();
                 setTimeout(() => {
                     toastElement.remove();
-                }, 300);
+                }, ModalUtils.TIMING.TOAST_HIDE_ANIMATION);
             }
-        }, 4000);
+        }, ModalUtils.TIMING.TOAST_AUTO_HIDE);
     }
 
     /**
@@ -307,7 +322,7 @@ export class ModalUtils {
             setTimeout(() => {
                 inputElement.focus();
                 inputElement.select();
-            }, 300);
+            }, ModalUtils.TIMING.MODAL_FOCUS_DELAY);
         });
     }
 
@@ -504,7 +519,7 @@ export class ModalUtils {
                 modal.querySelector('.modal-dialog')?.classList.add('modal-shake');
                 setTimeout(() => {
                     modal.querySelector('.modal-dialog')?.classList.remove('modal-shake');
-                }, 600);
+                }, ModalUtils.TIMING.ERROR_SHAKE_DURATION);
             };
 
             const validateAndSubmit = () => {
@@ -572,7 +587,7 @@ export class ModalUtils {
             // Focus first input after modal is shown
             setTimeout(() => {
                 keyInput.focus();
-            }, 300);
+            }, ModalUtils.TIMING.MODAL_FOCUS_DELAY);
         });
     }
 
@@ -641,7 +656,7 @@ export class ModalUtils {
                 modal.querySelector('.modal-dialog')?.classList.add('modal-shake');
                 setTimeout(() => {
                     modal.querySelector('.modal-dialog')?.classList.remove('modal-shake');
-                }, 600);
+                }, ModalUtils.TIMING.ERROR_SHAKE_DURATION);
             };
 
             const validateAndSubmit = () => {
@@ -699,7 +714,7 @@ export class ModalUtils {
             setTimeout(() => {
                 durationInput.focus();
                 durationInput.select();
-            }, 300);
+            }, ModalUtils.TIMING.MODAL_FOCUS_DELAY);
         });
     }
 }
