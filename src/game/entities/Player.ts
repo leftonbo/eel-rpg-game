@@ -4,6 +4,7 @@ import { PlayerSaveManager, PlayerSaveData } from '../systems/PlayerSaveData';
 import { updatePlayerItems } from '../data/ExtendedItems';
 import { Actor } from './Actor';
 import { SkillRegistry, SkillData } from '../data/skills';
+import { ShopBonusManager } from '../systems/ShopSystem';
 
 export enum SkillType {
     PowerAttack = 'power-attack',
@@ -65,6 +66,8 @@ export class Player extends Actor {
     public equippedArmor: string = 'naked';
     public unlockedItems: Set<string> = new Set();
     public unlockedSkills: Set<string> = new Set();
+    public orbs: number = 0; // オーブの所持数
+    public shopPurchasedItems: Set<string> = new Set(); // ショップで購入済みのアイテム
     
     constructor() {
         super(PLAYER_NAME, 100, 5, 50);
@@ -92,10 +95,16 @@ export class Player extends Actor {
             
             // Load unlocked skills
             this.unlockedSkills = new Set(saveData.unlockedSkills || []);
+            
+            // Load orbs and shop data
+            this.orbs = saveData.orbs || 0;
+            this.shopPurchasedItems = new Set(saveData.shopPurchasedItems || []);
         } else {
             // Initialize with default values
             this.unlockedItems = new Set();
             this.unlockedSkills = new Set();
+            this.orbs = 0;
+            this.shopPurchasedItems = new Set();
         }
     }
     
@@ -111,7 +120,9 @@ export class Player extends Actor {
             },
             unlockedItems: Array.from(this.unlockedItems),
             unlockedSkills: Array.from(this.unlockedSkills),
-            version: 2
+            orbs: this.orbs,
+            shopPurchasedItems: Array.from(this.shopPurchasedItems),
+            version: 3
         };
         
         PlayerSaveManager.savePlayerData(saveData);
@@ -121,14 +132,17 @@ export class Player extends Actor {
      * Recalculate all stats based on abilities and equipment
      */
     public recalculateStats(): void {
-        // Calculate HP with toughness bonus and armor
+        // Calculate shop bonuses
+        const shopBonuses = ShopBonusManager.calculateBonuses(this);
+        
+        // Calculate HP with toughness bonus, armor, and shop bonuses
         const toughnessMultiplier = 1 + this.abilitySystem.getToughnessHpBonus();
         const armorBonus = this.getArmorHpBonus();
-        this.maxHp = Math.round(this.baseMaxHp * toughnessMultiplier) + armorBonus;
+        this.maxHp = Math.round(this.baseMaxHp * toughnessMultiplier) + armorBonus + shopBonuses.hpBonus;
         
-        // Calculate MP with endurance bonus
+        // Calculate MP with endurance bonus and shop bonuses
         const enduranceMultiplier = 1 + this.abilitySystem.getEnduranceMpBonus();
-        this.maxMp = Math.round(this.baseMaxMp * enduranceMultiplier);
+        this.maxMp = Math.round(this.baseMaxMp * enduranceMultiplier) + shopBonuses.mpBonus;
         
         // Update items based on new ability levels
         updatePlayerItems(this);
@@ -219,10 +233,13 @@ export class Player extends Actor {
     }
     
     getAttackPower(): number {
-        // Calculate base attack power with combat ability and weapon
+        // Calculate shop bonuses
+        const shopBonuses = ShopBonusManager.calculateBonuses(this);
+        
+        // Calculate base attack power with combat ability, weapon, and shop bonuses
         const combatMultiplier = 1 + this.abilitySystem.getCombatAttackBonus();
         const weaponBonus = this.getWeaponAttackBonus();
-        const baseWithAbilityAndWeapon = (this.baseAttackPower + weaponBonus) * combatMultiplier;
+        const baseWithAbilityAndWeapon = (this.baseAttackPower + weaponBonus + shopBonuses.attackBonus) * combatMultiplier;
         
         // Apply status effect modifiers
         const statusModifier = this.statusEffects.getAttackModifier();
@@ -894,5 +911,53 @@ export class Player extends Actor {
         
         // Note: Keep progression data (abilities, equipment, items) intact
         // Also preserve maxHp changes from abilities/equipment
+    }
+    
+    /**
+     * オーブを獲得する（ボーナス倍率適用）
+     */
+    public addOrbs(amount: number): void {
+        const shopBonuses = ShopBonusManager.calculateBonuses(this);
+        const finalAmount = Math.round(amount * shopBonuses.orbMultiplier);
+        this.orbs += finalAmount;
+        this.saveToStorage();
+    }
+    
+    /**
+     * オーブを消費する
+     */
+    public spendOrbs(amount: number): boolean {
+        if (this.orbs >= amount) {
+            this.orbs -= amount;
+            this.saveToStorage();
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * オーブの所持数を取得
+     */
+    public getOrbs(): number {
+        return this.orbs;
+    }
+    
+    /**
+     * ショップでアイテムを購入済みかチェック
+     */
+    public hasShopItem(itemId: string): boolean {
+        return this.shopPurchasedItems.has(itemId);
+    }
+    
+    /**
+     * ショップでアイテムを購入する
+     */
+    public purchaseShopItem(itemId: string, cost: number): boolean {
+        if (this.spendOrbs(cost) && !this.hasShopItem(itemId)) {
+            this.shopPurchasedItems.add(itemId);
+            this.saveToStorage();
+            return true;
+        }
+        return false;
     }
 }

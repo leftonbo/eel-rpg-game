@@ -5,6 +5,7 @@ import { TitleScene } from './scenes/TitleScene';
 import { BossSelectScene } from './scenes/BossSelectScene';
 import { BattleScene } from './scenes/BattleScene';
 import { BattleResultScene, BattleResult } from './scenes/BattleResultScene';
+import { PlayerSaveManager } from './systems/PlayerSaveData';
 
 export enum GameState {
     Title = 'title',
@@ -40,8 +41,57 @@ export class Game {
     }
     
     private init(): void {
+        // Restore player data from persistence when entering instance
+        this.restorePlayerData();
+        
         // Show initial title screen
         this.setState(GameState.Title);
+    }
+    
+    /**
+     * プレイヤーがインスタンスに入ったときにデータを復元
+     */
+    private restorePlayerData(): void {
+        try {
+            // PlayerSaveManagerから保存データを読み込み
+            const saveData = PlayerSaveManager.loadPlayerData();
+            
+            if (saveData) {
+                console.log('Player data restored from persistence');
+                console.log(`Orbs: ${saveData.orbs}`);
+                console.log(`Shop purchased items: ${saveData.shopPurchasedItems.length} items`);
+                
+                // プレイヤーのデータは既にPlayerクラスのコンストラクタで復元済み
+                // ここではログ出力やUI更新などの後処理を行う
+                
+                // オーブとショップの状態をUIに反映（将来的にUI実装時）
+                this.updateOrbDisplay();
+                this.updateShopDisplay();
+            } else {
+                console.log('No saved player data found, using default values');
+            }
+        } catch (error) {
+            console.error('Error restoring player data:', error);
+        }
+    }
+    
+    /**
+     * オーブ表示の更新（将来的なUI実装用）
+     */
+    private updateOrbDisplay(): void {
+        // TODO: UIでオーブ数を表示する要素があれば更新
+        const orbDisplay = document.getElementById('orb-count');
+        if (orbDisplay) {
+            orbDisplay.textContent = this.player.getOrbs().toString();
+        }
+    }
+    
+    /**
+     * ショップ表示の更新（将来的なUI実装用）
+     */
+    private updateShopDisplay(): void {
+        // TODO: ショップUIがあれば購入済みアイテムの状態を更新
+        console.log('Shop display updated');
     }
     
     setState(newState: GameState): void {

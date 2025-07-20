@@ -1127,7 +1127,8 @@ export class BattleScene {
                 this.battleStats.damageTaken,
                 this.battleStats.mpSpent,
                 this.battleStats.craftworkExperience,
-                this.battleStats.agilityExperience
+                this.battleStats.agilityExperience,
+                this.boss?.maxHp || 100
             );
             this.game.showBattleResult(battleResult);
         } else {
@@ -1153,7 +1154,8 @@ export class BattleScene {
             this.battleStats.damageTaken,
             this.battleStats.mpSpent,
             this.battleStats.craftworkExperience,
-            this.battleStats.agilityExperience
+            this.battleStats.agilityExperience,
+            this.boss?.maxHp || 100
         );
         this.game.showBattleResult(battleResult);
     }

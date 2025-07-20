@@ -13,6 +13,7 @@ export interface BattleResult {
         items: string[];
         skills: string[];
     };
+    orbsGained: number; // 獲得したオーブ数
 }
 
 export class BattleResultScene {
@@ -62,6 +63,9 @@ export class BattleResultScene {
         
         // Display new unlocks
         this.displayNewUnlocks();
+        
+        // Display orbs gained
+        this.displayOrbsGained();
         
         // Show continue button
         const continueButton = document.getElementById('battle-result-continue-btn');
@@ -152,6 +156,30 @@ export class BattleResultScene {
     }
     
     /**
+     * Display orbs gained from battle
+     */
+    private displayOrbsGained(): void {
+        const orbsContainer = document.getElementById('orbs-gained');
+        if (!orbsContainer || !this.battleResult) return;
+        
+        orbsContainer.innerHTML = '';
+        
+        if (this.battleResult.orbsGained > 0) {
+            orbsContainer.innerHTML = '<h5>オーブ獲得</h5>';
+            const orbsDiv = document.createElement('div');
+            orbsDiv.className = 'mb-3 p-3 border border-primary rounded bg-primary bg-opacity-10';
+            orbsDiv.innerHTML = `
+                <div class="text-center">
+                    <div class="h6 text-primary">🔮 オーブを獲得！</div>
+                    <div class="fs-4">+${this.battleResult.orbsGained} オーブ</div>
+                    <div class="text-muted">現在の所持数: ${this.game.getPlayer().getOrbs()}</div>
+                </div>
+            `;
+            orbsContainer.appendChild(orbsDiv);
+        }
+    }
+    
+    /**
      * Get display name for ability type
      */
     private getAbilityDisplayName(abilityType: AbilityType): string {
@@ -183,7 +211,8 @@ export function calculateBattleResult(
     damageTaken: number,
     mpSpent: number,
     craftworkExperience: number = 0,
-    agilityExperience: number = 0
+    agilityExperience: number = 0,
+    bossMaxHp: number = 100
 ): BattleResult {
     const experienceGained: { [key: string]: number } = {
         [AbilityType.Combat]: damageDealt * 4,
@@ -221,11 +250,22 @@ export function calculateBattleResult(
         }
     });
     
+    // Calculate orbs gained (only on victory)
+    let orbsGained = 0;
+    if (victory) {
+        // Base orbs = boss max HP / 10, minimum 1
+        orbsGained = Math.max(1, Math.floor(bossMaxHp / 10));
+        
+        // Add orbs to player
+        player.addOrbs(orbsGained);
+    }
+    
     return {
         victory,
         experienceGained,
         levelUps,
-        newUnlocks
+        newUnlocks,
+        orbsGained
     };
 }
 
