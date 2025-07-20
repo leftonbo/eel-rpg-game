@@ -236,10 +236,6 @@ export const darkGhostData: BossData = {
             for (const action of availableActions) {
                 random -= action.weight;
                 if (random <= 0) {
-                    // Execute onUse callback if available
-                    if (action.onUse) {
-                        action.onUse(boss, player, turn);
-                    }
                     return action;
                 }
             }
