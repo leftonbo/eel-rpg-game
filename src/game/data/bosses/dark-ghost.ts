@@ -217,7 +217,7 @@ export const darkGhostData: BossData = {
                     ],
                     statusEffect: StatusEffectType.Oblivion,
                     weight: 15,
-                    canUse: (boss, _player, _turn) => {
+                    canUse: (boss, _player, turn) => {
                         // Check if this action was used in the last 20 turns
                         const lastUsed = boss.getCustomVariable("lastMemoryErosionTurn", -21);
                         return (turn - lastUsed) >= 20;
