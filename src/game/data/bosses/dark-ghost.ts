@@ -156,19 +156,86 @@ export const darkGhostData: BossData = {
             return postDefeatedActions[Math.floor(Math.random() * postDefeatedActions.length)];
         }
         
-        // If player is eaten, devour them
+        // If player is eaten, use various psychological attacks to weaken soul resistance
         if (player.isEaten()) {
-            return {
-                type: ActionType.DevourAttack,
-                name: '魂の捕食',
-                damage: 18,
-                description: '体内にいる獲物の生命エネルギーを吸収する',
-                messages: [
-                    '「キミのタマシイ、おいしいネ...」',
-                    '<USER>は<TARGET>の魂からエネルギーを吸い取っている...'
-                ],
-                weight: 1
-            };
+            const eatenActions: BossAction[] = [
+                {
+                    type: ActionType.DevourAttack,
+                    name: '魂の捕食',
+                    damage: 18,
+                    description: '体内にいる獲物の生命エネルギーを吸収する',
+                    messages: [
+                        '「キミのタマシイ、おいしいネ...」',
+                        '<USER>は<TARGET>の魂からエネルギーを吸い取っている...'
+                    ],
+                    weight: 30
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '恐怖の注入',
+                    damage: 12,
+                    description: '恐怖を心に注ぎ込み魂の抵抗力を削ぐ',
+                    messages: [
+                        '「怖がれば怖がるほど美味しくなるヨ...」',
+                        '<USER>は<TARGET>の心に恐怖を注ぎ込んでいる...',
+                        '<TARGET>は得体の知れない恐怖に包まれた！'
+                    ],
+                    statusEffect: StatusEffectType.Paralysis,
+                    weight: 25
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '絶望の囁き',
+                    damage: 10,
+                    description: '絶望的な言葉で心を折り魂を弱らせる',
+                    messages: [
+                        '「もう誰も助けに来ないヨ...」',
+                        '<USER>が<TARGET>の心に絶望を囁いている...',
+                        '<TARGET>は深い絶望に沈んでいく...'
+                    ],
+                    statusEffect: StatusEffectType.Exhausted,
+                    weight: 20
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '記憶の侵食',
+                    damage: 8,
+                    description: '大切な記憶を蝕み精神的支柱を奪う',
+                    messages: [
+                        '「大切な記憶、消してあげるネ...」',
+                        '<USER>が<TARGET>の記憶を侵食している...',
+                        '<TARGET>の大切な思い出が薄れていく...'
+                    ],
+                    statusEffect: StatusEffectType.Charm,
+                    weight: 15
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '悪夢の投影',
+                    damage: 14,
+                    description: '最悪の悪夢を見せて精神を混乱させる',
+                    messages: [
+                        '「キミの一番嫌な夢を見せてあげるヨ...」',
+                        '<USER>が<TARGET>に悪夢を投影している...',
+                        '<TARGET>は恐ろしい悪夢に囚われた！'
+                    ],
+                    statusEffect: StatusEffectType.Poison,
+                    weight: 10
+                }
+            ];
+            
+            // Weighted random selection from eaten actions
+            const totalWeight = eatenActions.reduce((sum, action) => sum + action.weight, 0);
+            let random = Math.random() * totalWeight;
+            
+            for (const action of eatenActions) {
+                random -= action.weight;
+                if (random <= 0) {
+                    return action;
+                }
+            }
+            
+            return eatenActions[0];
         }
         
         // Strategic actions based on player state
