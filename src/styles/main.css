@@ -1574,3 +1574,25 @@ footer svg {
     border-color: #dc3545;
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
+
+/* Layout utility classes */
+.max-width-600 {
+    max-width: 600px;
+}
+
+.max-height-400 {
+    max-height: 400px;
+}
+
+.max-height-300 {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.d-none-important {
+    display: none !important;
+}
+
+.z-index-9999 {
+    z-index: 9999;
+}

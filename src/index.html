@@ -38,7 +38,7 @@
             <div class="text-center">
                 <h1 class="display-1 mb-4 game-title">🐍 Eel Feed</h1>
                 
-                <div class="alert alert-warning mx-auto" style="max-width: 600px;">
+                <div class="alert alert-warning mx-auto max-width-600">
                     <h5>⚠️ 注意事項</h5>
                     <ul class="mb-0 text-start">
                         <li>このゲームには戦闘シーンが含まれます</li>
@@ -222,13 +222,13 @@
                                     <div class="mb-2">
                                         ヘルス: <span id="player-hp">1000</span> / <span id="player-max-hp">1000</span>
                                         <div id="player-hp-progress" class="progress">
-                                            <div id="player-hp-bar" class="progress-bar bg-success" style="width: 100%"></div>
+                                            <div id="player-hp-bar" class="progress-bar bg-success"></div>
                                         </div>
                                     </div>
                                     <div class="mb-2">
                                         マナ: <span id="player-mp">40</span> / <span id="player-max-mp">40</span>
                                         <div id="player-mp-progress" class="progress">
-                                            <div id="player-mp-bar" class="progress-bar bg-info" style="width: 100%"></div>
+                                            <div id="player-mp-bar" class="progress-bar bg-info"></div>
                                         </div>
                                     </div>
                                     <div id="player-status-effects" class="mt-2">
@@ -248,7 +248,7 @@
                                     <div class="mb-2">
                                         ヘルス: <span id="boss-hp">0</span> / <span id="boss-max-hp">0</span>
                                         <div id="boss-hp-progress" class="progress">
-                                            <div id="boss-hp-bar" class="progress-bar bg-danger" style="width: 100%"></div>
+                                            <div id="boss-hp-bar" class="progress-bar bg-danger"></div>
                                         </div>
                                     </div>
                                     <div id="boss-status-effects" class="mt-2">
@@ -266,7 +266,7 @@
                         <div class="card-header">
                             <h6 class="mb-0">バトルログ</h6>
                         </div>
-                        <div class="card-body overflow-auto" id="battle-log" style="max-height: 400px;">
+                        <div class="card-body overflow-auto max-height-400" id="battle-log">
                             <p class="text-muted">バトル開始！</p>
                         </div>
                     </div>
@@ -393,12 +393,12 @@
                             </div>
                             
                             <!-- New Unlocks -->
-                            <div id="new-unlocks" class="mb-4" style="max-height: 300px; overflow-y: auto;">
+                            <div id="new-unlocks" class="mb-4 max-height-300">
                                 <!-- New unlock details will be populated here -->
                             </div>
                             
                             <!-- Continue Button -->
-                            <button id="battle-result-continue-btn" class="btn btn-primary btn-lg" style="display: none;">
+                            <button id="battle-result-continue-btn" class="btn btn-primary btn-lg d-none">
                                 ボス選択に戻る
                             </button>
                         </div>
@@ -460,7 +460,7 @@
                                             <div class="card-body">
                                                 <h6 class="card-title">⚔️ コンバット Lv.<span id="combat-level">0</span></h6>
                                                 <div class="progress mb-2">
-                                                    <div id="combat-progress" class="progress-bar" style="width: 0%"></div>
+                                                    <div id="combat-progress" class="progress-bar"></div>
                                                 </div>
                                                 <small class="text-muted">経験値: <span id="combat-exp">0</span> / <span id="combat-next">100</span></small>
                                             </div>
@@ -471,7 +471,7 @@
                                             <div class="card-body">
                                                 <h6 class="card-title">🛡️ タフネス Lv.<span id="toughness-level">0</span></h6>
                                                 <div class="progress mb-2">
-                                                    <div id="toughness-progress" class="progress-bar" style="width: 0%"></div>
+                                                    <div id="toughness-progress" class="progress-bar"></div>
                                                 </div>
                                                 <small class="text-muted">経験値: <span id="toughness-exp">0</span> / <span id="toughness-next">100</span></small>
                                             </div>
@@ -482,7 +482,7 @@
                                             <div class="card-body">
                                                 <h6 class="card-title">🔧 クラフトワーク Lv.<span id="craftwork-level">0</span></h6>
                                                 <div class="progress mb-2">
-                                                    <div id="craftwork-progress" class="progress-bar" style="width: 0%"></div>
+                                                    <div id="craftwork-progress" class="progress-bar"></div>
                                                 </div>
                                                 <small class="text-muted">経験値: <span id="craftwork-exp">0</span> / <span id="craftwork-next">100</span></small>
                                             </div>
@@ -493,7 +493,7 @@
                                             <div class="card-body">
                                                 <h6 class="card-title">💪 エンデュランス Lv.<span id="endurance-level">0</span></h6>
                                                 <div class="progress mb-2">
-                                                    <div id="endurance-progress" class="progress-bar" style="width: 0%"></div>
+                                                    <div id="endurance-progress" class="progress-bar"></div>
                                                 </div>
                                                 <small class="text-muted">経験値: <span id="endurance-exp">0</span> / <span id="endurance-next">100</span></small>
                                             </div>
@@ -504,7 +504,7 @@
                                             <div class="card-body">
                                                 <h6 class="card-title">🏃 アジリティ Lv.<span id="agility-level">0</span></h6>
                                                 <div class="progress mb-2">
-                                                    <div id="agility-progress" class="progress-bar" style="width: 0%"></div>
+                                                    <div id="agility-progress" class="progress-bar"></div>
                                                 </div>
                                                 <small class="text-muted">経験値: <span id="agility-exp">0</span> / <span id="agility-next">100</span></small>
                                             </div>
@@ -659,7 +659,7 @@
                                                 <button id="import-save-btn-modal" class="btn btn-outline-success w-100">
                                                     インポート
                                                 </button>
-                                                <input type="file" id="import-file-input-modal" accept=".json" style="display: none;">
+                                                <input type="file" id="import-file-input-modal" accept=".json" class="d-none">
                                             </div>
                                         </div>
                                     </div>
@@ -789,7 +789,7 @@
     </div>
 
     <!-- Toast Container for notifications -->
-    <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;"></div>
+    <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3 z-index-9999"></div>
 
     <!-- Utility Modals -->
     <!-- Alert Modal -->
