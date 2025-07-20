@@ -156,19 +156,100 @@ export const darkGhostData: BossData = {
             return postDefeatedActions[Math.floor(Math.random() * postDefeatedActions.length)];
         }
         
-        // If player is eaten, devour them
+        // If player is eaten, use various psychological attacks to weaken soul resistance
         if (player.isEaten()) {
-            return {
-                type: ActionType.DevourAttack,
-                name: '魂の捕食',
-                damageFormula: (user: Boss) => user.attackPower * 1.5,
-                description: '体内にいる獲物の生命エネルギーを吸収する',
-                messages: [
-                    '「キミのタマシイ、おいしいネ...」',
-                    '<USER>は<TARGET>の魂からエネルギーを吸い取っている...'
-                ],
-                weight: 1
-            };
+            const eatenActions: BossAction[] = [
+                {
+                    type: ActionType.DevourAttack,
+                    name: '魂の吸収',
+                    damageFormula: (user: Boss) => user.attackPower * 1.5,
+                    description: '体内にいる獲物の生命エネルギーを吸収する',
+                    messages: [
+                        '「キミのタマシイ、おいしいネ...」',
+                        '<USER>は体内の<TARGET>の魂からエネルギーを吸い取っている...'
+                    ],
+                    weight: 30
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '魂の引き抜き',
+                    damageFormula: (user: Boss) => user.attackPower * 1.5,
+                    description: '体内にいる獲物の魂を影の触手で引き抜こうとする',
+                    messages: [
+                        '「ユックリと引き抜いてあげるヨ...」',
+                        '<USER>の胃袋から影の触手が伸び、<TARGET>の魂を引き抜こうとする...'
+                    ],
+                    weight: 25
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '底なしの粘液',
+                    damageFormula: (user: Boss) => user.attackPower * 1.0,
+                    description: '体内にいる獲物を粘液で包み込み、動きを封じる',
+                    messages: [
+                        '「ネバネバ粘液から抜け出せるかナ？」',
+                        '<USER>の胃袋が大量の粘液を出し、<TARGET>を包み込む...'
+                    ],
+                    statusEffect: StatusEffectType.Slimed,
+                    weight: 25
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '絶望の囁き',
+                    damageFormula: (user: Boss) => user.attackPower * 1.0,
+                    description: '絶望的な言葉で心を折り恐怖を植え付ける',
+                    messages: [
+                        '「もう誰も助けに来ないヨ...」',
+                        '<USER>が<TARGET>の心に絶望を囁いている...'
+                    ],
+                    statusEffect: StatusEffectType.Fear,
+                    statusChance: 0.8,
+                    weight: 20
+                },
+                {
+                    type: ActionType.DevourAttack,
+                    name: '記憶の侵食',
+                    damageFormula: (user: Boss) => user.attackPower * 0.6,
+                    description: '記憶を蝕みスキルの記憶を奪う',
+                    messages: [
+                        '「難しいことなんて忘れて、楽にしてあげるネ...」',
+                        '<USER>が<TARGET>の記憶を侵食している...'
+                    ],
+                    statusEffect: StatusEffectType.Oblivion,
+                    weight: 15,
+                    canUse: (boss, _player, turn) => {
+                        // Check if this action was used in the last 20 turns
+                        const lastUsed = boss.getCustomVariable("lastMemoryErosionTurn", -21);
+                        return (turn - lastUsed) >= 20;
+                    },
+                    onUse: (boss, _player, turn) => {
+                        // Record when this action was used
+                        boss.setCustomVariable("lastMemoryErosionTurn", turn);
+                        return [];
+                    }
+                }
+            ];
+            
+            // Filter available actions based on canUse condition
+            const availableActions = eatenActions.filter(action => {
+                if (action.canUse) {
+                    return action.canUse(boss, player, turn);
+                }
+                return true;
+            });
+            
+            // Weighted random selection from available actions
+            const totalWeight = availableActions.reduce((sum, action) => sum + action.weight, 0);
+            let random = Math.random() * totalWeight;
+            
+            for (const action of availableActions) {
+                random -= action.weight;
+                if (random <= 0) {
+                    return action;
+                }
+            }
+            
+            return availableActions[0] || eatenActions[0];
         }
         
         // Strategic actions based on player state

@@ -83,7 +83,11 @@ export enum StatusEffectType {
     // Clean Master effects
     Soapy = 'soapy',
     Spinning = 'spinning',
-    Steamy = 'steamy'
+    Steamy = 'steamy',
+    
+    // Dark Ghost mental effects
+    Fear = 'fear',
+    Oblivion = 'oblivion'
 }
 
 export interface StatusEffect {
