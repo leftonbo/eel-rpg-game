@@ -79,6 +79,7 @@ export const swampDragonData: BossData = {
     attackPower: 18,
     actions: swampDragonActions,
     icon: '🐲',
+    explorerLevelRequired: 0,
     personality: [
         'ふむ...良い匂いだな',
         'グルル...なかなか',

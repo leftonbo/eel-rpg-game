@@ -77,6 +77,7 @@ export class BossSelectScene {
     
     private updateBossCards(): void {
         const allBossData = getAllBossData();
+        const playerExplorerLevel = this.game.player.getExplorerLevel();
         
         this.bossCards?.forEach(card => {
             const bossId = card.getAttribute('data-boss');
@@ -85,13 +86,30 @@ export class BossSelectScene {
             if (bossData) {
                 const titleElement = card.querySelector('.card-title');
                 const textElement = card.querySelector('.card-text');
+                const requiredLevel = bossData.explorerLevelRequired || 0;
+                const isUnlocked = playerExplorerLevel >= requiredLevel;
                 
                 if (titleElement) {
                     titleElement.textContent = bossData.displayName;
                 }
                 
                 if (textElement) {
-                    textElement.textContent = bossData.description;
+                    if (isUnlocked) {
+                        textElement.textContent = bossData.description;
+                    } else {
+                        textElement.textContent = `🔒 エクスプローラーLv.${requiredLevel}で解禁`;
+                    }
+                }
+                
+                // Add/remove locked state styling
+                if (isUnlocked) {
+                    card.classList.remove('boss-card-locked');
+                    (card as HTMLElement).style.pointerEvents = 'auto';
+                    (card as HTMLElement).style.opacity = '1';
+                } else {
+                    card.classList.add('boss-card-locked');
+                    (card as HTMLElement).style.pointerEvents = 'none';
+                    (card as HTMLElement).style.opacity = '0.5';
                 }
             }
         });

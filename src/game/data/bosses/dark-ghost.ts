@@ -78,6 +78,7 @@ export const darkGhostData: BossData = {
     attackPower: 12,
     actions: darkGhostActions,
     icon: '👻',
+    explorerLevelRequired: 0,
     personality: [
         'ケケケ...いい魂の匂いがする',
         'その魂、いただくよ',

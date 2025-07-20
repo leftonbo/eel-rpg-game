@@ -81,6 +81,11 @@ export interface BossData {
      * }
      */
     customVariables?: Record<string, any>;
+    /**
+     * エクスプローラーアビリティで解禁されるレベル
+     * 未指定の場合は 0 として扱われ、最初から利用可能
+     */
+    explorerLevelRequired?: number;
 }
 
 export class Boss extends Actor {

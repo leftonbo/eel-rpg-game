@@ -5,7 +5,8 @@ export enum AbilityType {
     Toughness = 'toughness',
     CraftWork = 'craftwork',
     Endurance = 'endurance',
-    Agility = 'agility'
+    Agility = 'agility',
+    Explorer = 'explorer'
 }
 
 export interface AbilityData {
@@ -162,6 +163,16 @@ export class AbilitySystem {
         if (!agilityAbility) return 0;
         
         return agilityAbility.level * 0.05; // 5% per level
+    }
+    
+    /**
+     * Get explorer level (controls boss unlock progression)
+     */
+    getExplorerLevel(): number {
+        const explorerAbility = this.abilities.get(AbilityType.Explorer);
+        if (!explorerAbility) return 0;
+        
+        return explorerAbility.level;
     }
     
     /**

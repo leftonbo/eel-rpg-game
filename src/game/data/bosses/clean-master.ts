@@ -198,6 +198,7 @@ export const cleanMasterData: BossData = {
     attackPower: 12,
     actions: cleanMasterActions,
     icon: '🧹',
+    explorerLevelRequired: 6,
     personality: [
         'お掃除、お掃除〜♪',
         'ぴかぴかにしなくちゃ！',

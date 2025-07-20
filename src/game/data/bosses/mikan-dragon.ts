@@ -111,6 +111,7 @@ export const mikanDragonData: BossData = {
     attackPower: 14,
     actions: mikanDragonActions,
     icon: '🍊',
+    explorerLevelRequired: 4,
     personality: [
         'フルルル...甘い香りでしょう？',
         '蜜柑の汁が美味しいのよ',

@@ -175,6 +175,7 @@ export const aquaSerpentData: BossData = {
     attackPower: 20,
     actions: aquaSerpentActions,
     icon: '🐍',
+    explorerLevelRequired: 2,
     personality: [
         'シャアアア...美しい生命力だ',
         'この海の奥深くで...待っていた',

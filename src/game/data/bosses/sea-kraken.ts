@@ -89,6 +89,7 @@ export const seaKrakenData: BossData = {
     attackPower: 15,
     actions: seaKrakenActions,
     icon: '🦑',
+    explorerLevelRequired: 2,
     personality: [
         'グルルル...',
         'シュゥゥゥ...',

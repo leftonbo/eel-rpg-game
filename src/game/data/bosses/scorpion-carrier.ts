@@ -157,6 +157,7 @@ export const scorpionCarrierData: BossData = {
     attackPower: 8,
     actions: scorpionCarrierActions,
     icon: '🦂',
+    explorerLevelRequired: 1,
     personality: [
         'んー、迷い人のようだな？',
         'おまえの足より、オレの足のほうが早いぞ？',

@@ -2,6 +2,8 @@ import { Game } from '../Game';
 import { AbilityType } from '../systems/AbilitySystem';
 import { SkillRegistry } from '../data/skills';
 import { Player } from '../entities/Player';
+import { getBossData } from '../data/index';
+import { Trophy } from '../systems/TrophySystem';
 
 export interface BattleResult {
     victory: boolean;
@@ -13,6 +15,7 @@ export interface BattleResult {
         items: string[];
         skills: string[];
     };
+    trophies: Trophy[];
 }
 
 export class BattleResultScene {
@@ -62,6 +65,9 @@ export class BattleResultScene {
         
         // Display new unlocks
         this.displayNewUnlocks();
+        
+        // Display trophies
+        this.displayTrophies();
         
         // Show continue button
         const continueButton = document.getElementById('battle-result-continue-btn');
@@ -152,6 +158,36 @@ export class BattleResultScene {
     }
     
     /**
+     * Display trophies earned in this battle
+     */
+    private displayTrophies(): void {
+        const trophyContainer = document.getElementById('trophies-earned');
+        if (!trophyContainer || !this.battleResult || this.battleResult.trophies.length === 0) {
+            return;
+        }
+        
+        trophyContainer.innerHTML = '<h5>🏆 獲得記念品</h5>';
+        
+        this.battleResult.trophies.forEach(trophy => {
+            const trophyDiv = document.createElement('div');
+            trophyDiv.className = 'mb-3 p-3 border border-info rounded bg-info bg-opacity-10';
+            trophyDiv.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="fw-bold text-info">${trophy.name}</div>
+                        <div class="small text-muted">${trophy.description}</div>
+                    </div>
+                    <div class="text-end">
+                        <div class="text-success">+${trophy.explorerExp} EXP</div>
+                        <div class="small text-muted">🗺️ エクスプローラー</div>
+                    </div>
+                </div>
+            `;
+            trophyContainer.appendChild(trophyDiv);
+        });
+    }
+    
+    /**
      * Get display name for ability type
      */
     private getAbilityDisplayName(abilityType: AbilityType): string {
@@ -160,7 +196,8 @@ export class BattleResultScene {
             [AbilityType.Toughness]: '🛡️ タフネス',
             [AbilityType.CraftWork]: '🔧 クラフトワーク',
             [AbilityType.Endurance]: '💪 エンデュランス',
-            [AbilityType.Agility]: '🏃 アジリティ'
+            [AbilityType.Agility]: '🏃 アジリティ',
+            [AbilityType.Explorer]: '🗺️ エクスプローラー'
         };
         return names[abilityType] || abilityType;
     }
@@ -178,19 +215,49 @@ export class BattleResultScene {
  */
 export function calculateBattleResult(
     player: Player,
+    bossId: string,
     victory: boolean,
     damageDealt: number,
     damageTaken: number,
     mpSpent: number,
     craftworkExperience: number = 0,
-    agilityExperience: number = 0
+    agilityExperience: number = 0,
+    skillsReceived: string[] = []
 ): BattleResult {
+    // Calculate explorer experience from trophies and skill experience
+    const bossData = getBossData(bossId);
+    const requiredLevel = bossData?.explorerLevelRequired || 0;
+    const trophies: Trophy[] = [];
+    let explorerExperience = 0;
+    
+    if (bossData) {
+        // Award victory/defeat trophies
+        if (victory) {
+            const victoryTrophy = player.trophySystem.awardVictoryTrophy(bossId, bossData.displayName, requiredLevel);
+            if (victoryTrophy) {
+                trophies.push(victoryTrophy);
+                explorerExperience += victoryTrophy.explorerExp;
+            }
+        } else {
+            const defeatTrophy = player.trophySystem.awardDefeatTrophy(bossId, bossData.displayName, requiredLevel);
+            if (defeatTrophy) {
+                trophies.push(defeatTrophy);
+                explorerExperience += defeatTrophy.explorerExp;
+            }
+        }
+        
+        // Calculate skill experience
+        const skillExperience = player.trophySystem.calculateSkillExperience(bossId, skillsReceived, requiredLevel);
+        explorerExperience += skillExperience;
+    }
+    
     const experienceGained: { [key: string]: number } = {
         [AbilityType.Combat]: damageDealt * 4,
         [AbilityType.Toughness]: damageTaken * 2,
         [AbilityType.CraftWork]: craftworkExperience,
         [AbilityType.Endurance]: mpSpent * 4,
-        [AbilityType.Agility]: agilityExperience
+        [AbilityType.Agility]: agilityExperience,
+        [AbilityType.Explorer]: explorerExperience
     };
     
     const levelUps: { [key: string]: { previousLevel: number; newLevel: number } } = {};
@@ -225,7 +292,8 @@ export function calculateBattleResult(
         victory,
         experienceGained,
         levelUps,
-        newUnlocks
+        newUnlocks,
+        trophies
     };
 }
 

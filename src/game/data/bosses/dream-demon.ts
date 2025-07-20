@@ -518,6 +518,7 @@ export const dreamDemonData: BossData = {
     attackPower: 10,
     actions: dreamDemonActions,
     icon: '😈',
+    explorerLevelRequired: 3,
     guestCharacterInfo: {
         creator: 'crazybudgie'
     },

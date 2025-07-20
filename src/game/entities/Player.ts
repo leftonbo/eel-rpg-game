@@ -4,6 +4,7 @@ import { PlayerSaveManager, PlayerSaveData } from '../systems/PlayerSaveData';
 import { updatePlayerItems } from '../data/ExtendedItems';
 import { Actor } from './Actor';
 import { SkillRegistry, SkillData } from '../data/skills';
+import { TrophySystem } from '../systems/TrophySystem';
 
 export enum SkillType {
     PowerAttack = 'power-attack',
@@ -61,6 +62,7 @@ export class Player extends Actor {
     
     // Ability and equipment system
     public abilitySystem: AbilitySystem = new AbilitySystem();
+    public trophySystem: TrophySystem = new TrophySystem();
     public equippedWeapon: string = 'bare-hands';
     public equippedArmor: string = 'naked';
     public unlockedItems: Set<string> = new Set();
@@ -809,6 +811,13 @@ export class Player extends Actor {
         const weapon = WEAPONS.find(w => w.id === this.equippedWeapon) || null;
         const armor = ARMORS.find(a => a.id === this.equippedArmor) || null;
         return { weapon, armor };
+    }
+    
+    /**
+     * Get current explorer level
+     */
+    public getExplorerLevel(): number {
+        return this.abilitySystem.getExplorerLevel();
     }
     
     /**
