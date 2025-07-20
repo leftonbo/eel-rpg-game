@@ -3,7 +3,7 @@ import { Player, SkillType } from '../entities/Player';
 import { Boss, ActionType, formatMessage } from '../entities/Boss';
 import { StatusEffect, StatusEffectType } from '../systems/StatusEffect';
 import { calculateAttackResult } from '../utils/CombatUtils';
-import { calculateBattleResult } from './BattleResultScene';
+import { BattleResultStatus, calculateBattleResult } from './BattleResultScene';
 import { ModalUtils } from '../utils/ModalUtils';
 
 export class BattleScene {
@@ -194,7 +194,7 @@ export class BattleScene {
         
         // Back to boss select
         document.getElementById('back-to-select-btn')?.addEventListener('click', () => {
-            this.handleBattleExit();
+            this.finalizeBattle();
         });
         
         // Debug button
@@ -1103,63 +1103,48 @@ export class BattleScene {
     }
     
     /**
-     * Handle battle exit (from back to boss select button)
+     * Finalize battle and show results screen
      */
-    private handleBattleExit(): void {
-        if (!this.player) {
+    private finalizeBattle(): void {
+        if (!this.player || !this.boss)
+        {
             this.game.returnToBossSelect();
             return;
         }
         
-        // Check if there's any battle activity worth showing results for
-        const hasActivity = this.battleStats.damageDealt > 0 || 
-                           this.battleStats.damageTaken > 0 || 
-                           this.battleStats.mpSpent > 0 || 
-                           this.battleStats.agilityExperience > 0 ||
-                           this.battleStats.craftworkExperience > 0;
-        
-        if (hasActivity) {
-            // Show battle result screen
-            const battleResult = calculateBattleResult(
-                this.player,
-                this.boss?.id || '',
-                false, // not a victory (interrupted)
-                this.battleStats.damageDealt,
-                this.battleStats.damageTaken,
-                this.battleStats.mpSpent,
-                this.battleStats.craftworkExperience,
-                this.battleStats.agilityExperience,
-                [], // no skills received
-                true // interrupted = true
-            );
-            this.game.showBattleResult(battleResult);
-        } else {
+        const hasActivity = this.battleStats.damageDealt > 0 ||
+            this.battleStats.damageTaken > 0 ||
+            this.battleStats.mpSpent > 0 ||
+            this.battleStats.agilityExperience > 0 ||
+            this.battleStats.craftworkExperience > 0;
+
+        if (!hasActivity) {
             // No activity, go directly to boss select
             this.game.returnToBossSelect();
+            return;
         }
-    }
-    
-    /**
-     * Finalize battle and show results screen
-     */
-    private finalizeBattle(): void {
-        if (!this.player || !this.boss) return;
-        
+
         // Determine if it was a victory
-        const victory = this.boss.isDefeated();
+        let status: BattleResultStatus;
+        if (this.boss.isDefeated()) {
+            status = BattleResultStatus.Victory;
+        } else if (this.player.isDefeated()) {
+            status = BattleResultStatus.Defeat;
+        } else {
+            status = BattleResultStatus.Interrupted;
+        }
         
-        // Calculate battle result and show result screen
+        // Show battle result screen
         const battleResult = calculateBattleResult(
             this.player,
-            this.boss?.id || '',
-            victory,
+            this.boss.id,
+            status,
             this.battleStats.damageDealt,
             this.battleStats.damageTaken,
             this.battleStats.mpSpent,
             this.battleStats.craftworkExperience,
             this.battleStats.agilityExperience,
-            [], // no skills received
-            false // interrupted = false (normal completion)
+            []  // TODO: insert skills boss used
         );
         this.game.showBattleResult(battleResult);
     }

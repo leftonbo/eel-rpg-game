@@ -5,9 +5,14 @@ import { Player } from '../entities/Player';
 import { getBossData, getAllBossData } from '../data/index';
 import { Trophy } from '../systems/TrophySystem';
 
+export enum BattleResultStatus {
+    Interrupted = 'interrupted',
+    Victory = 'victory',
+    Defeat = 'defeat'
+}
+
 export interface BattleResult {
-    victory: boolean;
-    interrupted: boolean;
+    status: BattleResultStatus;
     experienceGained: { [key: string]: number };
     levelUps: { [key: string]: { previousLevel: number; newLevel: number } };
     newUnlocks: {
@@ -245,41 +250,40 @@ export class BattleResultScene {
 export function calculateBattleResult(
     player: Player,
     bossId: string,
-    victory: boolean,
+    status: BattleResultStatus,
     damageDealt: number,
     damageTaken: number,
     mpSpent: number,
     craftworkExperience: number = 0,
     agilityExperience: number = 0,
-    skillsReceived: string[] = [],
-    interrupted: boolean = false
+    skillsReceived: string[] = []
 ): BattleResult {
     // Calculate explorer experience from trophies and skill experience
     const bossData = getBossData(bossId);
     const requiredLevel = bossData?.explorerLevelRequired || 0;
     const trophies: Trophy[] = [];
     let explorerExperience = 0;
-    
-    if (bossData && !interrupted) {
+
+    if (bossData) {
         // Award victory/defeat trophies (only if battle was not interrupted)
-        if (victory) {
+        if (status === BattleResultStatus.Victory) {
             const victoryTrophy = player.trophySystem.awardVictoryTrophy(bossId, bossData.displayName, requiredLevel);
             if (victoryTrophy) {
                 trophies.push(victoryTrophy);
                 explorerExperience += victoryTrophy.explorerExp;
             }
-        } else {
+        } else if (status === BattleResultStatus.Defeat) {
             const defeatTrophy = player.trophySystem.awardDefeatTrophy(bossId, bossData.displayName, requiredLevel);
             if (defeatTrophy) {
                 trophies.push(defeatTrophy);
                 explorerExperience += defeatTrophy.explorerExp;
             }
         }
-        
-        // Calculate skill experience
-        const skillExperience = player.trophySystem.calculateSkillExperience(bossId, skillsReceived, requiredLevel);
-        explorerExperience += skillExperience;
     }
+
+    // Calculate skill experience
+    const skillExperience = player.trophySystem.calculateSkillExperience(bossId, skillsReceived, requiredLevel);
+    explorerExperience += skillExperience;
     
     const experienceGained: { [key: string]: number } = {
         [AbilityType.Combat]: damageDealt * 4,
@@ -330,8 +334,7 @@ export function calculateBattleResult(
     });
     
     return {
-        victory,
-        interrupted,
+        status,
         experienceGained,
         levelUps,
         newUnlocks,
