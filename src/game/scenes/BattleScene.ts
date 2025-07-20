@@ -164,6 +164,11 @@ export class BattleScene {
         document.getElementById('back-to-select-btn')?.addEventListener('click', () => {
             this.handleBattleExit();
         });
+        
+        // Debug button
+        document.getElementById('debug-btn')?.addEventListener('click', () => {
+            this.showDebugScreen();
+        });
     }
     
     enter(): void {
@@ -255,6 +260,9 @@ export class BattleScene {
         
         // Update basic action buttons
         this.updateBasicActionButtons();
+        
+        // Update debug button visibility
+        this.updateDebugButtonVisibility();
     }
     
     private updatePlayerUI(): void {
@@ -1139,5 +1147,26 @@ export class BattleScene {
         this.player.statusEffects.addEffect(StatusEffectType.Dead);
         
         this.endBossTurn();
+    }
+    
+    /**
+     * Update debug button visibility based on debug mode
+     */
+    private updateDebugButtonVisibility(): void {
+        const debugBtn = document.getElementById('debug-btn');
+        if (debugBtn) {
+            if (this.game.isDebugMode()) {
+                debugBtn.classList.remove('d-none');
+            } else {
+                debugBtn.classList.add('d-none');
+            }
+        }
+    }
+    
+    /**
+     * Show debug screen
+     */
+    private showDebugScreen(): void {
+        this.game.showDebugScreen();
     }
 }
