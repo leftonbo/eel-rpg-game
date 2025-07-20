@@ -38,7 +38,7 @@
             <div class="text-center">
                 <h1 class="display-1 mb-4 game-title">🐍 Eel Feed</h1>
                 
-                <div class="alert alert-warning mx-auto" style="max-width: 600px;">
+                <div class="alert alert-warning mx-auto max-width-600">
                     <h5>⚠️ 注意事項</h5>
                     <ul class="mb-0 text-start">
                         <li>このゲームには戦闘シーンが含まれます</li>
@@ -222,13 +222,13 @@
                                     <div class="mb-2">
                                         ヘルス: <span id="player-hp">1000</span> / <span id="player-max-hp">1000</span>
                                         <div id="player-hp-progress" class="progress">
-                                            <div id="player-hp-bar" class="progress-bar bg-success" style="width: 100%"></div>
+                                            <div id="player-hp-bar" class="progress-bar bg-success"></div>
                                         </div>
                                     </div>
                                     <div class="mb-2">
                                         マナ: <span id="player-mp">40</span> / <span id="player-max-mp">40</span>
                                         <div id="player-mp-progress" class="progress">
-                                            <div id="player-mp-bar" class="progress-bar bg-info" style="width: 100%"></div>
+                                            <div id="player-mp-bar" class="progress-bar bg-info"></div>
                                         </div>
                                     </div>
                                     <div id="player-status-effects" class="mt-2">
@@ -248,7 +248,7 @@
                                     <div class="mb-2">
                                         ヘルス: <span id="boss-hp">0</span> / <span id="boss-max-hp">0</span>
                                         <div id="boss-hp-progress" class="progress">
-                                            <div id="boss-hp-bar" class="progress-bar bg-danger" style="width: 100%"></div>
+                                            <div id="boss-hp-bar" class="progress-bar bg-danger"></div>
                                         </div>
                                     </div>
                                     <div id="boss-status-effects" class="mt-2">
@@ -266,7 +266,7 @@
                         <div class="card-header">
                             <h6 class="mb-0">バトルログ</h6>
                         </div>
-                        <div class="card-body overflow-auto" id="battle-log" style="max-height: 400px;">
+                        <div class="card-body overflow-auto max-height-400" id="battle-log">
                             <p class="text-muted">バトル開始！</p>
                         </div>
                     </div>
@@ -284,6 +284,7 @@
                                 <button id="defend-btn" class="btn btn-primary">🛡️ 防御</button>
                                 <button id="skill-btn" class="btn btn-warning">⚡ スキル</button>
                                 <button id="item-btn" class="btn btn-success">💊 アイテム</button>
+                                <button id="debug-btn" class="btn btn-outline-info d-none">🔧 デバッグ</button>
                             </div>
                             
                             <!-- Skill Panel (hidden by default) -->
@@ -392,12 +393,12 @@
                             </div>
                             
                             <!-- New Unlocks -->
-                            <div id="new-unlocks" class="mb-4" style="max-height: 300px; overflow-y: auto;">
+                            <div id="new-unlocks" class="mb-4 max-height-300">
                                 <!-- New unlock details will be populated here -->
                             </div>
                             
                             <!-- Continue Button -->
-                            <button id="battle-result-continue-btn" class="btn btn-primary btn-lg" style="display: none;">
+                            <button id="battle-result-continue-btn" class="btn btn-primary btn-lg mx-auto">
                                 ボス選択に戻る
                             </button>
                         </div>
@@ -441,8 +442,8 @@
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <h6>基本ステータス</h6>
-                                        <div class="mb-2">ヘルス: <span id="detail-hp">100</span> / <span id="detail-max-hp">100</span></div>
-                                        <div class="mb-2">マナ: <span id="detail-mp">40</span> / <span id="detail-max-mp">40</span></div>
+                                        <div class="mb-2">ヘルス: <span id="detail-max-hp">100</span></div>
+                                        <div class="mb-2">マナ: <span id="detail-max-mp">40</span></div>
                                         <div class="mb-2">攻撃力: <span id="detail-attack">5</span></div>
                                     </div>
                                     <div class="col-md-6">
@@ -459,7 +460,7 @@
                                             <div class="card-body">
                                                 <h6 class="card-title">⚔️ コンバット Lv.<span id="combat-level">0</span></h6>
                                                 <div class="progress mb-2">
-                                                    <div id="combat-progress" class="progress-bar" style="width: 0%"></div>
+                                                    <div id="combat-progress" class="progress-bar"></div>
                                                 </div>
                                                 <small class="text-muted">経験値: <span id="combat-exp">0</span> / <span id="combat-next">100</span></small>
                                             </div>
@@ -470,7 +471,7 @@
                                             <div class="card-body">
                                                 <h6 class="card-title">🛡️ タフネス Lv.<span id="toughness-level">0</span></h6>
                                                 <div class="progress mb-2">
-                                                    <div id="toughness-progress" class="progress-bar" style="width: 0%"></div>
+                                                    <div id="toughness-progress" class="progress-bar"></div>
                                                 </div>
                                                 <small class="text-muted">経験値: <span id="toughness-exp">0</span> / <span id="toughness-next">100</span></small>
                                             </div>
@@ -481,7 +482,7 @@
                                             <div class="card-body">
                                                 <h6 class="card-title">🔧 クラフトワーク Lv.<span id="craftwork-level">0</span></h6>
                                                 <div class="progress mb-2">
-                                                    <div id="craftwork-progress" class="progress-bar" style="width: 0%"></div>
+                                                    <div id="craftwork-progress" class="progress-bar"></div>
                                                 </div>
                                                 <small class="text-muted">経験値: <span id="craftwork-exp">0</span> / <span id="craftwork-next">100</span></small>
                                             </div>
@@ -492,7 +493,7 @@
                                             <div class="card-body">
                                                 <h6 class="card-title">💪 エンデュランス Lv.<span id="endurance-level">0</span></h6>
                                                 <div class="progress mb-2">
-                                                    <div id="endurance-progress" class="progress-bar" style="width: 0%"></div>
+                                                    <div id="endurance-progress" class="progress-bar"></div>
                                                 </div>
                                                 <small class="text-muted">経験値: <span id="endurance-exp">0</span> / <span id="endurance-next">100</span></small>
                                             </div>
@@ -503,7 +504,7 @@
                                             <div class="card-body">
                                                 <h6 class="card-title">🏃 アジリティ Lv.<span id="agility-level">0</span></h6>
                                                 <div class="progress mb-2">
-                                                    <div id="agility-progress" class="progress-bar" style="width: 0%"></div>
+                                                    <div id="agility-progress" class="progress-bar"></div>
                                                 </div>
                                                 <small class="text-muted">経験値: <span id="agility-exp">0</span> / <span id="agility-next">100</span></small>
                                             </div>
@@ -658,7 +659,7 @@
                                                 <button id="import-save-btn-modal" class="btn btn-outline-success w-100">
                                                     インポート
                                                 </button>
-                                                <input type="file" id="import-file-input-modal" accept=".json" style="display: none;">
+                                                <input type="file" id="import-file-input-modal" accept=".json" class="d-none">
                                             </div>
                                         </div>
                                     </div>
@@ -680,6 +681,256 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
                     </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Debug Modal -->
+        <div class="modal fade" id="debug-modal" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-warning">🔧 デバッグコンソール</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- Player Debug Panel -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card bg-primary">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">🐍 プレイヤー</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Player HP/MP -->
+                                        <div class="row mb-3">
+                                            <div class="col-6">
+                                                <label class="form-label">HP</label>
+                                                <input type="number" id="debug-player-hp" class="form-control" min="0">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label">最大HP</label>
+                                                <input type="number" id="debug-player-max-hp" class="form-control" min="1">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-6">
+                                                <label class="form-label">MP</label>
+                                                <input type="number" id="debug-player-mp" class="form-control" min="0">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label">最大MP</label>
+                                                <input type="number" id="debug-player-max-mp" class="form-control" min="0">
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Status Effects -->
+                                        <h6>ステータス効果</h6>
+                                        <div id="debug-player-status-effects" class="mb-3">
+                                            <!-- Status effects will be populated here -->
+                                        </div>
+                                        <button id="debug-add-player-status" class="btn btn-sm btn-outline-light">
+                                            ステータス効果を追加
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Boss Debug Panel -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card bg-danger">
+                                    <div class="card-header">
+                                        <h5 id="debug-boss-name" class="mb-0">👹 ボス</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Boss HP -->
+                                        <div class="row mb-3">
+                                            <div class="col-6">
+                                                <label class="form-label">HP</label>
+                                                <input type="number" id="debug-boss-hp" class="form-control" min="0">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label">最大HP</label>
+                                                <input type="number" id="debug-boss-max-hp" class="form-control" min="1">
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Status Effects -->
+                                        <h6>ステータス効果</h6>
+                                        <div id="debug-boss-status-effects" class="mb-3">
+                                            <!-- Status effects will be populated here -->
+                                        </div>
+                                        <button id="debug-add-boss-status" class="btn btn-sm btn-outline-light">
+                                            ステータス効果を追加
+                                        </button>
+                                        
+                                        <!-- Custom Variables -->
+                                        <h6 class="mt-4">カスタム変数</h6>
+                                        <div id="debug-boss-custom-vars" class="mb-3">
+                                            <!-- Custom variables will be populated here -->
+                                        </div>
+                                        <button id="debug-add-custom-var" class="btn btn-sm btn-outline-light">
+                                            変数を追加
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                        <button id="debug-apply-changes" class="btn btn-success">
+                            ✅ 変更を適用
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container for notifications -->
+    <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+
+    <!-- Utility Modals -->
+    <!-- Alert Modal -->
+    <div class="modal fade" id="alert-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="alert-modal-title">通知</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="alert-modal-body">
+                    <!-- Alert message goes here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div class="modal fade" id="confirm-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirm-modal-title">確認</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="confirm-modal-body">
+                    <!-- Confirm message goes here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="confirm-cancel-btn">キャンセル</button>
+                    <button type="button" class="btn btn-danger" id="confirm-ok-btn">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prompt Modal -->
+    <div class="modal fade" id="prompt-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="prompt-modal-title">入力</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="prompt-modal-body" class="mb-3">
+                        <!-- Prompt message goes here -->
+                    </div>
+                    <input type="text" class="form-control" id="prompt-modal-input" placeholder="入力してください">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="prompt-cancel-btn">キャンセル</button>
+                    <button type="button" class="btn btn-primary" id="prompt-ok-btn">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Select Modal -->
+    <div class="modal fade" id="select-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="select-modal-title">選択</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="select-modal-body" class="mb-3">
+                        <!-- Select message goes here -->
+                    </div>
+                    <select class="form-select" id="select-modal-select">
+                        <!-- Options will be populated here -->
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="select-cancel-btn">キャンセル</button>
+                    <button type="button" class="btn btn-primary" id="select-ok-btn">選択</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Variable Add Modal -->
+    <div class="modal fade" id="custom-var-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">カスタム変数を追加</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="custom-var-error" class="alert alert-danger d-none mb-3" role="alert">
+                        <!-- Error message will be displayed here -->
+                    </div>
+                    <div class="mb-3">
+                        <label for="custom-var-key" class="form-label">変数名</label>
+                        <input type="text" class="form-control" id="custom-var-key" placeholder="変数名を入力してください">
+                    </div>
+                    <div class="mb-3">
+                        <label for="custom-var-value" class="form-label">値</label>
+                        <input type="text" class="form-control" id="custom-var-value" placeholder="値を入力してください">
+                        <div class="form-text">数値やtrue/falseは自動的に変換されます</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                    <button type="button" class="btn btn-primary" id="custom-var-add-btn">追加</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Effect Add Modal -->
+    <div class="modal fade" id="status-effect-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="status-effect-modal-title">ステータス効果を追加</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="status-effect-error" class="alert alert-danger d-none mb-3" role="alert">
+                        <!-- Error message will be displayed here -->
+                    </div>
+                    <div class="mb-3">
+                        <label for="status-effect-type" class="form-label">ステータス効果</label>
+                        <select class="form-select" id="status-effect-type">
+                            <!-- Options will be populated here -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status-effect-duration" class="form-label">持続ターン数</label>
+                        <input type="number" class="form-control" id="status-effect-duration" value="3" min="1" max="99">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                    <button type="button" class="btn btn-primary" id="status-effect-add-btn">追加</button>
                 </div>
             </div>
         </div>

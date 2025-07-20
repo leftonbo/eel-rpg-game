@@ -1504,3 +1504,91 @@ footer svg {
         box-shadow: 0 0 15px rgba(255, 205, 210, 0.8);
     }
 }
+
+/* Debug Modal Styles */
+
+.debug-status-effect {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    transition: all 0.2s ease;
+}
+
+.debug-status-effect:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.debug-custom-var {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    transition: all 0.2s ease;
+}
+
+.debug-custom-var:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.debug-status-effect .form-control,
+.debug-custom-var .form-control {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.debug-status-effect .form-control:focus,
+.debug-custom-var .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--game-info);
+    box-shadow: 0 0 0 0.2rem rgba(8, 145, 178, 0.25);
+}
+
+#debug-modal .card {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+#debug-modal .btn {
+    transition: all 0.2s ease;
+}
+
+#debug-modal .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Modal shake effect for error feedback */
+@keyframes modal-shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.modal-shake {
+    animation: modal-shake 0.6s ease-in-out;
+}
+
+/* Form control error state */
+.form-control.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Layout utility classes */
+.max-width-600 {
+    max-width: 600px;
+}
+
+.max-height-400 {
+    max-height: 400px;
+}
+
+.max-height-300 {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.d-none-important {
+    display: none !important;
+}
