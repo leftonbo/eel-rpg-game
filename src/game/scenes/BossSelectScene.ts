@@ -77,7 +77,7 @@ export class BossSelectScene {
     
     private updateBossCards(): void {
         const allBossData = getAllBossData();
-        const playerExplorerLevel = this.game.player.getExplorerLevel();
+        const playerExplorerLevel = this.game.getPlayer().getExplorerLevel();
         
         this.bossCards?.forEach(card => {
             const bossId = card.getAttribute('data-boss');

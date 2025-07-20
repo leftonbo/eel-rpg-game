@@ -1122,6 +1122,7 @@ export class BattleScene {
             // Show battle result screen
             const battleResult = calculateBattleResult(
                 this.player,
+                this.boss?.id || '',
                 false, // not a victory (interrupted)
                 this.battleStats.damageDealt,
                 this.battleStats.damageTaken,
@@ -1148,6 +1149,7 @@ export class BattleScene {
         // Calculate battle result and show result screen
         const battleResult = calculateBattleResult(
             this.player,
+            this.boss?.id || '',
             victory,
             this.battleStats.damageDealt,
             this.battleStats.damageTaken,
