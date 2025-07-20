@@ -3,6 +3,7 @@ import { getAllBossData } from '../data/index';
 import { PlayerSaveManager } from '../systems/PlayerSaveData';
 import { AbilityType } from '../systems/AbilitySystem';
 import { SkillData, UnlockCondition } from '../data/skills';
+import { ModalUtils } from '../utils/ModalUtils';
 
 export class BossSelectScene {
     private game: Game;
@@ -537,10 +538,10 @@ export class BossSelectScene {
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            this.showMessage('セーブデータをエクスポートしました', 'success');
+            ModalUtils.showToast('セーブデータをエクスポートしました', 'success');
         } catch (error) {
             console.error('Export failed:', error);
-            this.showMessage('エクスポートに失敗しました', 'error');
+            ModalUtils.showToast('エクスポートに失敗しました', 'error');
         }
     }
     
@@ -555,15 +556,15 @@ export class BossSelectScene {
                 const success = PlayerSaveManager.importSaveData(content);
                 
                 if (success) {
-                    this.showMessage('セーブデータをインポートしました', 'success');
+                    ModalUtils.showToast('セーブデータをインポートしました', 'success');
                     // Reload the player to reflect imported data
                     this.game.startGame();
                 } else {
-                    this.showMessage('無効なセーブデータです', 'error');
+                    ModalUtils.showToast('無効なセーブデータです', 'error');
                 }
             } catch (error) {
                 console.error('Import failed:', error);
-                this.showMessage('インポートに失敗しました', 'error');
+                ModalUtils.showToast('インポートに失敗しました', 'error');
             }
         };
         reader.readAsText(file);
@@ -572,10 +573,11 @@ export class BossSelectScene {
     /**
      * Delete save data
      */
-    private deleteSaveData(): void {
-        if (confirm('全てのセーブデータを削除しますか？この操作は取り消せません。')) {
+    private async deleteSaveData(): Promise<void> {
+        const confirmed = await ModalUtils.showConfirm('全てのセーブデータを削除しますか？この操作は取り消せません。');
+        if (confirmed) {
             PlayerSaveManager.clearSaveData();
-            this.showMessage('セーブデータを削除しました', 'success');
+            ModalUtils.showToast('セーブデータを削除しました', 'success');
             // Reload the player to reflect cleared data
             this.game.startGame();
         }
@@ -674,30 +676,6 @@ export class BossSelectScene {
         }
     }
     
-    /**
-     * Show message to user
-     */
-    private showMessage(message: string, type: 'success' | 'error'): void {
-        // Create and show a bootstrap alert
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
-        alertDiv.style.top = '20px';
-        alertDiv.style.right = '20px';
-        alertDiv.style.zIndex = '9999';
-        alertDiv.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        
-        document.body.appendChild(alertDiv);
-        
-        // Auto-remove after 3 seconds
-        setTimeout(() => {
-            if (alertDiv.parentNode) {
-                alertDiv.parentNode.removeChild(alertDiv);
-            }
-        }, 3000);
-    }
 
     /**
      * Update skills tab debug controls with current values
@@ -724,7 +702,7 @@ export class BossSelectScene {
         
         const level = parseInt(inputElement.value);
         if (isNaN(level) || level < 0 || level > 10) {
-            this.showMessage('レベルは0から10の間で入力してください', 'error');
+            ModalUtils.showToast('レベルは0から10の間で入力してください', 'error');
             return;
         }
         
@@ -738,7 +716,7 @@ export class BossSelectScene {
             player.saveToStorage();
             this.updatePlayerStatus();
             this.showPlayerDetails(); // Refresh modal content
-            this.showMessage(`${this.getAbilityName(abilityType)}をレベル${level}に設定しました`, 'success');
+            ModalUtils.showToast(`${this.getAbilityName(abilityType)}をレベル${level}に設定しました`, 'success');
         }
     }
 
@@ -751,7 +729,7 @@ export class BossSelectScene {
         
         const level = parseInt(inputElement.value);
         if (isNaN(level) || level < 0 || level > 10) {
-            this.showMessage('レベルは0から10の間で入力してください', 'error');
+            ModalUtils.showToast('レベルは0から10の間で入力してください', 'error');
             return;
         }
         
@@ -768,6 +746,6 @@ export class BossSelectScene {
         player.saveToStorage();
         this.updatePlayerStatus();
         this.showPlayerDetails(); // Refresh modal content
-        this.showMessage(`全てのアビリティをレベル${level}に設定しました`, 'success');
+        ModalUtils.showToast(`全てのアビリティをレベル${level}に設定しました`, 'success');
     }
 }

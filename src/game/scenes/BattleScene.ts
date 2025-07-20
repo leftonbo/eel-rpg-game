@@ -4,6 +4,7 @@ import { Boss, ActionType, formatMessage } from '../entities/Boss';
 import { StatusEffect, StatusEffectType } from '../systems/StatusEffect';
 import { calculateAttackResult } from '../utils/CombatUtils';
 import { calculateBattleResult } from './BattleResultScene';
+import { ModalUtils } from '../utils/ModalUtils';
 
 export class BattleScene {
     /**
@@ -1388,30 +1389,36 @@ export class BattleScene {
     /**
      * Show add status effect dialog
      */
-    private showAddStatusEffectDialog(target: 'player' | 'boss'): void {
+    private async showAddStatusEffectDialog(target: 'player' | 'boss'): Promise<void> {
         // Get all available status effect types
         const statusTypes = Object.values(StatusEffectType);
         
-        // Create a simple prompt for now (could be enhanced with a proper modal)
-        const selectedType = prompt(
-            `ステータス効果を選択してください:\n${statusTypes.map((type, index) => `${index + 1}. ${type}`).join('\n')}`,
-            '1'
+        // Create options for the select modal
+        const options = statusTypes.map((type, index) => ({
+            value: index.toString(),
+            text: type
+        }));
+        
+        const selectedIndex = await ModalUtils.showSelect(
+            'ステータス効果を選択してください:',
+            options,
+            'ステータス効果の追加'
         );
         
-        if (!selectedType) return;
+        if (selectedIndex === null) return;
         
-        const typeIndex = parseInt(selectedType) - 1;
+        const typeIndex = parseInt(selectedIndex);
         if (typeIndex < 0 || typeIndex >= statusTypes.length) {
-            alert('無効な選択です');
+            ModalUtils.showAlert('無効な選択です');
             return;
         }
         
-        const duration = prompt('持続ターン数を入力してください:', '3');
-        if (!duration) return;
+        const duration = await ModalUtils.showPrompt('持続ターン数を入力してください:', '3', '持続ターン数の入力', 'number');
+        if (duration === null) return;
         
         const durationNum = parseInt(duration);
         if (isNaN(durationNum) || durationNum < 1) {
-            alert('無効なターン数です');
+            ModalUtils.showAlert('無効なターン数です');
             return;
         }
         
@@ -1439,11 +1446,11 @@ export class BattleScene {
     /**
      * Show add custom var dialog
      */
-    private showAddCustomVarDialog(): void {
-        const key = prompt('変数名を入力してください:');
+    private async showAddCustomVarDialog(): Promise<void> {
+        const key = await ModalUtils.showPrompt('変数名を入力してください:', '', '変数名の入力');
         if (!key) return;
         
-        const value = prompt('値を入力してください:');
+        const value = await ModalUtils.showPrompt('値を入力してください:', '', '値の入力');
         if (value === null) return;
         
         // Try to parse as number or boolean
@@ -1506,11 +1513,11 @@ export class BattleScene {
             // Update battle UI to reflect changes
             this.updateUI();
             
-            alert('変更が適用されました！');
+            ModalUtils.showAlert('変更が適用されました！');
             
         } catch (error) {
             console.error('Error applying debug changes:', error);
-            alert('変更の適用中にエラーが発生しました');
+            ModalUtils.showAlert('変更の適用中にエラーが発生しました');
         }
     }
 }
