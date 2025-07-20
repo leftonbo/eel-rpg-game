@@ -200,9 +200,7 @@ export class BossSelectScene {
         const abilityLevels = player.getAbilityLevels();
         
         // Update stats tab
-        this.updateElement('detail-hp', player.hp.toString());
         this.updateElement('detail-max-hp', player.maxHp.toString());
-        this.updateElement('detail-mp', player.mp.toString());
         this.updateElement('detail-max-mp', player.maxMp.toString());
         this.updateElement('detail-attack', player.getAttackPower().toString());
         this.updateElement('detail-weapon-bonus', player.getWeaponAttackBonus().toString());
@@ -491,7 +489,7 @@ export class BossSelectScene {
         if (skill.unlockConditions && skill.unlockConditions.length > 0) {
             const conditions = skill.unlockConditions.map((condition: UnlockCondition) => {
                 const abilityName = this.getAbilityName(condition.abilityType);
-                return `${abilityName}レベル${condition.requiredLevel}`;
+                return `${abilityName}レベル ${condition.requiredLevel}`;
             });
             return `<div class="skill-unlock-condition">解放条件: ${conditions.join(', ')}</div>`;
         }
@@ -702,7 +700,7 @@ export class BossSelectScene {
         
         const level = parseInt(inputElement.value);
         if (isNaN(level) || level < 0 || level > 10) {
-            ModalUtils.showToast('レベルは0から10の間で入力してください', 'error');
+            ModalUtils.showToast('レベルは 0 から 10 の間で入力してください', 'error');
             return;
         }
         
@@ -716,7 +714,7 @@ export class BossSelectScene {
             player.saveToStorage();
             this.updatePlayerStatus();
             this.showPlayerDetails(); // Refresh modal content
-            ModalUtils.showToast(`${this.getAbilityName(abilityType)}をレベル${level}に設定しました`, 'success');
+            ModalUtils.showToast(`${this.getAbilityName(abilityType)}をレベル ${level} に設定しました`, 'success');
         }
     }
 
@@ -729,7 +727,7 @@ export class BossSelectScene {
         
         const level = parseInt(inputElement.value);
         if (isNaN(level) || level < 0 || level > 10) {
-            ModalUtils.showToast('レベルは0から10の間で入力してください', 'error');
+            ModalUtils.showToast('レベルは 0 から 10 の間で入力してください', 'error');
             return;
         }
         
@@ -746,6 +744,6 @@ export class BossSelectScene {
         player.saveToStorage();
         this.updatePlayerStatus();
         this.showPlayerDetails(); // Refresh modal content
-        ModalUtils.showToast(`全てのアビリティをレベル${level}に設定しました`, 'success');
+        ModalUtils.showToast(`全てのアビリティをレベル ${level} に設定しました`, 'success');
     }
 }
