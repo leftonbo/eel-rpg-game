@@ -46,7 +46,7 @@ export default (env, argv) => {
       }),
       new HtmlWebpackPlugin({
         template: './src/index.html',
-        title: 'Eel Feed - Turn-based RPG',
+        title: 'ElnalFTB - Turn-based RPG',
       }),
       new CopyWebpackPlugin({
         patterns: [

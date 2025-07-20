@@ -11,7 +11,7 @@ declare global {
 
 // Initialize the game when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Eel Feed - Starting game...');
+    console.log('ElnalFTB - Starting game...');
     
     // Create and start the game
     const game = new Game();
@@ -19,5 +19,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Make game globally accessible for debugging
     (window as any).game = game;
     
-    console.log('Eel Feed - Game initialized');
+    console.log('ElnalFTB - Game initialized');
 });
