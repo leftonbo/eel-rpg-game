@@ -93,7 +93,7 @@ export class MemorialSystem {
             name: bossData.victoryTrophy?.name || 'Unknown Victory Trophy',
             description: bossData.victoryTrophy?.description || 'No description available.',
             dateObtained: memorial.dateFirstWin || 0,
-            explorerExp: this.calculateFirstWinExperience(bossData.explorerLevelRequired || 0)
+            explorerExp: MemorialSystem.calculateFirstWinExperience(bossData.explorerLevelRequired || 0)
         };
     }
     
@@ -110,7 +110,7 @@ export class MemorialSystem {
             name: bossData.defeatTrophy?.name || 'Unknown Defeat Trophy',
             description: bossData.defeatTrophy?.description || 'No description available.',
             dateObtained: memorial.dateFirstLost || 0,
-            explorerExp: this.calculateFirstLossExperience(bossData.explorerLevelRequired || 0)
+            explorerExp: MemorialSystem.calculateFirstLossExperience(bossData.explorerLevelRequired || 0)
         };
     }
 
@@ -197,7 +197,9 @@ export class MemorialSystem {
      */
     private getBattleMemorial(bossId: string): BossMemorial {
         if (!this.bossMemorials.has(bossId)) {
-            return MemorialSystem.createNewMemorial(bossId);
+            const memorial = MemorialSystem.createNewMemorial(bossId);
+            this.bossMemorials.set(bossId, memorial);
+            return memorial;
         }
         
         return this.bossMemorials.get(bossId)!;
