@@ -88,6 +88,12 @@ export class PlayerSaveManager {
      * Migrate save data from older versions
      */
     private static migrateSaveData(oldData: any): PlayerSaveData {
+        // For unknown versions, return default data
+        if (oldData.version && oldData.version > this.CURRENT_VERSION) {
+            console.log('Unknown version, creating new save data');
+            return this.createDefaultSaveData();
+        }
+        
         console.log(`Migrating save data from version ${oldData.version || 'unknown'} to ${this.CURRENT_VERSION}`);
         
         let migratedData = { ...oldData };
@@ -114,12 +120,6 @@ export class PlayerSaveManager {
         
         // Set final version
         migratedData.version = this.CURRENT_VERSION;
-        
-        // For unknown versions, return default data
-        if (oldData.version && oldData.version > this.CURRENT_VERSION) {
-            console.log('Unknown version, creating new save data');
-            return this.createDefaultSaveData();
-        }
         
         return migratedData;
     }
