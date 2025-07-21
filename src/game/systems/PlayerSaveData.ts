@@ -101,28 +101,9 @@ export class PlayerSaveManager {
             };
         }
         
-        // Migration from version 2 to 3: add battleMemorials field and import trophy data
+        // Migration from version 2 to 3: add battleMemorials field
         if (migratedData.version === 2) {
-            // Try to import existing trophy data from old localStorage key
             const battleMemorials: { [bossId: string]: BattleMemorial } = {};
-            try {
-                const memorialData = localStorage.getItem('eel-rpg-battle-memorials');
-                if (memorialData) {
-                    const memorials = JSON.parse(memorialData);
-                    Object.entries(memorials).forEach(([bossId, memorial]: [string, any]) => {
-                        battleMemorials[bossId] = {
-                            bossId,
-                            hasWon: memorial.hasWon,
-                            hasLost: memorial.hasLost,
-                            dateFirstWin: memorial.dateFirstWin,
-                            dateFirstLost: memorial.dateFirstLost
-                        };
-                    });
-                    console.log('Imported existing trophy data into save data');
-                }
-            } catch (error) {
-                console.error('Failed to import existing trophy data:', error);
-            }
             
             migratedData = {
                 ...migratedData,

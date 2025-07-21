@@ -37,7 +37,6 @@ export class TrophySystem {
     
     constructor(initialBattleMemorials?: { [bossId: string]: BattleMemorial }) {
         this.loadBattleMemorials(initialBattleMemorials || {});
-        this.createHaveTrophies();
     }
     
     /**
@@ -190,6 +189,9 @@ export class TrophySystem {
         Object.entries(battleMemorialsData).forEach(([bossId, memorial]) => {
             this.battleMemorials.set(bossId, memorial);
         });
+        
+        // 記念品を生成
+        this.createHaveTrophies();
     }
     
     /**
