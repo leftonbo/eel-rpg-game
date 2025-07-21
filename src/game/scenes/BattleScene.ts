@@ -1109,8 +1109,9 @@ export class BattleScene {
      * Finalize battle and show results screen
      */
     private finalizeBattle(): void {
-        if (!this.player || !this.boss)
-        {
+        if (!this.player || !this.boss) {
+            // If player or boss is not set, return to boss select (this should not be happened!)
+            console.error('BattleScene: finalizeBattle called without player or boss set');
             this.game.returnToBossSelect();
             return;
         }
