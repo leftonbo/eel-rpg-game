@@ -4,7 +4,7 @@ import { PlayerSaveManager, PlayerSaveData } from '../systems/PlayerSaveData';
 import { updatePlayerItems } from '../data/ExtendedItems';
 import { Actor } from './Actor';
 import { SkillRegistry, SkillData } from '../data/skills';
-import { TrophySystem, BattleMemorial } from '../systems/TrophySystem';
+import { TrophySystem } from '../systems/TrophySystem';
 
 export enum SkillType {
     PowerAttack = 'power-attack',
@@ -62,7 +62,7 @@ export class Player extends Actor {
     
     // Ability and equipment system
     public abilitySystem: AbilitySystem = new AbilitySystem();
-    public trophySystem!: TrophySystem; // Will be initialized in loadFromSave
+    public trophySystem: TrophySystem = new TrophySystem();
     public equippedWeapon: string = 'bare-hands';
     public equippedArmor: string = 'naked';
     public unlockedItems: Set<string> = new Set();
@@ -94,9 +94,9 @@ export class Player extends Actor {
             
             // Load unlocked skills
             this.unlockedSkills = new Set(saveData.unlockedSkills || []);
-            
-            // Initialize TrophySystem with battle memorials data
-            this.trophySystem = new TrophySystem(saveData.battleMemorials);
+
+            // Load battle memorials into TrophySystem
+            this.trophySystem.importData(saveData.memorials || {});
         } else {
             // Initialize with default values
             this.unlockedItems = new Set();
@@ -111,12 +111,6 @@ export class Player extends Actor {
      * Save player data to localStorage
      */
     public saveToStorage(): void {
-        const battleMemorials: { [bossId: string]: BattleMemorial } = {};
-        const trophyData = this.trophySystem.exportData();
-        trophyData.memorials.forEach(memorial => {
-            battleMemorials[memorial.bossId] = memorial;
-        });
-        
         const saveData: PlayerSaveData = {
             abilities: this.abilitySystem.exportForSave(),
             equipment: {
@@ -125,7 +119,7 @@ export class Player extends Actor {
             },
             unlockedItems: Array.from(this.unlockedItems),
             unlockedSkills: Array.from(this.unlockedSkills),
-            battleMemorials: battleMemorials,
+            memorials: this.trophySystem.exportData(),
             version: 3
         };
         

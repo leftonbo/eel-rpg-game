@@ -1,5 +1,5 @@
 import { AbilityData, AbilityType } from './AbilitySystem';
-import { BattleMemorial } from './TrophySystem';
+import { BossMemorial, MemorialSaveData, TrophySystem } from './TrophySystem';
 
 export interface PlayerSaveData {
     abilities: { [key: string]: AbilityData };
@@ -9,7 +9,7 @@ export interface PlayerSaveData {
     };
     unlockedItems: string[];
     unlockedSkills: string[]; // New: track unlocked skills
-    battleMemorials: { [bossId: string]: BattleMemorial }; // Trophy system data
+    memorials: MemorialSaveData; // Trophy system data
     version: number; // For future save data migration
 }
 
@@ -79,7 +79,7 @@ export class PlayerSaveManager {
             },
             unlockedItems: ['heal-potion', 'adrenaline', 'energy-drink'], // Default items
             unlockedSkills: [], // Default: no skills unlocked, they unlock based on ability levels
-            battleMemorials: {}, // Default: no battle records
+            memorials: TrophySystem.INITIAL_SAVE_DATA, // Start with no boss memorials
             version: this.CURRENT_VERSION
         };
     }
@@ -101,13 +101,13 @@ export class PlayerSaveManager {
             };
         }
         
-        // Migration from version 2 to 3: add battleMemorials field
+        // Migration from version 2 to 3: add bossMemorials field
         if (migratedData.version === 2) {
-            const battleMemorials: { [bossId: string]: BattleMemorial } = {};
+            const memorials: MemorialSaveData = TrophySystem.INITIAL_SAVE_DATA;
             
             migratedData = {
                 ...migratedData,
-                battleMemorials,
+                memorials: memorials,
                 version: 3
             };
         }
@@ -183,9 +183,9 @@ export class PlayerSaveManager {
     /**
      * Quick save just battle memorials
      */
-    static saveBattleMemorials(battleMemorials: { [bossId: string]: BattleMemorial }): void {
+    static saveBattleMemorials(battleMemorials: { [bossId: string]: BossMemorial }): void {
         const currentData = this.loadPlayerData() || this.createDefaultSaveData();
-        currentData.battleMemorials = battleMemorials;
+        currentData.memorials.bossMemorials = Object.values(battleMemorials);
         this.savePlayerData(currentData);
     }
     
@@ -237,7 +237,7 @@ export class PlayerSaveManager {
         if (!data.equipment.armor || typeof data.equipment.armor !== 'string') return false;
         if (!Array.isArray(data.unlockedItems)) return false;
         if (!Array.isArray(data.unlockedSkills)) return false;
-        if (!data.battleMemorials || typeof data.battleMemorials !== 'object') return false;
+        if (!data.memorials || typeof data.memorials !== 'object') return false;
         
         // Check abilities structure
         for (const [, ability] of Object.entries(data.abilities)) {
