@@ -221,12 +221,12 @@ export const aquaSerpentData: BossData = {
             if (turnsSinceDefeat > 0 && turnsSinceDefeat % 10 === 0) {
                 return {
                     type: ActionType.PostDefeatedAttack,
-                    name: '尻尾から出され、再び口から捕食',
-                    description: '尻尾から出されたが、すぐに口から再び飲み込まれる',
+                    name: '輪廻の捕食',
+                    description: '尻尾まで運ばれた獲物を再び口に運んで飲み込む',
                     messages: [
                         '「シャアアア...」',
                         '<USER>が<TARGET>を尻尾から吐き出した！',
-                        'しかし、すぐに大きな口で<TARGET>を再び飲み込んでしまった...',
+                        'しかし、すぐに大きな口で<TARGET>を咥え、再び飲み込んでいく！',
                         '<TARGET>は再び透明な体内に閉じ込められてしまった...'
                     ],
                     weight: 1
