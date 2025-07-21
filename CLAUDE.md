@@ -183,3 +183,7 @@ Claude Codeは以下の方針に従ってgitコミットを行うこと
 - コマンド使用時はシングルクォーテーション `'` を使用すること
 - PRタイトルと内容は日本語で記述すること
 - テンプレートは [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) を使用
+
+### プロンプト履歴、アイデア草案の保存先
+
+- プロンプト履歴やアイデア草案は `docs/drafts/` ディレクトリに .md 形式で保存すること
