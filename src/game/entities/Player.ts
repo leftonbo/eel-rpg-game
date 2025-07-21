@@ -4,7 +4,7 @@ import { PlayerSaveManager, PlayerSaveData } from '../systems/PlayerSaveData';
 import { updatePlayerItems } from '../data/ExtendedItems';
 import { Actor } from './Actor';
 import { SkillRegistry, SkillData } from '../data/skills';
-import { TrophySystem } from '../systems/TrophySystem';
+import { MemorialSystem } from '../systems/MemorialSystem';
 
 export enum SkillType {
     PowerAttack = 'power-attack',
@@ -62,7 +62,7 @@ export class Player extends Actor {
     
     // Ability and equipment system
     public abilitySystem: AbilitySystem = new AbilitySystem();
-    public trophySystem: TrophySystem = new TrophySystem();
+    public memorialSystem: MemorialSystem = new MemorialSystem();
     public equippedWeapon: string = 'bare-hands';
     public equippedArmor: string = 'naked';
     public unlockedItems: Set<string> = new Set();
@@ -95,15 +95,15 @@ export class Player extends Actor {
             // Load unlocked skills
             this.unlockedSkills = new Set(saveData.unlockedSkills || []);
 
-            // Load battle memorials into TrophySystem
-            this.trophySystem.importData(saveData.memorials || {});
+            // Load battle memorials into MemorialSystem
+            this.memorialSystem.importData(saveData.memorials || {});
         } else {
             // Initialize with default values
             this.unlockedItems = new Set();
             this.unlockedSkills = new Set();
             
-            // Initialize TrophySystem with empty data
-            this.trophySystem = new TrophySystem();
+            // Initialize MemorialSystem with empty data
+            this.memorialSystem.initializeData();
         }
     }
     
@@ -119,7 +119,7 @@ export class Player extends Actor {
             },
             unlockedItems: Array.from(this.unlockedItems),
             unlockedSkills: Array.from(this.unlockedSkills),
-            memorials: this.trophySystem.exportData(),
+            memorials: this.memorialSystem.exportData(),
             version: 3
         };
         

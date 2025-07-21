@@ -3,7 +3,7 @@ import { AbilityType } from '../systems/AbilitySystem';
 import { SkillRegistry } from '../data/skills';
 import { Player } from '../entities/Player';
 import { getBossData, getAllBossData } from '../data/index';
-import { Trophy, TrophySystem } from '../systems/TrophySystem';
+import { Trophy, MemorialSystem } from '../systems/MemorialSystem';
 import { Boss } from '../entities/Boss';
 
 export enum BattleResultStatus {
@@ -269,13 +269,13 @@ export function calculateBattleResult(
     if (bossData) {
         // Award victory/defeat trophies (only if battle was not interrupted)
         if (status === BattleResultStatus.Victory) {
-            const victoryTrophy = player.trophySystem.awardVictoryTrophy(bossData);
+            const victoryTrophy = player.memorialSystem.awardVictoryTrophy(bossData);
             if (victoryTrophy) {
                 trophies.push(victoryTrophy);
                 explorerExperience += victoryTrophy.explorerExp;
             }
         } else if (status === BattleResultStatus.Defeat) {
-            const defeatTrophy = player.trophySystem.awardDefeatTrophy(bossData);
+            const defeatTrophy = player.memorialSystem.awardDefeatTrophy(bossData);
             if (defeatTrophy) {
                 trophies.push(defeatTrophy);
                 explorerExperience += defeatTrophy.explorerExp;
@@ -284,7 +284,7 @@ export function calculateBattleResult(
     }
 
     // Calculate skill experience
-    const skillExperience = TrophySystem.calculateSkillExperience(skillsReceived, requiredLevel);
+    const skillExperience = MemorialSystem.calculateSkillExperience(skillsReceived, requiredLevel);
     explorerExperience += skillExperience;
     
     const experienceGained: { [key: string]: number } = {

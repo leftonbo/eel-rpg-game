@@ -1,5 +1,5 @@
 import { AbilityData, AbilityType } from './AbilitySystem';
-import { BossMemorial, MemorialSaveData, TrophySystem } from './TrophySystem';
+import { BossMemorial, MemorialSaveData, MemorialSystem } from './MemorialSystem';
 
 export interface PlayerSaveData {
     abilities: { [key: string]: AbilityData };
@@ -79,7 +79,7 @@ export class PlayerSaveManager {
             },
             unlockedItems: ['heal-potion', 'adrenaline', 'energy-drink'], // Default items
             unlockedSkills: [], // Default: no skills unlocked, they unlock based on ability levels
-            memorials: TrophySystem.INITIAL_SAVE_DATA, // Start with no boss memorials
+            memorials: MemorialSystem.INITIAL_SAVE_DATA, // Start with no boss memorials
             version: this.CURRENT_VERSION
         };
     }
@@ -103,7 +103,7 @@ export class PlayerSaveManager {
         
         // Migration from version 2 to 3: add bossMemorials field
         if (migratedData.version === 2) {
-            const memorials: MemorialSaveData = TrophySystem.INITIAL_SAVE_DATA;
+            const memorials: MemorialSaveData = MemorialSystem.INITIAL_SAVE_DATA;
             
             migratedData = {
                 ...migratedData,

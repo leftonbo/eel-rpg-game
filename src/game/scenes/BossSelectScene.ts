@@ -811,7 +811,7 @@ export class BossSelectScene {
         
         this.updateElement('unlocked-bosses-count', unlockedCount.toString());
         
-        const allTrophies = player.trophySystem.getAllTrophies();
+        const allTrophies = player.memorialSystem.getAllTrophies();
         this.updateElement('total-trophies-count', allTrophies.length.toString());
         
         const totalExplorerExp = explorerData?.experience || 0;

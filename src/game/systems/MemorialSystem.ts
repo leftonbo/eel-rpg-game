@@ -35,7 +35,11 @@ export interface MemorialSaveData {
     bossMemorials: BossMemorial[];
 }
 
-export class TrophySystem {
+/**
+ * 経験記録のシステム
+ * 記念品の生成やバトル記録の管理を行う
+ */
+export class MemorialSystem {
     /**
      * 初期のセーブデータ
      */
@@ -43,8 +47,16 @@ export class TrophySystem {
         bossMemorials: []
     };
     
-    public trophies: Map<string, Trophy> = new Map();
+    private trophies: Map<string, Trophy> = new Map();
     private bossMemorials: Map<string, BossMemorial> = new Map();
+    
+    /**
+     * コンストラクタ
+     * 初期データを設定
+     */
+    constructor() {
+        this.initializeData();
+    }
     
     /**
      * 記念品を生成
@@ -58,34 +70,40 @@ export class TrophySystem {
             }
 
             if (memorial.dateFirstWin && bossData.victoryTrophy) {
-                const trophyId = this.getTrophyId(bossData, TrophyType.Victory);
-                this.trophies.set(trophyId, TrophySystem.createVictoryTrophy(trophyId, bossData, memorial));
+                const trophy = MemorialSystem.createVictoryTrophy(bossData, memorial);
+                this.trophies.set(trophy.id, trophy);
             }
             if (memorial.dateFirstLost && bossData.defeatTrophy) {
-                const trophyId = this.getTrophyId(bossData, TrophyType.Defeat);
-                this.trophies.set(trophyId, TrophySystem.createDefeatTrophy(trophyId, bossData, memorial));
+                const trophy = MemorialSystem.createDefeatTrophy(bossData, memorial);
+                this.trophies.set(trophy.id, trophy);
             }
         });
     }
     
     /**
      * 勝利記念品を生成
+     * @param bossData - 対象のボスデータ
+     * @param memorial - 対象のバトル記録
      */
-    private static createVictoryTrophy(trophyId: string, bossData: BossData, memorial?: BossMemorial): Trophy {
+    private static createVictoryTrophy(bossData: BossData, memorial: BossMemorial): Trophy {
+        const trophyId = MemorialSystem.getTrophyId(bossData, TrophyType.Victory);
         return {
             id: trophyId,
             type: TrophyType.Victory,
             name: bossData.victoryTrophy?.name || 'Unknown Victory Trophy',
             description: bossData.victoryTrophy?.description || 'No description available.',
-            dateObtained: memorial?.dateFirstWin || 0,
+            dateObtained: memorial.dateFirstWin || 0,
             explorerExp: this.calculateFirstWinExperience(bossData.explorerLevelRequired || 0)
         };
     }
     
     /**
      * 初回敗北の記念品を生成
+     * @param bossData - 対象のボスデータ
+     * @param memorial - 対象のバトル記録
      */
-    private static createDefeatTrophy(trophyId: string, bossData: BossData, memorial: BossMemorial): Trophy {
+    private static createDefeatTrophy(bossData: BossData, memorial: BossMemorial): Trophy {
+        const trophyId = MemorialSystem.getTrophyId(bossData, TrophyType.Defeat);
         return {
             id: trophyId,
             type: TrophyType.Defeat,
@@ -96,12 +114,21 @@ export class TrophySystem {
         };
     }
 
-    private getTrophyId(bossData: BossData, type: TrophyType): string {
+    /**
+     * 記念品IDを生成
+     * 形式: {type}-{bossId}
+     * 例: victory-boss123
+     * @param bossData - 対象のボスデータ
+     * @param type - 記念品のタイプ (勝利/敗北)
+     */
+    private static getTrophyId(bossData: BossData, type: TrophyType): string {
         return `${type}-${bossData.id}`;
     }
 
     /**
      * 初回勝利を記録
+     * @param bossData - 対象のボスデータ
+     * @returns 記念品オブジェクトまたはnull（既に勝利済みの場合）
      */
     public awardVictoryTrophy(bossData: BossData): Trophy | null {
         const memorial = this.getBattleMemorial(bossData.id);
@@ -112,15 +139,16 @@ export class TrophySystem {
         memorial.dateFirstWin = Date.now();
         
         // Create and return the victory trophy
-        const trophyId = this.getTrophyId(bossData, TrophyType.Victory);
-        const trophy = TrophySystem.createVictoryTrophy(trophyId, bossData, memorial);
-        this.trophies.set(trophyId, trophy);
+        const trophy = MemorialSystem.createVictoryTrophy(bossData, memorial);
+        this.trophies.set(trophy.id, trophy);
 
         return trophy;
     }
     
     /**
      * 初回敗北を記録
+     * @param bossData - 対象のボスデータ
+     * @returns 記念品オブジェクトまたはnull（既に敗北済みの場合）
      */
     public awardDefeatTrophy(bossData: BossData): Trophy | null {
         const memorial = this.getBattleMemorial(bossData.id);
@@ -131,10 +159,9 @@ export class TrophySystem {
         memorial.dateFirstLost = Date.now();
         
         // Create and return the defeat trophy
-        const trophyId = this.getTrophyId(bossData, TrophyType.Defeat);
-        const trophy = TrophySystem.createDefeatTrophy(trophyId, bossData, memorial);
-        this.trophies.set(trophyId, trophy);
-        
+        const trophy = MemorialSystem.createDefeatTrophy(bossData, memorial);
+        this.trophies.set(trophy.id, trophy);
+
         return trophy;
     }
 
@@ -165,16 +192,21 @@ export class TrophySystem {
     
     /**
      * バトル記録を取得
+     * @param bossId - ボスID
+     * @returns 対象のバトル記録、存在しない場合は空の記録
      */
     private getBattleMemorial(bossId: string): BossMemorial {
         if (!this.bossMemorials.has(bossId)) {
-            return TrophySystem.createNewMemorial(bossId);
+            return MemorialSystem.createNewMemorial(bossId);
         }
+        
         return this.bossMemorials.get(bossId)!;
     }
     
     /**
-     * 新しいバトル記録を作成
+     * 新しいバトル記録を生成
+     * @param bossId - ボスID
+     * @returns 新しいバトル記録オブジェクト
      */
     private static createNewMemorial(bossId: string): BossMemorial {
         const memorial: BossMemorial = {
@@ -186,13 +218,33 @@ export class TrophySystem {
     
     /**
      * 全ての記念品を取得
+     * @return 記念品の配列（取得日時順にソート）
      */
     public getAllTrophies(): Trophy[] {
         return Array.from(this.trophies.values()).sort((a, b) => b.dateObtained - a.dateObtained);
     }
     
     /**
+     * 全てのバトル記録を取得
+     * @return バトル記録の配列
+     */
+    public initializeData(): void {
+        this.trophies.clear();
+        this.bossMemorials.clear();
+    }
+    
+    /**
+     * 新しいMemorialSystemを生成
+     * デフォルトの初期データを使用
+     * @returns 新しいMemorialSaveDataオブジェクト
+     */
+    public static createNewData(): MemorialSaveData {
+        return { ...MemorialSystem.INITIAL_SAVE_DATA };
+    }
+    
+    /**
      * バトル記録を読み込み
+     * @param data - MemorialSaveDataオブジェクト
      */
     public importData(data: MemorialSaveData): void {
         this.bossMemorials.clear();
@@ -206,6 +258,7 @@ export class TrophySystem {
     
     /**
      * セーブ用のデータを出力
+     * @return MemorialSaveDataオブジェクト
      */
     public exportData(): MemorialSaveData {
         return {
