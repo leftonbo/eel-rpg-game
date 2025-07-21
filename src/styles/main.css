@@ -1201,19 +1201,6 @@ body {
     font-weight: 600;
 }
 
-/* Ensure all text within status cards is visible */
-.card-body {
-    color: var(--status-text) !important;
-}
-
-.card-body strong {
-    color: var(--status-text) !important;
-}
-
-.card-body span {
-    color: var(--status-text-secondary) !important;
-}
-
 /* Custom scrollbar for battle log */
 #battle-log::-webkit-scrollbar {
     width: 6px;
