@@ -805,7 +805,6 @@ export class BossSelectScene {
             }
             
             // Update accessible terrain
-            this.updateElement('current-explorer-level-terrain', explorerData.level.toString());
             this.updateAccessibleTerrains(player.getAccessibleTerrains());
         }
         
