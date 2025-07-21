@@ -803,6 +803,10 @@ export class BossSelectScene {
                 const percentage = (currentLevelExp / nextLevelExp) * 100;
                 progressElement.style.width = `${percentage}%`;
             }
+            
+            // Update accessible terrain
+            this.updateElement('current-explorer-level-terrain', explorerData.level.toString());
+            this.updateAccessibleTerrains(player.getAccessibleTerrains());
         }
         
         // Update statistics
@@ -863,6 +867,41 @@ export class BossSelectScene {
             `;
             
             trophiesContainer.appendChild(trophyCard);
+        });
+    }
+    
+    /**
+     * Update accessible terrains with multiple badges
+     */
+    private updateAccessibleTerrains(terrains: string[]): void {
+        const container = document.getElementById('accessible-terrains-container');
+        if (!container) return;
+        
+        // Clear existing content
+        container.innerHTML = '';
+        
+        // Terrain color mapping
+        const terrainColors: { [key: string]: string } = {
+            '近隣の地方': 'secondary',
+            '砂漠': 'warning',
+            '海': 'info',
+            'ジャングル': 'success',
+            '洞窟': 'dark',
+            '遺跡': 'danger',
+            '廃墟': 'danger',
+            '寒冷地': 'light text-dark',
+            '火山': 'danger',
+            '天空': 'primary',
+            '魔界': 'dark'
+        };
+        
+        // Create badge for each terrain
+        terrains.forEach(terrain => {
+            const badge = document.createElement('span');
+            const colorClass = terrainColors[terrain] || 'secondary';
+            badge.className = `badge bg-${colorClass} fs-6`;
+            badge.textContent = terrain;
+            container.appendChild(badge);
         });
     }
 }

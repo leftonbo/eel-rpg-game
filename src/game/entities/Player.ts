@@ -828,6 +828,44 @@ export class Player extends Actor {
     }
     
     /**
+     * Get accessible terrains based on explorer level
+     */
+    public getAccessibleTerrains(): string[] {
+        const level = this.getExplorerLevel();
+        
+        const terrainMap: { [key: number]: string | string[] } = {
+            0: '近隣の地方',
+            1: '砂漠',
+            2: '海',
+            4: 'ジャングル',
+            5: '洞窟',
+            6: ['遺跡', '廃墟'],
+            7: '寒冷地',
+            8: '火山',
+            9: '天空',
+            10: '魔界'
+        };
+        
+        const accessibleTerrains: string[] = [];
+        
+        for (let i = 0; i <= level; i++) {
+            // レベル3はゲストキャラ関係のため表示しない
+            if (i === 3) continue;
+            
+            const terrain = terrainMap[i];
+            if (terrain) {
+                if (Array.isArray(terrain)) {
+                    accessibleTerrains.push(...terrain);
+                } else {
+                    accessibleTerrains.push(terrain);
+                }
+            }
+        }
+        
+        return accessibleTerrains.length > 0 ? accessibleTerrains : ['未知の領域'];
+    }
+    
+    /**
      * Get ability levels for display
      */
     public getAbilityLevels(): { [key: string]: { level: number; experience: number; experienceToNext: number } } {
