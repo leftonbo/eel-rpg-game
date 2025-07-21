@@ -194,7 +194,8 @@ export const aquaSerpentData: BossData = {
     ],
     customVariables: {
         hasUsedSpecialMove: false,
-        specialMoveCooldown: 0
+        specialMoveCooldown: 0,
+        defeatStartTurn: -1
     },
     aiStrategy: (boss, player, turn) => {
         // Reset special move cooldown
@@ -206,20 +207,36 @@ export const aquaSerpentData: BossData = {
             }
         }
 
-        // Every 10 turns while player is defeated, show re-consumption cycle
-        if (player.isDefeated() && turn % 10 === 0) {
-            return {
-                type: ActionType.PostDefeatedAttack,
-                name: '尻尾から出され、再び口から捕食',
-                description: '尻尾から出されたが、すぐに口から再び飲み込まれる',
-                messages: [
-                    '「シャアアア...」',
-                    '<USER>が<TARGET>を尻尾から吐き出した！',
-                    'しかし、すぐに大きな口で<TARGET>を再び飲み込んでしまった...',
-                    '<TARGET>は再び透明な体内に閉じ込められてしまった...'
-                ],
-                weight: 1
-            };
+        // Track when player becomes defeated and handle 10-turn cycles from that point
+        const defeatStartTurn = boss.getCustomVariable<number>('defeatStartTurn', -1);
+        
+        if (player.isDefeated()) {
+            // If this is the first turn player is defeated, record it
+            if (defeatStartTurn === -1) {
+                boss.setCustomVariable('defeatStartTurn', turn);
+            }
+            
+            // Every 10 turns since defeat started, show re-consumption cycle
+            const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
+            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 10 === 0) {
+                return {
+                    type: ActionType.PostDefeatedAttack,
+                    name: '尻尾から出され、再び口から捕食',
+                    description: '尻尾から出されたが、すぐに口から再び飲み込まれる',
+                    messages: [
+                        '「シャアアア...」',
+                        '<USER>が<TARGET>を尻尾から吐き出した！',
+                        'しかし、すぐに大きな口で<TARGET>を再び飲み込んでしまった...',
+                        '<TARGET>は再び透明な体内に閉じ込められてしまった...'
+                    ],
+                    weight: 1
+                };
+            }
+        } else {
+            // Reset defeat start turn if player is no longer defeated
+            if (defeatStartTurn !== -1) {
+                boss.setCustomVariable('defeatStartTurn', -1);
+            }
         }
 
         // If player is defeated, use special post-defeat actions
