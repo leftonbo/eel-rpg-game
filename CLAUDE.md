@@ -93,7 +93,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 #### UI実装のガイドライン
 
-1. **カラーテーマ**: Bootstrap のカラーシステム（primary, success, danger, warning）を活用
+1. **カラーテーマ**: Bootstrap のカラーシステム（primary, success, danger, warning）を使用可能
+  - 状態異常やフレーバーテキストなどは適宜カスタムカラーを使用する
 2. **レスポンシブ**: モバイルファーストでデザイン、`.col-sm-*`, `.col-md-*` を適切に使用
 3. **アクセシビリティ**: `aria-*` 属性、適切なコントラスト比を考慮
 4. **一貫性**: 既存のBootstrap クラスを優先し、カスタムCSSは最小限に留める
