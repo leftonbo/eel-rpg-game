@@ -518,6 +518,15 @@ export const dreamDemonData: BossData = {
     attackPower: 10,
     actions: dreamDemonActions,
     icon: '😈',
+    explorerLevelRequired: 3,
+    victoryTrophy: {
+        name: '夢魔の角',
+        description: '夢魔ちゃんの小さくて可愛らしい角。夢の世界への扉を開く力を秘めている。'
+    },
+    defeatTrophy: {
+        name: '甘い夢のかけら',
+        description: '夢魔ちゃんの心の奥から滲み出る甘美な夢のエッセンス。至福の夢を呼び起こす。'
+    },
     guestCharacterInfo: {
         creator: 'crazybudgie'
     },

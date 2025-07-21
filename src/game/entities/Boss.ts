@@ -51,6 +51,17 @@ export interface BossAction {
     damageVarianceMax?: number; // Maximum damage variance percentage (default: +20)
 }
 
+/**
+ * 記念品テンプレート定義
+ * 各ボスの勝利・敗北時記念品の内部データ
+ */
+export interface TrophyData {
+    /** 記念品名 */
+    name: string;
+    /** 記念品の説明 */
+    description: string;
+}
+
 export interface BossData {
     id: string;
     name: string;
@@ -81,6 +92,21 @@ export interface BossData {
      * }
      */
     customVariables?: Record<string, any>;
+    /**
+     * エクスプローラーアビリティで解禁されるレベル
+     * 未指定の場合は 0 として扱われ、最初から利用可能
+     */
+    explorerLevelRequired?: number;
+    /**
+     * 勝利時記念品テンプレート
+     * 「外側から採れるもの」の設定
+     */
+    victoryTrophy?: TrophyData;
+    /**
+     * 敗北時記念品テンプレート  
+     * 「内側（体内）から採れるもの」の設定
+     */
+    defeatTrophy?: TrophyData;
 }
 
 export class Boss extends Actor {
@@ -98,6 +124,13 @@ export class Boss extends Actor {
         creator: string;
         source?: string;
     };
+    
+    /**
+     * 一度でも使用したスキル名
+     * プレイヤーのエクスプローラー経験値計算で使用する
+     */
+    public usedSkillNames: string[] = [];
+    
     /**
      * ボス固有のカスタム変数
      * AI戦略での状態管理、クールダウン管理、行動制御などに使用
@@ -225,6 +258,29 @@ export class Boss extends Actor {
         this.customVariables = {};
     }
     
+    /**
+     * 使用したスキル名を記録
+     */
+    addUsedSkill(skillName: string): void {
+        if (!this.usedSkillNames.includes(skillName)) {
+            this.usedSkillNames.push(skillName);
+        }
+    }
+    
+    /**
+     * 使用したスキル名一覧を取得
+     */
+    getUsedSkillNames(): string[] {
+        return [...this.usedSkillNames];
+    }
+    
+    /**
+     * 使用したスキル名をリセット
+     */
+    resetUsedSkillNames(): void {
+        this.usedSkillNames = [];
+    }
+    
     
     
     selectAction(player: Player, turn: number): BossAction | null {
@@ -301,6 +357,9 @@ export class Boss extends Actor {
     
     executeAction(action: BossAction, player: Player, turn: number = 0): string[] {
         const messages = [];
+        
+        // Record skill usage for Explorer experience calculation
+        this.addUsedSkill(action.name);
         
         // Process custom messages if provided
         if (action.messages && action.messages.length > 0) {

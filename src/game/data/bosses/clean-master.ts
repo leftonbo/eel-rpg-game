@@ -198,6 +198,15 @@ export const cleanMasterData: BossData = {
     attackPower: 12,
     actions: cleanMasterActions,
     icon: '🧹',
+    explorerLevelRequired: 6,
+    victoryTrophy: {
+        name: '清掃ブラシ',
+        description: 'クリーンマスターが使用していた高性能清掃ブラシ。あらゆる汚れを落とす超技術。'
+    },
+    defeatTrophy: {
+        name: '清掃プログラム',
+        description: 'クリーンマスターの中枢に組み込まれていた清掃AIプログラム。完璧な清掃理論が記録されている。'
+    },
     personality: [
         'お掃除、お掃除〜♪',
         'ぴかぴかにしなくちゃ！',

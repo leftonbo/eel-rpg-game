@@ -162,6 +162,15 @@ export const mechSpiderData: BossData = {
     attackPower: 10,
     actions: mechSpiderActions,
     icon: '🕷️',
+    victoryTrophy: {
+        name: '機械の合成糸',
+        description: '機械のクモが生成する特殊な合成糸。非常に強靭で、古代技術の結晶が込められている。'
+    },
+    defeatTrophy: {
+        name: '縮小回路',
+        description: '機械のクモの体内に組み込まれた縮小技術の回路チップ。未知の技術で作られた貴重な部品。'
+    },
+    explorerLevelRequired: 0,
     personality: [
         'ERROR: 損傷した機械を検出',
         '修理プロトコル開始',

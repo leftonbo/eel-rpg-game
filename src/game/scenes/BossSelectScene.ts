@@ -77,6 +77,7 @@ export class BossSelectScene {
     
     private updateBossCards(): void {
         const allBossData = getAllBossData();
+        const playerExplorerLevel = this.game.getPlayer().getExplorerLevel();
         
         this.bossCards?.forEach(card => {
             const bossId = card.getAttribute('data-boss');
@@ -85,13 +86,29 @@ export class BossSelectScene {
             if (bossData) {
                 const titleElement = card.querySelector('.card-title');
                 const textElement = card.querySelector('.card-text');
+                const requiredLevel = bossData.explorerLevelRequired || 0;
+                const isUnlocked = playerExplorerLevel >= requiredLevel;
                 
                 if (titleElement) {
                     titleElement.textContent = bossData.displayName;
                 }
                 
                 if (textElement) {
-                    textElement.textContent = bossData.description;
+                    if (isUnlocked) {
+                        textElement.textContent = bossData.description;
+                    } else {
+                        textElement.textContent = `🔒 エクスプローラーLv.${requiredLevel}で解禁`;
+                    }
+                }
+                
+                // Show/hide boss cards based on unlock status
+                if (isUnlocked) {
+                    card.classList.remove('d-none');
+                    card.classList.remove('boss-card-locked');
+                    (card as HTMLElement).style.pointerEvents = 'auto';
+                    (card as HTMLElement).style.opacity = '1';
+                } else {
+                    card.classList.add('d-none');
                 }
             }
         });
@@ -221,6 +238,21 @@ export class BossSelectScene {
                 const percentage = (currentLevelExp / nextLevelExp) * 100;
                 progressElement.style.width = `${percentage}%`;
             }
+            
+            // Special handling for explorer ability in stats tab
+            if (abilityType === 'explorer') {
+                this.updateElement('explorer-level-stats', data.level.toString());
+                this.updateElement('explorer-exp-stats', data.experience.toString());
+                this.updateElement('explorer-next-stats', (data.experience + data.experienceToNext).toString());
+                
+                const statsProgressElement = document.getElementById('explorer-progress-stats');
+                if (statsProgressElement && data.experienceToNext > 0) {
+                    const currentLevelExp = data.experience - (data.level > 0 ? Math.pow(data.level, 3) * 50 : 0);
+                    const nextLevelExp = Math.pow(data.level + 1, 3) * 50 - (data.level > 0 ? Math.pow(data.level, 3) * 50 : 0);
+                    const percentage = (currentLevelExp / nextLevelExp) * 100;
+                    statsProgressElement.style.width = `${percentage}%`;
+                }
+            }
         });
         
         // Update equipment tab
@@ -231,6 +263,9 @@ export class BossSelectScene {
         
         // Update items tab
         this.updateItemsList();
+        
+        // Update explorer tab
+        this.updateExplorerTab();
         
         // Update debug controls visibility in modal
         this.updateDebugControlsVisibilityInModal();
@@ -745,5 +780,89 @@ export class BossSelectScene {
         this.updatePlayerStatus();
         this.showPlayerDetails(); // Refresh modal content
         ModalUtils.showToast(`全てのアビリティをレベル ${level} に設定しました`, 'success');
+    }
+
+    /**
+     * Update explorer tab with current stats and trophies
+     */
+    private updateExplorerTab(): void {
+        const player = this.game.getPlayer();
+        const abilityLevels = player.getAbilityLevels();
+        const explorerData = abilityLevels[AbilityType.Explorer];
+        
+        if (explorerData) {
+            this.updateElement('explorer-level', explorerData.level.toString());
+            this.updateElement('explorer-exp', explorerData.experience.toString());
+            this.updateElement('explorer-next', (explorerData.experience + explorerData.experienceToNext).toString());
+            
+            // Update progress bar
+            const progressElement = document.getElementById('explorer-progress');
+            if (progressElement && explorerData.experienceToNext > 0) {
+                const currentLevelExp = explorerData.experience - (explorerData.level > 0 ? Math.pow(explorerData.level, 3) * 50 : 0);
+                const nextLevelExp = Math.pow(explorerData.level + 1, 3) * 50 - (explorerData.level > 0 ? Math.pow(explorerData.level, 3) * 50 : 0);
+                const percentage = (currentLevelExp / nextLevelExp) * 100;
+                progressElement.style.width = `${percentage}%`;
+            }
+        }
+        
+        // Update statistics
+        const allBossData = getAllBossData();
+        const unlockedCount = allBossData.filter(boss => 
+            (boss.explorerLevelRequired || 0) <= player.getExplorerLevel()
+        ).length;
+        
+        this.updateElement('unlocked-bosses-count', unlockedCount.toString());
+        
+        const allTrophies = player.memorialSystem.getAllTrophies();
+        this.updateElement('total-trophies-count', allTrophies.length.toString());
+        
+        const totalExplorerExp = explorerData?.experience || 0;
+        this.updateElement('total-explorer-exp', totalExplorerExp.toString());
+        
+        // Update trophies collection
+        this.updateTrophiesCollection(allTrophies);
+    }
+    
+    /**
+     * Update trophies collection display
+     */
+    private updateTrophiesCollection(trophies: any[]): void {
+        const trophiesContainer = document.getElementById('trophies-collection');
+        const noTrophiesMessage = document.getElementById('no-trophies-message');
+        
+        if (!trophiesContainer || !noTrophiesMessage) return;
+        
+        if (trophies.length === 0) {
+            trophiesContainer.innerHTML = '';
+            noTrophiesMessage.style.display = 'block';
+            return;
+        }
+        
+        noTrophiesMessage.style.display = 'none';
+        trophiesContainer.innerHTML = '';
+        
+        trophies.forEach(trophy => {
+            const trophyCard = document.createElement('div');
+            trophyCard.className = 'col-md-6 mb-3';
+            
+            const typeIcon = trophy.type === 'victory' ? '🏆' : '💀';
+            const typeClass = trophy.type === 'victory' ? 'success' : 'info';
+            const dateStr = new Date(trophy.dateObtained).toLocaleDateString('ja-JP');
+            
+            trophyCard.innerHTML = `
+                <div class="card bg-secondary">
+                    <div class="card-body">
+                        <h6 class="card-title d-flex justify-content-between align-items-center">
+                            ${typeIcon} ${trophy.name}
+                            <span class="badge bg-${typeClass}">+${trophy.explorerExp} EXP</span>
+                        </h6>
+                        <p class="card-text small">${trophy.description}</p>
+                        <small class="text-muted">獲得日: ${dateStr}</small>
+                    </div>
+                </div>
+            `;
+            
+            trophiesContainer.appendChild(trophyCard);
+        });
     }
 }

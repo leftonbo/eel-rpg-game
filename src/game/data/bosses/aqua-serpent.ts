@@ -175,6 +175,15 @@ export const aquaSerpentData: BossData = {
     attackPower: 20,
     actions: aquaSerpentActions,
     icon: '🐍',
+    explorerLevelRequired: 2,
+    victoryTrophy: {
+        name: '透明な鱗',
+        description: 'アクアサーペントの美しく透明な鱗。水の中でも光を反射する神秘的な外皮。'
+    },
+    defeatTrophy: {
+        name: '生命の水',
+        description: 'アクアサーペントの体内を循環していた純粋な生命の水。治癒力を持つと言われる。'
+    },
     personality: [
         'シャアアア...美しい生命力だ',
         'この海の奥深くで...待っていた',
