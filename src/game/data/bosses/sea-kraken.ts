@@ -92,13 +92,11 @@ export const seaKrakenData: BossData = {
     explorerLevelRequired: 2,
     victoryTrophy: {
         name: 'クラーケンの吸盤',
-        description: '海のクラーケンの巨大な触手から採取した吸盤。驚異的な吸着力を持つ深海生物の証。',
-        explorerExp: 400
+        description: '海のクラーケンの巨大な触手から採取した吸盤。驚異的な吸着力を持つ深海生物の証。'
     },
     defeatTrophy: {
         name: '催眠イカスミ',
-        description: '海のクラーケンの体内で生成される特殊なイカスミ。意識を朦朧とさせる催眠効果がある。',
-        explorerExp: 400
+        description: '海のクラーケンの体内で生成される特殊なイカスミ。意識を朦朧とさせる催眠効果がある。'
     },
     personality: [
         'グルルル...',

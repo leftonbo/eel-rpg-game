@@ -114,13 +114,11 @@ export const mikanDragonData: BossData = {
     explorerLevelRequired: 4,
     victoryTrophy: {
         name: '蜜柑の皮',
-        description: '蜜柑ドラゴンの外皮。柑橘系の爽やかな香りとドラゴンの威厳を併せ持つ。',
-        explorerExp: 600
+        description: '蜜柑ドラゴンの外皮。柑橘系の爽やかな香りとドラゴンの威厳を併せ持つ。'
     },
     defeatTrophy: {
         name: '培養蜜柑汁',
-        description: '蜜柑ドラゴンの体内で熟成された特製蜜柑汁。濃厚で甘酸っぱい生命のエキス。',
-        explorerExp: 600
+        description: '蜜柑ドラゴンの体内で熟成された特製蜜柑汁。濃厚で甘酸っぱい生命のエキス。'
     },
     personality: [
         'フルルル...甘い香りでしょう？',

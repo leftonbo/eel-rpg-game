@@ -55,13 +55,11 @@ export interface BossAction {
  * 記念品テンプレート定義
  * 各ボスの勝利・敗北時記念品の内部データ
  */
-export interface TrophyTemplate {
+export interface TrophyData {
     /** 記念品名 */
     name: string;
     /** 記念品の説明 */
     description: string;
-    /** エクスプローラー経験値 */
-    explorerExp: number;
 }
 
 export interface BossData {
@@ -103,12 +101,12 @@ export interface BossData {
      * 勝利時記念品テンプレート
      * 「外側から採れるもの」の設定
      */
-    victoryTrophy?: TrophyTemplate;
+    victoryTrophy?: TrophyData;
     /**
      * 敗北時記念品テンプレート  
      * 「内側（体内）から採れるもの」の設定
      */
-    defeatTrophy?: TrophyTemplate;
+    defeatTrophy?: TrophyData;
 }
 
 export class Boss extends Actor {

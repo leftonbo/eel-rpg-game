@@ -81,13 +81,11 @@ export const darkGhostData: BossData = {
     explorerLevelRequired: 0,
     victoryTrophy: {
         name: '闇夜の羽根',
-        description: '闇のおばけが纏っていた神秘的な黒い羽根。触れると仄かに冷たく、夜闇の力が込められている。',
-        explorerExp: 100
+        description: '闇のおばけが纏っていた神秘的な黒い羽根。触れると仄かに冷たく、夜闇の力が込められている。'
     },
     defeatTrophy: {
         name: '影のエッセンス',
-        description: '闇のおばけの体内から滲み出る影の精髄。この世ならざる闇の力を秘めた貴重な物質。',
-        explorerExp: 100
+        description: '闇のおばけの体内から滲み出る影の精髄。この世ならざる闇の力を秘めた貴重な物質。'
     },
     personality: [
         'ケケケ...いい魂の匂いがする',

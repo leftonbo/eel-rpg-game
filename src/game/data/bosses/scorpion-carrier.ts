@@ -160,13 +160,11 @@ export const scorpionCarrierData: BossData = {
     explorerLevelRequired: 1,
     victoryTrophy: {
         name: 'サソリの機械殻',
-        description: '運び屋のサソリの機械化された外殻の一部。タイヤとして機能していた足部分の装甲。',
-        explorerExp: 200
+        description: '運び屋のサソリの機械化された外殻の一部。タイヤとして機能していた足部分の装甲。'
     },
     defeatTrophy: {
         name: '運搬用薬液',
-        description: '運び屋のサソリの体内で生成される特殊な薬液。運搬対象を麻酔状態に保つ効果がある。',
-        explorerExp: 200
+        description: '運び屋のサソリの体内で生成される特殊な薬液。運搬対象を麻酔状態に保つ効果がある。'
     },
     personality: [
         'んー、迷い人のようだな？',
