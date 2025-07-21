@@ -215,7 +215,6 @@ export class BattleResultScene {
             unlockDiv.innerHTML = `
                 <div class="text-center">
                     <div class="h6 text-warning">🌟 ${bossName} が解禁されました！</div>
-                    <div class="small text-muted">ボス選択画面で新しい挑戦が可能になりました</div>
                 </div>
             `;
             bossUnlockContainer.appendChild(unlockDiv);
