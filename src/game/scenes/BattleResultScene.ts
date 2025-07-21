@@ -3,7 +3,7 @@ import { AbilityType } from '../systems/AbilitySystem';
 import { SkillRegistry } from '../data/skills';
 import { Player } from '../entities/Player';
 import { getBossData, getAllBossData } from '../data/index';
-import { Trophy } from '../systems/TrophySystem';
+import { Trophy, TrophySystem } from '../systems/TrophySystem';
 import { Boss } from '../entities/Boss';
 
 export enum BattleResultStatus {
@@ -284,7 +284,7 @@ export function calculateBattleResult(
     }
 
     // Calculate skill experience
-    const skillExperience = player.trophySystem.calculateSkillExperience(skillsReceived, requiredLevel);
+    const skillExperience = TrophySystem.calculateSkillExperience(skillsReceived, requiredLevel);
     explorerExperience += skillExperience;
     
     const experienceGained: { [key: string]: number } = {

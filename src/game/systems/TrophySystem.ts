@@ -24,17 +24,21 @@ export interface Trophy {
  */
 export interface BossMemorial {
     bossId: string;
-    hasWon: boolean;
     dateFirstWin?: number; // timestamp of first victory
-    hasLost: boolean;
     dateFirstLost?: number; // timestamp of first defeat
 }
 
+/**
+ * 記録のセーブデータインターフェース
+ */
 export interface MemorialSaveData {
     bossMemorials: BossMemorial[];
 }
 
 export class TrophySystem {
+    /**
+     * 初期のセーブデータ
+     */
     public static readonly INITIAL_SAVE_DATA: MemorialSaveData = {
         bossMemorials: []
     };
@@ -52,14 +56,14 @@ export class TrophySystem {
                 console.warn(`No boss data found for ID: ${bossId}`);
                 return;
             }
-            
-            if (memorial.hasWon && bossData.victoryTrophy) {
+
+            if (memorial.dateFirstWin && bossData.victoryTrophy) {
                 const trophyId = this.getTrophyId(bossData, TrophyType.Victory);
-                this.trophies.set(trophyId, this.createVictoryTrophy(trophyId, bossData, memorial));
+                this.trophies.set(trophyId, TrophySystem.createVictoryTrophy(trophyId, bossData, memorial));
             }
-            if (memorial.hasLost && bossData.defeatTrophy) {
+            if (memorial.dateFirstLost && bossData.defeatTrophy) {
                 const trophyId = this.getTrophyId(bossData, TrophyType.Defeat);
-                this.trophies.set(trophyId, this.createDefeatTrophy(trophyId, bossData, memorial));
+                this.trophies.set(trophyId, TrophySystem.createDefeatTrophy(trophyId, bossData, memorial));
             }
         });
     }
@@ -67,7 +71,7 @@ export class TrophySystem {
     /**
      * 勝利記念品を生成
      */
-    private createVictoryTrophy(trophyId: string, bossData: BossData, memorial?: BossMemorial): Trophy {
+    private static createVictoryTrophy(trophyId: string, bossData: BossData, memorial?: BossMemorial): Trophy {
         return {
             id: trophyId,
             type: TrophyType.Victory,
@@ -81,7 +85,7 @@ export class TrophySystem {
     /**
      * 初回敗北の記念品を生成
      */
-    private createDefeatTrophy(trophyId: string, bossData: BossData, memorial: BossMemorial): Trophy {
+    private static createDefeatTrophy(trophyId: string, bossData: BossData, memorial: BossMemorial): Trophy {
         return {
             id: trophyId,
             type: TrophyType.Defeat,
@@ -101,16 +105,15 @@ export class TrophySystem {
      */
     public awardVictoryTrophy(bossData: BossData): Trophy | null {
         const memorial = this.getBattleMemorial(bossData.id);
-        if (memorial.hasWon) {
+        if (memorial.dateFirstWin) {
             return null; // 既に勝利済み
         }
         
-        memorial.hasWon = true;
         memorial.dateFirstWin = Date.now();
         
         // Create and return the victory trophy
         const trophyId = this.getTrophyId(bossData, TrophyType.Victory);
-        const trophy = this.createVictoryTrophy(trophyId, bossData, memorial);
+        const trophy = TrophySystem.createVictoryTrophy(trophyId, bossData, memorial);
         this.trophies.set(trophyId, trophy);
 
         return trophy;
@@ -121,16 +124,15 @@ export class TrophySystem {
      */
     public awardDefeatTrophy(bossData: BossData): Trophy | null {
         const memorial = this.getBattleMemorial(bossData.id);
-        if (memorial.hasLost) {
+        if (memorial.dateFirstLost) {
             return null; // 既に敗北済み
         }
 
-        memorial.hasLost = true;
         memorial.dateFirstLost = Date.now();
         
         // Create and return the defeat trophy
         const trophyId = this.getTrophyId(bossData, TrophyType.Defeat);
-        const trophy = this.createDefeatTrophy(trophyId, bossData, memorial);
+        const trophy = TrophySystem.createDefeatTrophy(trophyId, bossData, memorial);
         this.trophies.set(trophyId, trophy);
         
         return trophy;
@@ -139,21 +141,21 @@ export class TrophySystem {
     /**
      * 初回勝利経験値を計算（記念品ではなく直接経験値）
      */
-    public calculateFirstWinExperience(requiredLevel: number): number {
+    public static calculateFirstWinExperience(requiredLevel: number): number {
         return 200 * (requiredLevel + 1) ** 2;
     }
     
     /**
      * 初回敗北経験値を計算（記念品ではなく直接経験値）
      */
-    public calculateFirstLossExperience(requiredLevel: number): number {
+    public static calculateFirstLossExperience(requiredLevel: number): number {
         return 50 * (requiredLevel + 1) ** 2;
     }
 
     /**
      * スキル体験経験値を計算（記念品ではなく直接経験値）
      */
-    public calculateSkillExperience(skillsReceived: string[], requiredLevel: number): number {
+    public static calculateSkillExperience(skillsReceived: string[], requiredLevel: number): number {
         if (skillsReceived.length === 0) {
             return 0; // スキルがない場合は経験値なし
         }
@@ -166,13 +168,20 @@ export class TrophySystem {
      */
     private getBattleMemorial(bossId: string): BossMemorial {
         if (!this.bossMemorials.has(bossId)) {
-            this.bossMemorials.set(bossId, {
-                bossId,
-                hasWon: false,
-                hasLost: false
-            });
+            return TrophySystem.createNewMemorial(bossId);
         }
         return this.bossMemorials.get(bossId)!;
+    }
+    
+    /**
+     * 新しいバトル記録を作成
+     */
+    private static createNewMemorial(bossId: string): BossMemorial {
+        const memorial: BossMemorial = {
+            bossId: bossId
+        };
+        
+        return memorial;
     }
     
     /**
