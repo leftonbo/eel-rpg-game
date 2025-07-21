@@ -4,7 +4,7 @@ import { PlayerSaveManager, PlayerSaveData } from '../systems/PlayerSaveData';
 import { updatePlayerItems } from '../data/ExtendedItems';
 import { Actor } from './Actor';
 import { SkillRegistry, SkillData } from '../data/skills';
-import { TrophySystem } from '../systems/TrophySystem';
+import { TrophySystem, BattleMemorial } from '../systems/TrophySystem';
 
 export enum SkillType {
     PowerAttack = 'power-attack',
@@ -62,7 +62,7 @@ export class Player extends Actor {
     
     // Ability and equipment system
     public abilitySystem: AbilitySystem = new AbilitySystem();
-    public trophySystem: TrophySystem = new TrophySystem();
+    public trophySystem!: TrophySystem; // Will be initialized in loadFromSave
     public equippedWeapon: string = 'bare-hands';
     public equippedArmor: string = 'naked';
     public unlockedItems: Set<string> = new Set();
@@ -94,10 +94,16 @@ export class Player extends Actor {
             
             // Load unlocked skills
             this.unlockedSkills = new Set(saveData.unlockedSkills || []);
+            
+            // Initialize TrophySystem with battle memorials data
+            this.trophySystem = new TrophySystem(saveData.battleMemorials);
         } else {
             // Initialize with default values
             this.unlockedItems = new Set();
             this.unlockedSkills = new Set();
+            
+            // Initialize TrophySystem with empty data
+            this.trophySystem = new TrophySystem();
         }
     }
     
@@ -105,6 +111,12 @@ export class Player extends Actor {
      * Save player data to localStorage
      */
     public saveToStorage(): void {
+        const battleMemorials: { [bossId: string]: BattleMemorial } = {};
+        const trophyData = this.trophySystem.exportData();
+        trophyData.memorials.forEach(memorial => {
+            battleMemorials[memorial.bossId] = memorial;
+        });
+        
         const saveData: PlayerSaveData = {
             abilities: this.abilitySystem.exportForSave(),
             equipment: {
@@ -113,7 +125,8 @@ export class Player extends Actor {
             },
             unlockedItems: Array.from(this.unlockedItems),
             unlockedSkills: Array.from(this.unlockedSkills),
-            version: 2
+            battleMemorials: battleMemorials,
+            version: 3
         };
         
         PlayerSaveManager.savePlayerData(saveData);

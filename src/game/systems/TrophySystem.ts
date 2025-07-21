@@ -1,5 +1,6 @@
 import { getBossData } from "../data";
 import { BossData } from "../entities/Boss";
+import { PlayerSaveManager } from "./PlayerSaveData";
 
 export enum TrophyType {
     Victory = 'victory',
@@ -34,8 +35,8 @@ export class TrophySystem {
     public trophies: Map<string, Trophy> = new Map();
     private battleMemorials: Map<string, BattleMemorial> = new Map();
     
-    constructor() {
-        this.loadFromSave();
+    constructor(initialBattleMemorials?: { [bossId: string]: BattleMemorial }) {
+        this.loadBattleMemorials(initialBattleMemorials || {});
         this.createHaveTrophies();
     }
     
@@ -104,7 +105,7 @@ export class TrophySystem {
         
         memorial.hasWon = true;
         memorial.dateFirstWin = Date.now();
-        this.saveToStorage();
+        this.saveBattleMemorials();
         
         // Create and return the victory trophy
         const trophyId = this.getTrophyId(bossData, TrophyType.Victory);
@@ -125,7 +126,7 @@ export class TrophySystem {
 
         memorial.hasLost = true;
         memorial.dateFirstLost = Date.now();
-        this.saveToStorage();
+        this.saveBattleMemorials();
         
         // Create and return the defeat trophy
         const trophyId = this.getTrophyId(bossData, TrophyType.Defeat);
@@ -182,49 +183,24 @@ export class TrophySystem {
     }
     
     /**
-     * localStorage から読み込み
+     * バトル記録を読み込み
      */
-    private loadFromSave(): void {
-        try {
-            const memorialData = localStorage.getItem('eel-rpg-battle-memorials');
-            
-            if (memorialData) {
-                const memorials = JSON.parse(memorialData);
-                Object.entries(memorials).forEach(([bossId, memorial]: [string, any]) => {
-                    this.battleMemorials.set(bossId, {
-                        bossId,
-                        hasWon: memorial.hasWon,
-                        hasLost: memorial.hasLost,
-                        dateFirstWin: memorial.dateFirstWin,
-                        dateFirstLost: memorial.dateFirstLost
-                    });
-                });
-            }
-        } catch (error) {
-            console.error('Failed to load trophy data:', error);
-        }
+    private loadBattleMemorials(battleMemorialsData: { [bossId: string]: BattleMemorial }): void {
+        this.battleMemorials.clear();
+        Object.entries(battleMemorialsData).forEach(([bossId, memorial]) => {
+            this.battleMemorials.set(bossId, memorial);
+        });
     }
     
     /**
-     * localStorage に保存
+     * バトル記録を保存
      */
-    private saveToStorage(): void {
-        try {
-            const memorialData: { [key: string]: any } = {};
-            this.battleMemorials.forEach((memorial, bossId) => {
-                memorialData[bossId] = {
-                    bossId: memorial.bossId,
-                    hasWon: memorial.hasWon,
-                    hasLost: memorial.hasLost,
-                    dateFirstWin: memorial.dateFirstWin,
-                    dateFirstLost: memorial.dateFirstLost
-                };
-            });
-            
-            localStorage.setItem('eel-rpg-battle-memorials', JSON.stringify(memorialData));
-        } catch (error) {
-            console.error('Failed to save trophy data:', error);
-        }
+    private saveBattleMemorials(): void {
+        const memorialData: { [key: string]: BattleMemorial } = {};
+        this.battleMemorials.forEach((memorial, bossId) => {
+            memorialData[bossId] = memorial;
+        });
+        PlayerSaveManager.saveBattleMemorials(memorialData);
     }
     
     /**
@@ -248,6 +224,6 @@ export class TrophySystem {
             });
         });
         
-        this.saveToStorage();
+        this.saveBattleMemorials();
     }
 }

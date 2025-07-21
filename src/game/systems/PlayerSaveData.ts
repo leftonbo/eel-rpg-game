@@ -1,4 +1,5 @@
 import { AbilityData, AbilityType } from './AbilitySystem';
+import { BattleMemorial } from './TrophySystem';
 
 export interface PlayerSaveData {
     abilities: { [key: string]: AbilityData };
@@ -8,12 +9,13 @@ export interface PlayerSaveData {
     };
     unlockedItems: string[];
     unlockedSkills: string[]; // New: track unlocked skills
+    battleMemorials: { [bossId: string]: BattleMemorial }; // Trophy system data
     version: number; // For future save data migration
 }
 
 export class PlayerSaveManager {
     private static readonly SAVE_KEY = 'eelfood_player_data';
-    private static readonly CURRENT_VERSION = 2;
+    private static readonly CURRENT_VERSION = 3;
     
     /**
      * Save player data to localStorage
@@ -77,6 +79,7 @@ export class PlayerSaveManager {
             },
             unlockedItems: ['heal-potion', 'adrenaline', 'energy-drink'], // Default items
             unlockedSkills: [], // Default: no skills unlocked, they unlock based on ability levels
+            battleMemorials: {}, // Default: no battle records
             version: this.CURRENT_VERSION
         };
     }
@@ -87,19 +90,57 @@ export class PlayerSaveManager {
     private static migrateSaveData(oldData: any): PlayerSaveData {
         console.log(`Migrating save data from version ${oldData.version || 'unknown'} to ${this.CURRENT_VERSION}`);
         
+        let migratedData = { ...oldData };
+        
         // Migration from version 1 to 2: add unlockedSkills field
         if (oldData.version === 1 || !oldData.version) {
-            const migratedData = {
-                ...oldData,
+            migratedData = {
+                ...migratedData,
                 unlockedSkills: [], // Initialize empty skills array
-                version: this.CURRENT_VERSION
+                version: 2
             };
-            return migratedData;
         }
         
+        // Migration from version 2 to 3: add battleMemorials field and import trophy data
+        if (migratedData.version === 2) {
+            // Try to import existing trophy data from old localStorage key
+            const battleMemorials: { [bossId: string]: BattleMemorial } = {};
+            try {
+                const memorialData = localStorage.getItem('eel-rpg-battle-memorials');
+                if (memorialData) {
+                    const memorials = JSON.parse(memorialData);
+                    Object.entries(memorials).forEach(([bossId, memorial]: [string, any]) => {
+                        battleMemorials[bossId] = {
+                            bossId,
+                            hasWon: memorial.hasWon,
+                            hasLost: memorial.hasLost,
+                            dateFirstWin: memorial.dateFirstWin,
+                            dateFirstLost: memorial.dateFirstLost
+                        };
+                    });
+                    console.log('Imported existing trophy data into save data');
+                }
+            } catch (error) {
+                console.error('Failed to import existing trophy data:', error);
+            }
+            
+            migratedData = {
+                ...migratedData,
+                battleMemorials,
+                version: 3
+            };
+        }
+        
+        // Set final version
+        migratedData.version = this.CURRENT_VERSION;
+        
         // For unknown versions, return default data
-        console.log('Unknown version, creating new save data');
-        return this.createDefaultSaveData();
+        if (oldData.version && oldData.version > this.CURRENT_VERSION) {
+            console.log('Unknown version, creating new save data');
+            return this.createDefaultSaveData();
+        }
+        
+        return migratedData;
     }
     
     /**
@@ -159,6 +200,15 @@ export class PlayerSaveManager {
     }
     
     /**
+     * Quick save just battle memorials
+     */
+    static saveBattleMemorials(battleMemorials: { [bossId: string]: BattleMemorial }): void {
+        const currentData = this.loadPlayerData() || this.createDefaultSaveData();
+        currentData.battleMemorials = battleMemorials;
+        this.savePlayerData(currentData);
+    }
+    
+    /**
      * Export save data as JSON string
      */
     static exportSaveData(): string {
@@ -206,6 +256,7 @@ export class PlayerSaveManager {
         if (!data.equipment.armor || typeof data.equipment.armor !== 'string') return false;
         if (!Array.isArray(data.unlockedItems)) return false;
         if (!Array.isArray(data.unlockedSkills)) return false;
+        if (!data.battleMemorials || typeof data.battleMemorials !== 'object') return false;
         
         // Check abilities structure
         for (const [, ability] of Object.entries(data.abilities)) {
