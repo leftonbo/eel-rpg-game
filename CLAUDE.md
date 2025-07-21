@@ -35,6 +35,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Boss.ts**: ボス基底クラス、AI戦略とアクションシステム
 - **StatusEffectManager**: 状態異常の統一管理（火だるま、魅了、拘束など）
 - **MemorialSystem.ts**: 戦闘記録・統計システム
+- **PlayerSaveData.ts**: セーブデータ永続化システム（localStorage使用）
 - **ModalUtils.ts**: モーダル表示・操作ユーティリティ
 
 ### データ駆動型ボス設計
@@ -68,6 +69,34 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 2. `StatusEffectManager.configs` Mapに設定追加
 3. onTick/onApply/onRemove コールバックで効果実装
 4. CSS（src/styles/main.css）にstatus-[type]クラス追加
+
+### セーブデータ管理（PlayerSaveData）
+
+- **PlayerSaveData interface**: アビリティ、装備、解放アイテム/スキル、トロフィーを含むプレイヤー進行状態
+- **PlayerSaveManager**: localStorage操作、データマイグレーション、バリデーション機能を提供
+- 保存データ: `localStorage['eelfood_player_data']` にJSONで格納
+- バージョン管理: 現在v3、自動マイグレーション機能付き
+
+#### セーブデータ構造
+
+```typescript
+interface PlayerSaveData {
+    abilities: { [key: string]: AbilityData };     // アビリティレベル/経験値
+    equipment: { weapon: string; armor: string; };  // 装備武器/防具ID
+    unlockedItems: string[];                        // 解放済みアイテムID配列
+    unlockedSkills: string[];                       // 解放済みスキルID配列
+    memorials: MemorialSaveData;                    // ボス撃破記録・統計
+    version: number;                                // データバージョン（マイグレーション用）
+}
+```
+
+#### 主要メソッド
+
+- `loadPlayerData()` / `savePlayerData()`: メインのロード/セーブ
+- `createDefaultSaveData()`: デフォルト初期値作成
+- `exportSaveData()` / `importSaveData()`: JSON形式でインポート/エクスポート
+- `clearSaveData()`: 全データ削除（テスト/リセット用）
+- `saveEquipment()` / `saveAbilities()` / `saveUnlockedItems()` 等: 部分保存ユーティリティ
 
 ### ゲームバランス調整
 
