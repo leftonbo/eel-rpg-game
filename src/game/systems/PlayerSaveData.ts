@@ -55,7 +55,10 @@ export class PlayerSaveManager {
             return parsedData as PlayerSaveData;
         } catch (error) {
             console.error('Failed to load player data:', error);
-            return null;
+            
+            // if loading fails, return default data
+            console.log('Returning default player data');
+            return this.createDefaultSaveData();
         }
     }
     
