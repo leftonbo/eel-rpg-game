@@ -107,6 +107,7 @@ eel-rpg-game/
 │   │   │   ├── StatusEffectTypes.ts # ステータス効果タイプ定義
 │   │   │   ├── AbilitySystem.ts     # アビリティシステム
 │   │   │   ├── PlayerSaveData.ts    # セーブデータ管理
+│   │   │   ├── MemorialSystem.ts    # 戦闘記録・統計システム
 │   │   │   └── status-effects/      # ステータス効果詳細
 │   │   │       ├── battle-effects.ts
 │   │   │       ├── core-states.ts
@@ -133,7 +134,8 @@ eel-rpg-game/
 │   │   │   ├── ExtendedItems.ts     # アイテムデータ
 │   │   │   └── index.ts             # データエクスポート
 │   │   └── utils/          # ユーティリティ
-│   │       └── CombatUtils.ts       # 戦闘計算ユーティリティ
+│   │       ├── CombatUtils.ts       # 戦闘計算ユーティリティ
+│   │       └── ModalUtils.ts        # モーダル表示・操作ユーティリティ
 │   └── styles/             # スタイルシート
 │       └── main.css
 ├── docs/                   # ドキュメント

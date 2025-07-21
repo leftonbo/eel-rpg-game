@@ -34,6 +34,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Player.ts**: 主人公のステータス、アイテム、行動管理
 - **Boss.ts**: ボス基底クラス、AI戦略とアクションシステム
 - **StatusEffectManager**: 状態異常の統一管理（火だるま、魅了、拘束など）
+- **MemorialSystem.ts**: 戦闘記録・統計システム
+- **ModalUtils.ts**: モーダル表示・操作ユーティリティ
 
 ### データ駆動型ボス設計
 
