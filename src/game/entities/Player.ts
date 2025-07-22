@@ -136,7 +136,7 @@ export class Player extends Actor {
         // Calculate HP with toughness bonus and armor
         const toughnessMultiplier = 1 + this.abilitySystem.getToughnessHpBonus();
         const armorBonus = this.getArmorHpBonus();
-        this.maxHp = Math.round(this.baseMaxHp * toughnessMultiplier) + armorBonus;
+        this.maxHp = Math.round((this.baseMaxHp + armorBonus) * toughnessMultiplier);
         
         // Calculate MP with endurance bonus
         const enduranceMultiplier = 1 + this.abilitySystem.getEnduranceMpBonus();
