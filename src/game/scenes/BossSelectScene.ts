@@ -832,12 +832,12 @@ export class BossSelectScene {
             this.updateAccessibleTerrains(player.getAccessibleTerrains());
         }
         
-        // Update statistics - bosses unlocked count will be calculated separately
-        // const allBossMetadata = await getAllBossMetadata();
-        // const unlockedCount = allBossMetadata.filter(boss => 
-        //     boss.explorerLevelRequired <= player.getExplorerLevel()
-        // ).length;
-        // this.updateElement('unlocked-bosses-count', unlockedCount.toString());
+        // Update statistics
+        const allBossData = getAllBossData();
+        const unlockedCount = allBossData.filter(boss => 
+            boss.explorerLevelRequired || 0 <= player.getExplorerLevel()
+        ).length;
+        this.updateElement('unlocked-bosses-count', unlockedCount.toString());
         
         const allTrophies = player.memorialSystem.getAllTrophies();
         this.updateElement('total-trophies-count', allTrophies.length.toString());

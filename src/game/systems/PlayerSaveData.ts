@@ -46,7 +46,7 @@ export class PlayerSaveManager {
             
             // Version check and migration if needed
             if (parsedData.version !== this.CURRENT_VERSION) {
-                console.log('[PlayerSaveManager][loadPlayerData]Save data version mismatch, migrating...');
+                console.log('[PlayerSaveManager][loadPlayerData] Save data version mismatch, migrating...');
                 return this.migrateSaveData(parsedData);
             }
             
