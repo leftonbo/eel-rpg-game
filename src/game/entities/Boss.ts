@@ -140,7 +140,7 @@ export class Boss extends Actor {
      * AI戦略での状態管理、クールダウン管理、行動制御などに使用
      * ボスデータの初期値をコピーして初期化される
      */
-    public customVariables: Record<string, any> = {};
+    private customVariables: Record<string, any> = {};
     
     constructor(data: BossData) {
         // Boss has unlimited MP (無尽蔵) - set to a high value
