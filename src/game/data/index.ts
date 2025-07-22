@@ -130,6 +130,18 @@ export const bossMetadata: Map<string, BossMetadata> = new Map([
         icon: '🧹',
         explorerLevelRequired: 3
     }],
+    ['underground-worm', { 
+        id: 'underground-worm', 
+        name: 'UndergroundWorm',
+        displayName: '🪨 地底のワーム', 
+        description: '地底深くに住む巨大な虫', 
+        questNote: '地底深くの洞窟に巨大なワームが住み着いている。硬い岩も飲み込む強靭な顎を持つ危険な生物を討伐し、地下世界の平和を取り戻すことがあなたの任務だ。',
+        difficulty: 'Hard', 
+        maxHp: 380,
+        attackPower: 12,
+        icon: '🪨',
+        explorerLevelRequired: 5
+    }],
     ['bat-vampire', { 
         id: 'bat-vampire', 
         name: 'BatVampire',
@@ -178,6 +190,9 @@ async function loadBossData(id: string): Promise<BossData> {
             break;
         case 'clean-master':
             bossData = (await import('./bosses/clean-master')).cleanMasterData;
+            break;
+        case 'underground-worm':
+            bossData = (await import('./bosses/underground-worm')).undergroundWormData;
             break;
         case 'bat-vampire':
             bossData = (await import('./bosses/bat-vampire')).batVampireData;

@@ -89,6 +89,9 @@ export enum StatusEffectType {
     Fear = 'fear',
     Oblivion = 'oblivion',
     
+    // Underground Worm effects
+    Petrified = 'petrified',
+    
     // Bat Vampire effects
     Darkness = 'darkness'
 }
