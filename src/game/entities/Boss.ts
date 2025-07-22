@@ -32,7 +32,7 @@ export enum ActionType {
 }
 
 export interface BossAction {
-    id?: string; // Unique identifier for the action. TODO: make all actions must have this `id` field
+    id: string; // Unique identifier for the action within the boss
     type: ActionType;
     name: string;
     description: string;
@@ -291,6 +291,7 @@ export class Boss extends Actor {
     selectAction(player: Player, turn: number): BossAction | null {
         if (!this.canAct()) {
             return {
+                id: 'stunned-skip',
                 type: ActionType.Skip,
                 name: '行動不能',
                 description: '反動で動けない...',
