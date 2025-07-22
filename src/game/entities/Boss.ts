@@ -460,7 +460,7 @@ export class Boss extends Actor {
                     if (!isMiss && action.statusEffect) {
                         const statusChance = action.statusChance !== undefined ? action.statusChance : 1.0;
                         if (Math.random() < statusChance) {
-                            player.statusEffects.addEffect(action.statusEffect);
+                            player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
                             messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
                         }
                         else if (!action.damage)
@@ -519,6 +519,15 @@ export class Boss extends Actor {
                         const actualDamage = player.takeDamage(actionDamage);
                         messages.push(`${player.name}に${actualDamage}のダメージ！`);
                     }
+                    
+                    // Apply status effect if specified
+                    if (action.statusEffect) {
+                        const statusChance = action.statusChance !== undefined ? action.statusChance : 1.0;
+                        if (Math.random() < statusChance) {
+                            player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
+                            messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
+                        }
+                    }
                 }
                 break;
                 
@@ -572,7 +581,7 @@ export class Boss extends Actor {
                     if (action.statusEffect) {
                         const statusChance = action.statusChance !== undefined ? action.statusChance : 1.0;
                         if (Math.random() < statusChance) {
-                            player.statusEffects.addEffect(action.statusEffect);
+                            player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
                             messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
                         }
                     }
@@ -582,7 +591,7 @@ export class Boss extends Actor {
             case ActionType.FinishingMove:
                 // Custom finishing move logic
                 if (action.statusEffect) {
-                    player.statusEffects.addEffect(action.statusEffect);
+                    player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
                     messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
                 }
                 break;
@@ -590,7 +599,7 @@ export class Boss extends Actor {
             case ActionType.PostDefeatedAttack:
                 // Post-defeat actions (status effects only, no HP/MP changes)
                 if (action.statusEffect) {
-                    player.statusEffects.addEffect(action.statusEffect);
+                    player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
                     messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
                 }
                 break;
