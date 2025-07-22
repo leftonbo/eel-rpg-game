@@ -72,7 +72,7 @@ export class BossSelectScene {
         await this.updateBossCards();
         
         // Update player status display
-        this.updatePlayerStatus();
+        await this.updatePlayerStatus();
         
         // Show/hide debug controls based on debug mode
         this.updateDebugControlsVisibilityInModal();
@@ -230,7 +230,7 @@ export class BossSelectScene {
     /**
      * Update player status display in boss select screen
      */
-    private updatePlayerStatus(): void {
+    private async updatePlayerStatus(): Promise<void> {
         const player = this.game.getPlayer();
         const equipment = player.getEquipmentInfo();
         
@@ -348,7 +348,7 @@ export class BossSelectScene {
                 input.addEventListener('change', () => {
                     if (input.checked) {
                         player.equipWeapon(weapon.id);
-                        this.updatePlayerStatus();
+                        // this.updatePlayerStatus(); // Skip async update in event handler
                         PlayerSaveManager.saveEquipment(player.equippedWeapon, player.equippedArmor);
                     }
                 });
@@ -377,7 +377,7 @@ export class BossSelectScene {
                 input.addEventListener('change', () => {
                     if (input.checked) {
                         player.equipArmor(armor.id);
-                        this.updatePlayerStatus();
+                        // this.updatePlayerStatus(); // Skip async update in event handler
                     }
                 });
             });
@@ -786,7 +786,7 @@ export class BossSelectScene {
             
             player.recalculateStats();
             player.saveToStorage();
-            this.updatePlayerStatus();
+            // this.updatePlayerStatus(); // Skip async update in event handler
             this.showPlayerDetails(); // Refresh modal content
             ModalUtils.showToast(`${this.getAbilityName(abilityType)}をレベル ${level} に設定しました`, 'success');
         }
@@ -816,7 +816,7 @@ export class BossSelectScene {
         
         player.recalculateStats();
         player.saveToStorage();
-        this.updatePlayerStatus();
+        // this.updatePlayerStatus(); // Skip async update in event handler
         this.showPlayerDetails(); // Refresh modal content
         ModalUtils.showToast(`全てのアビリティをレベル ${level} に設定しました`, 'success');
     }
@@ -847,13 +847,12 @@ export class BossSelectScene {
             this.updateAccessibleTerrains(player.getAccessibleTerrains());
         }
         
-        // Update statistics
-        const allBossMetadata = getAllBossMetadata();
-        const unlockedCount = allBossMetadata.filter(boss => 
-            boss.explorerLevelRequired <= player.getExplorerLevel()
-        ).length;
-        
-        this.updateElement('unlocked-bosses-count', unlockedCount.toString());
+        // Update statistics - bosses unlocked count will be calculated separately
+        // const allBossMetadata = await getAllBossMetadata();
+        // const unlockedCount = allBossMetadata.filter(boss => 
+        //     boss.explorerLevelRequired <= player.getExplorerLevel()
+        // ).length;
+        // this.updateElement('unlocked-bosses-count', unlockedCount.toString());
         
         const allTrophies = player.memorialSystem.getAllTrophies();
         this.updateElement('total-trophies-count', allTrophies.length.toString());

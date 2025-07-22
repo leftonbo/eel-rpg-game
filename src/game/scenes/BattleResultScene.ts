@@ -247,7 +247,7 @@ export class BattleResultScene {
 /**
  * Calculate battle result based on player performance
  */
-export function calculateBattleResult(
+export async function calculateBattleResult(
     player: Player,
     boss: Boss,
     status: BattleResultStatus,
@@ -257,10 +257,10 @@ export function calculateBattleResult(
     craftworkExperience: number = 0,
     agilityExperience: number = 0,
     skillsReceived: string[] = []
-): BattleResult {
+): Promise<BattleResult> {
     // Calculate explorer experience from trophies and skill experience
     const bossId = boss.id;
-    const bossMetadata = getBossMetadata(bossId);
+    const bossMetadata = await getBossMetadata(bossId);
     const requiredLevel = bossMetadata?.explorerLevelRequired || 0;
     const trophies: Trophy[] = [];
     let explorerExperience = 0;
@@ -309,7 +309,7 @@ export function calculateBattleResult(
     const previousExplorerLevel = player.getExplorerLevel();
     
     // Apply experience and check for level ups
-    Object.entries(experienceGained).forEach(([abilityType, exp]) => {
+    for (const [abilityType, exp] of Object.entries(experienceGained)) {
         if (exp > 0) {
             const result = player.addExperience(abilityType as AbilityType, exp);
             if (result.leveledUp) {
@@ -328,12 +328,12 @@ export function calculateBattleResult(
                 // Check for new boss unlocks if explorer level increased
                 if (abilityType === AbilityType.Explorer) {
                     const newExplorerLevel = result.newLevel;
-                    const bossUnlocks = checkNewBossUnlocks(previousExplorerLevel, newExplorerLevel);
+                    const bossUnlocks = await checkNewBossUnlocks(previousExplorerLevel, newExplorerLevel);
                     newBossUnlocks.push(...bossUnlocks);
                 }
             }
         }
-    });
+    }
     
     return {
         status,
@@ -429,9 +429,9 @@ function checkSkillUnlocks(abilityType: AbilityType, newLevel: number): string[]
 /**
  * Check what new bosses are unlocked when explorer level increases
  */
-function checkNewBossUnlocks(previousLevel: number, newLevel: number): string[] {
+async function checkNewBossUnlocks(previousLevel: number, newLevel: number): Promise<string[]> {
     const newlyUnlockedBosses: string[] = [];
-    const allBossMetadata = getAllBossMetadata();
+    const allBossMetadata = await getAllBossMetadata();
     
     allBossMetadata.forEach((boss: BossMetadata) => {
         const requiredLevel = boss.explorerLevelRequired;
