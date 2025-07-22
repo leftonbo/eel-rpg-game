@@ -187,7 +187,7 @@ const batVampireActions: BossAction[] = [
 const batVampireAIStrategy = (boss: Boss, player: Player, turn: number): BossAction => {
     const playerRestrained = player.statusEffects.hasEffect(StatusEffectType.Restrained);
     const playerCharmed = player.statusEffects.hasEffect(StatusEffectType.Charm);
-    const playerKO = player.hp <= 0;
+    const playerKO = player.statusEffects.hasEffect(StatusEffectType.KnockedOut);
     const playerHasDarkness = player.statusEffects.hasEffect(StatusEffectType.Darkness);
     const playerHPPercent = player.hp / player.maxHp;
     const playerDefeated = player.isDefeated();
