@@ -87,7 +87,10 @@ export enum StatusEffectType {
     
     // Dark Ghost mental effects
     Fear = 'fear',
-    Oblivion = 'oblivion'
+    Oblivion = 'oblivion',
+    
+    // Underground Worm effects
+    Petrified = 'petrified'
 }
 
 export interface StatusEffect {

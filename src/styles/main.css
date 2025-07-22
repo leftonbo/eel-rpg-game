@@ -606,6 +606,11 @@ body {
     will-change: transform;
 }
 
+.status-petrified {
+    background-color: #8B7355;
+    color: #fff;
+}
+
 /* Animations */
 @keyframes pulse {
     from {
