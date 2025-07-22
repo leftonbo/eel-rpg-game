@@ -31,6 +31,7 @@ export enum ActionType {
 }
 
 export interface BossAction {
+    id?: string; // Unique identifier for the action. TODO: make all actions must have this `id` field
     type: ActionType;
     name: string;
     description: string;
