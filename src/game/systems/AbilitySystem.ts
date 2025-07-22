@@ -201,12 +201,12 @@ export class AbilitySystem {
 // Equipment definitions
 export const WEAPONS: Equipment[] = [
     { id: 'bare-hands', name: '素手', description: '生身の拳で戦う', attackPowerBonus: 0, requiredLevel: 0, abilityType: AbilityType.Combat },
-    { id: 'slingshot', name: 'パチンコ', description: '小石を飛ばす簡易武器', attackPowerBonus: 1, requiredLevel: 1, abilityType: AbilityType.Combat },
-    { id: 'wooden-bow', name: '木の弓矢', description: '木製の弓と矢', attackPowerBonus: 3, requiredLevel: 2, abilityType: AbilityType.Combat },
-    { id: 'compound-bow', name: 'コンパウンドボウ', description: '現代的な複合弓', attackPowerBonus: 5, requiredLevel: 4, abilityType: AbilityType.Combat },
-    { id: 'submachine-gun', name: 'サブマシンガン', description: '連射可能な自動火器', attackPowerBonus: 10, requiredLevel: 6, abilityType: AbilityType.Combat },
-    { id: 'laser-rifle', name: 'レーザーライフル', description: '未来的なエネルギー兵器', attackPowerBonus: 15, requiredLevel: 8, abilityType: AbilityType.Combat },
-    { id: 'super-blaster', name: 'スーパーブラスター', description: '究極の破壊兵器', attackPowerBonus: 25, requiredLevel: 10, abilityType: AbilityType.Combat }
+    { id: 'slingshot', name: 'パチンコ', description: '小石を飛ばす簡易武器', attackPowerBonus: 2, requiredLevel: 1, abilityType: AbilityType.Combat },
+    { id: 'wooden-bow', name: '木の弓矢', description: '木製の弓と矢', attackPowerBonus: 6, requiredLevel: 2, abilityType: AbilityType.Combat },
+    { id: 'compound-bow', name: 'コンパウンドボウ', description: '現代的な複合弓', attackPowerBonus: 10, requiredLevel: 4, abilityType: AbilityType.Combat },
+    { id: 'submachine-gun', name: 'サブマシンガン', description: '連射可能な自動火器', attackPowerBonus: 15, requiredLevel: 6, abilityType: AbilityType.Combat },
+    { id: 'laser-rifle', name: 'レーザーライフル', description: '未来的なエネルギー兵器', attackPowerBonus: 20, requiredLevel: 8, abilityType: AbilityType.Combat },
+    { id: 'super-blaster', name: 'スーパーブラスター', description: '究極の破壊兵器', attackPowerBonus: 30, requiredLevel: 10, abilityType: AbilityType.Combat }
 ];
 
 export const ARMORS: Equipment[] = [
