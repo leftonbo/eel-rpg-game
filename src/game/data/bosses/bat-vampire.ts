@@ -83,6 +83,38 @@ const batVampireActions: BossAction[] = [
         playerStateCondition: 'restrained',
         messages: ['<USER>は<TARGET>に深いキスをした...']
     },
+    {
+        id: 'minion-hypnosis',
+        type: ActionType.StatusAttack,
+        name: '眷属の催眠術',
+        description: '拘束状態が連続5ターン続いた獲物に強力な催眠術をかける',
+        statusEffect: StatusEffectType.Hypnosis,
+        statusDuration: 2,
+        statusChance: 0.90,
+        weight: 35,
+        playerStateCondition: 'restrained',
+        canUse: (boss: Boss, _player: Player, _turn: number) => {
+            // 連続拘束ターン数とクールダウンの確認
+            const consecutiveRestraintTurns = boss.getCustomVariable<number>('consecutiveRestraintTurns', 0);
+            const lastHypnosisUsed = boss.getCustomVariable<number>('lastHypnosisUsed', -20);
+            const currentTurn = boss.getCustomVariable<number>('currentBattleTurn', _turn);
+            
+            // 連続5ターン拘束 & 20ターンクールダウン経過
+            return consecutiveRestraintTurns >= 5 && (currentTurn - lastHypnosisUsed) >= 20;
+        },
+        onUse: (boss: Boss, _player: Player, turn: number) => {
+            // 使用ターンを記録してクールダウン開始
+            boss.setCustomVariable('lastHypnosisUsed', turn);
+            // 連続拘束ターンをリセット
+            boss.setCustomVariable('consecutiveRestraintTurns', 0);
+            return [];
+        },
+        messages: [
+            '<USER>の瞳が妖艶に光り始める...',
+            '「我が眷属となり、永遠の眠りにつきなさい...」',
+            '<TARGET>は<USER>の催眠術にかかり、深い眠りに落ちた！'
+        ]
+    },
 
     // 拘束中＋プレイヤーダウン時の特殊攻撃
     {
@@ -203,6 +235,18 @@ const batVampireAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
     const playerHPPercent = player.hp / player.maxHp;
     const playerDoomed = player.statusEffects.hasEffect(StatusEffectType.Doomed);
     const playerDefeated = player.isDefeated();
+    
+    // 現在のターンを記録
+    boss.setCustomVariable('currentBattleTurn', turn);
+    
+    // 拘束状態の連続ターン数を追跡
+    if (playerRestrained) {
+        const consecutiveRestraintTurns = boss.getCustomVariable<number>('consecutiveRestraintTurns', 0);
+        boss.setCustomVariable('consecutiveRestraintTurns', consecutiveRestraintTurns + 1);
+    } else {
+        // 拘束が解けたらリセット
+        boss.setCustomVariable('consecutiveRestraintTurns', 0);
+    }
     
     // プレイヤーが敗北状態の場合の処理
     if (playerDefeated) {
