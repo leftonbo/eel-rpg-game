@@ -93,7 +93,7 @@ const batVampireActions: BossAction[] = [
         damageFormula: (user: Boss) => user.attackPower * 1.5,
         weight: 50,
         playerStateCondition: 'ko',
-        messages: ['<USER>は<TARGET>に噛みつき、生命力そのものを吸い取る...']
+        messages: ['<USER>は<TARGET>に噛みつき、生命力そのものを吸い取る...', `生命力を吸われた<TARGET>の体が縮小していく！`]
     },
 
     // とどめ攻撃（プレイヤーがDoomed状態時）
