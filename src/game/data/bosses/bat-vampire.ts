@@ -64,7 +64,7 @@ const batVampireActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '生気吸収',
         description: '捕まえた獲物の体力と魔力を吸収する',
-        damageFormula: (user: Boss) => user.attackPower * 1.2,
+        damageFormula: (user: Boss) => user.attackPower * 1.5,
         statusEffect: StatusEffectType.Weakness,
         statusChance: 0.60,
         weight: 30,
@@ -90,7 +90,7 @@ const batVampireActions: BossAction[] = [
         type: ActionType.DevourAttack,
         name: '生気吸収（強化版）',
         description: '捕まえた獲物の生命力そのものを吸収する',
-        damageFormula: (user: Boss) => user.attackPower * 0.5,
+        damageFormula: (user: Boss) => user.attackPower * 1.5,
         weight: 50,
         playerStateCondition: 'ko',
         messages: ['<USER>は<TARGET>に噛みつき、生命力そのものを吸い取る...']
