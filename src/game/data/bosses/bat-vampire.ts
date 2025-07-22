@@ -211,16 +211,30 @@ const batVampireActions: BossAction[] = [
         ]
     },
     {
-        id: 'feeding-time',
+        id: 'meal-time',
         type: ActionType.PostDefeatedAttack,
-        name: '給餌タイム',
-        description: '食事によって体内に食べ物を送り込み、体内器官でペットに食事を与えてお世話する',
+        name: '食事の時間',
+        description: 'コウモリヴァンパイアが自身の胃袋（獲物とは別の）にパンを入れて消化する',
         weight: 10,
         playerStateCondition: 'defeated',
         messages: [
-            '「さあ、食事の時間だよ...」',
-            '<USER>は胃袋に栄養豊富な液体を分泌し始める',
-            '<TARGET>は体内器官に支えられながら食事を与えられる',
+            '「さあ、私も食事をしようか...」',
+            '<USER>は大きなパンを口に放り込み、もう一つの胃袋に送り込む',
+            '胃袋の外側から、くぐもった蠕動の音と、食べ物が消化されていく轟音が響き渡る...',
+            '<TARGET>は別の胃袋の存在を感じ、不安になる...'
+        ]
+    },
+    {
+        id: 'feeding-time',
+        type: ActionType.PostDefeatedAttack,
+        name: '給餌の時間',
+        description: '消化されて液状になった食べ物を体内器官を通じてペットに給餌する',
+        weight: 10,
+        playerStateCondition: 'defeated',
+        messages: [
+            '「君にも栄養を分けてあげよう...」',
+            '<USER>の体内で管のような器官が<TARGET>の口元に伸びてくる',
+            '<TARGET>は管のような器官を口に入れられ、どろどろになった食べ物を飲まされ続ける',
             '「よい子だ...これで君はずっと私の大切な宝物でいられる」'
         ]
     }
@@ -268,19 +282,39 @@ const batVampireAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
         
         const lastFeedingTurn = boss.getCustomVariable<number>('lastFeedingTurn', 0);
         
-        // 給餌タイムの判定（15-20ターンごと）
+        // 給餌システムの判定（15-20ターンごとに2ターンシーケンス）
         const turnsSinceFeeding = postDefeatedTurn - lastFeedingTurn;
-        if (turnsSinceFeeding >= 15 && Math.random() < 0.3) {
-            boss.setCustomVariable('lastFeedingTurn', postDefeatedTurn);
+        const feedingState = boss.getCustomVariable<string>('feedingState', 'none');
+        
+        // 給餌シーケンスの開始判定
+        if (feedingState === 'none' && turnsSinceFeeding >= 15 && Math.random() < 0.3) {
+            // 食事の時間を開始
+            boss.setCustomVariable('feedingState', 'meal');
+            const mealAction = batVampireActions.find(action => 
+                action.id === 'meal-time'
+            );
+            if (mealAction) return mealAction;
+        }
+        
+        // 給餌シーケンスの続行判定
+        if (feedingState === 'meal') {
+            // 食事の時間の次ターンは給餌の時間
+            boss.setCustomVariable('feedingState', 'feeding');
             const feedingAction = batVampireActions.find(action => 
                 action.id === 'feeding-time'
             );
             if (feedingAction) return feedingAction;
         }
         
+        if (feedingState === 'feeding') {
+            // 給餌シーケンス完了、次の給餌まで待機
+            boss.setCustomVariable('feedingState', 'none');
+            boss.setCustomVariable('lastFeedingTurn', postDefeatedTurn);
+        }
+        
         // 通常の体内行動（weightベースのランダム選択）
         const postDefeatedActions = batVampireActions.filter(action => 
-            action.playerStateCondition === 'defeated' && action.id !== 'finishing-devour' && action.id !== 'feeding-time'
+            action.playerStateCondition === 'defeated' && action.id !== 'finishing-devour' && action.id !== 'feeding-time' && action.id !== 'meal-time'
         );
         
         if (postDefeatedActions.length > 0) {
