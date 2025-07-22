@@ -896,7 +896,7 @@ export class Player extends Actor {
             switch (skill.passiveEffect) {
                 case 'regeneration':
                     const healAmount = Math.max(1, Math.round(this.maxHp / 50));
-                    if (!this.isKnockedOut() && this.hp < this.maxHp) {
+                    if (!this.isKnockedOut() && !this.isAnyRestrained() && this.hp < this.maxHp) {
                         this.heal(healAmount);
                     }
                     break;

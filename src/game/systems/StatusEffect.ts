@@ -16,22 +16,30 @@ export class StatusEffectManager {
         const config = StatusEffectManager.configs.get(type);
         return config ? config.name : '不明な状態異常';
     }
-    
-    addEffect(type: StatusEffectType): boolean {
+
+    /**
+     * Adds a status effect to the actor.
+     * If the effect already exists and is not stackable, it refreshes the duration.
+     * @param type The type of status effect to add.
+     * @param durationOverride [optional] Custom duration for the effect. If not provided, uses the default duration from the config.
+     * @returns {boolean} True if the effect was added, false if it was refreshed (not stackable) or invalid.
+     */
+    addEffect(type: StatusEffectType, durationOverride?: number): boolean {
         const config = StatusEffectManager.configs.get(type);
         if (!config) return false;
         
         const existingEffect = this.effects.get(type);
+        const duration = durationOverride ? durationOverride : config.duration;
         
         if (existingEffect && !config.stackable) {
             // Refresh duration for non-stackable effects
-            existingEffect.duration = config.duration;
+            existingEffect.duration = duration;
             return false;
         }
         
         const newEffect: StatusEffect = {
             type: config.type,
-            duration: config.duration,
+            duration: duration,
             name: config.name,
             description: config.description,
             stackable: config.stackable

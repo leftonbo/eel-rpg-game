@@ -8,6 +8,7 @@ import { mikanDragonData } from './bosses/mikan-dragon';
 import { seaKrakenData } from './bosses/sea-kraken';
 import { aquaSerpentData } from './bosses/aqua-serpent';
 import { cleanMasterData } from './bosses/clean-master';
+import { batVampireData } from './bosses/bat-vampire';
 
 export const bosses: Map<string, BossData> = new Map([
     ['swamp-dragon', swampDragonData],
@@ -18,7 +19,8 @@ export const bosses: Map<string, BossData> = new Map([
     ['mikan-dragon', mikanDragonData],
     ['sea-kraken', seaKrakenData],
     ['aqua-serpent', aquaSerpentData],
-    ['clean-master', cleanMasterData]
+    ['clean-master', cleanMasterData],
+    ['bat-vampire', batVampireData]
 ]);
 
 export function getBossData(id: string): BossData | undefined {
@@ -29,4 +31,4 @@ export function getAllBossData(): BossData[] {
     return Array.from(bosses.values());
 }
 
-export { swampDragonData, darkGhostData, mechSpiderData, dreamDemonData, scorpionCarrierData, mikanDragonData, seaKrakenData, aquaSerpentData, cleanMasterData };
+export { swampDragonData, darkGhostData, mechSpiderData, dreamDemonData, scorpionCarrierData, mikanDragonData, seaKrakenData, aquaSerpentData, cleanMasterData, batVampireData };
