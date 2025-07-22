@@ -10,6 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - `npm run dev` - 開発サーバー起動（localhost:3000、ホットリロード付き）
 - `npm run build` - プロダクション用ビルド
+- `npm run build:analyze` - バンドル分析付きプロダクションビルド
 - `npm run typecheck` - TypeScript型チェック実行
 - `npm run lint` - ESLint実行（src/**/*.ts対象）
 - `npm run clean` - distディレクトリクリーンアップ
@@ -36,7 +37,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **StatusEffectManager**: 状態異常の統一管理（火だるま、魅了、拘束など）
 - **MemorialSystem.ts**: 戦闘記録・統計システム
 - **PlayerSaveData.ts**: セーブデータ永続化システム（localStorage使用）
-- **ModalUtils.ts**: モーダル表示・操作ユーティリティ
+- **ModalUtils.ts**: トースト表示・モーダル表示・操作ユーティリティ
 
 ### データ駆動型ボス設計
 
@@ -102,7 +103,7 @@ interface PlayerSaveData {
 
 - Player.ts: maxHp=100, baseAttackPower=5
 - 状態異常ダメージ: 火だるま=8, 毒=3（毎ターン）
-- 現在のボス（9体）: 沼のドラゴン=400, 闇のおばけ=150, 機械のクモ=180, ドリームデーモン=240, スコーピオンキャリア=260, みかんドラゴン=320, 海のクラーケン=350, アクアサーペント=350, クリーンマスター=280
+- 現在のボス（10体）: 沼のドラゴン=400, 闇のおばけ=150, 機械のクモ=180, ドリームデーモン=240, スコーピオンキャリア=260, みかんドラゴン=320, 海のクラーケン=350, アクアサーペント=350, クリーンマスター=280, 蝙蝠のヴァンパイア=310
 - コミット時はgitmojiと日本語メッセージを使用
 
 ## UI設計・実装方針

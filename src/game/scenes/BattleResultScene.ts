@@ -2,7 +2,7 @@ import { Game } from '../Game';
 import { AbilityType } from '../systems/AbilitySystem';
 import { SkillRegistry } from '../data/skills';
 import { Player } from '../entities/Player';
-import { getBossData, getAllBossData } from '../data/index';
+import { getBossDataSync, getBossMetadata, getAllBossMetadata, BossMetadata } from '../data/index';
 import { Trophy, MemorialSystem } from '../systems/MemorialSystem';
 import { Boss } from '../entities/Boss';
 
@@ -260,11 +260,12 @@ export function calculateBattleResult(
 ): BattleResult {
     // Calculate explorer experience from trophies and skill experience
     const bossId = boss.id;
-    const bossData = getBossData(bossId);
-    const requiredLevel = bossData?.explorerLevelRequired || 0;
+    const bossMetadata = getBossMetadata(bossId);
+    const requiredLevel = bossMetadata?.explorerLevelRequired || 0;
     const trophies: Trophy[] = [];
     let explorerExperience = 0;
 
+    const bossData = getBossDataSync(bossId);
     if (bossData) {
         // Award victory/defeat trophies (only if battle was not interrupted)
         if (status === BattleResultStatus.Victory) {
@@ -430,10 +431,10 @@ function checkSkillUnlocks(abilityType: AbilityType, newLevel: number): string[]
  */
 function checkNewBossUnlocks(previousLevel: number, newLevel: number): string[] {
     const newlyUnlockedBosses: string[] = [];
-    const allBossData = getAllBossData();
+    const allBossMetadata = getAllBossMetadata();
     
-    allBossData.forEach(boss => {
-        const requiredLevel = boss.explorerLevelRequired || 0;
+    allBossMetadata.forEach((boss: BossMetadata) => {
+        const requiredLevel = boss.explorerLevelRequired;
         // Check if this boss was locked before but is unlocked now
         if (requiredLevel > previousLevel && requiredLevel <= newLevel) {
             newlyUnlockedBosses.push(boss.displayName);

@@ -393,7 +393,7 @@ const batVampireAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
     );
     
     // HPが低い場合は拘束攻撃の重みを上げる
-    let modifiedActions = [...normalActions];
+    const modifiedActions = [...normalActions];
     if (boss.hp / boss.maxHp <= 0.4) {
         const restraintAction = normalActions.find(action =>
             action.id === 'vampire-hold'

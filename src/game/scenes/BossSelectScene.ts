@@ -1,5 +1,5 @@
 import { Game } from '../Game';
-import { getAllBossData } from '../data/index';
+import { getAllBossMetadata, getBossMetadata } from '../data/index';
 import { PlayerSaveManager } from '../systems/PlayerSaveData';
 import { AbilityType } from '../systems/AbilitySystem';
 import { SkillData, UnlockCondition } from '../data/skills';
@@ -65,6 +65,9 @@ export class BossSelectScene {
     enter(): void {
         console.log('Entered boss select scene');
         
+        // Reset boss selection button state
+        this.resetConfirmButtonState();
+        
         // Update boss card information
         this.updateBossCards();
         
@@ -75,13 +78,21 @@ export class BossSelectScene {
         this.updateDebugControlsVisibilityInModal();
     }
     
+    private resetConfirmButtonState(): void {
+        const confirmButton = document.getElementById('confirm-boss-btn') as HTMLButtonElement;
+        if (confirmButton) {
+            confirmButton.disabled = false;
+            confirmButton.textContent = '戦闘開始';
+        }
+    }
+    
     private updateBossCards(): void {
-        const allBossData = getAllBossData();
+        const allBossMetadata = getAllBossMetadata();
         const playerExplorerLevel = this.game.getPlayer().getExplorerLevel();
         
         this.bossCards?.forEach(card => {
             const bossId = card.getAttribute('data-boss');
-            const bossData = allBossData.find(boss => boss.id === bossId);
+            const bossData = allBossMetadata.find(boss => boss.id === bossId);
             
             if (bossData) {
                 const titleElement = card.querySelector('.card-title');
@@ -127,26 +138,25 @@ export class BossSelectScene {
     }
     
     private updateModal(bossId: string): void {
-        const allBossData = getAllBossData();
-        const bossData = allBossData.find(boss => boss.id === bossId);
+        const bossMetadata = getBossMetadata(bossId);
         
-        if (!bossData) return;
+        if (!bossMetadata) return;
         
         // Update modal title
         const modalTitle = document.getElementById('modal-boss-name');
         if (modalTitle) {
-            modalTitle.textContent = bossData.displayName;
+            modalTitle.textContent = bossMetadata.displayName;
         }
         
         // Update modal description
         const modalDescription = document.getElementById('modal-boss-description');
         if (modalDescription) {
-            modalDescription.textContent = bossData.description;
+            modalDescription.textContent = bossMetadata.description;
         }
         
         const modalQuestNote = document.getElementById('modal-boss-quest-note');
         if (modalQuestNote) {
-            modalQuestNote.textContent = bossData.questNote;
+            modalQuestNote.textContent = bossMetadata.questNote;
         }
         
         // Update modal stats
@@ -155,10 +165,10 @@ export class BossSelectScene {
             modalStats.innerHTML = `
                 <div class=\"row\">
                     <div class=\"col-6\">
-                        <strong>HP:</strong> ${bossData.maxHp}
+                        <strong>HP:</strong> ${bossMetadata.maxHp}
                     </div>
                     <div class=\"col-6\">
-                        <strong>攻撃力:</strong> ${bossData.attackPower}
+                        <strong>攻撃力:</strong> ${bossMetadata.attackPower}
                     </div>
                 </div>
             `;
@@ -167,8 +177,8 @@ export class BossSelectScene {
         // Add guest character attribution if available
         const modalGuestInfo = document.getElementById('modal-boss-guest-info');
         if (modalGuestInfo) {
-            if (bossData.guestCharacterInfo) {
-                modalGuestInfo.innerHTML = `<small class="text-muted">Guest Character by ${bossData.guestCharacterInfo.creator}</small>`;
+            if (bossMetadata.guestCharacterInfo) {
+                modalGuestInfo.innerHTML = `<small class="text-muted">Guest Character by ${bossMetadata.guestCharacterInfo.creator}</small>`;
                 modalGuestInfo.classList.remove('d-none');
             } else {
                 modalGuestInfo.classList.add('d-none');
@@ -176,15 +186,44 @@ export class BossSelectScene {
         }
     }
     
-    private onConfirmBoss(): void {
+    private async onConfirmBoss(): Promise<void> {
         if (this.selectedBossId) {
             // Hide modal
             if (this.bossModal) {
                 this.bossModal.hide();
             }
             
-            // Start battle with selected boss
-            this.game.selectBoss(this.selectedBossId);
+            // Show loading indicator
+            const confirmButton = document.getElementById('confirm-boss-btn') as HTMLButtonElement;
+            if (confirmButton) {
+                confirmButton.disabled = true;
+                confirmButton.textContent = 'ボスデータ読み込み中...';
+            }
+            
+            try {
+                // Start battle with selected boss (async loading)
+                await this.game.selectBoss(this.selectedBossId);
+            } catch (error) {
+                console.error('Failed to load boss:', error);
+                
+                // Re-enable button on error
+                if (confirmButton) {
+                    confirmButton.disabled = false;
+                    confirmButton.textContent = '戦闘開始';
+                }
+                
+                // Show user-friendly error message using existing toast utility
+                const errorMessage = error instanceof Error ? error.message : '不明なエラーが発生しました';
+                ModalUtils.showToast(
+                    `ボスデータの読み込みに失敗しました: ${errorMessage}`,
+                    'error'
+                );
+                
+                // Re-show modal so user can try again
+                if (this.bossModal) {
+                    this.bossModal.show();
+                }
+            }
         }
     }
     
@@ -809,9 +848,9 @@ export class BossSelectScene {
         }
         
         // Update statistics
-        const allBossData = getAllBossData();
-        const unlockedCount = allBossData.filter(boss => 
-            (boss.explorerLevelRequired || 0) <= player.getExplorerLevel()
+        const allBossMetadata = getAllBossMetadata();
+        const unlockedCount = allBossMetadata.filter(boss => 
+            boss.explorerLevelRequired <= player.getExplorerLevel()
         ).length;
         
         this.updateElement('unlocked-bosses-count', unlockedCount.toString());

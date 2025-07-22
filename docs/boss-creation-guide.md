@@ -56,6 +56,7 @@ interface BossData {
 - `CocoonAction` - 繭状態中の行動
 - `EatAttack` - 食べる攻撃
 - `DevourAttack` - 食べられた状態での攻撃
+- `FinishingMove` - カスタムとどめ攻撃
 - `PostDefeatedAttack` - プレイヤー敗北後の攻撃
 - `Skip` - 行動スキップ
 
@@ -63,6 +64,7 @@ interface BossData {
 
 ```typescript
 interface BossAction {
+    id?: string;                    // アクション固有ID（推奨、将来必須化予定）
     type: ActionType;               // 行動タイプ
     name: string;                   // 行動名
     description: string;            // 行動説明
@@ -73,14 +75,14 @@ interface BossAction {
     statusDuration?: number;        // 状態異常持続ターン
     weight: number;                 // AI選択重み
     canUse?: (boss: Boss, player: Player, turn: number) => boolean;  // 使用条件
-    onUse?: (boss: Boss, player: Player) => string[];  // カスタム行動コールバック
+    onUse?: (boss: Boss, player: Player, turn: number) => string[];  // カスタム行動コールバック
     hitRate?: number;               // 命中率（デフォルト: 0.95）
     criticalRate?: number;          // クリティカル率（デフォルト: 0.05）
     statusChance?: number;          // 状態異常付与確率（デフォルト: 1.0、範囲: 0.0-1.0）
     playerStateCondition?: 'normal' | 'ko' | 'restrained' | 'cocoon' | 'eaten' | 'defeated';  // プレイヤー状態条件
     healRatio?: number;             // HP吸収率（0.0-1.0）
-    damageVarianceMin?: number;     // ダメージ分散最小値
-    damageVarianceMax?: number;     // ダメージ分散最大値
+    damageVarianceMin?: number;     // ダメージ分散最小値（デフォルト: -20）
+    damageVarianceMax?: number;     // ダメージ分散最大値（デフォルト: +20）
 }
 ```
 
@@ -364,6 +366,8 @@ export {
 - `Sleep` - 眠り（行動不能）
 - `Confusion` - 混乱（行動阻害）
 - `Weakness` - 衰弱（攻撃力低下）
+- `Darkness` - 暗闇（命中率大幅低下）
+- `Doomed` - 再起不能（最大HP0、とどめ攻撃対象）
 
 **新しい状態異常**
 - `VisionImpairment` - 視界阻害（海のクラーケン）
@@ -543,6 +547,7 @@ aiStrategy: (boss, player, turn) => {
 - みかんドラゴン: HP 320, 攻撃力 17 (果物+睡眠タイプ)
 - スコーピオンキャリア: HP 260, 攻撃力 14 (毒+麻痺タイプ)
 - ドリームデーモン: HP 240, 攻撃力 13 (夢+特殊状態異常タイプ)
+- 蝙蝠のヴァンパイア: HP 310, 攻撃力 14 (拘束+魅了+生気吸収タイプ)
 
 **バランス設計指針**
 - HP 150-200: 状態異常特化型（短期決戦型）
@@ -591,8 +596,8 @@ explorerLevelRequired: 8-10
   - 蜜柑ドラゴン
 - **レベル5 - 洞窟・地下世界**
   - （将来の拡張用）
-- **レベル6 - 遺跡・廃墟**
-  - クリーンマスター
+- **レベル6 - 遺跡・廃墟・古城**
+  - クリーンマスター、ヴァンパイア
 - **レベル7 - 氷河・雪山**
   - （将来の拡張用）
 - **レベル8 - 火山・溶岩**
@@ -664,6 +669,7 @@ defeatTrophy: {
 - `src/game/data/bosses/aqua-serpent.ts` - customVariablesでの特殊技管理、onUse コールバックの例
 - `src/game/data/bosses/clean-master.ts` - 新しい状態異常システムの例
 - `src/game/data/bosses/dream-demon.ts` - 多様な状態異常と複雑な行動パターンの例
+- `src/game/data/bosses/bat-vampire.ts` - FinishingMoveアクション、給餌システム、詳細なAI戦略の例
 
 ### システムファイル
 - `src/game/entities/Boss.ts` - ボスクラスの実装
