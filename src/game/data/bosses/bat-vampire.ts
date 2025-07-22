@@ -99,9 +99,9 @@ const batVampireActions: BossAction[] = [
     // とどめ攻撃（プレイヤーがDoomed状態時）
     {
         id: 'finishing-devour',
-        type: ActionType.PostDefeatedAttack,
+        type: ActionType.FinishingMove,
         name: '小さくなった獲物の丸呑み',
-        description: '生気を吸い尽くされ小さくなったエルナルを丸呑みにする',
+        description: '生気を吸い尽くされ小さくなった獲物を丸呑みにする',
         weight: 100,
         playerStateCondition: 'defeated',
         messages: [
@@ -109,7 +109,18 @@ const batVampireActions: BossAction[] = [
             '<USER>は小さくなった<TARGET>を優しく抱き上げると、そのまま口の中に運んでいく...',
             '「ふふ...君のような美しい獲物は、永遠に私の体内で愛でてあげよう」',
             '<TARGET>は<USER>の体内で新たな生活を始めることになった...'
-        ]
+        ],
+        onUse: (_boss: Boss, player: Player) => {
+            // 再起不能状態を解除 (TODO: Dead 状態付与時に自動解除したい)
+            player.statusEffects.removeEffect(StatusEffectType.Doomed);
+            // プレイヤーを敗北状態にする
+            player.statusEffects.addEffect(StatusEffectType.Dead);
+            // 食べられ状態にする (フレーバー)
+            player.statusEffects.addEffect(StatusEffectType.Eaten);
+            
+            // メッセージは設定されているのでここでは何もしない
+            return [];
+        }
     },
 
     // 体内での行動（敗北後の継続行動）
@@ -190,6 +201,7 @@ const batVampireAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
     const playerKO = player.statusEffects.hasEffect(StatusEffectType.KnockedOut);
     const playerHasDarkness = player.statusEffects.hasEffect(StatusEffectType.Darkness);
     const playerHPPercent = player.hp / player.maxHp;
+    const playerDoomed = player.statusEffects.hasEffect(StatusEffectType.Doomed);
     const playerDefeated = player.isDefeated();
     
     // プレイヤーが敗北状態の場合の処理
@@ -201,14 +213,6 @@ const batVampireAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
         }
         
         boss.customVariables.postDefeatedTurn++;
-        
-        // 最初のターンはとどめ攻撃（丸呑み）
-        if (boss.customVariables.postDefeatedTurn === 1) {
-            const finishingAction = batVampireActions.find(action => 
-                action.id === 'finishing-devour'
-            );
-            if (finishingAction) return finishingAction;
-        }
         
         // 給餌タイムの判定（15-20ターンごと）
         const turnsSinceFeeding = boss.customVariables.postDefeatedTurn - boss.customVariables.lastFeedingTurn;
@@ -239,6 +243,17 @@ const batVampireAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
         
         // フォールバック
         return batVampireActions.find(action => action.id === 'stomach-absorption') || batVampireActions[0];
+    }
+    
+    // プレイヤーが再起不能状態であれば、特別な行動を優先
+    if (playerDoomed) {
+        // とどめ攻撃（丸呑み）
+        if (boss.customVariables.postDefeatedTurn === 1) {
+            const finishingAction = batVampireActions.find(action =>
+                action.id === 'finishing-devour'
+            );
+            if (finishingAction) return finishingAction;
+        }
     }
     
     // プレイヤーがKO状態で拘束中なら最大HP吸収を最優先

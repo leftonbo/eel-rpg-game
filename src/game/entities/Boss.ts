@@ -27,6 +27,7 @@ export enum ActionType {
     EatAttack = 'eat-attack',
     DevourAttack = 'devour-attack',
     PostDefeatedAttack = 'post-defeated-attack',
+    FinishingMove = 'finishing-move', // Custom finishing move
     Skip = 'skip'
 }
 
@@ -577,7 +578,15 @@ export class Boss extends Actor {
                     }
                 }
                 break;
-                
+
+            case ActionType.FinishingMove:
+                // Custom finishing move logic
+                if (action.statusEffect) {
+                    player.statusEffects.addEffect(action.statusEffect);
+                    messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
+                }
+                break;
+            
             case ActionType.PostDefeatedAttack:
                 // Post-defeat actions (status effects only, no HP/MP changes)
                 if (action.statusEffect) {
@@ -595,7 +604,11 @@ export class Boss extends Actor {
         // Execute custom onUse callback if provided
         if (action.onUse) {
             const customMessages = action.onUse(this, player, turn);
-            messages.push(...customMessages);
+            if (customMessages && customMessages.length > 0) {
+                // Format custom messages with actor names
+                const formattedMessages = customMessages.map(msg => formatMessage(msg, this.displayName, player.name));
+                messages.push(...formattedMessages);
+            }
         }
         
         return messages;
