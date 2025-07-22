@@ -459,7 +459,7 @@ export class BattleScene {
                     if (btnId === 'stay-still-btn') {
                         // Only show stay-still button if the skill is unlocked
                         const hasStayStillSkill = this.player?.hasSkill('stay-still') ?? false;
-                        if (canAct && hasStayStillSkill) {
+                        if (hasStayStillSkill) {
                             btn.classList.remove('d-none');
                             btn.classList.toggle('disabled', !this.playerTurn);
                         } else {
@@ -614,7 +614,8 @@ export class BattleScene {
         const struggleSkillSpecialBtn = document.getElementById('struggle-skill-special-btn');
         if (struggleSkillSpecialBtn) {
             const isStruggleUnlocked = this.player.hasSkill('struggle');
-            const canUseSkill = !this.player.statusEffects.isExhausted() && 
+            const canUseSkill = this.player.statusEffects.canAct() &&
+                               !this.player.statusEffects.isExhausted() && 
                                !this.player.statusEffects.isKnockedOut() &&
                                !this.player.statusEffects.isDoomed() &&
                                !this.player.statusEffects.isDead();
