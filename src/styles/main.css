@@ -1463,6 +1463,14 @@ footer svg {
     animation: steam-wave 2s ease-in-out infinite;
 }
 
+/* Bat Vampire Status Effects */
+.status-darkness {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: #424242;
+    color: #9e9e9e;
+    animation: darkness-fade 3s ease-in-out infinite alternate;
+}
+
 /* Clean Master animations */
 @keyframes bubble-float {
     0%, 100% { 
@@ -1583,4 +1591,10 @@ footer svg {
 
 .d-none-important {
     display: none !important;
+}
+
+/* Bat Vampire Animations */
+@keyframes darkness-fade {
+    0% { opacity: 0.7; }
+    100% { opacity: 1.0; }
 }

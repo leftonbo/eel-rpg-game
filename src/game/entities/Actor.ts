@@ -271,9 +271,18 @@ export abstract class Actor {
         this.hp = this.maxHp;
         this.mp = this.maxMp;
     }
+    
+    /**
+     * Check if actor is restrained by any status effect
+     * This includes being eaten, cocooned, or any other restraining effect
+     * @returns 
+     */
+    isAnyRestrained(): boolean {
+        return this.isRestrained() || this.isEaten() || this.isCocoon();
+    }
 
     /**
-     * Status effect helper methods
+     * Check if actor is (normal) restrained
      */
     isRestrained(): boolean {
         return this.statusEffects.isRestrained();

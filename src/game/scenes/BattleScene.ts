@@ -409,7 +409,7 @@ export class BattleScene {
 
         const canAct = this.player.canAct();
         const canActActually = canAct && this.playerTurn && !this.battleEnded;
-        const isRestrained = this.player.isRestrained() || this.player.isEaten() || this.player.isCocoon();
+        const isAnyRestrained = this.player.isAnyRestrained();
         const isKnockedOut = this.player.isKnockedOut();
         const isDoomed = this.player.isDoomed();
         const isDefeated = this.player.isDefeated();
@@ -421,7 +421,7 @@ export class BattleScene {
                 this.actionButtons.classList.add('d-none');
                 this.specialActions.classList.add('d-none');
                 this.battleEndActions.classList.remove('d-none');
-            } else if (isRestrained || isKnockedOut || isDoomed || isDefeated || !this.player.canAct()) {
+            } else if (isAnyRestrained || isKnockedOut || isDoomed || isDefeated || !canAct) {
                 this.actionButtons.classList.add('d-none');
                 this.specialActions.classList.remove('d-none');
                 this.battleEndActions.classList.add('d-none');
@@ -437,7 +437,7 @@ export class BattleScene {
         actionBtns.forEach(btnId => {
             const btn = document.getElementById(btnId);
             if (btn) {
-                btn.classList.toggle('disabled', !canActActually || isRestrained);
+                btn.classList.toggle('disabled', !canActActually || isAnyRestrained);
             }
         });
         
@@ -454,7 +454,7 @@ export class BattleScene {
                         btn.classList.remove('d-none');
                         btn.classList.toggle('disabled', !this.playerTurn);
                     }
-                } else if (isRestrained) {
+                } else if (isAnyRestrained) {
                     // For restrained state, show struggle and stay-still buttons (if unlocked)
                     if (btnId === 'stay-still-btn') {
                         // Only show stay-still button if the skill is unlocked
@@ -614,7 +614,8 @@ export class BattleScene {
         const struggleSkillSpecialBtn = document.getElementById('struggle-skill-special-btn');
         if (struggleSkillSpecialBtn) {
             const isStruggleUnlocked = this.player.hasSkill('struggle');
-            const canUseSkill = !this.player.statusEffects.isExhausted() && 
+            const canUseSkill = this.player.statusEffects.canAct() &&
+                               !this.player.statusEffects.isExhausted() && 
                                !this.player.statusEffects.isKnockedOut() &&
                                !this.player.statusEffects.isDoomed() &&
                                !this.player.statusEffects.isDead();
@@ -948,7 +949,9 @@ export class BattleScene {
         }
         
         // If player is doomed but not defeated, boss performs finishing move
-        if (this.player.statusEffects.isDoomed() && !this.player.isDefeated()) {
+        // unless the boss uses custom logic to skip it
+        if (this.player.statusEffects.isDoomed() && !this.player.isDefeated()
+            && !this.boss.suppressAutoFinishingMove) {
             this.performFinishingMove();
             return;
         }

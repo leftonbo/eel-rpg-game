@@ -27,10 +27,12 @@ export enum ActionType {
     EatAttack = 'eat-attack',
     DevourAttack = 'devour-attack',
     PostDefeatedAttack = 'post-defeated-attack',
+    FinishingMove = 'finishing-move', // Custom finishing move
     Skip = 'skip'
 }
 
 export interface BossAction {
+    id?: string; // Unique identifier for the action. TODO: make all actions must have this `id` field
     type: ActionType;
     name: string;
     description: string;
@@ -75,6 +77,7 @@ export interface BossData {
     aiStrategy?: (boss: Boss, player: Player, turn: number) => BossAction;
     getDialogue?: (situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') => string;
     finishingMove?: () => string[];
+    suppressAutoFinishingMove?: boolean; // 自動とどめ攻撃を抑制し、AI戦略でカスタムとどめ攻撃を処理
     icon?: string;
     guestCharacterInfo?: {
         creator: string;
@@ -119,6 +122,7 @@ export class Boss extends Actor {
     public aiStrategy?: (boss: Boss, player: Player, turn: number) => BossAction;
     public specialDialogues: Map<string, string> = new Map();
     public finishingMove?: () => string[];
+    public suppressAutoFinishingMove: boolean;
     public icon: string;
     public guestCharacterInfo?: {
         creator: string;
@@ -136,7 +140,7 @@ export class Boss extends Actor {
      * AI戦略での状態管理、クールダウン管理、行動制御などに使用
      * ボスデータの初期値をコピーして初期化される
      */
-    public customVariables: Record<string, any> = {};
+    private customVariables: Record<string, any> = {};
     
     constructor(data: BossData) {
         // Boss has unlimited MP (無尽蔵) - set to a high value
@@ -149,6 +153,7 @@ export class Boss extends Actor {
         this.personality = data.personality || [];
         this.aiStrategy = data.aiStrategy;
         this.finishingMove = data.finishingMove;
+        this.suppressAutoFinishingMove = data.suppressAutoFinishingMove || false;
         this.icon = data.icon || '👹';
         this.guestCharacterInfo = data.guestCharacterInfo;
         this.customVariables = data.customVariables ? { ...data.customVariables } : {};
@@ -455,7 +460,7 @@ export class Boss extends Actor {
                     if (!isMiss && action.statusEffect) {
                         const statusChance = action.statusChance !== undefined ? action.statusChance : 1.0;
                         if (Math.random() < statusChance) {
-                            player.statusEffects.addEffect(action.statusEffect);
+                            player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
                             messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
                         }
                         else if (!action.damage)
@@ -514,6 +519,15 @@ export class Boss extends Actor {
                         const actualDamage = player.takeDamage(actionDamage);
                         messages.push(`${player.name}に${actualDamage}のダメージ！`);
                     }
+                    
+                    // Apply status effect if specified
+                    if (action.statusEffect) {
+                        const statusChance = action.statusChance !== undefined ? action.statusChance : 1.0;
+                        if (Math.random() < statusChance) {
+                            player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
+                            messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
+                        }
+                    }
                 }
                 break;
                 
@@ -567,17 +581,25 @@ export class Boss extends Actor {
                     if (action.statusEffect) {
                         const statusChance = action.statusChance !== undefined ? action.statusChance : 1.0;
                         if (Math.random() < statusChance) {
-                            player.statusEffects.addEffect(action.statusEffect);
+                            player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
                             messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
                         }
                     }
                 }
                 break;
-                
+
+            case ActionType.FinishingMove:
+                // Custom finishing move logic
+                if (action.statusEffect) {
+                    player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
+                    messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
+                }
+                break;
+            
             case ActionType.PostDefeatedAttack:
                 // Post-defeat actions (status effects only, no HP/MP changes)
                 if (action.statusEffect) {
-                    player.statusEffects.addEffect(action.statusEffect);
+                    player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
                     messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
                 }
                 break;
@@ -591,7 +613,11 @@ export class Boss extends Actor {
         // Execute custom onUse callback if provided
         if (action.onUse) {
             const customMessages = action.onUse(this, player, turn);
-            messages.push(...customMessages);
+            if (customMessages && customMessages.length > 0) {
+                // Format custom messages with actor names
+                const formattedMessages = customMessages.map(msg => formatMessage(msg, this.displayName, player.name));
+                messages.push(...formattedMessages);
+            }
         }
         
         return messages;
