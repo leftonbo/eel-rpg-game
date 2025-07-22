@@ -85,18 +85,28 @@ export class Player extends Actor {
      * Load player data from localStorage (非同期対応)
      */
     private async loadFromSave(): Promise<void> {
+        console.log('Loading player data from localStorage...');
         const saveData = PlayerSaveManager.loadPlayerData();
+        
         if (saveData) {
+            console.log('Save data found:', saveData);
+            
             // Load abilities
+            console.log('Loading abilities:', saveData.abilities);
             this.abilitySystem.loadFromSaveData(saveData.abilities);
             
             // Load equipment
+            console.log('Loading equipment:', saveData.equipment);
             this.equippedWeapon = saveData.equipment.weapon;
             this.equippedArmor = saveData.equipment.armor;
 
             // Load battle memorials into MemorialSystem (非同期)
+            console.log('Loading memorials:', saveData.memorials);
             await this.memorialSystem.importData(saveData.memorials || {});
+            
+            console.log('Player data loaded successfully');
         } else {
+            console.log('No save data found, initializing with defaults');
             // Initialize MemorialSystem with empty data
             this.memorialSystem.initializeData();
         }

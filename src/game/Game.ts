@@ -44,13 +44,16 @@ export class Game {
     
     private async initAsync(): Promise<void> {
         try {
+            console.log('Initializing game...');
             // Initialize player data asynchronously
             await this.player.initializeAsync();
+            console.log('Game initialized successfully');
             
             // Show initial title screen
             this.setState(GameState.Title);
         } catch (error) {
             console.error('Failed to initialize game:', error);
+            console.error('Error details:', error);
             // Fallback: show title screen anyway
             this.setState(GameState.Title);
         }
