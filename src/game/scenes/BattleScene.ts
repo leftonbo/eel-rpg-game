@@ -948,7 +948,9 @@ export class BattleScene {
         }
         
         // If player is doomed but not defeated, boss performs finishing move
-        if (this.player.statusEffects.isDoomed() && !this.player.isDefeated()) {
+        // unless the boss uses custom logic to skip it
+        if (this.player.statusEffects.isDoomed() && !this.player.isDefeated()
+            && !this.boss.suppressAutoFinishingMove) {
             this.performFinishingMove();
             return;
         }
