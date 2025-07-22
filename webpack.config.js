@@ -79,7 +79,7 @@ export default (env, argv) => {
     },
     // Enable tree shaking
     usedExports: true,
-    sideEffects: false,
+    // sideEffects is handled in package.json
   },
   performance: {
     maxEntrypointSize: 250000, // 244 KiB in bytes

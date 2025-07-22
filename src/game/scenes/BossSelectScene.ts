@@ -205,13 +205,56 @@ export class BossSelectScene {
                 await this.game.selectBoss(this.selectedBossId);
             } catch (error) {
                 console.error('Failed to load boss:', error);
+                
                 // Re-enable button on error
                 if (confirmButton) {
                     confirmButton.disabled = false;
                     confirmButton.textContent = '戦闘開始';
                 }
+                
+                // Show user-friendly error message
+                this.showErrorMessage(
+                    'ボスデータの読み込みに失敗しました',
+                    error instanceof Error ? error.message : '不明なエラーが発生しました'
+                );
+                
+                // Re-show modal so user can try again
+                if (this.bossModal) {
+                    this.bossModal.show();
+                }
             }
         }
+    }
+    
+    /**
+     * Show user-friendly error message using Bootstrap alert
+     */
+    private showErrorMessage(title: string, message: string): void {
+        // Remove existing error alerts
+        const existingAlerts = document.querySelectorAll('.boss-select-error-alert');
+        existingAlerts.forEach(alert => alert.remove());
+        
+        // Create new error alert
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-danger alert-dismissible fade show boss-select-error-alert';
+        alertDiv.innerHTML = `
+            <strong>${title}</strong><br>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        
+        // Insert alert at the top of boss select screen
+        const bossSelectScreen = document.getElementById('boss-select-screen');
+        if (bossSelectScreen) {
+            bossSelectScreen.insertBefore(alertDiv, bossSelectScreen.firstChild);
+        }
+        
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            if (alertDiv && alertDiv.parentNode) {
+                alertDiv.remove();
+            }
+        }, 5000);
     }
     
     /**

@@ -150,44 +150,42 @@ async function loadBossData(id: string): Promise<BossData> {
         return bossDataCache.get(id)!;
     }
 
-    let bossModule;
+    let bossData: BossData;
     switch (id) {
         case 'swamp-dragon':
-            bossModule = await import('./bosses/swamp-dragon');
+            bossData = (await import('./bosses/swamp-dragon')).swampDragonData;
             break;
         case 'dark-ghost':
-            bossModule = await import('./bosses/dark-ghost');
+            bossData = (await import('./bosses/dark-ghost')).darkGhostData;
             break;
         case 'mech-spider':
-            bossModule = await import('./bosses/mech-spider');
+            bossData = (await import('./bosses/mech-spider')).mechSpiderData;
             break;
         case 'dream-demon':
-            bossModule = await import('./bosses/dream-demon');
+            bossData = (await import('./bosses/dream-demon')).dreamDemonData;
             break;
         case 'scorpion-carrier':
-            bossModule = await import('./bosses/scorpion-carrier');
+            bossData = (await import('./bosses/scorpion-carrier')).scorpionCarrierData;
             break;
         case 'mikan-dragon':
-            bossModule = await import('./bosses/mikan-dragon');
+            bossData = (await import('./bosses/mikan-dragon')).mikanDragonData;
             break;
         case 'sea-kraken':
-            bossModule = await import('./bosses/sea-kraken');
+            bossData = (await import('./bosses/sea-kraken')).seaKrakenData;
             break;
         case 'aqua-serpent':
-            bossModule = await import('./bosses/aqua-serpent');
+            bossData = (await import('./bosses/aqua-serpent')).aquaSerpentData;
             break;
         case 'clean-master':
-            bossModule = await import('./bosses/clean-master');
+            bossData = (await import('./bosses/clean-master')).cleanMasterData;
             break;
         case 'bat-vampire':
-            bossModule = await import('./bosses/bat-vampire');
+            bossData = (await import('./bosses/bat-vampire')).batVampireData;
             break;
         default:
             throw new Error(`Unknown boss ID: ${id}`);
     }
 
-    // Extract boss data from the default export
-    const bossData = Object.values(bossModule)[0] as BossData;
     bossDataCache.set(id, bossData);
     return bossData;
 }
@@ -207,11 +205,21 @@ export function getAllBossMetadata(): BossMetadata[] {
     return Array.from(bossMetadata.values());
 }
 
-// Legacy synchronous functions for backward compatibility - deprecated
+/**
+ * @deprecated Use getBossData() instead. This synchronous function only returns cached data.
+ * Legacy synchronous function for backward compatibility.
+ * @param id Boss ID
+ * @returns Boss data if cached, undefined otherwise
+ */
 export function getBossDataSync(id: string): BossData | undefined {
     return bossDataCache.get(id);
 }
 
+/**
+ * @deprecated Use getAllBossMetadata() for boss selection or ensure boss data is loaded first.
+ * Legacy synchronous function that only returns cached data.
+ * @returns Array of cached boss data
+ */
 export function getAllBossDataSync(): BossData[] {
     return Array.from(bossDataCache.values());
 }
