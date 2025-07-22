@@ -93,6 +93,22 @@ const batVampireActions: BossAction[] = [
         weight: 50,
         playerStateCondition: 'ko',
         messages: ['<USER>は<TARGET>に噛みつき、生命力そのものを吸い取る...']
+    },
+
+    // とどめ攻撃（プレイヤーがDoomed状態時）
+    {
+        id: 'finishing-devour',
+        type: ActionType.PostDefeatedAttack,
+        name: '小さくなった獲物の丸呑み',
+        description: '生気を吸い尽くされ小さくなったエルナルを丸呑みにする',
+        weight: 100,
+        playerStateCondition: 'defeated',
+        messages: [
+            '<TARGET>の生気は完全に吸い尽くされ、体が小さくなってしまった...',
+            '<USER>は小さくなった<TARGET>を優しく抱き上げると、そのまま口の中に運んでいく...',
+            '「ふふ...君のような美しい獲物は、永遠に私の体内で愛でてあげよう」',
+            '<TARGET>は<USER>の体内で新たな生活を始めることになった...'
+        ]
     }
 ];
 
@@ -103,6 +119,15 @@ const batVampireAIStrategy = (boss: Boss, player: any, turn: number): BossAction
     const playerKO = player.hp <= 0;
     const playerHasDarkness = player.statusEffects.hasEffect(StatusEffectType.Darkness);
     const playerHPPercent = player.hp / player.maxHp;
+    const playerDefeated = player.isDefeated();
+    
+    // プレイヤーがDoomed状態（最大HP0）の場合はとどめ攻撃
+    if (playerDefeated) {
+        const finishingAction = batVampireActions.find(action => 
+            action.id === 'finishing-devour'
+        );
+        if (finishingAction) return finishingAction;
+    }
     
     // プレイヤーがKO状態で拘束中なら最大HP吸収を最優先
     if (playerKO && playerRestrained) {
@@ -188,6 +213,7 @@ export const batVampireData: BossData = {
     attackPower: 14,
     actions: batVampireActions,
     aiStrategy: batVampireAIStrategy,
+    suppressAutoFinishingMove: true, // カスタムとどめ攻撃を使用
     
     // エクスプローラーレベル6で解禁
     explorerLevelRequired: 6

@@ -76,6 +76,7 @@ export interface BossData {
     aiStrategy?: (boss: Boss, player: Player, turn: number) => BossAction;
     getDialogue?: (situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') => string;
     finishingMove?: () => string[];
+    suppressAutoFinishingMove?: boolean; // 自動とどめ攻撃を抑制し、AI戦略でカスタムとどめ攻撃を処理
     icon?: string;
     guestCharacterInfo?: {
         creator: string;
@@ -120,6 +121,7 @@ export class Boss extends Actor {
     public aiStrategy?: (boss: Boss, player: Player, turn: number) => BossAction;
     public specialDialogues: Map<string, string> = new Map();
     public finishingMove?: () => string[];
+    public suppressAutoFinishingMove: boolean;
     public icon: string;
     public guestCharacterInfo?: {
         creator: string;
@@ -150,6 +152,7 @@ export class Boss extends Actor {
         this.personality = data.personality || [];
         this.aiStrategy = data.aiStrategy;
         this.finishingMove = data.finishingMove;
+        this.suppressAutoFinishingMove = data.suppressAutoFinishingMove || false;
         this.icon = data.icon || '👹';
         this.guestCharacterInfo = data.guestCharacterInfo;
         this.customVariables = data.customVariables ? { ...data.customVariables } : {};
