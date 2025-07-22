@@ -65,6 +65,9 @@ export class BossSelectScene {
     enter(): void {
         console.log('Entered boss select scene');
         
+        // Reset boss selection button state
+        this.resetConfirmButtonState();
+        
         // Update boss card information
         this.updateBossCards();
         
@@ -73,6 +76,14 @@ export class BossSelectScene {
         
         // Show/hide debug controls based on debug mode
         this.updateDebugControlsVisibilityInModal();
+    }
+    
+    private resetConfirmButtonState(): void {
+        const confirmButton = document.getElementById('confirm-boss-btn') as HTMLButtonElement;
+        if (confirmButton) {
+            confirmButton.disabled = false;
+            confirmButton.textContent = '戦闘開始';
+        }
     }
     
     private updateBossCards(): void {
