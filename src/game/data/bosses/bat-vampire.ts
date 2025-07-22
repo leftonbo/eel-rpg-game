@@ -418,10 +418,13 @@ const batVampireAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
 
 export const batVampireData: BossData = {
     id: 'bat-vampire',
-    name: 'コウモリヴァンパイア',
-    displayName: 'コウモリヴァンパイア',
-    description: '古城に住む紳士的なコウモリの獣人。表向きは優雅だが、内心は獲物を陥れることに喜びを感じている。',
-    questNote: '「ようこそ、我が城へ...君のような美しい獲物は久々だ」',
+    name: '蝙蝠のヴァンパイア',
+    displayName: '蝙蝠のヴァンパイア',
+    description: `古城に住む蝙蝠の獣人`,
+    questNote: 'あなたの元に奇妙な招待状が届いた。そこには「君の成果を称える宴に招待する」とだけ書かれたメッセージと、古城の地図が添えられていた。あなたはその城へ向かうことにした...',
+    personality: [
+        'ようこそ、我が城へ...君のような美しい獲物は久々だ'
+    ],
     maxHp: 310,
     attackPower: 14,
     actions: batVampireActions,
@@ -431,3 +434,5 @@ export const batVampireData: BossData = {
     // エクスプローラーレベル6で解禁
     explorerLevelRequired: 6
 };
+
+// TODO: どっかで使いたいのでメモ: '古城に住む紳士的なコウモリの獣人。表向きは優雅だが、内心は獲物を眷属へと陥れることに執着している。彼の城に招待され、城に足を踏み入れた者は、彼の魅力に抗えず、気が済むまでペットとして飼われることになるという。'
