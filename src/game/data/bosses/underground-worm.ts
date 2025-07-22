@@ -100,6 +100,56 @@ const undergroundWormDevourActions: BossAction[] = [
     }
 ];
 
+// 敗北後の継続攻撃（プレイヤーがKO状態で体内にいる時）
+const undergroundWormPostDefeatedActions: BossAction[] = [
+    {
+        type: ActionType.PostDefeatedAttack,
+        name: '地底の静寂',
+        description: '深い地底の静かな環境でプレイヤーを包み込む',
+        messages: [
+            '<USER>は地底深くへと潜っていく...',
+            '<TARGET>は静寂な地底の暗闇に包まれ、安らかな眠りに落ちていく'
+        ],
+        weight: 30,
+        playerStateCondition: 'defeated'
+    },
+    {
+        type: ActionType.PostDefeatedAttack,
+        name: '鉱物吸収',
+        description: '体内で地底の鉱物を使ってプレイヤーを石化保存する',
+        messages: [
+            '<USER>の体内に地底の鉱物が流れ込む...',
+            '<TARGET>の体がゆっくりと美しい鉱石へと変化していく'
+        ],
+        statusEffect: StatusEffectType.Petrified,
+        statusChance: 0.8,
+        weight: 25,
+        playerStateCondition: 'defeated'
+    },
+    {
+        type: ActionType.PostDefeatedAttack,
+        name: '地下水循環',
+        description: '体内の地下水系でプレイヤーを優しく循環させる',
+        messages: [
+            '<USER>の体内で清らかな地下水が流れている...',
+            '<TARGET>は地下水流に包まれながら永遠の安息を得る'
+        ],
+        weight: 20,
+        playerStateCondition: 'defeated'
+    },
+    {
+        type: ActionType.PostDefeatedAttack,
+        name: '化石化保存',
+        description: '時間をかけて獲物を化石として完全保存する',
+        messages: [
+            '<USER>は獲物を大切に保存しようとしている...',
+            '<TARGET>は悠久の時を超えて保存されるため、ゆっくりと化石へと変化していく'
+        ],
+        weight: 15,
+        playerStateCondition: 'defeated'
+    }
+];
+
 export const undergroundWormData: BossData = {
     id: 'underground-worm',
     name: 'UndergroundWorm',
@@ -110,8 +160,26 @@ export const undergroundWormData: BossData = {
     attackPower: 12,
     icon: '🪨',
     explorerLevelRequired: 5,
-    actions: undergroundWormActions.concat(undergroundWormDevourActions),
+    actions: undergroundWormActions.concat(undergroundWormDevourActions).concat(undergroundWormPostDefeatedActions),
     aiStrategy: (boss: Boss, player: Player, turn: number) => {
+        // プレイヤーが敗北状態の場合は敗北後攻撃を使用
+        if (player.isDefeated()) {
+            const postDefeatedActions = boss.actions.filter(a => a.type === ActionType.PostDefeatedAttack);
+            if (postDefeatedActions.length > 0) {
+                const weights = postDefeatedActions.map(a => a.weight || 1);
+                const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+                let random = Math.random() * totalWeight;
+                
+                for (let i = 0; i < postDefeatedActions.length; i++) {
+                    random -= weights[i];
+                    if (random <= 0) {
+                        return postDefeatedActions[i];
+                    }
+                }
+                return postDefeatedActions[0];
+            }
+        }
+        
         // HP が50%以下になったら積極的に丸呑みを狙う
         if (boss.hp <= boss.maxHp * 0.5) {
             if (!player.isEaten() && Math.random() < 0.6) {
@@ -147,5 +215,15 @@ export const undergroundWormData: BossData = {
             throw new Error('No default action found for underground worm');
         }
         return defaultAction;
+    },
+    
+    // 記念品設定
+    victoryTrophy: {
+        name: '地底の化石',
+        description: '地底のワームの住む洞窟で発見された美しい古代生物の化石。悠久の時を物語る神秘的な輝きを放っている。'
+    },
+    defeatTrophy: {
+        name: '鉱石の結晶',
+        description: '地底のワームの体内で形成された美しい鉱石の結晶。地底世界の神秘的な力が込められた宝石のような逸品。'
     }
 };
