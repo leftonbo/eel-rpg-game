@@ -443,6 +443,14 @@ export const batVampireData: BossData = {
     actions: batVampireActions,
     aiStrategy: batVampireAIStrategy,
     suppressAutoFinishingMove: true, // カスタムとどめ攻撃を使用
+    victoryTrophy: {
+        name: '蝙蝠の羽根',
+        description: '蝙蝠のヴァンパイアの美しい漆黒の羽根。夜空を舞う優雅な証として輝いている。'
+    },
+    defeatTrophy: {
+        name: '古城のワイングラス',
+        description: '蝙蝠のヴァンパイアが愛用していた血の赤い液体が入ったワイングラス。甘美な記憶が宿っている。'
+    },
     
     // エクスプローラーレベル6で解禁
     explorerLevelRequired: 6
