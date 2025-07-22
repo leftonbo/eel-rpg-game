@@ -83,15 +83,14 @@ export class Game {
         this.setState(GameState.BossSelect);
     }
     
-    selectBoss(bossId: string): void {
-        const bossData = getBossData(bossId);
-        if (!bossData) {
-            console.error(`Boss data not found for ID: ${bossId}`);
-            return;
+    async selectBoss(bossId: string): Promise<void> {
+        try {
+            const bossData = await getBossData(bossId);
+            this.currentBoss = new Boss(bossData);
+            this.setState(GameState.Battle);
+        } catch (error) {
+            console.error(`Failed to load boss data for ID: ${bossId}`, error);
         }
-        
-        this.currentBoss = new Boss(bossData);
-        this.setState(GameState.Battle);
     }
     
     returnToBossSelect(): void {

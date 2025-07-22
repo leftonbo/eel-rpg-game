@@ -1,4 +1,4 @@
-import { getBossData } from "../data";
+import { getBossDataSync } from "../data";
 import { BossData } from "../entities/Boss";
 
 export enum TrophyType {
@@ -63,7 +63,7 @@ export class MemorialSystem {
      */
     private createHaveTrophies(): void {
         this.bossMemorials.forEach((memorial, bossId) => {
-            const bossData = getBossData(bossId);
+            const bossData = getBossDataSync(bossId);
             if (!bossData) {
                 console.warn(`No boss data found for ID: ${bossId}`);
                 return;

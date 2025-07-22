@@ -4,8 +4,13 @@
   "description": "A turn-based RPG game where you play as Elnal the eel fighting against giant bosses",
   "main": "dist/main.js",
   "type": "module",
+  "sideEffects": [
+    "**/*.css",
+    "./src/main.ts"
+  ],
   "scripts": {
     "build": "webpack --mode production",
+    "build:analyze": "webpack --mode production --env analyze",
     "dev": "webpack serve --mode development --open",
     "start": "npm run dev",
     "clean": "rimraf dist",
@@ -34,6 +39,7 @@
     "ts-loader": "^9.4.0",
     "typescript": "^5.0.0",
     "webpack": "^5.88.0",
+    "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.0",
     "webpack-dev-server": "^5.2.2"
   }
