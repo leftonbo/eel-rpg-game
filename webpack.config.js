@@ -84,7 +84,7 @@ export default (env, argv) => {
   performance: {
     maxEntrypointSize: 250000, // 244 KiB in bytes
     maxAssetSize: 250000,
-    hints: isProduction ? 'error' : 'warning',
+    hints: isProduction ? 'error' : false, // Disable warnings in development
   },
     plugins: [
       new webpack.DefinePlugin({
