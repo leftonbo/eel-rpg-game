@@ -206,18 +206,28 @@ const batVampireAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
     
     // プレイヤーが敗北状態の場合の処理
     if (playerDefeated) {
-        // カスタム変数の初期化
-        if (!boss.customVariables.postDefeatedTurn) {
-            boss.customVariables.postDefeatedTurn = 0;
-            boss.customVariables.lastFeedingTurn = 0;
+        // 敗北後のターン数をカスタム変数から取得
+        let postDefeatedTurn = boss.getCustomVariable<number>('postDefeatedTurn', 0);
+        
+        // ターンカウンターが 0 の場合、カスタム変数の初期化
+        if (postDefeatedTurn === 0) {
+            postDefeatedTurn = 1; // 初回は1ターン目として扱う
+            boss.setCustomVariable('postDefeatedTurn', 1);
+            boss.setCustomVariable('lastFeedingTurn', 0);
+        }
+        else
+        {
+            // ターンカウンターをインクリメント
+            postDefeatedTurn++;
+            boss.setCustomVariable('postDefeatedTurn', postDefeatedTurn);
         }
         
-        boss.customVariables.postDefeatedTurn++;
+        const lastFeedingTurn = boss.getCustomVariable<number>('lastFeedingTurn', 0);
         
         // 給餌タイムの判定（15-20ターンごと）
-        const turnsSinceFeeding = boss.customVariables.postDefeatedTurn - boss.customVariables.lastFeedingTurn;
+        const turnsSinceFeeding = postDefeatedTurn - lastFeedingTurn;
         if (turnsSinceFeeding >= 15 && Math.random() < 0.3) {
-            boss.customVariables.lastFeedingTurn = boss.customVariables.postDefeatedTurn;
+            boss.setCustomVariable('lastFeedingTurn', postDefeatedTurn);
             const feedingAction = batVampireActions.find(action => 
                 action.id === 'feeding-time'
             );
@@ -248,12 +258,10 @@ const batVampireAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
     // プレイヤーが再起不能状態であれば、特別な行動を優先
     if (playerDoomed) {
         // とどめ攻撃（丸呑み）
-        if (boss.customVariables.postDefeatedTurn === 1) {
-            const finishingAction = batVampireActions.find(action =>
-                action.id === 'finishing-devour'
-            );
-            if (finishingAction) return finishingAction;
-        }
+        const finishingAction = batVampireActions.find(action =>
+            action.id === 'finishing-devour'
+        );
+        if (finishingAction) return finishingAction;
     }
     
     // プレイヤーがKO状態で拘束中なら最大HP吸収を最優先
