@@ -80,6 +80,7 @@
 
 - `npm run dev`: 開発サーバーを起動（ホットリロード付き）
 - `npm run build`: プロダクション用にビルド
+- `npm run build:analyze`: バンドル分析付きプロダクションビルド
 - `npm run typecheck`: TypeScriptの型チェック
 - `npm run lint`: ESLintでコードチェック
 - `npm run clean`: distディレクトリをクリーンアップ
@@ -123,7 +124,7 @@ eel-rpg-game/
 │   │   │   ├── Player.ts            # プレイヤークラス
 │   │   │   └── Boss.ts              # ボスクラス
 │   │   ├── data/           # ゲームデータ
-│   │   │   ├── bosses/              # ボスデータ（9体）
+│   │   │   ├── bosses/              # ボスデータ（10体）
 │   │   │   ├── skills/              # スキルシステム
 │   │   │   │   ├── agility.ts
 │   │   │   │   ├── combat.ts
@@ -135,7 +136,7 @@ eel-rpg-game/
 │   │   │   └── index.ts             # データエクスポート
 │   │   └── utils/          # ユーティリティ
 │   │       ├── CombatUtils.ts       # 戦闘計算ユーティリティ
-│   │       └── ModalUtils.ts        # モーダル表示・操作ユーティリティ
+│   │       └── ModalUtils.ts        # トースト表示・モーダル表示・操作ユーティリティ
 │   └── styles/             # スタイルシート
 │       └── main.css
 ├── docs/                   # ドキュメント
