@@ -7,15 +7,13 @@ export interface PlayerSaveData {
         weapon: string;
         armor: string;
     };
-    unlockedItems: string[];
-    unlockedSkills: string[]; // New: track unlocked skills
     memorials: MemorialSaveData; // Trophy system data
     version: number; // For future save data migration
 }
 
 export class PlayerSaveManager {
     private static readonly SAVE_KEY = 'eelfood_player_data';
-    private static readonly CURRENT_VERSION = 3;
+    private static readonly CURRENT_VERSION = 4;
     
     /**
      * Save player data to localStorage
@@ -40,7 +38,7 @@ export class PlayerSaveManager {
         try {
             const savedData = localStorage.getItem(this.SAVE_KEY);
             if (!savedData) {
-                console.log('No saved player data found');
+                console.log('[PlayerSaveManager][loadPlayerData] No saved player data found');
                 return null;
             }
             
@@ -48,16 +46,16 @@ export class PlayerSaveManager {
             
             // Version check and migration if needed
             if (parsedData.version !== this.CURRENT_VERSION) {
-                console.log('Save data version mismatch, migrating...');
+                console.log('[PlayerSaveManager][loadPlayerData] Save data version mismatch, migrating...');
                 return this.migrateSaveData(parsedData);
             }
             
             return parsedData as PlayerSaveData;
         } catch (error) {
-            console.error('Failed to load player data:', error);
+            console.error('[PlayerSaveManager][loadPlayerData] Failed to load player data:', error);
             
             // if loading fails, return default data
-            console.log('Returning default player data');
+            console.log('[PlayerSaveManager][loadPlayerData] Returning default player data');
             return this.createDefaultSaveData();
         }
     }
@@ -80,8 +78,6 @@ export class PlayerSaveManager {
                 weapon: 'bare-hands',
                 armor: 'naked'
             },
-            unlockedItems: ['heal-potion', 'adrenaline', 'energy-drink'], // Default items
-            unlockedSkills: [], // Default: no skills unlocked, they unlock based on ability levels
             memorials: MemorialSystem.INITIAL_SAVE_DATA, // Start with no boss memorials
             version: this.CURRENT_VERSION
         };
@@ -118,6 +114,16 @@ export class PlayerSaveManager {
                 ...migratedData,
                 memorials: memorials,
                 version: 3
+            };
+        }
+        
+        // Migration from version 3 to 4: remove unlockedItems and unlockedSkills (now derived from abilities)
+        if (migratedData.version === 3) {
+            // Remove the redundant fields - they'll now be calculated from ability levels
+            const { _unlockedItems, _unlockedSkills, ...rest } = migratedData;
+            migratedData = {
+                ...rest,
+                version: 4
             };
         }
         
@@ -165,23 +171,6 @@ export class PlayerSaveManager {
         this.savePlayerData(currentData);
     }
     
-    /**
-     * Quick save just unlocked items
-     */
-    static saveUnlockedItems(unlockedItems: string[]): void {
-        const currentData = this.loadPlayerData() || this.createDefaultSaveData();
-        currentData.unlockedItems = unlockedItems;
-        this.savePlayerData(currentData);
-    }
-    
-    /**
-     * Quick save just unlocked skills
-     */
-    static saveUnlockedSkills(unlockedSkills: string[]): void {
-        const currentData = this.loadPlayerData() || this.createDefaultSaveData();
-        currentData.unlockedSkills = unlockedSkills;
-        this.savePlayerData(currentData);
-    }
     
     /**
      * Quick save just battle memorials
@@ -238,8 +227,6 @@ export class PlayerSaveManager {
         if (!data.equipment || typeof data.equipment !== 'object') return false;
         if (!data.equipment.weapon || typeof data.equipment.weapon !== 'string') return false;
         if (!data.equipment.armor || typeof data.equipment.armor !== 'string') return false;
-        if (!Array.isArray(data.unlockedItems)) return false;
-        if (!Array.isArray(data.unlockedSkills)) return false;
         if (!data.memorials || typeof data.memorials !== 'object') return false;
         
         // Check abilities structure

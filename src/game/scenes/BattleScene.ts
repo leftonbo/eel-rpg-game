@@ -483,7 +483,7 @@ export class BattleScene {
         
         // Update heal potion
         const healPotionCount = this.player.getItemCount('heal-potion');
-        const healPotionUnlocked = this.player.unlockedItems.has('heal-potion');
+        const healPotionUnlocked = this.player.items.has('heal-potion');
         if (this.healPotionCount) {
             this.healPotionCount.textContent = healPotionCount.toString();
         }
@@ -494,7 +494,7 @@ export class BattleScene {
         
         // Update adrenaline
         const adrenalineCount = this.player.getItemCount('adrenaline');
-        const adrenalineUnlocked = this.player.unlockedItems.has('adrenaline');
+        const adrenalineUnlocked = this.player.items.has('adrenaline');
         if (this.adrenalineCount) {
             this.adrenalineCount.textContent = adrenalineCount.toString();
         }
@@ -505,7 +505,7 @@ export class BattleScene {
         
         // Update energy drink
         const energyDrinkCount = this.player.getItemCount('energy-drink');
-        const energyDrinkUnlocked = this.player.unlockedItems.has('energy-drink');
+        const energyDrinkUnlocked = this.player.items.has('energy-drink');
         if (this.energyDrinkCount) {
             this.energyDrinkCount.textContent = energyDrinkCount.toString();
         }
@@ -573,8 +573,8 @@ export class BattleScene {
         // Check if basic actions are unlocked
         const hasBasicAttack = true; // Basic attack is always available
         const hasDefend = this.player.hasSkill('defend'); // Defend skill must be unlocked
-        const hasItemAccess = this.player.unlockedItems.size > 0; // Has any items unlocked
-        const hasSkillAccess = this.player.unlockedSkills.size > 0; // Has any skills unlocked
+        const hasItemAccess = this.player.items.size > 0; // Has any items available
+        const hasSkillAccess = this.player.getUnlockedSkills().length > 0; // Has any skills unlocked
         
         // Update attack button (always visible)
         const attackBtn = document.getElementById('attack-btn');
