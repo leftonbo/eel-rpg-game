@@ -15,7 +15,7 @@ export enum GameState {
 
 export class Game {
     private currentState: GameState = GameState.Title;
-    private player: Player = new Player();
+    private player: Player;
     private currentBoss: Boss | null = null;
     private debugMode: boolean = false;
     
@@ -31,17 +31,29 @@ export class Game {
                         urlParams.get('debug') === 'true' || 
                         localStorage.getItem('debug_mode') === 'true';
         
+        // Initialize player (will be fully initialized asynchronously)
+        this.player = new Player();
+        
         this.titleScene = new TitleScene(this);
         this.bossSelectScene = new BossSelectScene(this);
         this.battleScene = new BattleScene(this);
         this.battleResultScene = new BattleResultScene(this);
         
-        this.init();
+        this.initAsync();
     }
     
-    private init(): void {
-        // Show initial title screen
-        this.setState(GameState.Title);
+    private async initAsync(): Promise<void> {
+        try {
+            // Initialize player data asynchronously
+            await this.player.initializeAsync();
+            
+            // Show initial title screen
+            this.setState(GameState.Title);
+        } catch (error) {
+            console.error('Failed to initialize game:', error);
+            // Fallback: show title screen anyway
+            this.setState(GameState.Title);
+        }
     }
     
     setState(newState: GameState): void {

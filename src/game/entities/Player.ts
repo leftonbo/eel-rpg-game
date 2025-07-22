@@ -68,16 +68,23 @@ export class Player extends Actor {
     
     constructor() {
         super(PLAYER_NAME, 100, 5, 50);
-        this.loadFromSave();
+        // Note: Async initialization will be done separately via initializeAsync()
+    }
+
+    /**
+     * 非同期初期化メソッド
+     */
+    public async initializeAsync(): Promise<void> {
+        await this.loadFromSave();
         this.initializeDefaultUnlocks();
         this.initializeItems();
         this.recalculateStats();
     }
     
     /**
-     * Load player data from localStorage
+     * Load player data from localStorage (非同期対応)
      */
-    private loadFromSave(): void {
+    private async loadFromSave(): Promise<void> {
         const saveData = PlayerSaveManager.loadPlayerData();
         if (saveData) {
             // Load abilities
@@ -87,8 +94,8 @@ export class Player extends Actor {
             this.equippedWeapon = saveData.equipment.weapon;
             this.equippedArmor = saveData.equipment.armor;
 
-            // Load battle memorials into MemorialSystem
-            this.memorialSystem.importData(saveData.memorials || {});
+            // Load battle memorials into MemorialSystem (非同期)
+            await this.memorialSystem.importData(saveData.memorials || {});
         } else {
             // Initialize MemorialSystem with empty data
             this.memorialSystem.initializeData();

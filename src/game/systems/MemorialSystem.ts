@@ -1,4 +1,4 @@
-import { getBossDataSync } from "../data";
+import { getBossData } from "../data";
 import { BossData } from "../entities/Boss";
 
 export enum TrophyType {
@@ -59,25 +59,29 @@ export class MemorialSystem {
     }
     
     /**
-     * 記念品を生成
+     * 記念品を生成（非同期対応）
      */
-    private createHaveTrophies(): void {
-        this.bossMemorials.forEach((memorial, bossId) => {
-            const bossData = getBossDataSync(bossId);
-            if (!bossData) {
-                console.warn(`No boss data found for ID: ${bossId}`);
-                return;
-            }
+    private async createHaveTrophies(): Promise<void> {
+        for (const [bossId, memorial] of this.bossMemorials.entries()) {
+            try {
+                const bossData = await getBossData(bossId);
+                if (!bossData) {
+                    console.warn(`No boss data found for ID: ${bossId}`);
+                    continue;
+                }
 
-            if (memorial.dateFirstWin && bossData.victoryTrophy) {
-                const trophy = MemorialSystem.createVictoryTrophy(bossData, memorial);
-                this.trophies.set(trophy.id, trophy);
+                if (memorial.dateFirstWin && bossData.victoryTrophy) {
+                    const trophy = MemorialSystem.createVictoryTrophy(bossData, memorial);
+                    this.trophies.set(trophy.id, trophy);
+                }
+                if (memorial.dateFirstLost && bossData.defeatTrophy) {
+                    const trophy = MemorialSystem.createDefeatTrophy(bossData, memorial);
+                    this.trophies.set(trophy.id, trophy);
+                }
+            } catch (error) {
+                console.error(`Failed to load boss data for ID: ${bossId}`, error);
             }
-            if (memorial.dateFirstLost && bossData.defeatTrophy) {
-                const trophy = MemorialSystem.createDefeatTrophy(bossData, memorial);
-                this.trophies.set(trophy.id, trophy);
-            }
-        });
+        }
     }
     
     /**
@@ -245,17 +249,17 @@ export class MemorialSystem {
     }
     
     /**
-     * バトル記録を読み込み
+     * バトル記録を読み込み（非同期対応）
      * @param data - MemorialSaveDataオブジェクト
      */
-    public importData(data: MemorialSaveData): void {
+    public async importData(data: MemorialSaveData): Promise<void> {
         this.bossMemorials.clear();
         data.bossMemorials.forEach(memorial => {
             this.bossMemorials.set(memorial.bossId, memorial);
         });
         
-        // 記念品を生成
-        this.createHaveTrophies();
+        // 記念品を生成（非同期）
+        await this.createHaveTrophies();
     }
     
     /**
