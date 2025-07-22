@@ -109,6 +109,76 @@ const batVampireActions: BossAction[] = [
             '「ふふ...君のような美しい獲物は、永遠に私の体内で愛でてあげよう」',
             '<TARGET>は<USER>の体内で新たな生活を始めることになった...'
         ]
+    },
+
+    // 体内での行動（敗北後の継続行動）
+    {
+        id: 'stomach-absorption',
+        type: ActionType.PostDefeatedAttack,
+        name: '胃袋の吸収器官',
+        description: '胃袋の様々な器官でエルナルの生気を吸い続ける',
+        weight: 25,
+        playerStateCondition: 'defeated',
+        messages: [
+            '<USER>の胃袋にある吸収器官が<TARGET>をやさしく包み込む',
+            '<TARGET>の生気がゆっくりと吸い取られていく...'
+        ]
+    },
+    {
+        id: 'stomach-tentacles',
+        type: ActionType.PostDefeatedAttack,
+        name: '体内触手の愛撫',
+        description: '体内の触手がエルナルを愛撫して生気を吸収する',
+        weight: 20,
+        playerStateCondition: 'defeated',
+        statusEffect: StatusEffectType.Charm,
+        statusChance: 0.8,
+        messages: [
+            '<USER>の体内で柔らかい触手が<TARGET>を優しく愛撫する',
+            '<TARGET>は心地よい感覚に包まれながら生気を奪われていく...'
+        ]
+    },
+    {
+        id: 'stomach-massage',
+        type: ActionType.PostDefeatedAttack,
+        name: '胃袋マッサージ',
+        description: '胃壁で優しくマッサージしてエルナルを魅了する',
+        weight: 20,
+        playerStateCondition: 'defeated',
+        statusEffect: StatusEffectType.Fascination,
+        statusChance: 0.9,
+        messages: [
+            '<USER>の胃袋が<TARGET>を包み込むようにマッサージする',
+            '<TARGET>は至福の感覚に魅了されてしまう...'
+        ]
+    },
+    {
+        id: 'stomach-tickling',
+        type: ActionType.PostDefeatedAttack,
+        name: '体内くすぐり',
+        description: '体内の細かい器官でエルナルをくすぐって楽しませる',
+        weight: 15,
+        playerStateCondition: 'defeated',
+        statusEffect: StatusEffectType.Bliss,
+        statusChance: 0.7,
+        messages: [
+            '<USER>の体内で無数の細かい器官が<TARGET>をくすぐり始める',
+            '<TARGET>は笑いと快感で意識が朦朧としてくる...'
+        ]
+    },
+    {
+        id: 'feeding-time',
+        type: ActionType.PostDefeatedAttack,
+        name: '給餌タイム',
+        description: '体内器官でエルナルに食事を与えてお世話する',
+        weight: 10,
+        playerStateCondition: 'defeated',
+        messages: [
+            '「さあ、食事の時間だよ...」',
+            '<USER>は胃袋に栄養豊富な液体を分泌し始める',
+            '<TARGET>は体内器官に支えられながら食事を与えられる',
+            '「よい子だ...これで君はずっと私の大切な宝物でいられる」'
+        ]
     }
 ];
 
@@ -121,12 +191,53 @@ const batVampireAIStrategy = (boss: Boss, player: any, turn: number): BossAction
     const playerHPPercent = player.hp / player.maxHp;
     const playerDefeated = player.isDefeated();
     
-    // プレイヤーがDoomed状態（最大HP0）の場合はとどめ攻撃
+    // プレイヤーが敗北状態の場合の処理
     if (playerDefeated) {
-        const finishingAction = batVampireActions.find(action => 
-            action.id === 'finishing-devour'
+        // カスタム変数の初期化
+        if (!boss.customVariables.postDefeatedTurn) {
+            boss.customVariables.postDefeatedTurn = 0;
+            boss.customVariables.lastFeedingTurn = 0;
+        }
+        
+        boss.customVariables.postDefeatedTurn++;
+        
+        // 最初のターンはとどめ攻撃（丸呑み）
+        if (boss.customVariables.postDefeatedTurn === 1) {
+            const finishingAction = batVampireActions.find(action => 
+                action.id === 'finishing-devour'
+            );
+            if (finishingAction) return finishingAction;
+        }
+        
+        // 給餌タイムの判定（15-20ターンごと）
+        const turnsSinceFeeding = boss.customVariables.postDefeatedTurn - boss.customVariables.lastFeedingTurn;
+        if (turnsSinceFeeding >= 15 && Math.random() < 0.3) {
+            boss.customVariables.lastFeedingTurn = boss.customVariables.postDefeatedTurn;
+            const feedingAction = batVampireActions.find(action => 
+                action.id === 'feeding-time'
+            );
+            if (feedingAction) return feedingAction;
+        }
+        
+        // 通常の体内行動（weightベースのランダム選択）
+        const postDefeatedActions = batVampireActions.filter(action => 
+            action.playerStateCondition === 'defeated' && action.id !== 'finishing-devour' && action.id !== 'feeding-time'
         );
-        if (finishingAction) return finishingAction;
+        
+        if (postDefeatedActions.length > 0) {
+            const totalWeight = postDefeatedActions.reduce((sum, action) => sum + action.weight, 0);
+            let randomValue = Math.random() * totalWeight;
+            
+            for (const action of postDefeatedActions) {
+                randomValue -= action.weight;
+                if (randomValue <= 0) {
+                    return action;
+                }
+            }
+        }
+        
+        // フォールバック
+        return batVampireActions.find(action => action.id === 'stomach-absorption') || batVampireActions[0];
     }
     
     // プレイヤーがKO状態で拘束中なら最大HP吸収を最優先
