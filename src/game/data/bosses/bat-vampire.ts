@@ -29,7 +29,7 @@ const batVampireActions: BossAction[] = [
         hitRate: 0.85,
         weight: 15,
         playerStateCondition: 'normal',
-        messages: ['<USER>は無数の子コウモリを放った！', '小さなコウモリが<TARGET>を襲う！']
+        messages: ['<USER>は無数の子コウモリを放った！']
     },
     {
         type: ActionType.StatusAttack,
@@ -41,17 +41,15 @@ const batVampireActions: BossAction[] = [
         hitRate: 0.60,
         weight: 15,
         playerStateCondition: 'normal',
-        messages: ['<USER>は影の弾を放った！', '<TARGET>の視界が暗闇に包まれた...']
+        messages: ['<USER>は影の弾を放った！']
     },
     {
-        type: ActionType.StatusAttack,
+        type: ActionType.RestraintAttack,
         name: 'ヴァンパイアホールド',
         description: '強力な握力でエルナルを拘束する',
-        statusEffect: StatusEffectType.Restrained,
-        statusChance: 0.85,
-        weight: 25,
+        weight: 10,
         playerStateCondition: 'normal',
-        messages: ['<USER>は<TARGET>を強力に掴んだ！', '<TARGET>は拘束されて動けない！']
+        messages: ['<USER>は<TARGET>を掴み上げる！']
     },
 
     // 拘束中専用攻撃
@@ -64,7 +62,7 @@ const batVampireActions: BossAction[] = [
         statusChance: 0.60,
         weight: 30,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>の生気を吸い取った！', '<TARGET>の力と魔力が奪われていく...']
+        messages: ['<USER>は<TARGET>に噛みつき、生気を吸い取る！', '<TARGET>の力と魔力が奪われていく...']
     },
     {
         type: ActionType.StatusAttack,
@@ -86,7 +84,7 @@ const batVampireActions: BossAction[] = [
         damageFormula: (user: Boss) => user.attackPower * 0.5,
         weight: 50,
         playerStateCondition: 'ko',
-        messages: ['<USER>は<TARGET>の生命力そのものを吸い取った！', '<TARGET>の最大HPが減少した...']
+        messages: ['<USER>は<TARGET>に噛みつき、生命力そのものを吸い取る...']
     }
 ];
 
@@ -136,15 +134,14 @@ const batVampireAIStrategy = (boss: Boss, player: any, turn: number): BossAction
         action.playerStateCondition === 'normal'
     );
     
-    // HPが低い場合は高速攻撃（子コウモリ放出）の重みを上げる
+    // HPが低い場合は拘束攻撃の重みを上げる
     let modifiedActions = [...normalActions];
     if (boss.hp / boss.maxHp <= 0.4) {
-        const batAttack = normalActions.find(action => 
-            action.name === '子コウモリ放出'
+        const restraintAction = normalActions.find(action =>
+            action.name === 'ヴァンパイアホールド'
         );
-        if (batAttack) {
-            // 子コウモリ攻撃の重みを3倍にする
-            modifiedActions.push(batAttack, batAttack);
+        if (restraintAction) {
+            modifiedActions.push(restraintAction);
         }
     }
     
@@ -155,16 +152,6 @@ const batVampireAIStrategy = (boss: Boss, player: any, turn: number): BossAction
         );
         if (darknessAction) {
             modifiedActions.push(darknessAction);
-        }
-    }
-    
-    // 中盤以降は拘束攻撃の重みを上げる
-    if (turn >= 3) {
-        const restraintAction = normalActions.find(action => 
-            action.name === 'ヴァンパイアホールド'
-        );
-        if (restraintAction) {
-            modifiedActions.push(restraintAction);
         }
     }
     
