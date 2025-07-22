@@ -65,8 +65,6 @@ export class Player extends Actor {
     public memorialSystem: MemorialSystem = new MemorialSystem();
     public equippedWeapon: string = 'bare-hands';
     public equippedArmor: string = 'naked';
-    public unlockedItems: Set<string> = new Set();
-    public unlockedSkills: Set<string> = new Set();
     
     constructor() {
         super(PLAYER_NAME, 100, 5, 50);
@@ -88,20 +86,10 @@ export class Player extends Actor {
             // Load equipment
             this.equippedWeapon = saveData.equipment.weapon;
             this.equippedArmor = saveData.equipment.armor;
-            
-            // Load unlocked items
-            this.unlockedItems = new Set(saveData.unlockedItems);
-            
-            // Load unlocked skills
-            this.unlockedSkills = new Set(saveData.unlockedSkills || []);
 
             // Load battle memorials into MemorialSystem
             this.memorialSystem.importData(saveData.memorials || {});
         } else {
-            // Initialize with default values
-            this.unlockedItems = new Set();
-            this.unlockedSkills = new Set();
-            
             // Initialize MemorialSystem with empty data
             this.memorialSystem.initializeData();
         }
@@ -117,10 +105,8 @@ export class Player extends Actor {
                 weapon: this.equippedWeapon,
                 armor: this.equippedArmor
             },
-            unlockedItems: Array.from(this.unlockedItems),
-            unlockedSkills: Array.from(this.unlockedSkills),
             memorials: this.memorialSystem.exportData(),
-            version: 3
+            version: 4
         };
         
         PlayerSaveManager.savePlayerData(saveData);
@@ -141,23 +127,14 @@ export class Player extends Actor {
         
         // Update items based on new ability levels
         updatePlayerItems(this);
-        
-        // Update unlocked skills based on ability levels
-        this.updateUnlockedSkills();
     }
     
     /**
      * Initialize default unlocks for basic skills and items
      */
     private initializeDefaultUnlocks(): void {
-        // Always unlock basic attack (no skill unlocks needed for basic actions)
-        // Power attack and other skills will be unlocked via ability levels
-        
-        // Always unlock basic heal potion
-        this.unlockedItems.add('heal-potion');
-        
-        // Save if new unlocks were added
-        this.saveToStorage();
+        // Default unlocks are now handled by ability-based calculation
+        // No manual unlocking needed - skills/items derived from ability levels
     }
     
     private initializeItems(): void {
@@ -165,29 +142,9 @@ export class Player extends Actor {
         updatePlayerItems(this);
     }
     
-    /**
-     * Update unlocked skills based on current ability levels
-     */
-    private updateUnlockedSkills(): void {
-        const abilityLevels = new Map<AbilityType, number>();
-        Object.values(AbilityType).forEach(type => {
-            const ability = this.abilitySystem.getAbility(type);
-            abilityLevels.set(type, ability?.level || 0);
-        });
-        
-        const availableSkills = SkillRegistry.getUnlockedSkills(abilityLevels);
-        const previousSize = this.unlockedSkills.size;
-        
-        this.unlockedSkills = new Set(availableSkills);
-        
-        // Save if new skills were unlocked
-        if (this.unlockedSkills.size > previousSize) {
-            this.saveToStorage();
-        }
-    }
     
     /**
-     * Get all unlocked skills with their current stats
+     * Get all unlocked skills with their current stats (calculated from ability levels)
      */
     public getUnlockedSkills(): SkillData[] {
         const abilityLevels = new Map<AbilityType, number>();
@@ -196,8 +153,10 @@ export class Player extends Actor {
             abilityLevels.set(type, ability?.level || 0);
         });
         
+        const unlockedSkillIds = SkillRegistry.getUnlockedSkills(abilityLevels);
         const skills: SkillData[] = [];
-        this.unlockedSkills.forEach(skillId => {
+        
+        unlockedSkillIds.forEach(skillId => {
             const skill = SkillRegistry.getUpgradedSkill(skillId, abilityLevels);
             if (skill) {
                 skills.push(skill);
@@ -221,10 +180,17 @@ export class Player extends Actor {
     }
     
     /**
-     * Check if a specific skill is unlocked
+     * Check if a specific skill is unlocked (calculated from ability levels)
      */
     public hasSkill(skillId: string): boolean {
-        return this.unlockedSkills.has(skillId);
+        const abilityLevels = new Map<AbilityType, number>();
+        Object.values(AbilityType).forEach(type => {
+            const ability = this.abilitySystem.getAbility(type);
+            abilityLevels.set(type, ability?.level || 0);
+        });
+        
+        const unlockedSkillIds = SkillRegistry.getUnlockedSkills(abilityLevels);
+        return unlockedSkillIds.includes(skillId);
     }
     
     getAttackPower(): number {
@@ -307,7 +273,7 @@ export class Player extends Actor {
         const result = this.abilitySystem.addExperience(abilityType, amount);
         
         if (result.leveledUp) {
-            this.recalculateStats();
+            this.recalculateStats(); // This will update items automatically
             this.saveToStorage(); // Auto-save on level up
         }
         

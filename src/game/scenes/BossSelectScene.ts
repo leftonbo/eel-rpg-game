@@ -62,14 +62,14 @@ export class BossSelectScene {
         this.initializeModalSaveDataButtons();
     }
     
-    enter(): void {
+    async enter(): Promise<void> {
         console.log('Entered boss select scene');
         
         // Reset boss selection button state
         this.resetConfirmButtonState();
         
         // Update boss card information
-        this.updateBossCards();
+        await this.updateBossCards();
         
         // Update player status display
         this.updatePlayerStatus();
@@ -86,8 +86,8 @@ export class BossSelectScene {
         }
     }
     
-    private updateBossCards(): void {
-        const allBossMetadata = getAllBossMetadata();
+    private async updateBossCards(): Promise<void> {
+        const allBossMetadata = await getAllBossMetadata();
         const playerExplorerLevel = this.game.getPlayer().getExplorerLevel();
         
         this.bossCards?.forEach(card => {
@@ -125,11 +125,11 @@ export class BossSelectScene {
         });
     }
     
-    private onBossSelect(bossId: string): void {
+    private async onBossSelect(bossId: string): Promise<void> {
         this.selectedBossId = bossId;
         
         // Update modal with boss information
-        this.updateModal(bossId);
+        await this.updateModal(bossId);
         
         // Show modal
         if (this.bossModal) {
@@ -137,8 +137,8 @@ export class BossSelectScene {
         }
     }
     
-    private updateModal(bossId: string): void {
-        const bossMetadata = getBossMetadata(bossId);
+    private async updateModal(bossId: string): Promise<void> {
+        const bossMetadata = await getBossMetadata(bossId);
         
         if (!bossMetadata) return;
         
