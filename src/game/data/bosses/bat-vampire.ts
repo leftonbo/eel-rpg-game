@@ -81,7 +81,7 @@ const batVampireActions: BossAction[] = [
         statusChance: 0.90,
         weight: 25,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>に深いキスをした...', '<TARGET>は魅了されてしまった...']
+        messages: ['<USER>は<TARGET>に深いキスをした...']
     },
 
     // 拘束中＋プレイヤーダウン時の特殊攻撃
