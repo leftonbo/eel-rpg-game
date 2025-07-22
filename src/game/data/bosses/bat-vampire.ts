@@ -4,6 +4,7 @@ import { StatusEffectType } from '../../systems/StatusEffectTypes';
 const batVampireActions: BossAction[] = [
     // 通常攻撃パターン
     {
+        id: 'claw-scratch',
         type: ActionType.Attack,
         name: '爪で引っ掻く',
         description: '鋭い爪で引っ掻き攻撃',
@@ -13,6 +14,7 @@ const batVampireActions: BossAction[] = [
         playerStateCondition: 'normal'
     },
     {
+        id: 'tail-strike',
         type: ActionType.Attack,
         name: '尻尾で叩く',
         description: 'コウモリの尻尾で叩きつける',
@@ -22,6 +24,7 @@ const batVampireActions: BossAction[] = [
         playerStateCondition: 'normal'
     },
     {
+        id: 'bat-swarm',
         type: ActionType.Attack,
         name: '子コウモリ放出',
         description: '複数のコウモリを放出して攻撃',
@@ -32,6 +35,7 @@ const batVampireActions: BossAction[] = [
         messages: ['<USER>は無数の子コウモリを放った！']
     },
     {
+        id: 'shadow-bullet',
         type: ActionType.StatusAttack,
         name: 'シャドウバレット',
         description: '影の弾を放出、命中率は低いが暗闇状態にする',
@@ -44,6 +48,7 @@ const batVampireActions: BossAction[] = [
         messages: ['<USER>は影の弾を放った！']
     },
     {
+        id: 'vampire-hold',
         type: ActionType.RestraintAttack,
         name: 'ヴァンパイアホールド',
         description: '強力な握力でエルナルを拘束する',
@@ -54,6 +59,7 @@ const batVampireActions: BossAction[] = [
 
     // 拘束中専用攻撃
     {
+        id: 'life-drain',
         type: ActionType.StatusAttack,
         name: '生気吸収',
         description: 'エルナルの体力と魔力を吸収する',
@@ -65,6 +71,7 @@ const batVampireActions: BossAction[] = [
         messages: ['<USER>は<TARGET>に噛みつき、生気を吸い取る！', '<TARGET>の力と魔力が奪われていく...']
     },
     {
+        id: 'vampire-kiss',
         type: ActionType.StatusAttack,
         name: 'コウモリのキス',
         description: 'エルナルに深いキスをして生気を吸い取りながら魅了する',
@@ -78,6 +85,7 @@ const batVampireActions: BossAction[] = [
 
     // 拘束中＋エルナルダウン時の特殊攻撃
     {
+        id: 'life-drain-enhanced',
         type: ActionType.DevourAttack,
         name: '生気吸収（強化版）',
         description: 'エルナルの生命力そのものを吸収する',
@@ -99,7 +107,7 @@ const batVampireAIStrategy = (boss: Boss, player: any, turn: number): BossAction
     // プレイヤーがKO状態で拘束中なら最大HP吸収を最優先
     if (playerKO && playerRestrained) {
         const action = batVampireActions.find(action => 
-            action.name === '生気吸収（強化版）'
+            action.id === 'life-drain-enhanced'
         );
         if (action) return action;
     }
@@ -109,7 +117,7 @@ const batVampireAIStrategy = (boss: Boss, player: any, turn: number): BossAction
         // プレイヤーのHPが低い場合は生気吸収を重視
         if (playerHPPercent <= 0.3) {
             const drainAction = batVampireActions.find(action => 
-                action.name === '生気吸収'
+                action.id === 'life-drain'
             );
             if (drainAction) return drainAction;
         }
@@ -117,14 +125,14 @@ const batVampireAIStrategy = (boss: Boss, player: any, turn: number): BossAction
         // 魅了されていなければコウモリのキスを優先
         if (!playerCharmed) {
             const charmAction = batVampireActions.find(action => 
-                action.name === 'コウモリのキス'
+                action.id === 'vampire-kiss'
             );
             if (charmAction) return charmAction;
         }
         
         // デフォルトで生気吸収
         const drainAction = batVampireActions.find(action => 
-            action.name === '生気吸収'
+            action.id === 'life-drain'
         );
         if (drainAction) return drainAction;
     }
@@ -138,7 +146,7 @@ const batVampireAIStrategy = (boss: Boss, player: any, turn: number): BossAction
     let modifiedActions = [...normalActions];
     if (boss.hp / boss.maxHp <= 0.4) {
         const restraintAction = normalActions.find(action =>
-            action.name === 'ヴァンパイアホールド'
+            action.id === 'vampire-hold'
         );
         if (restraintAction) {
             modifiedActions.push(restraintAction);
@@ -148,7 +156,7 @@ const batVampireAIStrategy = (boss: Boss, player: any, turn: number): BossAction
     // 戦闘初期で暗闇がかかっていない場合、シャドウバレットの重みを上げる
     if (turn <= 2 && !playerHasDarkness) {
         const darknessAction = normalActions.find(action => 
-            action.name === 'シャドウバレット'
+            action.id === 'shadow-bullet'
         );
         if (darknessAction) {
             modifiedActions.push(darknessAction);
