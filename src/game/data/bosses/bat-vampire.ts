@@ -131,34 +131,56 @@ const batVampireAIStrategy = (boss: Boss, player: any, turn: number): BossAction
         if (drainAction) return drainAction;
     }
     
-    // 戦闘初期（1-2ターン）：暗闇攻撃で有利を取る
-    if (turn <= 2 && !playerHasDarkness) {
-        const darknessAction = batVampireActions.find(action => 
-            action.name === 'シャドウバレット'
-        );
-        if (darknessAction) return darknessAction;
-    }
+    // 通常状態での行動選択 - weightによるランダム選択
+    const normalActions = batVampireActions.filter(action => 
+        action.playerStateCondition === 'normal'
+    );
     
-    // 中盤（3-5ターン）または終盤：拘束攻撃を重視
-    if (turn >= 3 || boss.hp / boss.maxHp <= 0.4) {
-        const restraintAction = batVampireActions.find(action => 
-            action.name === 'ヴァンパイアホールド'
-        );
-        if (restraintAction) return restraintAction;
-    }
-    
-    // プレイヤーのHPが高い場合は子コウモリ攻撃
-    if (playerHPPercent >= 0.7) {
-        const batAttack = batVampireActions.find(action => 
+    // HPが低い場合は高速攻撃（子コウモリ放出）の重みを上げる
+    let modifiedActions = [...normalActions];
+    if (boss.hp / boss.maxHp <= 0.4) {
+        const batAttack = normalActions.find(action => 
             action.name === '子コウモリ放出'
         );
-        if (batAttack) return batAttack;
+        if (batAttack) {
+            // 子コウモリ攻撃の重みを3倍にする
+            modifiedActions.push(batAttack, batAttack);
+        }
     }
     
-    // デフォルト攻撃
-    return batVampireActions.find(action => 
-        action.name === '爪で引っ掻く'
-    ) || batVampireActions[0];
+    // 戦闘初期で暗闇がかかっていない場合、シャドウバレットの重みを上げる
+    if (turn <= 2 && !playerHasDarkness) {
+        const darknessAction = normalActions.find(action => 
+            action.name === 'シャドウバレット'
+        );
+        if (darknessAction) {
+            modifiedActions.push(darknessAction);
+        }
+    }
+    
+    // 中盤以降は拘束攻撃の重みを上げる
+    if (turn >= 3) {
+        const restraintAction = normalActions.find(action => 
+            action.name === 'ヴァンパイアホールド'
+        );
+        if (restraintAction) {
+            modifiedActions.push(restraintAction);
+        }
+    }
+    
+    // weightに基づくランダム選択
+    const totalWeight = modifiedActions.reduce((sum, action) => sum + action.weight, 0);
+    let randomValue = Math.random() * totalWeight;
+    
+    for (const action of modifiedActions) {
+        randomValue -= action.weight;
+        if (randomValue <= 0) {
+            return action;
+        }
+    }
+    
+    // フォールバック
+    return normalActions[0] || batVampireActions[0];
 };
 
 export const batVampireData: BossData = {
