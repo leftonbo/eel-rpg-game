@@ -1,3 +1,4 @@
+import { Player } from '@/game/entities/Player';
 import { BossData, ActionType, BossAction, Boss } from '../../entities/Boss';
 import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
@@ -183,7 +184,7 @@ const batVampireActions: BossAction[] = [
 ];
 
 // AI戦略: 拘束→魅了→最大HP吸収の段階的戦術
-const batVampireAIStrategy = (boss: Boss, player: any, turn: number): BossAction => {
+const batVampireAIStrategy = (boss: Boss, player: Player, turn: number): BossAction => {
     const playerRestrained = player.statusEffects.hasEffect(StatusEffectType.Restrained);
     const playerCharmed = player.statusEffects.hasEffect(StatusEffectType.Charm);
     const playerKO = player.hp <= 0;
