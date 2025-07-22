@@ -418,7 +418,8 @@ const batVampireAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
 
 export const batVampireData: BossData = {
     id: 'bat-vampire',
-    name: '蝙蝠のヴァンパイア',
+    name: 'BatVampire',
+    icon: '🦇',
     displayName: '蝙蝠のヴァンパイア',
     description: `古城に住む蝙蝠の獣人`,
     questNote: 'あなたの元に奇妙な招待状が届いた。そこには「君の成果を称える宴に招待する」とだけ書かれたメッセージと、古城の地図が添えられていた。あなたはその城へ向かうことにした...',
