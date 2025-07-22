@@ -52,7 +52,7 @@ const batVampireActions: BossAction[] = [
         id: 'vampire-hold',
         type: ActionType.RestraintAttack,
         name: 'ヴァンパイアホールド',
-        description: '強力な握力でエルナルを拘束する',
+        description: '強力な握力で対象を拘束する',
         weight: 10,
         playerStateCondition: 'normal',
         messages: ['<USER>は<TARGET>を掴み上げる！']
@@ -63,7 +63,7 @@ const batVampireActions: BossAction[] = [
         id: 'life-drain',
         type: ActionType.StatusAttack,
         name: '生気吸収',
-        description: 'エルナルの体力と魔力を吸収する',
+        description: '捕まえた獲物の体力と魔力を吸収する',
         damageFormula: (user: Boss) => user.attackPower * 1.2,
         statusEffect: StatusEffectType.Weakness,
         statusChance: 0.60,
@@ -75,7 +75,7 @@ const batVampireActions: BossAction[] = [
         id: 'vampire-kiss',
         type: ActionType.StatusAttack,
         name: 'コウモリのキス',
-        description: 'エルナルに深いキスをして生気を吸い取りながら魅了する',
+        description: '捕まえた獲物に深いキスをして生気を吸い取りながら魅了する',
         damageFormula: (user: Boss) => user.attackPower * 0.8,
         statusEffect: StatusEffectType.Charm,
         statusChance: 0.90,
@@ -84,12 +84,12 @@ const batVampireActions: BossAction[] = [
         messages: ['<USER>は<TARGET>に深いキスをした...', '<TARGET>は魅了されてしまった...']
     },
 
-    // 拘束中＋エルナルダウン時の特殊攻撃
+    // 拘束中＋プレイヤーダウン時の特殊攻撃
     {
         id: 'life-drain-enhanced',
         type: ActionType.DevourAttack,
         name: '生気吸収（強化版）',
-        description: 'エルナルの生命力そのものを吸収する',
+        description: '捕まえた獲物の生命力そのものを吸収する',
         damageFormula: (user: Boss) => user.attackPower * 0.5,
         weight: 50,
         playerStateCondition: 'ko',
@@ -108,7 +108,7 @@ const batVampireActions: BossAction[] = [
             '<TARGET>の生気は完全に吸い尽くされ、体が小さくなってしまった...',
             '<USER>は小さくなった<TARGET>を優しく抱き上げると、そのまま口の中に運んでいく...',
             '「ふふ...君のような美しい獲物は、永遠に私の体内で愛でてあげよう」',
-            '<TARGET>は<USER>の体内で新たな生活を始めることになった...'
+            '<TARGET>は<USER>の体内でペットのように飼われることになった...'
         ],
         onUse: (_boss: Boss, player: Player) => {
             // 再起不能状態を解除 (TODO: Dead 状態付与時に自動解除したい)
@@ -128,7 +128,7 @@ const batVampireActions: BossAction[] = [
         id: 'stomach-absorption',
         type: ActionType.PostDefeatedAttack,
         name: '胃袋の吸収器官',
-        description: '胃袋の様々な器官でエルナルの生気を吸い続ける',
+        description: '胃袋の様々な器官で、体内のペットの生気を吸い続ける',
         weight: 25,
         playerStateCondition: 'defeated',
         messages: [
@@ -140,7 +140,7 @@ const batVampireActions: BossAction[] = [
         id: 'stomach-tentacles',
         type: ActionType.PostDefeatedAttack,
         name: '体内触手の愛撫',
-        description: '体内の触手がエルナルを愛撫して生気を吸収する',
+        description: '体内の触手がペットを愛撫して生気を吸収する',
         weight: 20,
         playerStateCondition: 'defeated',
         statusEffect: StatusEffectType.Charm,
@@ -154,7 +154,7 @@ const batVampireActions: BossAction[] = [
         id: 'stomach-massage',
         type: ActionType.PostDefeatedAttack,
         name: '胃袋マッサージ',
-        description: '胃壁で優しくマッサージしてエルナルを魅了する',
+        description: '胃壁で優しくマッサージして体内のペットを魅了する',
         weight: 20,
         playerStateCondition: 'defeated',
         statusEffect: StatusEffectType.Fascination,
@@ -168,7 +168,7 @@ const batVampireActions: BossAction[] = [
         id: 'stomach-tickling',
         type: ActionType.PostDefeatedAttack,
         name: '体内くすぐり',
-        description: '体内の細かい器官でエルナルをくすぐって楽しませる',
+        description: '体内の細かい器官でペットをくすぐって楽しませる',
         weight: 15,
         playerStateCondition: 'defeated',
         statusEffect: StatusEffectType.Bliss,
@@ -182,7 +182,7 @@ const batVampireActions: BossAction[] = [
         id: 'feeding-time',
         type: ActionType.PostDefeatedAttack,
         name: '給餌タイム',
-        description: '体内器官でエルナルに食事を与えてお世話する',
+        description: '食事によって体内に食べ物を送り込み、体内器官でペットに食事を与えてお世話する',
         weight: 10,
         playerStateCondition: 'defeated',
         messages: [
