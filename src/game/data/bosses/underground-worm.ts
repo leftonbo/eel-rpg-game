@@ -126,7 +126,7 @@ export const undergroundWormData: BossData = {
         if (!player.statusEffects.hasEffect(StatusEffectType.Petrified) && Math.random() < 0.4) {
             const petrifyAction = boss.actions.find(a => 
                 a.type === ActionType.StatusAttack && 
-                (a as any).statusEffect === StatusEffectType.Petrified
+                a.statusEffect === StatusEffectType.Petrified
             );
             if (petrifyAction && petrifyAction.canUse?.(boss, player, turn) !== false) {
                 return petrifyAction;
