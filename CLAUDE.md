@@ -36,7 +36,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **StatusEffectManager**: 状態異常の統一管理（火だるま、魅了、拘束など）
 - **MemorialSystem.ts**: 戦闘記録・統計システム
 - **PlayerSaveData.ts**: セーブデータ永続化システム（localStorage使用）
-- **ModalUtils.ts**: モーダル表示・操作ユーティリティ
+- **ModalUtils.ts**: トースト表示・モーダル表示・操作ユーティリティ
 
 ### データ駆動型ボス設計
 
