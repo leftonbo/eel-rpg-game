@@ -253,8 +253,8 @@ const batVampireAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
     // 現在のターンを記録
     boss.setCustomVariable('currentBattleTurn', turn);
     
-    // 拘束状態の連続ターン数を追跡
-    if (playerRestrained) {
+    // 拘束状態の連続ターン数を追跡 (KO状態になった場合はリセット)
+    if (playerRestrained && !playerKO) {
         const consecutiveRestraintTurns = boss.getCustomVariable<number>('consecutiveRestraintTurns', 0);
         boss.setCustomVariable('consecutiveRestraintTurns', consecutiveRestraintTurns + 1);
     } else {
@@ -360,6 +360,18 @@ const batVampireAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
             if (drainAction) return drainAction;
         }
         
+        // 5ターン以上拘束されている場合は眷属の催眠術を優先
+        const consecutiveRestraintTurns = boss.getCustomVariable<number>('consecutiveRestraintTurns', 0);
+        if (consecutiveRestraintTurns >= 5) {
+            const hypnosisAction = batVampireActions.find(action => 
+                action.id === 'minion-hypnosis'
+            );
+            if (hypnosisAction
+                && (!hypnosisAction.canUse || hypnosisAction.canUse(boss, player, turn))) {
+                return hypnosisAction;
+            }
+        }
+
         // 魅了されていなければコウモリのキスを優先
         if (!playerCharmed) {
             const charmAction = batVampireActions.find(action => 
