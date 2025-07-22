@@ -1111,7 +1111,7 @@ export class BattleScene {
     /**
      * Finalize battle and show results screen
      */
-    private async finalizeBattle(): Promise<void> {
+    private finalizeBattle(): void {
         if (!this.player || !this.boss) {
             // If player or boss is not set, return to boss select (this should not be happened!)
             console.error('BattleScene: finalizeBattle called without player or boss set');
@@ -1142,7 +1142,7 @@ export class BattleScene {
         }
         
         // Show battle result screen
-        const battleResult = await calculateBattleResult(
+        const battleResult = calculateBattleResult(
             this.player,
             this.boss,
             status,

@@ -68,14 +68,14 @@ export class Player extends Actor {
     
     constructor() {
         super(PLAYER_NAME, 100, 5, 50);
-        // Note: Async initialization will be done separately via initializeAsync()
+        this.init();
     }
 
     /**
-     * 非同期初期化メソッド
+     * 初期化メソッド
      */
-    public async initializeAsync(): Promise<void> {
-        await this.loadFromSave();
+    private init(): void {
+        this.loadFromSave();
         this.initializeDefaultUnlocks();
         this.initializeItems();
         this.recalculateStats();
@@ -84,29 +84,29 @@ export class Player extends Actor {
     /**
      * Load player data from localStorage (非同期対応)
      */
-    private async loadFromSave(): Promise<void> {
-        console.log('Loading player data from localStorage...');
+    private loadFromSave(): void {
+        console.log('[Player][loadFromSave] Loading player data from localStorage...');
         const saveData = PlayerSaveManager.loadPlayerData();
         
         if (saveData) {
-            console.log('Save data found:', saveData);
+            console.log('[Player][loadFromSave] Save data found:', saveData);
             
             // Load abilities
-            console.log('Loading abilities:', saveData.abilities);
+            console.log('[Player][loadFromSave] Loading abilities:', saveData.abilities);
             this.abilitySystem.loadFromSaveData(saveData.abilities);
             
             // Load equipment
-            console.log('Loading equipment:', saveData.equipment);
+            console.log('[Player][loadFromSave] Loading equipment:', saveData.equipment);
             this.equippedWeapon = saveData.equipment.weapon;
             this.equippedArmor = saveData.equipment.armor;
-
-            // Load battle memorials into MemorialSystem (非同期)
-            console.log('Loading memorials:', saveData.memorials);
-            await this.memorialSystem.importData(saveData.memorials || {});
             
-            console.log('Player data loaded successfully');
+            // Load battle memorials into MemorialSystem
+            console.log('[Player][loadFromSave] Loading memorials:', saveData.memorials);
+            this.memorialSystem.importData(saveData.memorials || {});
+            
+            console.log('[Player][loadFromSave] Player data loaded successfully');
         } else {
-            console.log('No save data found, initializing with defaults');
+            console.log('[Player][loadFromSave] No save data found, initializing with defaults');
             // Initialize MemorialSystem with empty data
             this.memorialSystem.initializeData();
         }

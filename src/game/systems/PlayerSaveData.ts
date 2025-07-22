@@ -38,7 +38,7 @@ export class PlayerSaveManager {
         try {
             const savedData = localStorage.getItem(this.SAVE_KEY);
             if (!savedData) {
-                console.log('No saved player data found');
+                console.log('[PlayerSaveManager][loadPlayerData] No saved player data found');
                 return null;
             }
             
@@ -46,16 +46,16 @@ export class PlayerSaveManager {
             
             // Version check and migration if needed
             if (parsedData.version !== this.CURRENT_VERSION) {
-                console.log('Save data version mismatch, migrating...');
+                console.log('[PlayerSaveManager][loadPlayerData]Save data version mismatch, migrating...');
                 return this.migrateSaveData(parsedData);
             }
             
             return parsedData as PlayerSaveData;
         } catch (error) {
-            console.error('Failed to load player data:', error);
+            console.error('[PlayerSaveManager][loadPlayerData] Failed to load player data:', error);
             
             // if loading fails, return default data
-            console.log('Returning default player data');
+            console.log('[PlayerSaveManager][loadPlayerData] Returning default player data');
             return this.createDefaultSaveData();
         }
     }
@@ -120,7 +120,7 @@ export class PlayerSaveManager {
         // Migration from version 3 to 4: remove unlockedItems and unlockedSkills (now derived from abilities)
         if (migratedData.version === 3) {
             // Remove the redundant fields - they'll now be calculated from ability levels
-            const { unlockedItems, unlockedSkills, ...rest } = migratedData;
+            const { _unlockedItems, _unlockedSkills, ...rest } = migratedData;
             migratedData = {
                 ...rest,
                 version: 4

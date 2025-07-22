@@ -1,61 +1,49 @@
 import { BossData } from '../entities/Boss';
 
-// Dynamic boss data loader cache
+/**
+ * 登録済みのボスの ID リスト
+ */
+export const registeredBossIds: string[] = [
+    'swamp-dragon',
+    'dark-ghost',
+    'mech-spider',
+    'dream-demon',
+    'scorpion-carrier',
+    'mikan-dragon',
+    'sea-kraken',
+    'aqua-serpent',
+    'clean-master',
+    'underground-worm',
+    'bat-vampire'
+];
+
+/**
+ * ボスデータのキャッシュ
+ */
 const bossDataCache: Map<string, BossData> = new Map();
 
-// Boss metadata cache
-const bossMetadataCache: Map<string, BossMetadata> = new Map();
-
-// Boss metadata for display purposes (lightweight data only)
-export interface BossMetadata {
-    id: string;
-    name: string;
-    displayName: string;
-    description: string;
-    questNote: string;
-    maxHp: number;
-    attackPower: number;
-    icon: string;
-    explorerLevelRequired: number;
-    victoryTrophy?: {
-        name: string;
-        description: string;
-    };
-    defeatTrophy?: {
-        name: string;
-        description: string;
-    };
-    guestCharacterInfo?: {
-        creator: string;
-    };
+export async function loadAllBossData(): Promise<void> {
+    for (const bossId of registeredBossIds) {
+        try {
+            await loadBossData(bossId);
+        } catch (error) {
+            console.error(`Failed to load boss data for ID: ${bossId}`, error);
+        }
+    }
 }
 
-// Auto-generate metadata from boss data
-async function generateBossMetadata(id: string): Promise<BossMetadata> {
-    const bossData = await loadBossData(id);
-    
-    return {
-        id: bossData.id,
-        name: bossData.name,
-        displayName: bossData.displayName,
-        description: bossData.description,
-        questNote: bossData.questNote || '',
-        maxHp: bossData.maxHp,
-        attackPower: bossData.attackPower,
-        icon: bossData.icon || '',
-        explorerLevelRequired: bossData.explorerLevelRequired || 0,
-        victoryTrophy: bossData.victoryTrophy,
-        defeatTrophy: bossData.defeatTrophy,
-        guestCharacterInfo: bossData.guestCharacterInfo
-    };
-}
-
-// Dynamic boss data loader
+/**
+ * ボスデータを非同期で読み込む関数
+ * @param id ボスのID
+ * @returns ボスデータ
+ */
 async function loadBossData(id: string): Promise<BossData> {
+    // キャッシュを確認
     if (bossDataCache.has(id)) {
         return bossDataCache.get(id)!;
     }
 
+    // ボスデータを動的にインポート
     let bossData: BossData;
     switch (id) {
         case 'swamp-dragon':
@@ -94,61 +82,30 @@ async function loadBossData(id: string): Promise<BossData> {
         default:
             throw new Error(`Unknown boss ID: ${id}`);
     }
-
+    
+    // キャッシュに保存
     bossDataCache.set(id, bossData);
     return bossData;
 }
 
-// Updated synchronous function - now async
-export async function getBossData(id: string): Promise<BossData> {
-    return await loadBossData(id);
-}
-
-// Get boss metadata for selection screen (lightweight)
-export async function getBossMetadata(id: string): Promise<BossMetadata | undefined> {
-    if (bossMetadataCache.has(id)) {
-        return bossMetadataCache.get(id);
-    }
-    
-    try {
-        const metadata = await generateBossMetadata(id);
-        bossMetadataCache.set(id, metadata);
-        return metadata;
-    } catch (error) {
-        console.error(`Failed to generate metadata for boss: ${id}`, error);
-        return undefined;
-    }
-}
-
-// Get all boss metadata for selection screen
-export async function getAllBossMetadata(): Promise<BossMetadata[]> {
-    const bossIds = [
-        'swamp-dragon', 'dark-ghost', 'mech-spider', 'dream-demon',
-        'scorpion-carrier', 'mikan-dragon', 'sea-kraken', 'aqua-serpent',
-        'clean-master', 'underground-worm', 'bat-vampire'
-    ];
-    
-    const metadataPromises = bossIds.map(id => getBossMetadata(id));
-    const metadataResults = await Promise.all(metadataPromises);
-    
-    return metadataResults.filter((metadata): metadata is BossMetadata => metadata !== undefined);
-}
-
 /**
- * @deprecated Use getBossData() instead. This synchronous function only returns cached data.
- * Legacy synchronous function for backward compatibility.
- * @param id Boss ID
- * @returns Boss data if cached, undefined otherwise
+ * 全てのボスデータを取得
+ * @returns ボスデータの配列
  */
-export function getBossDataSync(id: string): BossData | undefined {
-    return bossDataCache.get(id);
-}
-
-/**
- * @deprecated Use getAllBossMetadata() for boss selection or ensure boss data is loaded first.
- * Legacy synchronous function that only returns cached data.
- * @returns Array of cached boss data
- */
-export function getAllBossDataSync(): BossData[] {
+export function getAllBossData(): BossData[] {
     return Array.from(bossDataCache.values());
+}
+
+/**
+ * 指定されたIDのボスデータを取得
+ * @param id ボスのID
+ * @returns 指定されたIDのボスデータ
+ * @throws ボスデータが読み込まれていない場合
+ */
+export function getBossData(id: string): BossData {
+    if (bossDataCache.has(id)) {
+        return bossDataCache.get(id)!;
+    } else {
+        throw new Error(`Boss data for ID ${id} not loaded. Please ensure loadAllBossData() is called first.`);
+    }
 }

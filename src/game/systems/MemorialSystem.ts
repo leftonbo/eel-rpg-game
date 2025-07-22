@@ -59,12 +59,12 @@ export class MemorialSystem {
     }
     
     /**
-     * 記念品を生成（非同期対応）
+     * 記念品を生成
      */
-    private async createHaveTrophies(): Promise<void> {
+    private createHaveTrophies(): void {
         for (const [bossId, memorial] of this.bossMemorials.entries()) {
             try {
-                const bossData = await getBossData(bossId);
+                const bossData = getBossData(bossId);
                 if (!bossData) {
                     console.warn(`No boss data found for ID: ${bossId}`);
                     continue;
@@ -252,14 +252,14 @@ export class MemorialSystem {
      * バトル記録を読み込み（非同期対応）
      * @param data - MemorialSaveDataオブジェクト
      */
-    public async importData(data: MemorialSaveData): Promise<void> {
+    public importData(data: MemorialSaveData): void {
         this.bossMemorials.clear();
         data.bossMemorials.forEach(memorial => {
             this.bossMemorials.set(memorial.bossId, memorial);
         });
         
         // 記念品を生成（非同期）
-        await this.createHaveTrophies();
+        this.createHaveTrophies();
     }
     
     /**

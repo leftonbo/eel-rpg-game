@@ -1,5 +1,5 @@
 import { Game } from '../Game';
-import { getAllBossMetadata, getBossMetadata } from '../data/index';
+import { getAllBossData, getBossData } from '../data';
 import { PlayerSaveManager } from '../systems/PlayerSaveData';
 import { AbilityType } from '../systems/AbilitySystem';
 import { SkillData, UnlockCondition } from '../data/skills';
@@ -62,17 +62,17 @@ export class BossSelectScene {
         this.initializeModalSaveDataButtons();
     }
     
-    async enter(): Promise<void> {
+    enter(): void {
         console.log('Entered boss select scene');
         
         // Reset boss selection button state
         this.resetConfirmButtonState();
         
         // Update boss card information
-        await this.updateBossCards();
+        this.updateBossCards();
         
         // Update player status display
-        await this.updatePlayerStatus();
+        this.updatePlayerStatus();
         
         // Show/hide debug controls based on debug mode
         this.updateDebugControlsVisibilityInModal();
@@ -85,14 +85,14 @@ export class BossSelectScene {
             confirmButton.textContent = '戦闘開始';
         }
     }
-    
-    private async updateBossCards(): Promise<void> {
-        const allBossMetadata = await getAllBossMetadata();
+
+    private updateBossCards(): void {
+        const allBossData = getAllBossData();
         const playerExplorerLevel = this.game.getPlayer().getExplorerLevel();
         
         this.bossCards?.forEach(card => {
             const bossId = card.getAttribute('data-boss');
-            const bossData = allBossMetadata.find(boss => boss.id === bossId);
+            const bossData = allBossData.find(boss => boss.id === bossId);
             
             if (bossData) {
                 const titleElement = card.querySelector('.card-title');
@@ -125,11 +125,11 @@ export class BossSelectScene {
         });
     }
     
-    private async onBossSelect(bossId: string): Promise<void> {
+    private onBossSelect(bossId: string): void {
         this.selectedBossId = bossId;
         
         // Update modal with boss information
-        await this.updateModal(bossId);
+        this.updateModal(bossId);
         
         // Show modal
         if (this.bossModal) {
@@ -137,26 +137,24 @@ export class BossSelectScene {
         }
     }
     
-    private async updateModal(bossId: string): Promise<void> {
-        const bossMetadata = await getBossMetadata(bossId);
-        
-        if (!bossMetadata) return;
+    private updateModal(bossId: string): void {
+        const bossData = getBossData(bossId);
         
         // Update modal title
         const modalTitle = document.getElementById('modal-boss-name');
         if (modalTitle) {
-            modalTitle.textContent = bossMetadata.displayName;
+            modalTitle.textContent = bossData.displayName;
         }
         
         // Update modal description
         const modalDescription = document.getElementById('modal-boss-description');
         if (modalDescription) {
-            modalDescription.textContent = bossMetadata.description;
+            modalDescription.textContent = bossData.description;
         }
         
         const modalQuestNote = document.getElementById('modal-boss-quest-note');
         if (modalQuestNote) {
-            modalQuestNote.textContent = bossMetadata.questNote;
+            modalQuestNote.textContent = bossData.questNote;
         }
         
         // Update modal stats
@@ -165,10 +163,10 @@ export class BossSelectScene {
             modalStats.innerHTML = `
                 <div class=\"row\">
                     <div class=\"col-6\">
-                        <strong>HP:</strong> ${bossMetadata.maxHp}
+                        <strong>HP:</strong> ${bossData.maxHp}
                     </div>
                     <div class=\"col-6\">
-                        <strong>攻撃力:</strong> ${bossMetadata.attackPower}
+                        <strong>攻撃力:</strong> ${bossData.attackPower}
                     </div>
                 </div>
             `;
@@ -177,8 +175,8 @@ export class BossSelectScene {
         // Add guest character attribution if available
         const modalGuestInfo = document.getElementById('modal-boss-guest-info');
         if (modalGuestInfo) {
-            if (bossMetadata.guestCharacterInfo) {
-                modalGuestInfo.innerHTML = `<small class="text-muted">Guest Character by ${bossMetadata.guestCharacterInfo.creator}</small>`;
+            if (bossData.guestCharacterInfo) {
+                modalGuestInfo.innerHTML = `<small class="text-muted">Guest Character by ${bossData.guestCharacterInfo.creator}</small>`;
                 modalGuestInfo.classList.remove('d-none');
             } else {
                 modalGuestInfo.classList.add('d-none');
@@ -186,31 +184,18 @@ export class BossSelectScene {
         }
     }
     
-    private async onConfirmBoss(): Promise<void> {
+    private onConfirmBoss(): void {
         if (this.selectedBossId) {
             // Hide modal
             if (this.bossModal) {
                 this.bossModal.hide();
             }
             
-            // Show loading indicator
-            const confirmButton = document.getElementById('confirm-boss-btn') as HTMLButtonElement;
-            if (confirmButton) {
-                confirmButton.disabled = true;
-                confirmButton.textContent = 'ボスデータ読み込み中...';
-            }
-            
             try {
-                // Start battle with selected boss (async loading)
-                await this.game.selectBoss(this.selectedBossId);
+                // Start battle with selected boss
+                this.game.selectBoss(this.selectedBossId);
             } catch (error) {
                 console.error('Failed to load boss:', error);
-                
-                // Re-enable button on error
-                if (confirmButton) {
-                    confirmButton.disabled = false;
-                    confirmButton.textContent = '戦闘開始';
-                }
                 
                 // Show user-friendly error message using existing toast utility
                 const errorMessage = error instanceof Error ? error.message : '不明なエラーが発生しました';
@@ -230,7 +215,7 @@ export class BossSelectScene {
     /**
      * Update player status display in boss select screen
      */
-    private async updatePlayerStatus(): Promise<void> {
+    private updatePlayerStatus(): void {
         const player = this.game.getPlayer();
         const equipment = player.getEquipmentInfo();
         
@@ -348,7 +333,7 @@ export class BossSelectScene {
                 input.addEventListener('change', () => {
                     if (input.checked) {
                         player.equipWeapon(weapon.id);
-                        // this.updatePlayerStatus(); // Skip async update in event handler
+                        this.updatePlayerStatus();
                         PlayerSaveManager.saveEquipment(player.equippedWeapon, player.equippedArmor);
                     }
                 });
@@ -377,7 +362,7 @@ export class BossSelectScene {
                 input.addEventListener('change', () => {
                     if (input.checked) {
                         player.equipArmor(armor.id);
-                        // this.updatePlayerStatus(); // Skip async update in event handler
+                        this.updatePlayerStatus();
                     }
                 });
             });
@@ -786,7 +771,7 @@ export class BossSelectScene {
             
             player.recalculateStats();
             player.saveToStorage();
-            // this.updatePlayerStatus(); // Skip async update in event handler
+            this.updatePlayerStatus();
             this.showPlayerDetails(); // Refresh modal content
             ModalUtils.showToast(`${this.getAbilityName(abilityType)}をレベル ${level} に設定しました`, 'success');
         }
@@ -816,7 +801,7 @@ export class BossSelectScene {
         
         player.recalculateStats();
         player.saveToStorage();
-        // this.updatePlayerStatus(); // Skip async update in event handler
+        this.updatePlayerStatus();
         this.showPlayerDetails(); // Refresh modal content
         ModalUtils.showToast(`全てのアビリティをレベル ${level} に設定しました`, 'success');
     }

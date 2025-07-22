@@ -2,9 +2,9 @@ import { Game } from '../Game';
 import { AbilityType } from '../systems/AbilitySystem';
 import { SkillRegistry } from '../data/skills';
 import { Player } from '../entities/Player';
-import { getBossDataSync, getBossMetadata, getAllBossMetadata, BossMetadata } from '../data/index';
+import { getAllBossData, getBossData } from '../data';
 import { Trophy, MemorialSystem } from '../systems/MemorialSystem';
-import { Boss } from '../entities/Boss';
+import { Boss, BossData } from '../entities/Boss';
 
 export enum BattleResultStatus {
     Interrupted = 'interrupted',
@@ -247,7 +247,7 @@ export class BattleResultScene {
 /**
  * Calculate battle result based on player performance
  */
-export async function calculateBattleResult(
+export function calculateBattleResult(
     player: Player,
     boss: Boss,
     status: BattleResultStatus,
@@ -257,15 +257,14 @@ export async function calculateBattleResult(
     craftworkExperience: number = 0,
     agilityExperience: number = 0,
     skillsReceived: string[] = []
-): Promise<BattleResult> {
+): BattleResult {
     // Calculate explorer experience from trophies and skill experience
     const bossId = boss.id;
-    const bossMetadata = await getBossMetadata(bossId);
-    const requiredLevel = bossMetadata?.explorerLevelRequired || 0;
+    const bossData = getBossData(bossId);
+    const requiredLevel = bossData?.explorerLevelRequired || 0;
     const trophies: Trophy[] = [];
     let explorerExperience = 0;
 
-    const bossData = getBossDataSync(bossId);
     if (bossData) {
         // Award victory/defeat trophies (only if battle was not interrupted)
         if (status === BattleResultStatus.Victory) {
@@ -328,7 +327,7 @@ export async function calculateBattleResult(
                 // Check for new boss unlocks if explorer level increased
                 if (abilityType === AbilityType.Explorer) {
                     const newExplorerLevel = result.newLevel;
-                    const bossUnlocks = await checkNewBossUnlocks(previousExplorerLevel, newExplorerLevel);
+                    const bossUnlocks = checkNewBossUnlocks(previousExplorerLevel, newExplorerLevel);
                     newBossUnlocks.push(...bossUnlocks);
                 }
             }
@@ -429,12 +428,12 @@ function checkSkillUnlocks(abilityType: AbilityType, newLevel: number): string[]
 /**
  * Check what new bosses are unlocked when explorer level increases
  */
-async function checkNewBossUnlocks(previousLevel: number, newLevel: number): Promise<string[]> {
+function checkNewBossUnlocks(previousLevel: number, newLevel: number): string[] {
     const newlyUnlockedBosses: string[] = [];
-    const allBossMetadata = await getAllBossMetadata();
-    
-    allBossMetadata.forEach((boss: BossMetadata) => {
-        const requiredLevel = boss.explorerLevelRequired;
+    const allBossData = getAllBossData();
+
+    allBossData.forEach((boss: BossData) => {
+        const requiredLevel = boss.explorerLevelRequired || 0;
         // Check if this boss was locked before but is unlocked now
         if (requiredLevel > previousLevel && requiredLevel <= newLevel) {
             newlyUnlockedBosses.push(boss.displayName);

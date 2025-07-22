@@ -1,18 +1,44 @@
 import { Player } from './entities/Player';
 import { Boss } from './entities/Boss';
-import { getBossData } from './data/index';
+import { getBossData, loadAllBossData } from './data/index';
 import { TitleScene } from './scenes/TitleScene';
 import { BossSelectScene } from './scenes/BossSelectScene';
 import { BattleScene } from './scenes/BattleScene';
 import { BattleResultScene, BattleResult } from './scenes/BattleResultScene';
 
+/**
+ * ゲームの状態を管理する列挙型
+ */
 export enum GameState {
+    /**
+     * 初期状態。ゲームがまだ開始されていない状態
+     */
+    Initial = 'initial',
+    /**
+     * エラー状態。致命的なエラーが発生した状態
+     */
+    FatalError = 'fatal-error',
+    /**
+     * タイトル画面。プレイヤーがゲームを開始できる状態
+     */
     Title = 'title',
+    /**
+     * ボス選択画面。プレイヤーが挑戦するボスを選ぶ状態
+     */
     BossSelect = 'boss-select',
+    /**
+     * 戦闘画面。プレイヤーがボスと戦う状態
+     */
     Battle = 'battle',
+    /**
+     * 戦闘結果画面。戦闘の結果が表示される状態
+     */
     BattleResult = 'battle-result'
 }
 
+/**
+ * ゲームのメインクラス
+ */
 export class Game {
     private currentState: GameState = GameState.Title;
     private player: Player;
@@ -25,37 +51,45 @@ export class Game {
     private battleResultScene: BattleResultScene;
     
     constructor() {
-        // Check for debug mode from webpack environment, URL parameters, or localStorage
+        // デバッグモード判定 (webpack environment, URL parameters, or localStorage)
         const urlParams = new URLSearchParams(window.location.search);
         this.debugMode = (typeof DEBUG !== 'undefined' && DEBUG) ||
                         urlParams.get('debug') === 'true' || 
                         localStorage.getItem('debug_mode') === 'true';
-        
-        // Initialize player (will be fully initialized asynchronously)
+
+        // Player の初期化
         this.player = new Player();
         
+        // シーンの初期化
         this.titleScene = new TitleScene(this);
         this.bossSelectScene = new BossSelectScene(this);
         this.battleScene = new BattleScene(this);
         this.battleResultScene = new BattleResultScene(this);
         
+        // 非同期読み込みを開始
         this.initAsync();
     }
     
     private async initAsync(): Promise<void> {
         try {
-            console.log('Initializing game...');
-            // Initialize player data asynchronously
-            await this.player.initializeAsync();
-            console.log('Game initialized successfully');
+            console.log('[Game][initAsync] Initializing game...');
+
+            // 初期状態を設定
+            this.setState(GameState.Initial);
+            
+            // ボスデータを非同期で読み込み
+            await loadAllBossData();
+            console.log('[Game][initAsync] All boss data loaded');
+            
+            console.log('[Game][initAsync] Game initialized successfully');
             
             // Show initial title screen
             this.setState(GameState.Title);
         } catch (error) {
-            console.error('Failed to initialize game:', error);
-            console.error('Error details:', error);
-            // Fallback: show title screen anyway
-            this.setState(GameState.Title);
+            // エラーが発生した場合は致命的なエラー状態に遷移
+            console.error('[Game][initAsync] Failed to initialize game:', error);
+            console.error('[Game][initAsync] Error details:', error);
+            this.setState(GameState.FatalError);
         }
     }
     
@@ -98,9 +132,9 @@ export class Game {
         this.setState(GameState.BossSelect);
     }
     
-    async selectBoss(bossId: string): Promise<void> {
+    selectBoss(bossId: string): void {
         try {
-            const bossData = await getBossData(bossId);
+            const bossData = getBossData(bossId);
             this.currentBoss = new Boss(bossData);
             this.setState(GameState.Battle);
         } catch (error) {
