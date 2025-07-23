@@ -68,6 +68,10 @@ const swampDragonActions: BossAction[] = [
         type: ActionType.Attack,
         name: 'べろちゅー',
         description: '拘束中の獲物を舌でキスする（与えたダメージ分回復）',
+        messages: [
+            '「グルル...」',
+            '<USER>は<TARGET>の口に舌を押し付けながら深いキスをする！',
+        ],
         damageFormula: (user: Boss) => user.attackPower * 1.3,
         weight: 30,
         playerStateCondition: 'restrained',
@@ -82,7 +86,7 @@ export const swampDragonData: BossData = {
     description: '沼地に生息するドラゴン',
     questNote: `沼地に生息する焼け茶色のドラゴンが、通りかかる旅人を襲い続けている。そのドラゴンを討伐し、平和を取り戻すことがあなたの任務だ。`,
     maxHp: 400,
-    attackPower: 18,
+    attackPower: 20,
     actions: swampDragonActions,
     icon: '🐲',
     explorerLevelRequired: 0,
@@ -92,7 +96,7 @@ export const swampDragonData: BossData = {
     },
     defeatTrophy: {
         name: '沼のような粘液',
-        description: '沼のドラゴンの体内から採取した特殊な粘液。沼地の神秘的な力が宿っている。'
+        description: '沼のドラゴンの体内から採取した、底なし沼のようにネバネバした粘液。沼地の神秘的な力が宿っている。'
     },
     personality: [
         'ふむ...良い匂いだな',
@@ -141,7 +145,6 @@ export const swampDragonData: BossData = {
                         '<USER>の体内奥深くで消化液がゆっくりと分泌されている...',
                         '<TARGET>の体が徐々に体力を失っていく...'
                     ],
-                    statusEffect: StatusEffectType.Weakness,
                     weight: 1
                 },
                 {
@@ -154,7 +157,6 @@ export const swampDragonData: BossData = {
                         '<USER>の体内の壁が<TARGET>をゆっくりと圧迫している...',
                         '<TARGET>は深い体内で身動きが取れない...'
                     ],
-                    statusEffect: StatusEffectType.Exhausted,
                     weight: 1
                 },
                 {
