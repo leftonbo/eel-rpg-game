@@ -32,7 +32,7 @@ export enum ActionType {
 }
 
 export interface BossAction {
-    id: string; // Unique identifier for the action within the boss
+    id: string; // Unique identifier for the action within the boss, used for action identification, logging, and debugging
     type: ActionType;
     name: string;
     description: string;
