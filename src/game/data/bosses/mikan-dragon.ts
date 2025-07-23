@@ -3,6 +3,7 @@ import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
 const mikanDragonActions: BossAction[] = [
     {
+        id: 'citrus-claw',
         type: ActionType.Attack,
         name: '蜜柑の爪',
         description: '蜜柑のような鋭い爪で攻撃',
@@ -12,6 +13,7 @@ const mikanDragonActions: BossAction[] = [
         playerStateCondition: 'normal'
     },
     {
+        id: 'citrus-tail-slam',
         type: ActionType.Attack,
         name: '蜜柑の尻尾',
         description: '蜜柑色の尻尾で叩く',
@@ -21,6 +23,7 @@ const mikanDragonActions: BossAction[] = [
         playerStateCondition: 'normal'
     },
     {
+        id: 'citrus-fragrance',
         type: ActionType.StatusAttack,
         name: '蜜柑の香り',
         description: '甘い蜜柑の香りで獲物を魅了する',
@@ -37,6 +40,7 @@ const mikanDragonActions: BossAction[] = [
         }
     },
     {
+        id: 'citrus-slime',
         type: ActionType.StatusAttack,
         name: '蜜柑の粘液',
         description: '蜜柑の汁のような粘液で獲物をネバネバにする',
@@ -47,6 +51,7 @@ const mikanDragonActions: BossAction[] = [
         weight: 25
     },
     {
+        id: 'tongue-wrap',
         type: ActionType.RestraintAttack,
         name: '蜜柑の舌巻き付け',
         description: '長い舌で獲物を拘束する',
@@ -62,6 +67,7 @@ const mikanDragonActions: BossAction[] = [
         }
     },
     {
+        id: 'citrus-squeeze',
         type: ActionType.Attack,
         name: '蜜柑しぼり',
         description: '舌で獲物を締め付ける',
@@ -74,6 +80,7 @@ const mikanDragonActions: BossAction[] = [
         playerStateCondition: 'restrained'
     },
     {
+        id: 'citrus-kiss',
         type: ActionType.Attack,
         name: '蜜柑のキス',
         description: '舌で獲物を舐めて体力を吸収する',
@@ -87,6 +94,7 @@ const mikanDragonActions: BossAction[] = [
         healRatio: 1.0
     },
     {
+        id: 'citrus-juice-injection',
         type: ActionType.StatusAttack,
         name: '蜜柑汁注入',
         description: '舌を口に入れて蜜柑の汁を注入し、魅了する',
@@ -135,6 +143,7 @@ export const mikanDragonData: BossData = {
         if (player.isDefeated()) {
             const postDefeatedActions: BossAction[] = [
                 {
+                    id: 'citrus-cultivation',
                     type: ActionType.PostDefeatedAttack,
                     name: '蜜柑汁培養',
                     description: '獲物の体を蜜柑の汁で満たし、培養し続ける',
@@ -147,6 +156,7 @@ export const mikanDragonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'citrus-tentacle-caress',
                     type: ActionType.PostDefeatedAttack,
                     name: '蜜柑触手愛撫',
                     description: '体内触手で獲物を優しく愛撫し続ける',
@@ -159,6 +169,7 @@ export const mikanDragonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'citrus-transformation',
                     type: ActionType.PostDefeatedAttack,
                     name: '蜜柑同族化',
                     description: '蜜柑の汁を注入して獲物を同族化させる',
@@ -178,6 +189,7 @@ export const mikanDragonData: BossData = {
         if (player.isEaten()) {
             const eatenActions = [
                 {
+                    id: 'internal-citrus-injection',
                     type: ActionType.DevourAttack,
                     name: '蜜柑汁注入',
                     description: '体内触手で蜜柑の汁を注入し、最大HPを減らす',
@@ -190,6 +202,7 @@ export const mikanDragonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'citrus-massage',
                     type: ActionType.DevourAttack,
                     name: '蜜柑マッサージ',
                     description: '蜜柑の果肉のような胃壁でマッサージし、最大HPを減らす',
@@ -201,6 +214,7 @@ export const mikanDragonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'citrus-tentacle-tickle',
                     type: ActionType.DevourAttack,
                     name: '蜜柑触手くすぐり',
                     description: '体内触手でくすぐり、最大HPを減らして脱力状態にする',
@@ -222,6 +236,7 @@ export const mikanDragonData: BossData = {
                 // Restrained + Knocked Out: 90% chance to eat
                 if (Math.random() < 0.9) {
                     return {
+                        id: 'citrus-swallow-restrained',
                         type: ActionType.EatAttack,
                         name: '蜜柑の丸呑み',
                         description: '拘束した獲物を丸呑みする',
@@ -237,6 +252,7 @@ export const mikanDragonData: BossData = {
                 const random = Math.random();
                 if (random < 0.6) {
                     return {
+                        id: 'opportunistic-tongue-wrap',
                         type: ActionType.RestraintAttack,
                         name: '蜜柑の舌巻き付け',
                         description: '長い舌で獲物を拘束する',
@@ -248,6 +264,7 @@ export const mikanDragonData: BossData = {
                     };
                 } else if (random < 0.9) {
                     return {
+                        id: 'citrus-swallow-direct',
                         type: ActionType.EatAttack,
                         name: '蜜柑の丸呑み',
                         description: '拘束した獲物を丸呑みする',
