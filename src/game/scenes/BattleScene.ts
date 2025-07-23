@@ -6,6 +6,29 @@ import { calculateAttackResult } from '../utils/CombatUtils';
 import { BattleResultStatus, calculateBattleResult } from './BattleResultScene';
 import { ModalUtils } from '../utils/ModalUtils';
 
+/**
+ * メッセージ進行データ
+ * 話者、表示スタイル、テキストを定義
+ */
+export interface MessageData {
+    /**
+     * 話者
+     * プレイヤー、ボス、システムメッセージのいずれか
+     * 省略時は 'system' として扱う
+     */
+    speaker?: 'player' | 'boss' | 'system';
+    /**
+     * ダイアログスタイル (player, boss 時)
+     * 'default' は通常のダイアログ (デフォルト)
+     * 'talk' は会話風のスタイル
+     */
+    style?: 'default' | 'talk';
+    /**
+     * メッセージテキスト
+     * */
+    text: string;
+}
+
 export class BattleScene {
     /**
      * The main game instance that this scene belongs to.
@@ -259,9 +282,8 @@ export class BattleScene {
         
         this.initializeBattle();
         
-        // Show boss dialogue
-        const startDialogue = this.boss.getDialogue('battle-start');
-        this.addBattleLogMessage(startDialogue, 'system');
+        // Show battle start message
+        this.showBattleStartMessages();
         
         // Now it's time to start the battle
         this.roundCount = 1;
@@ -1030,12 +1052,10 @@ export class BattleScene {
         
         // Check if boss is defeated
         if (this.boss.isDefeated()) {
-            this.addBattleLogMessage(`${this.boss.displayName}を倒した！`, 'system');
-            
-            const defeatDialogue = this.boss.getDialogue('defeat');
-            this.addBattleLogMessage(defeatDialogue, 'boss');
+            // Show victory message
+            this.showVictoryMessages();
 
-            this.addBattleLogMessage('勝利！', 'system');
+            // 勝利メッセージ後、バトル終了ボタン案内を表示
             this.addBattleLogMessage('「バトル終了」ボタンを押して結果を確認してください。', 'system');
             
             // Set battle ended state
@@ -1048,6 +1068,12 @@ export class BattleScene {
         return false;
     }
     
+    /**
+     * Add a message to the battle log
+     * @param message The message to add
+     * @param type The type of message (e.g., 'damage', 'status-effect', 'heal', etc.)
+     * @param actor The actor type ('player', 'boss', 'system')
+     */
     private addBattleLogMessage(message: string, type: string = '', actor: 'player' | 'boss' | 'system' = 'system'): void {
         if (!this.battleLog) return;
         
@@ -1482,5 +1508,49 @@ export class BattleScene {
             console.error('Error applying debug changes:', error);
             ModalUtils.showToast('変更の適用中にエラーが発生しました', 'error');
         }
+    }
+
+    /**
+     * 戦闘開始時のメッセージ進行を表示
+     */
+    private showBattleStartMessages(): void {
+        if (!this.boss) {
+            return;
+        }
+        
+        if (!this.boss.battleStartMessages) {
+            // フォールバック
+            this.addBattleLogMessage(`${this.boss.displayName}が現れた！`, 'system');
+            return;
+        }
+
+        // TODO: MessageData をそのまま渡せるようにする、{player}{boss} などの置換を行う
+        this.boss.battleStartMessages.forEach(message => {
+            this.addBattleLogMessage(
+                message.text, message.speaker || '', message.speaker || 'system'
+            );
+        });
+    }
+
+    /**
+     * 勝利時のメッセージ進行を表示
+     */
+    private showVictoryMessages(): void {
+        if (!this.boss) {
+            return;
+        }
+
+        if (!this.boss.victoryMessages) {
+            // フォールバック
+            this.addBattleLogMessage(`${this.boss.displayName}を倒した！`, 'system');
+            return;
+        }
+
+        // TODO: MessageData をそのまま渡せるようにする、{player}{boss} などの置換を行う
+        this.boss.victoryMessages.forEach(message => {
+            this.addBattleLogMessage(
+                message.text, message.speaker || '', message.speaker || 'system'
+            );
+        });
     }
 }
