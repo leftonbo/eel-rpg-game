@@ -4,6 +4,7 @@ import { StatusEffectType } from '../../systems/StatusEffectTypes';
 const scorpionCarrierActions: BossAction[] = [
     // Normal state actions
     {
+        id: 'claw-pincer-attack',
         type: ActionType.Attack,
         name: 'はさみ攻撃',
         description: '大きなはさみで攻撃する',
@@ -13,6 +14,7 @@ const scorpionCarrierActions: BossAction[] = [
         weight: 20
     },
     {
+        id: 'tire-stomp',
         type: ActionType.Attack,
         name: '踏みつけ',
         description: 'タイヤの足で踏みつける',
@@ -22,6 +24,7 @@ const scorpionCarrierActions: BossAction[] = [
         weight: 15
     },
     {
+        id: 'stinger-tail-swing',
         type: ActionType.Attack,
         name: 'しっぽ振り回し',
         description: '強力だが命中率が低い攻撃',
@@ -32,6 +35,7 @@ const scorpionCarrierActions: BossAction[] = [
         playerStateCondition: 'normal'
     },
     {
+        id: 'anesthesia-injection',
         type: ActionType.StatusAttack,
         name: 'しっぽ麻酔',
         description: '尻尾の注射器で麻酔を注入する',
@@ -46,6 +50,7 @@ const scorpionCarrierActions: BossAction[] = [
         }
     },
     {
+        id: 'claw-catch',
         type: ActionType.RestraintAttack,
         name: 'はさみキャッチ',
         description: 'はさみで対象を捕まえる',
@@ -61,6 +66,7 @@ const scorpionCarrierActions: BossAction[] = [
 const scorpionCarrierActionsRestrained: BossAction[] = [
     // Restrained state actions
     {
+        id: 'deadly-poison-injection',
         type: ActionType.StatusAttack,
         name: '猛毒注射',
         description: '拘束した対象に猛毒を注射する',
@@ -72,6 +78,7 @@ const scorpionCarrierActionsRestrained: BossAction[] = [
         weight: 30
     },
     {
+        id: 'bite-lick-assault',
         type: ActionType.Attack,
         name: 'かみつき舐め回し',
         description: '拘束した対象を舐め回す',
@@ -80,6 +87,7 @@ const scorpionCarrierActionsRestrained: BossAction[] = [
         weight: 25
     },
     {
+        id: 'restrained-claw-attack',
         type: ActionType.Attack,
         name: 'はさみ攻撃',
         description: '大きなはさみで攻撃する',
@@ -92,6 +100,7 @@ const scorpionCarrierActionsRestrained: BossAction[] = [
 const scorpionCarrierActionsKnockoutRestrained: BossAction[] = [
     // Eating Process - special transition attack
     {
+        id: 'bold-swallow',
         type: ActionType.EatAttack,
         name: '大胆に丸呑み',
         description: '対象を丸呑みして体内に運ぶ',
@@ -110,6 +119,7 @@ const scorpionCarrierActionsKnockoutRestrained: BossAction[] = [
 const scorpionCarrierActionsEaten: BossAction[] = [
     // Eaten state actions
     {
+        id: 'weakening-injection',
         type: ActionType.StatusAttack,
         name: '脱力剤注入',
         description: '体内の生き物に脱力剤を注入する',
@@ -122,6 +132,7 @@ const scorpionCarrierActionsEaten: BossAction[] = [
         playerStateCondition: 'eaten'
     },
     {
+        id: 'internal-massage',
         type: ActionType.DevourAttack,
         name: '体内マッサージ',
         description: '体内の生き物にマッサージして最大HPを吸収',
@@ -134,6 +145,7 @@ const scorpionCarrierActionsEaten: BossAction[] = [
         }
     },
     {
+        id: 'internal-squeeze',
         type: ActionType.DevourAttack,
         name: '体内締め付け',
         description: '体内で生き物を締め付けて最大HPを吸収',
@@ -179,6 +191,7 @@ export const scorpionCarrierData: BossData = {
         if (player.isDefeated()) {
             const postDefeatedActions: BossAction[] = [
                 {
+                    id: 'internal-transport',
                     type: ActionType.PostDefeatedAttack,
                     name: '体内運搬',
                     description: '体内の生き物を目的地まで運搬する',
@@ -190,6 +203,7 @@ export const scorpionCarrierData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'nutrient-injection',
                     type: ActionType.PostDefeatedAttack,
                     name: '栄養剤注入',
                     description: '体内の生き物に栄養剤を注入する',
@@ -201,6 +215,7 @@ export const scorpionCarrierData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'energy-absorption',
                     type: ActionType.PostDefeatedAttack,
                     name: 'エネルギー吸収',
                     description: '体内の生き物からエネルギーを吸収する',
@@ -212,6 +227,7 @@ export const scorpionCarrierData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'mana-absorption',
                     type: ActionType.PostDefeatedAttack,
                     name: 'マナ吸収',
                     description: '体内の生き物からマナを吸収する',
@@ -223,6 +239,7 @@ export const scorpionCarrierData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'internal-drug-circulation',
                     type: ActionType.PostDefeatedAttack,
                     name: '体内薬剤循環',
                     description: '体内で薬剤を循環させて生き物を無力化する',

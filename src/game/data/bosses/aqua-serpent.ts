@@ -3,6 +3,7 @@ import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
 const aquaSerpentActions: BossAction[] = [
     {
+        id: 'water-pressure-breath',
         type: ActionType.Attack,
         name: '水圧ブレス',
         description: '口から高圧水流を発射',
@@ -14,6 +15,7 @@ const aquaSerpentActions: BossAction[] = [
         hitRate: 0.9
     },
     {
+        id: 'tsunami-strike',
         type: ActionType.Attack,
         name: '津波の一撃',
         description: '尻尾で水を巻き上げて叩きつける',
@@ -26,6 +28,7 @@ const aquaSerpentActions: BossAction[] = [
         damageVarianceMax: 0.3
     },
     {
+        id: 'whirlpool-slam',
         type: ActionType.Attack,
         name: '渦潮スラム',
         description: '長い体をうねらせて全身で攻撃',
@@ -37,6 +40,7 @@ const aquaSerpentActions: BossAction[] = [
         statusChance: 0.30
     },
     {
+        id: 'deep-sea-judgment',
         type: ActionType.Attack,
         name: '深海の審判',
         description: '海水を操り巨大な水の檻を作成',
@@ -60,6 +64,7 @@ const aquaSerpentActions: BossAction[] = [
         }
     },
     {
+        id: 'sea-serpent-embrace',
         type: ActionType.RestraintAttack,
         name: '海蛇の抱擁',
         description: '長い体でプレイヤーを巻き付け拘束',
@@ -75,6 +80,7 @@ const aquaSerpentActions: BossAction[] = [
         }
     },
     {
+        id: 'deep-sea-kiss',
         type: ActionType.Attack,
         name: '深海のキス',
         description: '拘束中の獲物をキスして体力を吸収',
@@ -88,6 +94,7 @@ const aquaSerpentActions: BossAction[] = [
         healRatio: 1.2
     },
     {
+        id: 'constriction',
         type: ActionType.Attack,
         name: '締めつけ',
         description: '拘束中の獲物を体で締めつける',
@@ -100,6 +107,7 @@ const aquaSerpentActions: BossAction[] = [
         playerStateCondition: 'restrained'
     },
     {
+        id: 'gastric-storm',
         type: ActionType.DevourAttack,
         name: '胃液の嵐',
         description: '体内で津波のような胃液を放出',
@@ -113,6 +121,7 @@ const aquaSerpentActions: BossAction[] = [
         playerStateCondition: 'eaten'
     },
     {
+        id: 'peristalsis',
         type: ActionType.DevourAttack,
         name: '蠕動運動',
         description: '体内の壁が収縮してプレイヤーを押し流す',
@@ -126,6 +135,7 @@ const aquaSerpentActions: BossAction[] = [
         playerStateCondition: 'eaten'
     },
     {
+        id: 'internal-glow',
         type: ActionType.DevourAttack,
         name: '体内発光',
         description: '体内の光が強くなりプレイヤーを幻惑',
@@ -139,6 +149,7 @@ const aquaSerpentActions: BossAction[] = [
         statusEffect: StatusEffectType.Charm
     },
     {
+        id: 'life-drain-vortex',
         type: ActionType.DevourAttack,
         name: '生命吸収の渦',
         description: '体内で大量の生命力を吸収',
@@ -220,6 +231,7 @@ export const aquaSerpentData: BossData = {
             const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
             if (turnsSinceDefeat > 0 && turnsSinceDefeat % 10 === 0) {
                 return {
+                    id: 'reincarnation-predation',
                     type: ActionType.PostDefeatedAttack,
                     name: '輪廻の捕食',
                     description: '尻尾まで運ばれた獲物を再び口に運んで飲み込む',
@@ -243,6 +255,7 @@ export const aquaSerpentData: BossData = {
         if (player.isDefeated()) {
             const postDefeatedActions: BossAction[] = [
                 {
+                    id: 'gastric-bath',
                     type: ActionType.PostDefeatedAttack,
                     name: '胃液でゆっくり洗われる',
                     description: '体内で胃液にゆっくりと洗われ続ける',
@@ -253,6 +266,7 @@ export const aquaSerpentData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'intense-peristalsis',
                     type: ActionType.PostDefeatedAttack,
                     name: '激しい蠕動運動でさらに奥へ',
                     description: '体内の筋肉が収縮して更に奥へ運ばれる',
@@ -263,6 +277,7 @@ export const aquaSerpentData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'deep-sea-massage',
                     type: ActionType.PostDefeatedAttack,
                     name: 'マッサージされながら深海を眺める',
                     description: '体内でマッサージされながら透明な体内から深海を眺める',
@@ -273,6 +288,7 @@ export const aquaSerpentData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'internal-whirlpool',
                     type: ActionType.PostDefeatedAttack,
                     name: '体内で渦を起こされてぐるぐる',
                     description: '体内で渦を起こされて目を回す',
@@ -309,6 +325,7 @@ export const aquaSerpentData: BossData = {
                 // Restrained + Knocked Out: 95% chance to eat
                 if (Math.random() < 0.95) {
                     return {
+                        id: 'swallow-whole-restrained',
                         type: ActionType.EatAttack,
                         name: '丸呑み',
                         description: '拘束した獲物を丸呑みする',
@@ -325,6 +342,7 @@ export const aquaSerpentData: BossData = {
                 const random = Math.random();
                 if (random < 0.75) {
                     return {
+                        id: 'sea-serpent-embrace-ko',
                         type: ActionType.RestraintAttack,
                         name: '海蛇の抱擁',
                         description: '長い体で獲物を拘束する',
@@ -336,6 +354,7 @@ export const aquaSerpentData: BossData = {
                     };
                 } else if (random < 0.95) {
                     return {
+                        id: 'swallow-whole-direct',
                         type: ActionType.EatAttack,
                         name: '丸呑み',
                         description: '獲物を丸呑みする',
