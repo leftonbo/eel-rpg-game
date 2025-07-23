@@ -35,6 +35,7 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         duration: 2,
         category: 'debuff',
         isDebuff: true,
+        stackable: true,
         potency: DEFAULT_FIRE_DAMAGE,
         onTick: (target: Actor, effect: StatusEffect) => {
             const damage = effect.potency ?? DEFAULT_FIRE_DAMAGE;
@@ -78,6 +79,7 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         duration: 3,
         category: 'debuff',
         isDebuff: true,
+        stackable: true,
         potency: DEFAULT_POISON_DAMAGE,
         onTick: (target: Actor, effect: StatusEffect) => {
             const damage = effect.potency ?? DEFAULT_POISON_DAMAGE;
@@ -168,6 +170,7 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         duration: 3,
         category: 'debuff',
         isDebuff: true,
+        stackable: true,
         onTick: (target: Actor, _effect: StatusEffect) => {
             const damage = Math.floor(target.maxHp / 10);
             target.takeDamage(damage);
@@ -275,6 +278,7 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         duration: 3,
         category: 'debuff',
         isDebuff: true,
+        stackable: true,
         onTick: (target: Actor, _effect: StatusEffect) => {
             target.takeDamage(4);
         },
