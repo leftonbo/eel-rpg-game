@@ -100,8 +100,6 @@ export class BossSelectScene {
                 const requiredLevel = bossData.explorerLevelRequired || 0;
                 const isUnlocked = playerExplorerLevel >= requiredLevel;
                 
-                console.log(`Updating card for boss ${bossId}: unlocked=${isUnlocked}, requiredLevel=${requiredLevel}`);
-                
                 if (titleElement) {
                     titleElement.textContent = bossData.displayName;
                 }
