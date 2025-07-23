@@ -3,6 +3,7 @@ import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
 const swampDragonActions: BossAction[] = [
     {
+        id: 'claw-attack',
         type: ActionType.Attack,
         name: 'クロー攻撃',
         description: '鋭い爪で引っ掻く',
@@ -11,6 +12,7 @@ const swampDragonActions: BossAction[] = [
         playerStateCondition: 'normal'
     },
     {
+        id: 'bite-attack',
         type: ActionType.Attack,
         name: '噛みつき',
         description: '強力な顎で噛みつく',
@@ -23,6 +25,7 @@ const swampDragonActions: BossAction[] = [
         damageVarianceMax: 0.5
     },
     {
+        id: 'fire-breath',
         type: ActionType.StatusAttack,
         name: '炎のブレス',
         description: '灼熱の炎を吐く',
@@ -32,6 +35,7 @@ const swampDragonActions: BossAction[] = [
         weight: 25
     },
     {
+        id: 'tail-wrap',
         type: ActionType.RestraintAttack,
         name: '尻尾巻き付き',
         description: '長い尻尾で対象を拘束する',
@@ -47,6 +51,7 @@ const swampDragonActions: BossAction[] = [
         }
     },
     {
+        id: 'tail-squeeze',
         type: ActionType.Attack,
         name: '尻尾しめつけ',
         description: '拘束中の獲物を尻尾でしめつける',
@@ -59,6 +64,7 @@ const swampDragonActions: BossAction[] = [
         playerStateCondition: 'restrained'
     },
     {
+        id: 'tongue-kiss',
         type: ActionType.Attack,
         name: 'べろちゅー',
         description: '拘束中の獲物を舌でキスする（与えたダメージ分回復）',
@@ -126,6 +132,7 @@ export const swampDragonData: BossData = {
         if (player.isDefeated()) {
             const postDefeatedActions: BossAction[] = [
                 {
+                    id: 'deep-digestion',
                     type: ActionType.PostDefeatedAttack,
                     name: '深い体内での消化活動',
                     description: '深い体内で消化液を分泌し、獲物の体力を吸収し続ける',
@@ -138,6 +145,7 @@ export const swampDragonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'internal-pressure',
                     type: ActionType.PostDefeatedAttack,
                     name: '体内圧迫',
                     description: '体内の壁で獲物を優しく圧迫し続ける',
@@ -150,6 +158,7 @@ export const swampDragonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'nutrition-absorption',
                     type: ActionType.PostDefeatedAttack,
                     name: '体内栄養吸収',
                     description: '体内で獲物から栄養を吸収し続ける',
@@ -162,6 +171,7 @@ export const swampDragonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'internal-warmth',
                     type: ActionType.PostDefeatedAttack,
                     name: '体内温熱療法',
                     description: '体内の温かさで獲物を包み込み続ける',
@@ -174,6 +184,7 @@ export const swampDragonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'internal-massage',
                     type: ActionType.PostDefeatedAttack,
                     name: '体内マッサージ',
                     description: '体内の筋肉で獲物を優しくマッサージし続ける',
@@ -193,6 +204,7 @@ export const swampDragonData: BossData = {
         if (player.isEaten()) {
             const eatenActions = [
                 {
+                    id: 'stomach-acid',
                     type: ActionType.DevourAttack,
                     name: '胃液分泌',
                     description: 'ネバネバな胃液を分泌して獲物を粘液まみれにする',
@@ -205,6 +217,7 @@ export const swampDragonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'stomach-squeeze',
                     type: ActionType.DevourAttack,
                     name: '体内締め付け',
                     description: '獲物を体内で締め付ける',
@@ -216,6 +229,7 @@ export const swampDragonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'stomach-massage',
                     type: ActionType.DevourAttack,
                     name: '体内マッサージ',
                     description: '獲物を体内で優しくマッサージする',
@@ -227,6 +241,7 @@ export const swampDragonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'belly-sway',
                     type: ActionType.DevourAttack,
                     name: 'お腹ゆらし',
                     description: '獲物の入ったお腹をゆらゆらと揺らす',
@@ -247,6 +262,7 @@ export const swampDragonData: BossData = {
                 // Restrained + Knocked Out: 90% chance to eat
                 if (Math.random() < 0.9) {
                     return {
+                        id: 'swallow-whole-restrained',
                         type: ActionType.EatAttack,
                         name: '丸呑み',
                         description: '拘束した獲物を丸呑みする',
@@ -264,6 +280,7 @@ export const swampDragonData: BossData = {
                     // 拘束試行回数を記録
                     boss.modifyCustomVariable('restraintAttempts', 1);
                     return {
+                        id: 'tail-wrap-ko',
                         type: ActionType.RestraintAttack,
                         name: '尻尾巻き付き',
                         description: '対象を尻尾で拘束する',
@@ -275,6 +292,7 @@ export const swampDragonData: BossData = {
                     };
                 } else if (random < 0.9) {
                     return {
+                        id: 'swallow-whole-direct',
                         type: ActionType.EatAttack,
                         name: '丸呑み',
                         description: '拘束した獲物を丸呑みする',
