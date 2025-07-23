@@ -924,7 +924,6 @@ export class BattleScene {
     
     private endPlayerTurn(): void {
         this.playerTurn = false;
-        this.checkBattleEnd();
         
         if (!this.checkBattleEnd()) {
             // Start boss turn after a delay
