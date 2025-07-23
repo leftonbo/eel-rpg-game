@@ -286,52 +286,33 @@ newBossData.getDialogue = function(situation: 'battle-start' | 'player-restraine
 `src/game/data/index.ts` を更新：
 
 ```typescript
-import { BossData } from '../entities/Boss';
-import { swampDragonData } from './bosses/swamp-dragon';
-import { darkGhostData } from './bosses/dark-ghost';
-import { mechSpiderData } from './bosses/mech-spider';
-import { dreamDemonData } from './bosses/dream-demon';
-import { scorpionCarrierData } from './bosses/scorpion-carrier';
-import { mikanDragonData } from './bosses/mikan-dragon';
-import { seaKrakenData } from './bosses/sea-kraken';
-import { aquaSerpentData } from './bosses/aqua-serpent';
-import { cleanMasterData } from './bosses/clean-master';
-import { newBossData } from './bosses/new-boss';  // 追加
+// registeredBossIds配列に新しいボスIDを追加
+export const registeredBossIds: string[] = [
+    'swamp-dragon',
+    'dark-ghost',
+    'mech-spider',
+    'dream-demon',
+    'scorpion-carrier',
+    'mikan-dragon',
+    'sea-kraken',
+    'aqua-serpent',
+    'clean-master',
+    'underground-worm',
+    'bat-vampire',
+    'new-boss'  // 追加
+];
 
-export const bosses: Map<string, BossData> = new Map([
-    ['swamp-dragon', swampDragonData],
-    ['dark-ghost', darkGhostData],
-    ['mech-spider', mechSpiderData],
-    ['dream-demon', dreamDemonData],
-    ['scorpion-carrier', scorpionCarrierData],
-    ['mikan-dragon', mikanDragonData],
-    ['sea-kraken', seaKrakenData],
-    ['aqua-serpent', aquaSerpentData],
-    ['clean-master', cleanMasterData],
-    ['new-boss', newBossData]  // 追加
-]);
-
-export function getBossData(id: string): BossData | undefined {
-    return bosses.get(id);
-}
-
-export function getAllBossData(): BossData[] {
-    return Array.from(bosses.values());
-}
-
-export { 
-    swampDragonData, 
-    darkGhostData, 
-    mechSpiderData, 
-    dreamDemonData, 
-    scorpionCarrierData, 
-    mikanDragonData, 
-    seaKrakenData, 
-    aquaSerpentData, 
-    cleanMasterData,
-    newBossData  // 追加
-};
+// loadBossData関数のswitch文にケースを追加
+// （既存のloadBossData関数内に以下のケースを追加）
+case 'new-boss':
+    bossData = (await import('./bosses/new-boss')).newBossData;
+    break;
 ```
+
+**注意**: 現在のシステムでは動的インポートを使用しているため、新しいボスを追加する際は：
+1. `registeredBossIds`配列に新しいボスIDを追加
+2. `loadBossData`関数のswitch文に対応するケースを追加
+3. 実際のボスファイル（`./bosses/new-boss.ts`）を作成
 
 ### 3. HTMLファイルの更新
 
@@ -547,6 +528,7 @@ aiStrategy: (boss, player, turn) => {
 - みかんドラゴン: HP 320, 攻撃力 17 (果物+睡眠タイプ)
 - スコーピオンキャリア: HP 260, 攻撃力 14 (毒+麻痺タイプ)
 - ドリームデーモン: HP 240, 攻撃力 13 (夢+特殊状態異常タイプ)
+- 地下のワーム: HP 380, 攻撃力 12 (地下型拘束タイプ)
 - 蝙蝠のヴァンパイア: HP 310, 攻撃力 14 (拘束+魅了+生気吸収タイプ)
 
 **バランス設計指針**
