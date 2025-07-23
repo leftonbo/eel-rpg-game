@@ -45,7 +45,7 @@ export const TOUGHNESS_PASSIVE_SKILLS: SkillData[] = [
     {
         id: 'regeneration',
         name: '自然回復',
-        description: '毎ターン、HPが最大HPの1/20だけ回復する',
+        description: '毎ターン、拘束されていなければヘルスが最大値の1/20だけ回復する',
         category: SkillCategory.Passive,
         mpCost: 0,
         priority: ActionPriority.NormalAction,
@@ -58,7 +58,7 @@ export const TOUGHNESS_PASSIVE_SKILLS: SkillData[] = [
     {
         id: 'escape-recovery',
         name: '脱出回復',
-        description: '拘束や食べられなどから抜け出すと、失った最大HPの50%を回復する',
+        description: '拘束や食べられなどから抜け出すと、失った最大ヘルスの20%を回復する',
         category: SkillCategory.Passive,
         mpCost: 0,
         priority: ActionPriority.NormalAction,

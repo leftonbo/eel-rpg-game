@@ -899,11 +899,13 @@ export class Player extends Actor {
         
         const hasEscapeRecovery = passiveSkills.some(skill => skill.passiveEffect === 'escape-recovery');
         if (hasEscapeRecovery) {
-            const lostHp = this.maxHp - this.hp;
-            const recoveryAmount = Math.floor(lostHp * 0.5);
+            const lostMaxHp = this.initialMaxHp - this.maxHp;
+            const recoveryAmount = Math.floor(lostMaxHp * 0.2); // 20% of lost max HP
             if (recoveryAmount > 0) {
-                const actualHeal = this.heal(recoveryAmount);
-                messages.push(`${this.name}は脱出回復でHPが${actualHeal}回復した！`);
+                const actualHeal = this.gainMaxHp(recoveryAmount);
+                if (actualHeal > 0) {
+                    messages.push(`${this.name}は拘束からの脱出で${actualHeal}の最大HPを回復した！`);
+                }
             }
         }
         
