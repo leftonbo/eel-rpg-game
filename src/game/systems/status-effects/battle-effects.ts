@@ -1,6 +1,10 @@
 import { Actor } from '@/game/entities/Actor';
 import { StatusEffectType, StatusEffectConfig, StatusEffect } from '../StatusEffectTypes';
 
+// デフォルトダメージ量の定数
+const DEFAULT_FIRE_DAMAGE = 8;
+const DEFAULT_POISON_DAMAGE = 3;
+
 export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = new Map([
     [StatusEffectType.Defending, {
         type: StatusEffectType.Defending,
@@ -27,12 +31,14 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
     [StatusEffectType.Fire, {
         type: StatusEffectType.Fire,
         name: '火だるま',
-        description: '毎ターンHPが8減少',
+        description: '毎ターンHPが減少',
         duration: 2,
         category: 'debuff',
         isDebuff: true,
-        onTick: (target: Actor, _effect: StatusEffect) => {
-            target.takeDamage(8);
+        potency: DEFAULT_FIRE_DAMAGE,
+        onTick: (target: Actor, effect: StatusEffect) => {
+            const damage = effect.potency ?? DEFAULT_FIRE_DAMAGE;
+            target.takeDamage(damage);
         },
         messages: {
             onApplyPlayer: '{name}は火だるま状態になった！',
@@ -68,12 +74,14 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
     [StatusEffectType.Poison, {
         type: StatusEffectType.Poison,
         name: '毒',
-        description: '毎ターンHPが3減少',
+        description: '毎ターンHPが減少',
         duration: 3,
         category: 'debuff',
         isDebuff: true,
-        onTick: (target: Actor, _effect: StatusEffect) => {
-            target.takeDamage(3);
+        potency: DEFAULT_POISON_DAMAGE,
+        onTick: (target: Actor, effect: StatusEffect) => {
+            const damage = effect.potency ?? DEFAULT_POISON_DAMAGE;
+            target.takeDamage(damage);
         },
         messages: {
             onApplyPlayer: '{name}は毒状態になった！',
