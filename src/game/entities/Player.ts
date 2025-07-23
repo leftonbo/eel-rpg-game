@@ -534,7 +534,7 @@ export class Player extends Actor {
         // Map skill IDs to SkillType
         const skillTypeMap: { [key: string]: SkillType } = {
             'power-attack': SkillType.PowerAttack,
-            'ultra-smash': SkillType.PowerAttack, // Temporary mapping
+            'ultra-smash': SkillType.UltraSmash,
             'struggle': SkillType.Struggle,
             'defend': SkillType.PowerAttack, // Temporary mapping
             'stay-still': SkillType.PowerAttack // Temporary mapping
