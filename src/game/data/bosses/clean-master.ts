@@ -82,25 +82,24 @@ const cleanMasterActions: BossAction[] = [
 ];
 
 const cleanMasterActionsRestrained: BossAction[] = [
-    // 段階2: 洗浄フェーズ（洗濯機モード）
+    // 段階2: 洗浄フェーズ（ブラシでお掃除）
     {
-        id: 'gentle-wash',
+        id: 'gentle-brush',
         type: ActionType.Attack,
-        name: 'やさしく洗い',
-        description: '体内洗浄槽でやさしく洗う',
+        name: 'ふかふかブラシ',
+        description: '捕まえた相手をやさしくブラシで洗う',
         messages: [
-            'ぐるぐる洗い洗い〜♪',
-            '<USER>は洗浄槽で<TARGET>をやさしく洗っている！'
+            'ふかふかブラシ〜♪',
+            '<USER>は<TARGET>をやさしくブラシで洗っている！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.25,
-        weight: 30,
-        healRatio: 0.3 // 洗ってあげたから少し回復
+        weight: 30
     },
     {
-        id: 'thorough-wash',
+        id: 'scrub-brush',
         type: ActionType.Attack,
-        name: 'しっかり洗い',
-        description: '汚れをしっかり落とすために念入りに洗う',
+        name: '高圧水洗浄',
+        description: '汚れをしっかり落とすために高圧水で洗う',
         messages: [
             'まだ汚れてるよ〜、もっと洗わなくちゃ♪',
             '<USER>は<TARGET>をしっかりと洗濯している！'
@@ -117,7 +116,7 @@ const cleanMasterActionsRestrained: BossAction[] = [
         description: '泡でもみもみ洗って汚れを落とす',
         messages: [
             'もみもみ泡泡〜♪',
-            '<USER>は<TARGET>を泡でもみ洗いしている！'
+            '<USER>は<TARGET>に泡を吹きかけ、アームで優しくもみ洗いしている！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.0,
         weight: 20,
@@ -127,7 +126,7 @@ const cleanMasterActionsRestrained: BossAction[] = [
 ];
 
 const cleanMasterActionsEaten: BossAction[] = [
-    // 段階3: 完全洗浄フェーズ（体内）
+    // 段階3: 完全洗浄フェーズ（体内洗濯）
     {
         id: 'wash-cycle',
         type: ActionType.DevourAttack,
@@ -137,7 +136,7 @@ const cleanMasterActionsEaten: BossAction[] = [
             'ぐるぐる洗濯モード〜♪',
             '<USER>は体内で<TARGET>を洗浄サイクルにかけている！'
         ],
-        damageFormula: (user: Boss) => user.attackPower * 1.5,
+        damageFormula: (user: Boss) => user.attackPower * 1.8,
         weight: 25,
         statusEffect: StatusEffectType.Spinning,
         statusChance: 0.80
@@ -151,7 +150,7 @@ const cleanMasterActionsEaten: BossAction[] = [
             'くるくる脱水〜♪',
             '<USER>は<TARGET>を遠心分離で脱水している！'
         ],
-        damageFormula: (user: Boss) => user.attackPower * 1.8,
+        damageFormula: (user: Boss) => user.attackPower * 2.0,
         weight: 20,
         statusEffect: StatusEffectType.Spinning,
         statusChance: 0.90
@@ -190,14 +189,12 @@ const cleanMasterActionsEaten: BossAction[] = [
         name: '完璧チェック',
         description: '汚れが残ってないかチェック',
         messages: [
-            'うーん、まだ汚れてるかも〜？',
             '<USER>は<TARGET>をくまなくチェックしている...',
-            'でも、まだ完璧じゃないから、もう一度お掃除しなくちゃ♪'
+            'うーん、まだ汚れてるかも〜？もう一度お掃除しなくちゃ♪',
+            '<USER>は<TARGET>をキレイにするためにもう一度洗浄を始める！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.2,
-        weight: 20,
-        // 完璧主義で永続的に洗い続ける理由
-        healRatio: 0.1 // 「お掃除してあげた」から微回復
+        weight: 20
     }
 ];
 
@@ -316,16 +313,27 @@ export const cleanMasterData: BossData = {
         // 体内（食べられた）状態での行動
         if (player.isEaten()) {
             const eatenActions = cleanMasterActionsEaten;
-            const totalWeight = eatenActions.reduce((sum, action) => sum + action.weight, 0);
-            let random = Math.random() * totalWeight;
             
-            for (const action of eatenActions) {
-                random -= action.weight;
-                if (random <= 0) {
-                    return action;
-                }
+            // 体内行動は特殊で、リストの行動を順番に実施
+            const eatenActionIndex = boss.getCustomVariable('eatenActionIndex', 0);
+            
+            if (eatenActionIndex + 1 < eatenActions.length) {
+                // 次の行動のためにインクリメント
+                boss.setCustomVariable('eatenActionIndex', eatenActionIndex + 1);
             }
-            return eatenActions[0];
+            else
+            {
+                // すべての行動を実施したらリセット
+                boss.setCustomVariable('eatenActionIndex', 0);
+            }
+            
+            // 現在の行動を返す
+            return eatenActions[eatenActionIndex];
+        }
+        else
+        {
+            // 実装インデックスをリセット
+            boss.setCustomVariable('eatenActionIndex', 0);
         }
         
         // 戦略的行動選択
@@ -339,8 +347,8 @@ export const cleanMasterData: BossData = {
                         name: '完全清掃モード',
                         description: '体内洗浄槽で完全清掃する',
                         messages: [
-                            'やったぁ〜！お掃除タイム♪',
-                            '<USER>は<TARGET>を体内洗浄槽に吸い込む！'
+                            'やったぁ〜！お洗濯タイム♪',
+                            '<USER>は清掃アームで<TARGET>を体内洗浄槽に放り込む！'
                         ],
                         weight: 1
                     };
@@ -367,8 +375,8 @@ export const cleanMasterData: BossData = {
                         name: '完全清掃モード',
                         description: '体内洗浄槽で完全清掃する',
                         messages: [
-                            'やったぁ〜！お掃除タイム♪',
-                            '<USER>は<TARGET>を体内洗浄槽に吸い込む！'
+                            'やったぁ〜！お洗濯タイム♪',
+                            '<USER>は<TARGET>を直接体内洗浄槽に吸い込む！'
                         ],
                         weight: 1
                     };
