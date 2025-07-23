@@ -1,6 +1,10 @@
 import { Actor } from '@/game/entities/Actor';
 import { StatusEffectType, StatusEffectConfig, StatusEffect } from '../StatusEffectTypes';
 
+// デフォルトダメージ量の定数
+const DEFAULT_FIRE_DAMAGE = 8;
+const DEFAULT_POISON_DAMAGE = 3;
+
 export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = new Map([
     [StatusEffectType.Defending, {
         type: StatusEffectType.Defending,
@@ -31,9 +35,9 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         duration: 2,
         category: 'debuff',
         isDebuff: true,
-        potency: 8, // デフォルトダメージ量
+        potency: DEFAULT_FIRE_DAMAGE,
         onTick: (target: Actor, effect: StatusEffect) => {
-            const damage = effect.potency || 8; // 効力が設定されていない場合はデフォルト値を使用
+            const damage = effect.potency ?? DEFAULT_FIRE_DAMAGE;
             target.takeDamage(damage);
         },
         messages: {
@@ -74,9 +78,9 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
         duration: 3,
         category: 'debuff',
         isDebuff: true,
-        potency: 3, // デフォルトダメージ量
+        potency: DEFAULT_POISON_DAMAGE,
         onTick: (target: Actor, effect: StatusEffect) => {
-            const damage = effect.potency || 3; // 効力が設定されていない場合はデフォルト値を使用
+            const damage = effect.potency ?? DEFAULT_POISON_DAMAGE;
             target.takeDamage(damage);
         },
         messages: {
