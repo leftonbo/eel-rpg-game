@@ -11,7 +11,8 @@ export enum SkillType {
     Heal = 'heal',
     Struggle = 'struggle',
     GiveUp = 'give-up',
-    SubmitToFate = 'submit-to-fate'
+    SubmitToFate = 'submit-to-fate',
+    UltraSmash = 'ultra-smash'
 }
 
 export interface Skill {

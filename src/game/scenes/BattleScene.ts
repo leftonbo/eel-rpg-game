@@ -196,6 +196,7 @@ export class BattleScene {
         document.getElementById('power-attack-btn')?.addEventListener('click', () => this.useSkill(SkillType.PowerAttack));
         document.getElementById('heal-skill-btn')?.addEventListener('click', () => this.useSkill(SkillType.Heal));
         document.getElementById('struggle-skill-btn')?.addEventListener('click', () => this.useSkill(SkillType.Struggle));
+        document.getElementById('ultra-smash-btn')?.addEventListener('click', () => this.useSkill(SkillType.UltraSmash));
         document.getElementById('skill-back-btn')?.addEventListener('click', () => this.hideSkillPanel());
         
         // Item buttons
@@ -447,6 +448,9 @@ export class BattleScene {
                 this.actionButtons.classList.add('d-none');
                 this.specialActions.classList.remove('d-none');
                 this.battleEndActions.classList.add('d-none');
+                
+                // Update omamori button in special actions panel
+                this.updateOmamoriInSpecialActions();
             } else {
                 this.actionButtons.classList.remove('d-none');
                 this.specialActions.classList.add('d-none');
@@ -695,7 +699,8 @@ export class BattleScene {
         const skillButtons = [
             { id: 'power-attack-btn', skillId: 'power-attack', skillType: SkillType.PowerAttack },
             { id: 'heal-skill-btn', skillId: 'heal', skillType: SkillType.Heal },
-            { id: 'struggle-skill-btn', skillId: 'struggle', skillType: SkillType.Struggle }
+            { id: 'struggle-skill-btn', skillId: 'struggle', skillType: SkillType.Struggle },
+            { id: 'ultra-smash-btn', skillId: 'ultra-smash', skillType: SkillType.UltraSmash }
         ];
         
         skillButtons.forEach(({ id, skillId, skillType }) => {
@@ -1235,6 +1240,40 @@ export class BattleScene {
         }
     }
     
+    /**
+     * Update omamori button in special actions panel
+     */
+    private updateOmamoriInSpecialActions(): void {
+        if (!this.player) return;
+        
+        const omamoriContainer = document.getElementById('omamori-special-container');
+        if (!omamoriContainer) return;
+        
+        // Check if omamori can be used
+        const hasOmamori = this.player.getItemCount('omamori') > 0;
+        const canUseOmamori = hasOmamori && (
+            this.player.isKnockedOut() || 
+            this.player.isRestrained() || 
+            this.player.isEaten() || 
+            this.player.isCocoon() || 
+            this.player.statusEffects.hasEffect(StatusEffectType.Sleep)
+        );
+        
+        // Clear container
+        omamoriContainer.innerHTML = '';
+        
+        // Add omamori button if can use
+        if (canUseOmamori && !this.player.isDefeated()) {
+            const omamoriBtn = document.createElement('button');
+            omamoriBtn.id = 'omamori-special-btn';
+            omamoriBtn.className = 'btn btn-outline-light';
+            omamoriBtn.innerHTML = '🛡️ おまもり (1)';
+            omamoriBtn.title = '特殊状態を解除し、HPを満回復する';
+            omamoriBtn.addEventListener('click', () => this.useItem('omamori'));
+            omamoriContainer.appendChild(omamoriBtn);
+        }
+    }
+
     /**
      * Show debug modal
      */
