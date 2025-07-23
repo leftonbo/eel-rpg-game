@@ -22,18 +22,23 @@ export class StatusEffectManager {
      * If the effect already exists and is not stackable, it refreshes the duration.
      * @param type The type of status effect to add.
      * @param durationOverride [optional] Custom duration for the effect. If not provided, uses the default duration from the config.
+     * @param potencyOverride [optional] Custom potency for the effect. If not provided, uses the default potency from the config.
      * @returns {boolean} True if the effect was added, false if it was refreshed (not stackable) or invalid.
      */
-    addEffect(type: StatusEffectType, durationOverride?: number): boolean {
+    addEffect(type: StatusEffectType, durationOverride?: number, potencyOverride?: number): boolean {
         const config = StatusEffectManager.configs.get(type);
         if (!config) return false;
         
         const existingEffect = this.effects.get(type);
         const duration = durationOverride ? durationOverride : config.duration;
+        const potency = potencyOverride !== undefined ? potencyOverride : config.potency;
         
         if (existingEffect && !config.stackable) {
             // Refresh duration for non-stackable effects
             existingEffect.duration = duration;
+            if (potency !== undefined) {
+                existingEffect.potency = potency;
+            }
             return false;
         }
         
@@ -42,7 +47,8 @@ export class StatusEffectManager {
             duration: duration,
             name: config.name,
             description: config.description,
-            stackable: config.stackable
+            stackable: config.stackable,
+            potency: potency
         };
         
         this.effects.set(type, newEffect);

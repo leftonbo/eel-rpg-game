@@ -27,12 +27,14 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
     [StatusEffectType.Fire, {
         type: StatusEffectType.Fire,
         name: '火だるま',
-        description: '毎ターンHPが8減少',
+        description: '毎ターンHPが減少',
         duration: 2,
         category: 'debuff',
         isDebuff: true,
-        onTick: (target: Actor, _effect: StatusEffect) => {
-            target.takeDamage(8);
+        potency: 8, // デフォルトダメージ量
+        onTick: (target: Actor, effect: StatusEffect) => {
+            const damage = effect.potency || 8; // 効力が設定されていない場合はデフォルト値を使用
+            target.takeDamage(damage);
         },
         messages: {
             onApplyPlayer: '{name}は火だるま状態になった！',
@@ -68,12 +70,14 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
     [StatusEffectType.Poison, {
         type: StatusEffectType.Poison,
         name: '毒',
-        description: '毎ターンHPが3減少',
+        description: '毎ターンHPが減少',
         duration: 3,
         category: 'debuff',
         isDebuff: true,
-        onTick: (target: Actor, _effect: StatusEffect) => {
-            target.takeDamage(3);
+        potency: 3, // デフォルトダメージ量
+        onTick: (target: Actor, effect: StatusEffect) => {
+            const damage = effect.potency || 3; // 効力が設定されていない場合はデフォルト値を使用
+            target.takeDamage(damage);
         },
         messages: {
             onApplyPlayer: '{name}は毒状態になった！',

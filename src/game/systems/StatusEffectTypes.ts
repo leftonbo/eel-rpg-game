@@ -102,6 +102,7 @@ export interface StatusEffect {
     name: string;
     description: string;
     stackable?: boolean;
+    potency?: number; // 効力パラメーター（ダメージ量などを定義）
 }
 
 export interface StatusEffectMessages {
@@ -130,6 +131,7 @@ export interface StatusEffectConfig {
     onTick?: (target: Actor, effect: StatusEffect) => void;
     onRemove?: (target: Actor) => void;
     stackable?: boolean;
+    potency?: number; // デフォルトの効力値（StatusEffectの作成時に使用）
     
     // New properties for better organization
     category: 'buff' | 'debuff' | 'neutral';
