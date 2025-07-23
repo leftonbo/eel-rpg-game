@@ -1527,7 +1527,7 @@ export class BattleScene {
         // TODO: MessageData をそのまま渡せるようにする、{player}{boss} などの置換を行う
         this.boss.battleStartMessages.forEach(message => {
             this.addBattleLogMessage(
-                message.text, message.speaker || '', message.speaker || 'system'
+                message.text, 'battle-start', message.speaker || 'system'
             );
         });
     }
@@ -1549,7 +1549,7 @@ export class BattleScene {
         // TODO: MessageData をそのまま渡せるようにする、{player}{boss} などの置換を行う
         this.boss.victoryMessages.forEach(message => {
             this.addBattleLogMessage(
-                message.text, message.speaker || '', message.speaker || 'system'
+                message.text, 'victory', message.speaker || 'system'
             );
         });
     }
