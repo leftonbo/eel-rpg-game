@@ -249,7 +249,7 @@ export class MemorialSystem {
     }
     
     /**
-     * バトル記録を読み込み（非同期対応）
+     * バトル記録を読み込み
      * @param data - MemorialSaveDataオブジェクト
      */
     public importData(data: MemorialSaveData): void {
@@ -258,7 +258,7 @@ export class MemorialSystem {
             this.bossMemorials.set(memorial.bossId, memorial);
         });
         
-        // 記念品を生成（非同期）
+        // 記念品を生成
         this.createHaveTrophies();
     }
     

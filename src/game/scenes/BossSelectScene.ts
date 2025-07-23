@@ -100,6 +100,8 @@ export class BossSelectScene {
                 const requiredLevel = bossData.explorerLevelRequired || 0;
                 const isUnlocked = playerExplorerLevel >= requiredLevel;
                 
+                console.log(`Updating card for boss ${bossId}: unlocked=${isUnlocked}, requiredLevel=${requiredLevel}`);
+                
                 if (titleElement) {
                     titleElement.textContent = bossData.displayName;
                 }
@@ -615,7 +617,7 @@ export class BossSelectScene {
                 if (success) {
                     ModalUtils.showToast('セーブデータをインポートしました', 'success');
                     // Reload the player to reflect imported data
-                    this.game.startGame();
+                    this.game.reboot();
                 } else {
                     ModalUtils.showToast('無効なセーブデータです', 'error');
                 }
@@ -636,7 +638,7 @@ export class BossSelectScene {
             PlayerSaveManager.clearSaveData();
             ModalUtils.showToast('セーブデータを削除しました', 'success');
             // Reload the player to reflect cleared data
-            this.game.startGame();
+            this.game.reboot();
         }
     }
     

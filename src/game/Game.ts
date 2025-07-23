@@ -81,6 +81,10 @@ export class Game {
             await loadAllBossData();
             console.log('[Game][initAsync] All boss data loaded');
             
+            // プレイヤーの初期化
+            this.player.lateInitialize();
+            console.log('[Game][initAsync] Player initialized');
+            
             console.log('[Game][initAsync] Game initialized successfully');
             
             // Show initial title screen
@@ -125,10 +129,12 @@ export class Game {
                 break;
         }
     }
+
+    reboot(): void {
+        this.setState(GameState.Title);
+    }
     
     startGame(): void {
-        // Reset player to initial state
-        this.player = new Player();
         this.setState(GameState.BossSelect);
     }
     

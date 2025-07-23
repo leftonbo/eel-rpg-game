@@ -69,13 +69,12 @@ export class Player extends Actor {
     
     constructor() {
         super(PLAYER_NAME, 100, 5, 50);
-        this.init();
     }
 
     /**
      * 初期化メソッド
      */
-    private init(): void {
+    public lateInitialize(): void {
         this.loadFromSave();
         this.initializeDefaultUnlocks();
         this.initializeItems();
@@ -83,7 +82,7 @@ export class Player extends Actor {
     }
     
     /**
-     * Load player data from localStorage (非同期対応)
+     * Load player data from localStorage
      */
     private loadFromSave(): void {
         console.log('[Player][loadFromSave] Loading player data from localStorage...');
