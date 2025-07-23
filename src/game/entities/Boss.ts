@@ -2,6 +2,7 @@ import { StatusEffectManager, StatusEffectType } from '../systems/StatusEffect';
 import { Player } from './Player';
 import { calculateAttackResult } from '../utils/CombatUtils';
 import { Actor } from './Actor';
+import { MessageData } from '../scenes/BattleScene';
 
 // Message formatter utility
 export function formatMessage(template: string, nameUser: string, nameTarget: string): string {
@@ -83,6 +84,10 @@ export interface BossData {
         creator: string;
         source?: string;
     };
+    /** 戦闘開始時のメッセージ進行 */
+    battleStartMessages?: MessageData[];
+    /** 戦闘勝利時のメッセージ進行 */
+    victoryMessages?: MessageData[];
     /**
      * ボス固有のカスタム変数
      * AI戦略で使用する状態管理や行動制御のための変数を定義
@@ -122,6 +127,8 @@ export class Boss extends Actor {
     public aiStrategy?: (boss: Boss, player: Player, turn: number) => BossAction;
     public specialDialogues: Map<string, string> = new Map();
     public finishingMove?: () => string[];
+    public battleStartMessages?: MessageData[];
+    public victoryMessages?: MessageData[];
     public suppressAutoFinishingMove: boolean;
     public icon: string;
     public guestCharacterInfo?: {
@@ -153,6 +160,8 @@ export class Boss extends Actor {
         this.personality = data.personality || [];
         this.aiStrategy = data.aiStrategy;
         this.finishingMove = data.finishingMove;
+        this.battleStartMessages = data.battleStartMessages;
+        this.victoryMessages = data.victoryMessages;
         this.suppressAutoFinishingMove = data.suppressAutoFinishingMove || false;
         this.icon = data.icon || '👹';
         this.guestCharacterInfo = data.guestCharacterInfo;
