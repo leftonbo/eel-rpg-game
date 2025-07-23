@@ -115,8 +115,8 @@ export const mikanDragonData: BossData = {
     displayName: '🍊 蜜柑ドラゴン',
     description: '蜜柑の香りを放つ甘いドラゴン',
     questNote: `蜜柑畑に現れた美しいドラゴンが、通りかかる旅人を甘い香りで誘い込んでいるという。その蜜柑ドラゴンを調査し、対処することがあなたの任務だ。`,
-    maxHp: 350,
-    attackPower: 14,
+    maxHp: 450,
+    attackPower: 10,
     actions: mikanDragonActions,
     icon: '🍊',
     explorerLevelRequired: 4,
@@ -197,7 +197,7 @@ export const mikanDragonData: BossData = {
                         '「フルルル...」',
                         '<USER>の体内触手が<TARGET>の口に蜜柑汁を注入している！'
                     ],
-                    damageFormula: (user: Boss) => user.attackPower * 1.4,
+                    damageFormula: (user: Boss) => user.attackPower * 1.5,
                     statusEffect: StatusEffectType.Charm,
                     weight: 1
                 },
@@ -210,7 +210,7 @@ export const mikanDragonData: BossData = {
                         '「フルルル...」',
                         '<USER>の胃壁が<TARGET>を蜜柑の果肉のように優しくマッサージしている！'
                     ],
-                    damageFormula: (user: Boss) => user.attackPower * 1.8,
+                    damageFormula: (user: Boss) => user.attackPower * 2.2,
                     weight: 1
                 },
                 {

@@ -165,8 +165,8 @@ export const scorpionCarrierData: BossData = {
     displayName: '🦂 運び屋のサソリ',
     description: `砂漠や荒れ地を漂う巨大なサソリ`,
     questNote: '砂漠を通る商人から報告によると、砂漠には巨大なサソリが生息しているという。足がタイヤになっていて、巨大な注射器のような尻尾を持つ、半機械のような見た目をしている。さまよう人間を様々な方法で捕まえては丸呑みし、その者が望む（と勝手に考える）場所へと運ぶという。',
-    maxHp: 250,
-    attackPower: 8,
+    maxHp: 580,
+    attackPower: 22,
     actions: scorpionCarrierActions,
     icon: '🦂',
     explorerLevelRequired: 1,
@@ -176,7 +176,7 @@ export const scorpionCarrierData: BossData = {
     },
     defeatTrophy: {
         name: '運搬用薬液',
-        description: '運び屋のサソリの体内で生成される特殊な薬液。運搬対象を麻酔状態に保つ効果がある。'
+        description: '運び屋のサソリの体内で生成される特殊な薬液。運搬対象を衝撃から守るだけでなく、精神を安定させる効果もある。'
     },
     personality: [
         'んー、迷い人のようだな？',
