@@ -3,6 +3,7 @@ import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
 const darkGhostActions: BossAction[] = [
     {
+        id: 'shadow-claw',
         type: ActionType.Attack,
         name: '影の爪',
         description: '闇から現れる爪で攻撃',
@@ -12,6 +13,7 @@ const darkGhostActions: BossAction[] = [
         playerStateCondition: 'normal'
     },
     {
+        id: 'charming-whisper',
         type: ActionType.StatusAttack,
         name: '魅惑の囁き',
         description: '心を惑わす声で魅了する',
@@ -21,6 +23,7 @@ const darkGhostActions: BossAction[] = [
         weight: 30
     },
     {
+        id: 'poison-breath',
         type: ActionType.StatusAttack,
         name: '毒の息',
         description: '有毒な息を吐く',
@@ -30,6 +33,7 @@ const darkGhostActions: BossAction[] = [
         weight: 25
     },
     {
+        id: 'slow-curse',
         type: ActionType.StatusAttack,
         name: '鈍化の呪い',
         description: '動きを鈍らせる呪いをかける',
@@ -38,6 +42,7 @@ const darkGhostActions: BossAction[] = [
         weight: 20
     },
     {
+        id: 'shadow-bind',
         type: ActionType.RestraintAttack,
         name: '影の縛り',
         description: '影の触手で対象を拘束する',
@@ -54,6 +59,7 @@ const darkGhostActions: BossAction[] = [
         }
     },
     {
+        id: 'tongue-lick',
         type: ActionType.Attack,
         name: 'なめまわし',
         description: '拘束中の対象を影の舌でなめまわす（与えたダメージ分回復）',
@@ -102,6 +108,7 @@ export const darkGhostData: BossData = {
         if (player.isDefeated()) {
             const postDefeatedActions: BossAction[] = [
                 {
+                    id: 'soul-energy-drain',
                     type: ActionType.PostDefeatedAttack,
                     name: '魂からのエネルギー吸収',
                     description: '魂だけになった獲物からエネルギーを吸い続ける',
@@ -114,6 +121,7 @@ export const darkGhostData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'soul-control',
                     type: ActionType.PostDefeatedAttack,
                     name: '魂の操縦',
                     description: '魂を操作して獲物を支配し続ける',
@@ -126,6 +134,7 @@ export const darkGhostData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'soul-poison',
                     type: ActionType.PostDefeatedAttack,
                     name: '魂の毒化',
                     description: '魂に毒を流し込み続ける',
@@ -138,6 +147,7 @@ export const darkGhostData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'soul-slow',
                     type: ActionType.PostDefeatedAttack,
                     name: '魂の鈍化',
                     description: '魂の動きを鈍らせ続ける',
@@ -150,6 +160,7 @@ export const darkGhostData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'soul-surveillance',
                     type: ActionType.PostDefeatedAttack,
                     name: '魂の監視',
                     description: '魂を監視し続けて逃げられないようにする',
@@ -169,6 +180,7 @@ export const darkGhostData: BossData = {
         if (player.isEaten()) {
             const eatenActions: BossAction[] = [
                 {
+                    id: 'soul-absorption',
                     type: ActionType.DevourAttack,
                     name: '魂の吸収',
                     damageFormula: (user: Boss) => user.attackPower * 1.5,
@@ -180,6 +192,7 @@ export const darkGhostData: BossData = {
                     weight: 30
                 },
                 {
+                    id: 'soul-extraction',
                     type: ActionType.DevourAttack,
                     name: '魂の引き抜き',
                     damageFormula: (user: Boss) => user.attackPower * 1.5,
@@ -191,6 +204,7 @@ export const darkGhostData: BossData = {
                     weight: 25
                 },
                 {
+                    id: 'bottomless-slime',
                     type: ActionType.DevourAttack,
                     name: '底なしの粘液',
                     damageFormula: (user: Boss) => user.attackPower * 1.0,
@@ -203,6 +217,7 @@ export const darkGhostData: BossData = {
                     weight: 25
                 },
                 {
+                    id: 'despair-whisper',
                     type: ActionType.DevourAttack,
                     name: '絶望の囁き',
                     damageFormula: (user: Boss) => user.attackPower * 1.0,
@@ -216,6 +231,7 @@ export const darkGhostData: BossData = {
                     weight: 20
                 },
                 {
+                    id: 'memory-erosion',
                     type: ActionType.DevourAttack,
                     name: '記憶の侵食',
                     damageFormula: (user: Boss) => user.attackPower * 0.6,
@@ -267,6 +283,7 @@ export const darkGhostData: BossData = {
                 // Restrained + Knocked Out: 85% chance to eat
                 if (Math.random() < 0.85) {
                     return {
+                        id: 'soul-suction-restrained',
                         type: ActionType.EatAttack,
                         name: '魂の吸引',
                         description: '魂を吸い取るために対象を丸呑みにする',
@@ -282,6 +299,7 @@ export const darkGhostData: BossData = {
                 const random = Math.random();
                 if (random < 0.6) {
                     return {
+                        id: 'shadow-bind-ko',
                         type: ActionType.RestraintAttack,
                         name: '影の縛り',
                         description: '対象を影の触手で拘束する',
@@ -293,6 +311,7 @@ export const darkGhostData: BossData = {
                     };
                 } else if (random < 0.85) {
                     return {
+                        id: 'soul-suction-direct',
                         type: ActionType.EatAttack,
                         name: '魂の吸引',
                         description: '魂を吸い取るために対象を丸呑みにする',

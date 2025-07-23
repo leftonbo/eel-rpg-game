@@ -4,6 +4,7 @@ import { StatusEffectType } from '../../systems/StatusEffectTypes';
 const dreamDemonActions: BossAction[] = [
     // Basic attack
     {
+        id: 'magic-tentacle',
         type: ActionType.Attack,
         name: '魔法の触手',
         description: '小さな触手で軽く攻撃',
@@ -15,6 +16,7 @@ const dreamDemonActions: BossAction[] = [
     
     // Debuff attacks - Primary arsenal
     {
+        id: 'charming-gaze',
         type: ActionType.StatusAttack,
         name: '魅惑の眼差し',
         description: '甘い視線で相手を魅了する',
@@ -24,6 +26,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は甘い眼差しで<TARGET>を見つめる...', '<TARGET>の心がとろけそうになる...']
     },
     {
+        id: 'paralysis-powder',
         type: ActionType.StatusAttack,
         name: '麻痺の粉',
         description: '麻痺を誘発する粉末を撒く',
@@ -33,6 +36,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は光る粉を撒き散らした！', '<TARGET>の体がしびれていく...']
     },
     {
+        id: 'aphrodisiac-breath',
         type: ActionType.StatusAttack,
         name: '淫毒の吐息',
         description: '甘い毒を含んだ息を吹きかける',
@@ -42,6 +46,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は甘い香りの息を<TARGET>に吹きかけた', '<TARGET>の体が熱くなってきた...']
     },
     {
+        id: 'sleep-inducer',
         type: ActionType.StatusAttack,
         name: 'ねむけ誘発',
         description: '眠気を誘う魔法をかける',
@@ -51,6 +56,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は催眠術をかけてきた', '<TARGET>のまぶたが重くなってきた...']
     },
     {
+        id: 'weakness-spell',
         type: ActionType.StatusAttack,
         name: '脱力の呪文',
         description: '力を奪う呪文を唱える',
@@ -60,6 +66,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は呪文を唱えた', '<TARGET>の力が抜けていく...']
     },
     {
+        id: 'infatuation-beam',
         type: ActionType.StatusAttack,
         name: 'メロメロビーム',
         description: 'ハート型の光線で相手をメロメロにする',
@@ -69,6 +76,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>はハート型の光線を放った！', '<TARGET>は完全にメロメロになってしまった...']
     },
     {
+        id: 'confusion-vortex',
         type: ActionType.StatusAttack,
         name: '混乱の渦',
         description: '思考を混乱させる魔法',
@@ -78,6 +86,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は不思議な渦を作り出した', '<TARGET>の思考が混乱してきた...']
     },
     {
+        id: 'arousal-enhancer',
         type: ActionType.StatusAttack,
         name: '発情促進',
         description: '発情状態を誘発する魔法',
@@ -87,6 +96,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は妖艶な魔法をかけた', '<TARGET>の体が火照ってきた...']
     },
     {
+        id: 'seductive-pose',
         type: ActionType.StatusAttack,
         name: '悩殺ポーズ',
         description: '魅惑的なポーズで相手を悩殺する',
@@ -96,6 +106,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は急接近し深いべろちゅーをしてきた！', '<TARGET>は完全に悩殺されてしまった...']
     },
     {
+        id: 'magic-seal',
         type: ActionType.StatusAttack,
         name: '魔法封印術',
         description: '魔法の使用を封じる',
@@ -105,6 +116,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は封印の呪文を唱えた', '<TARGET>の魔力が封じられた！']
     },
     {
+        id: 'pleasure-curse',
         type: ActionType.StatusAttack,
         name: '快楽の呪い',
         description: '快楽に溺れさせる強力な呪い',
@@ -114,6 +126,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は禁断の呪いをかけた...', '<TARGET>は快楽の波に飲み込まれていく...']
     },
     {
+        id: 'lewdness-magic',
         type: ActionType.StatusAttack,
         name: '淫乱の魔法',
         description: '理性を奪う淫らな魔法',
@@ -123,6 +136,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は淫らな魔法を唱えた', '<TARGET>の理性が揺らいでいく...']
     },
     {
+        id: 'hypnotic-wave',
         type: ActionType.StatusAttack,
         name: '催眠波動',
         description: '強力な催眠術で意識を奪う',
@@ -136,6 +150,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は強力な催眠波動を放った！', '<TARGET>の意識が朦朧としてきた...']
     },
     {
+        id: 'brainwash-beam',
         type: ActionType.StatusAttack,
         name: '洗脳光線',
         description: '思考を支配する洗脳光線',
@@ -149,6 +164,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は邪悪な光線を<TARGET>に向けた...', '<TARGET>の思考が侵食されていく...']
     },
     {
+        id: 'sweet-magic',
         type: ActionType.StatusAttack,
         name: 'あまあま魔法',
         description: '甘い幸福感で抵抗力を奪う',
@@ -158,6 +174,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は甘い魔法をかけた', '<TARGET>は幸せな気分になった...']
     },
     {
+        id: 'melting-magic',
         type: ActionType.StatusAttack,
         name: 'とろとろ魔法',
         description: '意識をとろけさせる魔法',
@@ -167,6 +184,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>はとろける魔法をかけた', '<TARGET>の意識がとろけていく...']
     },
     {
+        id: 'euphoria-magic',
         type: ActionType.StatusAttack,
         name: 'うっとり魔法',
         description: '恍惚状態にする魔法',
@@ -176,6 +194,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は恍惚の魔法をかけた', '<TARGET>はうっとりとした表情になった...']
     },
     {
+        id: 'fascination-art',
         type: ActionType.StatusAttack,
         name: '魅惑の術',
         description: '深い魅惑状態にする魔法',
@@ -185,6 +204,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は魅惑の術を唱えた', '<TARGET>は深い魅惑に囚われた...']
     },
     {
+        id: 'bliss-spell',
         type: ActionType.StatusAttack,
         name: '至福の呪文',
         description: '至福の陶酔状態にする',
@@ -194,6 +214,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は至福の呪文を唱えた', '<TARGET>は至福の表情を浮かべた...']
     },
     {
+        id: 'enchantment-technique',
         type: ActionType.StatusAttack,
         name: '魅了術',
         description: '強力な魅了魔法で完全支配',
@@ -209,6 +230,7 @@ const dreamDemonActions: BossAction[] = [
     
     // Restraint attacks
     {
+        id: 'tail-restraint',
         type: ActionType.RestraintAttack,
         name: '尻尾による拘束',
         description: '長い尻尾で対象を捕らえる',
@@ -220,6 +242,7 @@ const dreamDemonActions: BossAction[] = [
         }
     },
     {
+        id: 'magic-hand-restraint',
         type: ActionType.RestraintAttack,
         name: '魔法の手による拘束',
         description: '魔法の手で対象を捕まえる',
@@ -231,6 +254,7 @@ const dreamDemonActions: BossAction[] = [
         }
     },
     {
+        id: 'teleport-restraint',
         type: ActionType.RestraintAttack,
         name: 'テレポート拘束',
         description: 'テレポートして背後から捕らえる',
@@ -244,6 +268,7 @@ const dreamDemonActions: BossAction[] = [
     
     // Restraint-specific actions
     {
+        id: 'seductive-kiss',
         type: ActionType.StatusAttack,
         name: '悩殺キス',
         description: '拘束中の相手に魅惑的なキスをする',
@@ -255,6 +280,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は<TARGET>に熱いキスをした...', '<TARGET>は完全にとろけてしまった...']
     },
     {
+        id: 'tongue-attack',
         type: ActionType.StatusAttack,
         name: 'べろちゅ攻撃',
         description: '大きな舌で相手をなめまわす',
@@ -266,6 +292,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は大きな舌で<TARGET>をべろべろとなめまわした', '<TARGET>の体が震えている...']
     },
     {
+        id: 'body-contact-attack',
         type: ActionType.StatusAttack,
         name: '体密着攻撃',
         description: '体を密着させて誘惑する',
@@ -277,6 +304,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は<TARGET>に体を密着させてきた', '<TARGET>は誘惑に負けそうになっている...']
     },
     {
+        id: 'shaking-attack',
         type: ActionType.StatusAttack,
         name: '揺さぶり攻撃',
         description: '体を揺さぶって快楽を与える',
@@ -290,6 +318,7 @@ const dreamDemonActions: BossAction[] = [
     
     // Additional restraint actions for more variety
     {
+        id: 'intense-contact',
         type: ActionType.StatusAttack,
         name: '激しい密着',
         description: '体を激しく密着させて圧迫する',
@@ -301,6 +330,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は<TARGET>に激しく体を押し付けてきた', '<TARGET>は息ができないほど密着されている...']
     },
     {
+        id: 'intense-shaking',
         type: ActionType.StatusAttack,
         name: '激しい揺さぶり',
         description: '体を激しく揺さぶって感覚を狂わせる',
@@ -312,6 +342,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は<TARGET>を激しく揺さぶった', '<TARGET>の理性が揺らいでいく...']
     },
     {
+        id: 'sensual-movement',
         type: ActionType.StatusAttack,
         name: '官能的な動き',
         description: '官能的な動きで相手を魅了する',
@@ -323,6 +354,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は官能的な動きを見せつけてきた', '<TARGET>は目が離せなくなっている...']
     },
     {
+        id: 'intense-caress',
         type: ActionType.StatusAttack,
         name: '激しい愛撫',
         description: '激しく愛撫して感覚を麻痺させる',
@@ -334,6 +366,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は<TARGET>を激しく愛撫してきた', '<TARGET>の感覚がとろけていく...']
     },
     {
+        id: 'pressure-attack',
         type: ActionType.StatusAttack,
         name: '圧迫攻撃',
         description: '体重をかけて圧迫し続ける',
@@ -347,6 +380,7 @@ const dreamDemonActions: BossAction[] = [
     
     // All debuff restraint versions
     {
+        id: 'restraint-charm',
         type: ActionType.StatusAttack,
         name: '拘束魅了',
         description: '拘束中に強力な魅了をかける',
@@ -358,6 +392,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は<TARGET>を見つめながら強力な魅了をかけた', '<TARGET>の意思が完全に奪われていく...']
     },
     {
+        id: 'restraint-paralysis',
         type: ActionType.StatusAttack,
         name: '拘束麻痺',
         description: '拘束中に麻痺効果を与える',
@@ -369,6 +404,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は<TARGET>の神経を痺れさせた', '<TARGET>の体が完全に痺れてしまった...']
     },
     {
+        id: 'restraint-aphrodisiac',
         type: ActionType.StatusAttack,
         name: '拘束淫毒',
         description: '拘束中に淫毒を注入する',
@@ -380,6 +416,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は<TARGET>に直接淫毒を注入した', '<TARGET>の体が激しく火照っていく...']
     },
     {
+        id: 'restraint-sleep-induction',
         type: ActionType.StatusAttack,
         name: '拘束睡眠誘導',
         description: '拘束中に強制的に眠らせる',
@@ -391,6 +428,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は<TARGET>の意識を朦朧とさせた', '<TARGET>の意識がだんだん遠のいていく...']
     },
     {
+        id: 'restraint-weakness',
         type: ActionType.StatusAttack,
         name: '拘束脱力',
         description: '拘束中に力を完全に奪う',
@@ -402,6 +440,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は<TARGET>の力を吸い取った', '<TARGET>の体から力が完全に抜けていく...']
     },
     {
+        id: 'restraint-confusion',
         type: ActionType.StatusAttack,
         name: '拘束混乱',
         description: '拘束中に思考を混乱させる',
@@ -413,6 +452,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は<TARGET>の思考を混乱させた', '<TARGET>は何が何だかわからなくなっている...']
     },
     {
+        id: 'restraint-magic-seal',
         type: ActionType.StatusAttack,
         name: '拘束魔法封印',
         description: '拘束中に魔法を完全封印する',
@@ -424,6 +464,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は<TARGET>の魔力を封印した', '<TARGET>の魔法が使えなくなった...']
     },
     {
+        id: 'restraint-melting',
         type: ActionType.StatusAttack,
         name: '拘束とろとろ',
         description: '拘束中に意識をとろけさせる',
@@ -435,6 +476,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は<TARGET>の意識をとろけさせた', '<TARGET>の思考が液体のようにとろけていく...']
     },
     {
+        id: 'restraint-euphoria',
         type: ActionType.StatusAttack,
         name: '拘束うっとり',
         description: '拘束中に恍惚状態にする',
@@ -446,6 +488,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は<TARGET>を恍惚状態にした', '<TARGET>はうっとりと夢見心地になっている...']
     },
     {
+        id: 'restraint-sweet',
         type: ActionType.StatusAttack,
         name: '拘束あまあま',
         description: '拘束中に甘い幸福感を与える',
@@ -457,6 +500,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は<TARGET>に甘い幸福感を与えた', '<TARGET>は幸せそうな表情を浮かべている...']
     },
     {
+        id: 'restraint-hypnosis',
         type: ActionType.StatusAttack,
         name: '拘束催眠',
         description: '拘束中に強制催眠をかける',
@@ -471,6 +515,7 @@ const dreamDemonActions: BossAction[] = [
         messages: ['<USER>は<TARGET>に強制催眠をかけた', '<TARGET>の意識が完全に支配された...']
     },
     {
+        id: 'restraint-brainwash',
         type: ActionType.StatusAttack,
         name: '拘束洗脳',
         description: '拘束中に思考を洗脳する',
@@ -487,6 +532,7 @@ const dreamDemonActions: BossAction[] = [
     
     // Sleep-inducing attacks (restraint-only, after 7 turns restrained)
     {
+        id: 'sleep-kiss',
         type: ActionType.StatusAttack,
         name: '眠りのキス',
         description: '拘束中の相手に眠りを誘うキスをする',
@@ -547,6 +593,7 @@ export const dreamDemonData: BossData = {
         if (player.isEaten()) {
             const stomachAttacks = [
                 {
+                    id: 'stomach-wall-pressure',
                     type: ActionType.DevourAttack,
                     name: '胃壁圧迫',
                     damageFormula: (user: Boss) => user.attackPower * 1.8,
@@ -558,6 +605,7 @@ export const dreamDemonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'digestive-fluid-caress',
                     type: ActionType.DevourAttack,
                     name: '消化液愛撫',
                     damageFormula: (user: Boss) => user.attackPower * 2.0,
@@ -569,6 +617,7 @@ export const dreamDemonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'stomach-massage',
                     type: ActionType.DevourAttack,
                     name: '胃内マッサージ',
                     damageFormula: (user: Boss) => user.attackPower * 1.6,
@@ -580,6 +629,7 @@ export const dreamDemonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'direct-life-absorption',
                     type: ActionType.DevourAttack,
                     name: '生気直接吸収',
                     damageFormula: (user: Boss) => user.attackPower * 2.2,
@@ -599,6 +649,7 @@ export const dreamDemonData: BossData = {
         if (player.isDefeated()) {
             const postDefeatedActions = [
                 {
+                    id: 'dream-eternal-caress',
                     type: ActionType.PostDefeatedAttack,
                     name: '夢中での永遠の愛撫',
                     description: '夢の中で永遠に獲物を愛で続ける',
@@ -611,6 +662,7 @@ export const dreamDemonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'dream-sweet-restraint',
                     type: ActionType.PostDefeatedAttack,
                     name: '夢中での甘い拘束',
                     description: '夢の中で獲物を甘く拘束し続ける',
@@ -623,6 +675,7 @@ export const dreamDemonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'dream-bliss-experience',
                     type: ActionType.PostDefeatedAttack,
                     name: '夢中での至福体験',
                     description: '夢の中で獲物に至福を与え続ける',
@@ -635,6 +688,7 @@ export const dreamDemonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'dream-fascination-art',
                     type: ActionType.PostDefeatedAttack,
                     name: '夢中での魅了術',
                     description: '夢の中で獲物を魅了し続ける',
@@ -647,6 +701,7 @@ export const dreamDemonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'dream-sweet-domination',
                     type: ActionType.PostDefeatedAttack,
                     name: '夢中での甘い支配',
                     description: '夢の中で獲物を甘く支配し続ける',
@@ -666,6 +721,7 @@ export const dreamDemonData: BossData = {
         if (player.statusEffects.isSleeping()) {
             const dreamAttacks = [
                 {
+                    id: 'dream-intense-contact',
                     type: ActionType.DevourAttack,
                     name: '夢中激しい密着',
                     damageFormula: (user: Boss) => user.attackPower * 0.6,
@@ -678,6 +734,7 @@ export const dreamDemonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'dream-magic-tongue',
                     type: ActionType.DevourAttack,
                     name: '夢中魔力べろちゅー',
                     damageFormula: (user: Boss) => user.attackPower * 0.7,
@@ -690,6 +747,7 @@ export const dreamDemonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'dream-hug-attack',
                     type: ActionType.DevourAttack,
                     name: '夢中抱き着き攻撃',
                     damageFormula: (user: Boss) => user.attackPower * 0.5,
@@ -702,6 +760,7 @@ export const dreamDemonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'dream-tentacle-caress',
                     type: ActionType.DevourAttack,
                     name: '夢中触手愛撫',
                     damageFormula: (user: Boss) => user.attackPower * 0.6,
@@ -714,6 +773,7 @@ export const dreamDemonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'dream-magic-pressure',
                     type: ActionType.DevourAttack,
                     name: '夢中魔法圧迫',
                     damageFormula: (user: Boss) => user.attackPower * 0.7,
@@ -726,6 +786,7 @@ export const dreamDemonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'dream-intense-shaking',
                     type: ActionType.DevourAttack,
                     name: '夢中激しい揺さぶり',
                     damageFormula: (user: Boss) => user.attackPower * 0.5,
@@ -738,6 +799,7 @@ export const dreamDemonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'dream-fascinating-dance',
                     type: ActionType.DevourAttack,
                     name: '夢中魅惑の舞',
                     damageFormula: (user: Boss) => user.attackPower * 0.6,
@@ -750,6 +812,7 @@ export const dreamDemonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'dream-magic-injection',
                     type: ActionType.DevourAttack,
                     name: '夢中魔力注入',
                     damageFormula: (user: Boss) => user.attackPower * 0.7,
@@ -762,6 +825,7 @@ export const dreamDemonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'dream-sweet-temptation',
                     type: ActionType.DevourAttack,
                     name: '夢中甘い誘惑',
                     damageFormula: (user: Boss) => user.attackPower * 0.5,
@@ -774,6 +838,7 @@ export const dreamDemonData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'dream-complete-domination',
                     type: ActionType.DevourAttack,
                     name: '夢中完全支配',
                     damageFormula: (user: Boss) => user.attackPower * 0.6,
@@ -807,6 +872,7 @@ export const dreamDemonData: BossData = {
         if (player.maxHp <= 0) {
             // Max HP is 0 or below: always eat with special messages
             return {
+                id: 'slow-swallow-critical',
                 type: ActionType.EatAttack,
                 name: 'ゆっくり丸呑み',
                 description: '弱り切った獲物をゆっくりと丸呑みにする',
@@ -827,6 +893,7 @@ export const dreamDemonData: BossData = {
                 // Restrained + Knocked Out: 70% chance to eat
                 if (Math.random() < 0.7) {
                     return {
+                        id: 'slow-swallow-restrained',
                         type: ActionType.EatAttack,
                         name: 'ゆっくり丸呑み',
                         description: '拘束した獲物をゆっくりと丸呑みにする',
@@ -849,6 +916,7 @@ export const dreamDemonData: BossData = {
                     return restraintActions[Math.floor(Math.random() * restraintActions.length)];
                 } else if (random < 0.75) {
                     return {
+                        id: 'slow-swallow-defenseless',
                         type: ActionType.EatAttack,
                         name: 'ゆっくり丸呑み',
                         description: '無防備な獲物をゆっくりと丸呑みにする',

@@ -4,6 +4,7 @@ import { StatusEffectType } from '../../systems/StatusEffect';
 const cleanMasterActions: BossAction[] = [
     // 段階1: 吸引・回収フェーズ（掃除機モード）
     {
+        id: 'gentle-suction',
         type: ActionType.Attack,
         name: '弱吸引',
         description: 'やさしく吸い込んで汚れを取る',
@@ -19,6 +20,7 @@ const cleanMasterActions: BossAction[] = [
         playerStateCondition: 'normal'
     },
     {
+        id: 'powerful-suction',
         type: ActionType.Attack,
         name: '強力吸引',
         description: 'パワフルに吸い込んで汚れを根こそぎ取る',
@@ -34,6 +36,7 @@ const cleanMasterActions: BossAction[] = [
         playerStateCondition: 'normal'
     },
     {
+        id: 'dust-brush',
         type: ActionType.Attack,
         name: '埃払い',
         description: 'ブラシでサッサと埃を払う',
@@ -47,6 +50,7 @@ const cleanMasterActions: BossAction[] = [
         playerStateCondition: 'normal'
     },
     {
+        id: 'arm-catch',
         type: ActionType.RestraintAttack,
         name: 'アームキャッチ',
         description: 'お掃除アームで優しく捕まえる',
@@ -61,6 +65,7 @@ const cleanMasterActions: BossAction[] = [
         }
     },
     {
+        id: 'soap-spray',
         type: ActionType.StatusAttack,
         name: '泡スプレー',
         description: 'お掃除用の泡をシューッと吹きかける',
@@ -79,6 +84,7 @@ const cleanMasterActions: BossAction[] = [
 const cleanMasterActionsRestrained: BossAction[] = [
     // 段階2: 洗浄フェーズ（洗濯機モード）
     {
+        id: 'gentle-wash',
         type: ActionType.Attack,
         name: 'やさしく洗い',
         description: '体内洗浄槽でやさしく洗う',
@@ -91,6 +97,7 @@ const cleanMasterActionsRestrained: BossAction[] = [
         healRatio: 0.3 // 洗ってあげたから少し回復
     },
     {
+        id: 'thorough-wash',
         type: ActionType.Attack,
         name: 'しっかり洗い',
         description: '汚れをしっかり落とすために念入りに洗う',
@@ -104,6 +111,7 @@ const cleanMasterActionsRestrained: BossAction[] = [
         statusChance: 0.40
     },
     {
+        id: 'foam-massage-wash',
         type: ActionType.Attack,
         name: '泡もみ洗い',
         description: '泡でもみもみ洗って汚れを落とす',
@@ -121,6 +129,7 @@ const cleanMasterActionsRestrained: BossAction[] = [
 const cleanMasterActionsEaten: BossAction[] = [
     // 段階3: 完全洗浄フェーズ（体内）
     {
+        id: 'wash-cycle',
         type: ActionType.DevourAttack,
         name: '洗浄サイクル',
         description: '体内で完全な洗浄サイクルを実行',
@@ -134,6 +143,7 @@ const cleanMasterActionsEaten: BossAction[] = [
         statusChance: 0.80
     },
     {
+        id: 'spin-dry-mode',
         type: ActionType.DevourAttack,
         name: '脱水モード',
         description: '遠心分離で水分を飛ばす',
@@ -147,6 +157,7 @@ const cleanMasterActionsEaten: BossAction[] = [
         statusChance: 0.90
     },
     {
+        id: 'warm-air-dry',
         type: ActionType.DevourAttack,
         name: '温風乾燥',
         description: 'ほかほかの温風で乾燥させる',
@@ -160,6 +171,7 @@ const cleanMasterActionsEaten: BossAction[] = [
         statusChance: 0.70
     },
     {
+        id: 'finishing-iron',
         type: ActionType.DevourAttack,
         name: '仕上げアイロン',
         description: '最後の仕上げでアイロンがけ',
@@ -173,6 +185,7 @@ const cleanMasterActionsEaten: BossAction[] = [
         statusChance: 0.60
     },
     {
+        id: 'perfection-check',
         type: ActionType.DevourAttack,
         name: '完璧チェック',
         description: '汚れが残ってないかチェック',
@@ -222,6 +235,7 @@ export const cleanMasterData: BossData = {
         if (player.isDefeated()) {
             const postDefeatedActions: BossAction[] = [
                 {
+                    id: 'eternal-cleaning-mode',
                     type: ActionType.PostDefeatedAttack,
                     name: '永続清掃モード',
                     description: '完璧になるまで永続的に清掃し続ける',
@@ -233,6 +247,7 @@ export const cleanMasterData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'perfectionist-trigger',
                     type: ActionType.PostDefeatedAttack,
                     name: '完璧主義発動',
                     description: '99%では満足せず、100%完璧を目指す',
@@ -244,6 +259,7 @@ export const cleanMasterData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'loving-cleaning',
                     type: ActionType.PostDefeatedAttack,
                     name: '愛情清掃',
                     description: '愛情を込めてお掃除し続ける',
@@ -279,6 +295,7 @@ export const cleanMasterData: BossData = {
                 // 拘束+気絶状態: 85%の確率で吸い込む
                 if (Math.random() < 0.85) {
                     return {
+                        id: 'complete-cleaning-mode-restrained',
                         type: ActionType.EatAttack,
                         name: '完全清掃モード',
                         description: '体内洗浄槽で完全清掃する',
@@ -294,6 +311,7 @@ export const cleanMasterData: BossData = {
                 const random = Math.random();
                 if (random < 0.7) {
                     return {
+                        id: 'arm-catch-strategic',
                         type: ActionType.RestraintAttack,
                         name: 'アームキャッチ',
                         description: '清掃アームで捕まえる',
@@ -305,6 +323,7 @@ export const cleanMasterData: BossData = {
                     };
                 } else if (random < 0.9) {
                     return {
+                        id: 'complete-cleaning-mode-knockedout',
                         type: ActionType.EatAttack,
                         name: '完全清掃モード',
                         description: '体内洗浄槽で完全清掃する',

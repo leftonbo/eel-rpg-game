@@ -4,6 +4,7 @@ import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
 const undergroundWormActions: BossAction[] = [
     {
+        id: 'ground-crack',
         type: ActionType.Attack,
         name: '地割れ',
         description: '地面を割いて攻撃',
@@ -17,6 +18,7 @@ const undergroundWormActions: BossAction[] = [
         playerStateCondition: 'normal'
     },
     {
+        id: 'petrifying-breath',
         type: ActionType.StatusAttack,
         name: '石化の息',
         description: '石を溶かす息を吐いて敵を石化させる',
@@ -34,6 +36,7 @@ const undergroundWormActions: BossAction[] = [
         }
     },
     {
+        id: 'coiling-restraint',
         type: ActionType.RestraintAttack,
         name: '巻き込み拘束',
         description: '巨大な体で相手を巻き込む',
@@ -48,6 +51,7 @@ const undergroundWormActions: BossAction[] = [
         }
     },
     {
+        id: 'whole-swallow',
         type: ActionType.EatAttack,
         name: '丸呑み',
         description: '巨大な口で相手を呑み込む',
@@ -65,6 +69,7 @@ const undergroundWormActions: BossAction[] = [
 
 const undergroundWormDevourActions: BossAction[] = [
     {
+        id: 'gravel-grinding',
         type: ActionType.DevourAttack,
         name: '砂利研磨',
         description: '体内の砂利でプレイヤーを研磨する',
@@ -75,6 +80,7 @@ const undergroundWormDevourActions: BossAction[] = [
         weight: 35
     },
     {
+        id: 'digestive-acid-attack',
         type: ActionType.DevourAttack,
         name: '消化液攻撃',
         description: '強酸性の消化液で溶解攻撃',
@@ -85,6 +91,7 @@ const undergroundWormDevourActions: BossAction[] = [
         weight: 40
     },
     {
+        id: 'petrifying-digestion',
         type: ActionType.StatusAttack,
         name: '石化消化',
         description: '体内で石化させて消化を遅らせる',
@@ -103,6 +110,7 @@ const undergroundWormDevourActions: BossAction[] = [
 // 敗北後の継続攻撃（プレイヤーがKO状態で体内にいる時）
 const undergroundWormPostDefeatedActions: BossAction[] = [
     {
+        id: 'underground-silence',
         type: ActionType.PostDefeatedAttack,
         name: '地底の静寂',
         description: '深い地底の静かな環境でプレイヤーを包み込む',
@@ -114,6 +122,7 @@ const undergroundWormPostDefeatedActions: BossAction[] = [
         playerStateCondition: 'defeated'
     },
     {
+        id: 'mineral-absorption',
         type: ActionType.PostDefeatedAttack,
         name: '鉱物吸収',
         description: '体内で地底の鉱物を使ってプレイヤーを石化保存する',
@@ -127,6 +136,7 @@ const undergroundWormPostDefeatedActions: BossAction[] = [
         playerStateCondition: 'defeated'
     },
     {
+        id: 'groundwater-circulation',
         type: ActionType.PostDefeatedAttack,
         name: '地下水循環',
         description: '体内の地下水系でプレイヤーを優しく循環させる',
@@ -138,6 +148,7 @@ const undergroundWormPostDefeatedActions: BossAction[] = [
         playerStateCondition: 'defeated'
     },
     {
+        id: 'fossil-preservation',
         type: ActionType.PostDefeatedAttack,
         name: '化石化保存',
         description: '時間をかけて獲物を化石として完全保存する',

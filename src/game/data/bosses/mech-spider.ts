@@ -4,6 +4,7 @@ import { StatusEffectType } from '../../systems/StatusEffectTypes';
 const mechSpiderActions: BossAction[] = [
     // Normal state actions
     {
+        id: 'laser-shot',
         type: ActionType.Attack,
         name: 'レーザーショット',
         description: '精密なレーザーで攻撃する',
@@ -13,6 +14,7 @@ const mechSpiderActions: BossAction[] = [
         weight: 20
     },
     {
+        id: 'spider-kick',
         type: ActionType.Attack,
         name: 'クモキック',
         description: '強力だが不正確な蹴り攻撃',
@@ -23,6 +25,7 @@ const mechSpiderActions: BossAction[] = [
         playerStateCondition: 'normal'
     },
     {
+        id: 'shock-bite',
         // Shockbite (for normal state)
         type: ActionType.StatusAttack,
         name: 'ショックバイト',
@@ -38,6 +41,7 @@ const mechSpiderActions: BossAction[] = [
         }
     },
     {
+        id: 'spider-grab',
         type: ActionType.RestraintAttack,
         name: 'スパイダーグラブ',
         description: '抱きしめるように拘束する',
@@ -49,6 +53,7 @@ const mechSpiderActions: BossAction[] = [
         }
     },
     {
+        id: 'spider-net',
         type: ActionType.RestraintAttack,
         name: 'スパイダーネット',
         description: '機械の合成糸で作った網で拘束する',
@@ -64,6 +69,7 @@ const mechSpiderActions: BossAction[] = [
 const mechSpiderActionsRestrained: BossAction[] = [
     // Restrained state actions
     {
+        id: 'spider-kick-restrained',
         type: ActionType.Attack,
         name: 'クモキック',
         description: '強力だが不正確な蹴り攻撃',
@@ -72,6 +78,7 @@ const mechSpiderActionsRestrained: BossAction[] = [
         weight: 20
     },
     {
+        id: 'shock-bite-restrained',
         // Shockbite (for restrained state)
         type: ActionType.StatusAttack,
         name: 'ショックバイト',
@@ -84,6 +91,7 @@ const mechSpiderActionsRestrained: BossAction[] = [
         weight: 15
     },
     {
+        id: 'spider-hug',
         type: ActionType.Attack,
         name: 'スパイダーハグ',
         description: '抱きしめるように締め付ける',
@@ -96,6 +104,7 @@ const mechSpiderActionsRestrained: BossAction[] = [
 const mechSpiderActionsKnockoutRestrained: BossAction[] = [
     // Cocoon Process - special transition attack
     {
+        id: 'shrinking-process',
         type: ActionType.CocoonAttack,
         name: '縮小プロセス',
         description: '捕まえた対象を繭にして縮小液で満たす',
@@ -114,6 +123,7 @@ const mechSpiderActionsKnockoutRestrained: BossAction[] = [
 const mechSpiderActionsCocoon: BossAction[] = [  
     // Cocoon state actions
     {
+        id: 'cocoon-embrace',
         type: ActionType.CocoonAction,
         name: '繭の抱擁',
         description: '繭状態の対象をゆらゆら揺らして縮小させる',
@@ -126,6 +136,7 @@ const mechSpiderActionsCocoon: BossAction[] = [
         }
     },
     {
+        id: 'cocoon-compression',
         type: ActionType.CocoonAction,
         name: '繭の圧縮',
         description: '繭を抱きしめて縮小液を馴染ませる',
@@ -138,6 +149,7 @@ const mechSpiderActionsCocoon: BossAction[] = [
         }
     },
     {
+        id: 'shrinking-fluid-circulation',
         type: ActionType.CocoonAction,
         name: '縮小液循環',
         description: '繭内部の縮小液を循環させてエネルギーを得る',
@@ -186,6 +198,7 @@ export const mechSpiderData: BossData = {
         if (player.isDefeated()) {
             const postDefeatedActions: BossAction[] = [
                 {
+                    id: 'internal-repair-system',
                     type: ActionType.PostDefeatedAttack,
                     name: '体内修理装置起動',
                     description: '体内の修理装置で生命体に栄養剤を注入する',
@@ -197,6 +210,7 @@ export const mechSpiderData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'internal-massage',
                     type: ActionType.PostDefeatedAttack,
                     name: '体内マッサージ処理',
                     description: '体内の機械腕で生命体をマッサージする',
@@ -208,6 +222,7 @@ export const mechSpiderData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'pointless-repair',
                     type: ActionType.PostDefeatedAttack,
                     name: '無意味な修理作業',
                     description: '意味のない修理作業を生命体に施し続ける',
@@ -219,6 +234,7 @@ export const mechSpiderData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'internal-restraint-system',
                     type: ActionType.PostDefeatedAttack,
                     name: '体内拘束システム',
                     description: '体内の拘束システムで生命体を固定し続ける',
@@ -230,6 +246,7 @@ export const mechSpiderData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'repair-inspection',
                     type: ActionType.PostDefeatedAttack,
                     name: '修理完了検査',
                     description: '修理が完了したか生命体を検査し続ける',

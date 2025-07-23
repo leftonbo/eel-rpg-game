@@ -3,6 +3,7 @@ import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
 const seaKrakenActions: BossAction[] = [
     {
+        id: 'tentacle-slap',
         type: ActionType.Attack,
         name: '触手ビンタ',
         description: '太い触手で相手を叩く',
@@ -11,6 +12,7 @@ const seaKrakenActions: BossAction[] = [
         playerStateCondition: 'normal'
     },
     {
+        id: 'tentacle-slam',
         type: ActionType.Attack,
         name: '叩きつけ',
         description: '触腕を大きく振り上げて叩きつける',
@@ -22,6 +24,7 @@ const seaKrakenActions: BossAction[] = [
         damageVarianceMax: 0.4
     },
     {
+        id: 'ink-spray',
         type: ActionType.StatusAttack,
         name: 'イカスミブレス',
         description: '前方にイカスミを吐き出し、視界を奪う',
@@ -36,6 +39,7 @@ const seaKrakenActions: BossAction[] = [
         ]
     },
     {
+        id: 'tentacle-wrap',
         type: ActionType.RestraintAttack,
         name: '触腕巻き付け',
         description: '長い触腕で対象を拘束する',
@@ -50,6 +54,7 @@ const seaKrakenActions: BossAction[] = [
         }
     },
     {
+        id: 'tentacle-suction',
         type: ActionType.Attack,
         name: '触腕吸引',
         description: '拘束中の獲物を吸盤で吸引し、エネルギーを吸収する',
@@ -64,6 +69,7 @@ const seaKrakenActions: BossAction[] = [
         healRatio: 0.8
     },
     {
+        id: 'ink-injection',
         type: ActionType.StatusAttack,
         name: 'イカスミ注入',
         description: '拘束中の獲物にイカスミを注入し、魅了状態にする',
@@ -113,6 +119,7 @@ export const seaKrakenData: BossData = {
         if (player.isDefeated()) {
             const postDefeatedActions: BossAction[] = [
                 {
+                    id: 'internal-ink-soak',
                     type: ActionType.PostDefeatedAttack,
                     name: '体内イカスミ漬け',
                     description: '獲物をイカスミ漬けにしながら体力を吸収し続ける',
@@ -125,6 +132,7 @@ export const seaKrakenData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'stomach-sucker-drain',
                     type: ActionType.PostDefeatedAttack,
                     name: '胃袋吸盤吸引',
                     description: '体内の無数の吸盤で獲物の体力を永遠に吸収し続ける',
@@ -144,6 +152,7 @@ export const seaKrakenData: BossData = {
         if (player.isEaten()) {
             const eatenActions = [
                 {
+                    id: 'stomach-sucker-attack',
                     type: ActionType.DevourAttack,
                     name: '胃袋吸盤吸引',
                     description: '体内の獲物のエネルギーを、胃袋にある無数の吸盤で吸収する',
@@ -155,6 +164,7 @@ export const seaKrakenData: BossData = {
                     weight: 1
                 },
                 {
+                    id: 'internal-ink-marinate',
                     type: ActionType.DevourAttack,
                     name: '体内イカスミ漬け',
                     description: '体内の獲物をイカスミ漬けにして最大体力を吸収する',
@@ -177,6 +187,7 @@ export const seaKrakenData: BossData = {
                 // Restrained + Knocked Out: 85% chance to eat
                 if (Math.random() < 0.85) {
                     return {
+                        id: 'swallow-restrained',
                         type: ActionType.EatAttack,
                         name: '丸呑み',
                         description: '拘束した獲物を口に押し込み丸呑みする',
@@ -193,6 +204,7 @@ export const seaKrakenData: BossData = {
                 const random = Math.random();
                 if (random < 0.65) {
                     return {
+                        id: 'ko-tentacle-wrap',
                         type: ActionType.RestraintAttack,
                         name: '触腕巻き付け',
                         description: '対象を触腕で拘束する',
@@ -204,6 +216,7 @@ export const seaKrakenData: BossData = {
                     };
                 } else if (random < 0.9) {
                     return {
+                        id: 'swallow-direct',
                         type: ActionType.EatAttack,
                         name: '丸呑み',
                         description: '獲物を丸呑みする',
