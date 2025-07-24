@@ -557,7 +557,7 @@ const dreamDemonActions: BossAction[] = [
 export const dreamDemonData: BossData = {
     id: 'dream-demon',
     name: 'DreamDemon',
-    displayName: '😈 夢魔ちゃん',
+    displayName: '😈 夢の淫魔',
     description: '夢を操る小さな淫魔',
     questNote: `最近、冒険者たちが奇妙な夢にうなされて目覚めないという事件が多発している。調査によると、夢の世界に小さな淫魔が現れ、甘い誘惑で冒険者たちを虜にしているという。この夢魔を討伐し、被害者たちを救出せよ。`,
     maxHp: 320,
@@ -567,11 +567,11 @@ export const dreamDemonData: BossData = {
     explorerLevelRequired: 3,
     victoryTrophy: {
         name: '夢魔の角',
-        description: '夢魔ちゃんの小さくて可愛らしい角。夢の世界への扉を開く力を秘めている。'
+        description: '夢の淫魔の小さくて可愛らしい角。夢の世界への扉を開く力を秘めている。'
     },
     defeatTrophy: {
         name: '甘い夢のかけら',
-        description: '夢魔ちゃんの心の奥から滲み出る甘美な夢のエッセンス。至福の夢を呼び起こす。'
+        description: '夢の淫魔の心の奥から滲み出る甘美な夢のエッセンス。至福の夢を呼び起こす。'
     },
     guestCharacterInfo: {
         creator: 'crazybudgie'
