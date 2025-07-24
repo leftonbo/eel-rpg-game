@@ -8,6 +8,10 @@ const dreamDemonActions: BossAction[] = [
         type: ActionType.Attack,
         name: '魔法の触手',
         description: '小さな触手で軽く攻撃',
+        messages: [
+            'ちょちょいっと触手攻撃ンメェ〜♪',
+            '<USER>は小さな触手で<TARGET>を軽くペチペチと叩いた！'
+        ],
         damageFormula: (user: Boss) => user.attackPower * 0.8,
         hitRate: 0.95,
         weight: 15,
@@ -23,7 +27,11 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Charm,
         statusChance: 0.90,
         weight: 25,
-        messages: ['<USER>は甘い眼差しで<TARGET>を見つめる...', '<TARGET>の心がとろけそうになる...']
+        messages: [
+            'あたいの可愛さに見とれちゃいなンメェ〜♪',
+            '<USER>は甘い眼差しで<TARGET>を見つめる...',
+            '<TARGET>の心がとろけそうになる...'
+        ]
     },
     {
         id: 'paralysis-powder',
@@ -33,7 +41,11 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Paralysis,
         statusChance: 0.85,
         weight: 20,
-        messages: ['<USER>は光る粉を撒き散らした！', '<TARGET>の体がしびれていく...']
+        messages: [
+            'きらきら〜な粉をまいちゃうンメェ〜♪',
+            '<USER>は光る粉を撒き散らした！',
+            '<TARGET>の体がしびれていく...'
+        ]
     },
     {
         id: 'aphrodisiac-breath',
@@ -43,7 +55,11 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.AphrodisiacPoison,
         statusChance: 0.90,
         weight: 25,
-        messages: ['<USER>は甘い香りの息を<TARGET>に吹きかけた', '<TARGET>の体が熱くなってきた...']
+        messages: [
+            'あまあま〜な息をふーってしてあげるンメェ〜♪',
+            '<USER>は甘い香りの息を<TARGET>に吹きかけた',
+            '<TARGET>の体が熱くなってきた...'
+        ]
     },
     {
         id: 'sleep-inducer',
@@ -53,7 +69,11 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Drowsiness,
         statusChance: 0.80,
         weight: 20,
-        messages: ['<USER>は催眠術をかけてきた', '<TARGET>のまぶたが重くなってきた...']
+        messages: [
+            'ねむねむになっちゃえンメェ〜♪',
+            '<USER>は催眠術をかけてきた',
+            '<TARGET>のまぶたが重くなってきた...'
+        ]
     },
     {
         id: 'weakness-spell',
@@ -73,7 +93,11 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Infatuation,
         statusChance: 0.80,
         weight: 25,
-        messages: ['<USER>はハート型の光線を放った！', '<TARGET>は完全にメロメロになってしまった...']
+        messages: [
+            'きゃぴ〜ん♪ メロメロビーム発射ンメェ〜！',
+            '<USER>はハート型の光線を放った！',
+            '<TARGET>は完全にメロメロになってしまった...'
+        ]
     },
     {
         id: 'confusion-vortex',
@@ -236,7 +260,10 @@ const dreamDemonActions: BossAction[] = [
         description: '長い尻尾で対象を捕らえる',
         weight: 20,
         hitRate: 0.85,
-        messages: ['<USER>は長い尻尾で<TARGET>を捕らえようとしてきた！'],
+        messages: [
+            'しっぽでぎゅーってしちゃうンメェ〜♪',
+            '<USER>は長い尻尾で<TARGET>を捕らえようとしてきた！'
+        ],
         canUse: (_boss, player, _turn) => {
             return !player.isRestrained() && !player.isEaten() && Math.random() < 0.4;
         }
@@ -248,7 +275,10 @@ const dreamDemonActions: BossAction[] = [
         description: '魔法の手で対象を捕まえる',
         weight: 18,
         hitRate: 0.80,
-        messages: ['<USER>は魔法の手を伸ばして<TARGET>を掴もうとしてきた！'],
+        messages: [
+            'まほうの手でつかまえちゃうンメェ〜♪',
+            '<USER>は魔法の手を伸ばして<TARGET>を掴もうとしてきた！'
+        ],
         canUse: (_boss, player, _turn) => {
             return !player.isRestrained() && !player.isEaten() && Math.random() < 0.35;
         }
@@ -260,7 +290,11 @@ const dreamDemonActions: BossAction[] = [
         description: 'テレポートして背後から捕らえる',
         weight: 15,
         hitRate: 0.90,
-        messages: ['<USER>は一瞬姿を消した...', '気づくと<USER>が<TARGET>の背後にいた！'],
+        messages: [
+            'てれぽーとで背後を取るンメェ〜♪',
+            '<USER>は一瞬姿を消した...',
+            '気づくと<USER>が<TARGET>の背後にいた！'
+        ],
         canUse: (_boss, player, _turn) => {
             return !player.isRestrained() && !player.isEaten() && Math.random() < 0.3;
         }
@@ -277,7 +311,11 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.95,
         weight: 30,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>に熱いキスをした...', '<TARGET>は完全にとろけてしまった...']
+        messages: [
+            'ちゅ〜♪ あまあまキスしてあげるンメェ〜',
+            '<USER>は<TARGET>に熱いキスをした...',
+            '<TARGET>は完全にとろけてしまった...'
+        ]
     },
     {
         id: 'tongue-attack',
@@ -289,7 +327,11 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.90,
         weight: 28,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は大きな舌で<TARGET>をべろべろとなめまわした', '<TARGET>の体が震えている...']
+        messages: [
+            'べろべろ〜♪ あまあまにしてやるンメェ〜',
+            '<USER>は大きな舌で<TARGET>をべろべろとなめまわした',
+            '<TARGET>の体が震えている...'
+        ]
     },
     {
         id: 'body-contact-attack',
