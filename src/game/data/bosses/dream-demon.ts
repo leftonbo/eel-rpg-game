@@ -83,7 +83,11 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Weakness,
         statusChance: 0.85,
         weight: 20,
-        messages: ['<USER>は呪文を唱えた', '<TARGET>の力が抜けていく...']
+        messages: [
+            'だら〜んってしちゃえンメェ〜♪',
+            '<USER>は呪文を唱えた',
+            '<TARGET>の力が抜けていく...'
+        ]
     },
     {
         id: 'infatuation-beam',
@@ -107,7 +111,11 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Confusion,
         statusChance: 0.75,
         weight: 20,
-        messages: ['<USER>は不思議な渦を作り出した', '<TARGET>の思考が混乱してきた...']
+        messages: [
+            'ぐるぐる〜って混乱させちゃうンメェ〜♪',
+            '<USER>は不思議な渦を作り出した',
+            '<TARGET>の思考が混乱してきた...'
+        ]
     },
     {
         id: 'arousal-enhancer',
@@ -117,7 +125,11 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Arousal,
         statusChance: 0.85,
         weight: 25,
-        messages: ['<USER>は妖艶な魔法をかけた', '<TARGET>の体が火照ってきた...']
+        messages: [
+            'ぽっかぽか〜にしてあげるンメェ〜♪',
+            '<USER>は妖艶な魔法をかけた',
+            '<TARGET>の体が火照ってきた...'
+        ]
     },
     {
         id: 'seductive-pose',
@@ -343,7 +355,11 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.95,
         weight: 25,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>に体を密着させてきた', '<TARGET>は誘惑に負けそうになっている...']
+        messages: [
+            'ぺったんぺったん〜♪ 密着攻撃ンメェ〜',
+            '<USER>は<TARGET>に体を密着させてきた',
+            '<TARGET>は誘惑に負けそうになっている...'
+        ]
     },
     {
         id: 'shaking-attack',
@@ -355,7 +371,11 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.80,
         weight: 20,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>の体をリズミカルに揺さぶった', '<TARGET>は快楽の波に飲み込まれていく...']
+        messages: [
+            'ゆさゆさ〜♪ あまあまにしてやるンメェ〜',
+            '<USER>は<TARGET>の体をリズミカルに揺さぶった',
+            '<TARGET>は快楽の波に飲み込まれていく...'
+        ]
     },
     
     // Additional restraint actions for more variety
@@ -588,6 +608,7 @@ const dreamDemonActions: BossAction[] = [
             return player.isRestrained() && Math.random() < 0.3; // Temporary logic
         },
         messages: [
+            'ちゅ〜♪ 特別なキスをしてあげるンメェ〜',
             '<USER>はくちびるに強く魔力を蓄えると、<TARGET>に熱く深いキスをした...',
             '<TARGET>は眠りに落ちてしまい、<USER>の夢の世界にとらわれてしまった...',
             '<TARGET>が睡眠状態になった！',
