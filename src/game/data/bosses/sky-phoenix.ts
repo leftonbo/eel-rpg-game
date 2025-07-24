@@ -351,5 +351,18 @@ export const skyPhoenixData: BossData = {
     },
     
     // エクスプローラーレベル9で解禁
-    explorerLevelRequired: 9
+    explorerLevelRequired: 9,
+    
+    // 転生システム用のカスタム敗北判定
+    customDefeatedCheck: (boss: Boss) => {
+        const currentForm = boss.getCustomVariable<number>('currentForm', 1);
+        
+        // 最終形態（第3形態）でのみ通常の敗北判定を適用
+        if (currentForm === 3) {
+            return boss.statusEffects.isKnockedOut();
+        }
+        
+        // 第1・第2形態では転生可能なのでHP0でも敗北しない
+        return false;
+    }
 };

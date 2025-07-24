@@ -115,6 +115,12 @@ export interface BossData {
      * 「内側（体内）から採れるもの」の設定
      */
     defeatTrophy?: TrophyData;
+    /**
+     * カスタム敗北判定関数
+     * 指定された場合、デフォルトのisDefeated()の代わりに使用される
+     * 転生システムなど特殊な敗北条件を持つボス用
+     */
+    customDefeatedCheck?: (boss: Boss) => boolean;
 }
 
 export class Boss extends Actor {
@@ -149,9 +155,16 @@ export class Boss extends Actor {
      */
     private customVariables: Record<string, any> = {};
     
+    /**
+     * ボスデータの参照
+     * カスタム敗北判定などで使用
+     */
+    public data: BossData;
+    
     constructor(data: BossData) {
         // Boss has unlimited MP (無尽蔵) - set to a high value
         super(data.displayName, data.maxHp, data.attackPower, 999999);
+        this.data = data;
         this.id = data.id;
         this.name = data.name;
         this.description = data.description;
@@ -663,6 +676,21 @@ export class Boss extends Actor {
     
     
     
+    
+    /**
+     * カスタム敗北判定
+     * BossDataでcustomDefeatedCheckが指定されている場合はそれを、
+     * そうでなければデフォルトの敗北判定を使用
+     */
+    isDefeated(): boolean {
+        // カスタム敗北判定がある場合はそれを使用
+        if (this.data.customDefeatedCheck) {
+            return this.data.customDefeatedCheck(this);
+        }
+        
+        // デフォルトの敗北判定（親クラスActor）
+        return super.isDefeated();
+    }
     
     getDialogue(situation: 'battle-start' | 'victory' | 'defeat'): string {
         // Default dialogue, can be overridden by specific boss implementations
