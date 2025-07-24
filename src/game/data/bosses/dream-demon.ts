@@ -952,6 +952,7 @@ export const dreamDemonData: BossData = {
                     damageFormula: (user: Boss) => user.attackPower * 0.7,
                     description: '夢の中で魔力を注入しながら生気を吸い取る',
                     messages: [
+                        'ずぶずぶ〜♪ 魔力を直接注入しちゃうンメェ〜',
                         '<USER>は夢の中で<TARGET>に直接魔力を注入した',
                         '<USER>の魔力は<TARGET>の生気を内側から吸い取っている...',
                         '<TARGET>は魔力に侵食されながら生気を内側から奪われていく...'
@@ -965,6 +966,7 @@ export const dreamDemonData: BossData = {
                     damageFormula: (user: Boss) => user.attackPower * 0.5,
                     description: '夢の中で甘い誘惑をしながら生気を吸い取る',
                     messages: [
+                        'あまあま〜♪ 甘い言葉でおびき寄せちゃうンメェ〜',
                         '<USER>は夢の中で<TARGET>に甘い誘惑をささやいた',
                         '<USER>は甘い言葉で<TARGET>の生気をそっと吸い取っている...',
                         '<TARGET>は甘い誘惑に溺れながら生気を静かに奪われている...'
@@ -978,6 +980,7 @@ export const dreamDemonData: BossData = {
                     damageFormula: (user: Boss) => user.attackPower * 0.6,
                     description: '夢の中で完全に支配しながら生気を吸い取る',
                     messages: [
+                        'もう完全にあたいのものンメェ〜♪ 支配しちゃったンメェ〜',
                         '<USER>は夢の中で<TARGET>を完全に支配した',
                         '<USER>は支配した<TARGET>の生気を容赦なく吸い取っている...',
                         '<TARGET>は完全に支配されながら生気を全て奪われていく！'
