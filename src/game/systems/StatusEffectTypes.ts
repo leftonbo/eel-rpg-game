@@ -93,7 +93,10 @@ export enum StatusEffectType {
     Petrified = 'petrified',
     
     // Bat Vampire effects
-    Darkness = 'darkness'
+    Darkness = 'darkness',
+    
+    // Sky Phoenix effects
+    SkyCurse = 'sky-curse'
 }
 
 export interface StatusEffect {
