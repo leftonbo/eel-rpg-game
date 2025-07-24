@@ -89,7 +89,7 @@ const fluffyDragonActions: BossAction[] = [
     // 拘束中＋プレイヤーダウン時の特殊攻撃（第一胃袋フェーズ）
     {
         id: 'first-stomach-transfer',
-        type: ActionType.DevourAttack,
+        type: ActionType.EatAttack,
         name: 'ふかふか胃袋への移送',
         description: '眠り気味の獲物をふかふかな第一胃袋に送り込む',
         damageFormula: (user: Boss) => user.attackPower * 1.2,
