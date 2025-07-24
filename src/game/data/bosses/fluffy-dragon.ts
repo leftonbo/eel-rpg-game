@@ -7,13 +7,13 @@ const fluffyDragonActions: BossAction[] = [
     {
         id: 'fluffy-hand',
         type: ActionType.Attack,
-        name: 'ふかふかおてて',
-        description: 'ふかふかした手で軽く攻撃',
+        name: 'ふわふわおてて',
+        description: 'ふわふわした手で軽く攻撃',
         damageFormula: (user: Boss) => user.attackPower * 0.8,
         hitRate: 0.95,
         weight: 25,
         playerStateCondition: 'normal',
-        messages: ['<USER>のふかふかした手が<TARGET>を優しく撫でていく...']
+        messages: ['<USER>のふわふわした手が<TARGET>を優しく撫でていく...']
     },
     {
         id: 'lavender-breath',
@@ -31,30 +31,30 @@ const fluffyDragonActions: BossAction[] = [
     {
         id: 'fluffy-wing-attack',
         type: ActionType.Attack,
-        name: 'ふかふか翼撃',
-        description: 'ふかふかの翼で包み込むような攻撃',
+        name: 'ふわふわ翼撃',
+        description: 'ふわふわの翼で包み込むような攻撃',
         damageFormula: (user: Boss) => user.attackPower * 0.9,
         hitRate: 0.85,
         weight: 20,
         playerStateCondition: 'normal',
-        messages: ['<USER>のふかふかした翼が<TARGET>を包み込む！']
+        messages: ['<USER>のふわふわした翼が<TARGET>を包み込む！']
     },
     {
         id: 'fluffy-restraint',
         type: ActionType.RestraintAttack,
-        name: 'ふかふか拘束',
-        description: 'ふかふかの体毛で獲物を包み込んで拘束する',
+        name: 'ふわふわ拘束',
+        description: 'ふわふわの体毛で獲物を包み込んで拘束する',
         weight: 15,
         playerStateCondition: 'normal',
-        messages: ['<USER>は<TARGET>を抱くようにふかふかの体毛で包み込む！', '<TARGET>は心地よい感触に包まれながらも身動きが取れなくなった...']
+        messages: ['<USER>は<TARGET>を抱くようにふわふわの体毛で包み込む！', '<TARGET>は心地よい感触に包まれながらも身動きが取れなくなった...']
     },
 
     // 拘束中専用攻撃（拘束フェーズ）
     {
         id: 'fluffy-wrap-enhance',
         type: ActionType.StatusAttack,
-        name: 'ふかふか強化包み',
-        description: 'ふかふかの体毛でさらに深く包み込み、強化拘束状態にする',
+        name: 'ふわふわ強化包み',
+        description: 'ふわふわの体毛でさらに深く包み込み、強化拘束状態にする',
         statusEffect: StatusEffectType.FluffyWrap,
         statusChance: 0.90,
         weight: 30,
@@ -76,8 +76,8 @@ const fluffyDragonActions: BossAction[] = [
     {
         id: 'fluffy-massage',
         type: ActionType.StatusAttack,
-        name: 'ふかふかマッサージ',
-        description: 'ふかふかの体毛で優しくマッサージして抵抗力を削ぐ',
+        name: 'ふわふわマッサージ',
+        description: 'ふわふわの体毛で優しくマッサージして抵抗力を削ぐ',
         damageFormula: (user: Boss) => user.attackPower * 0.4,
         statusEffect: StatusEffectType.Weakness,
         statusChance: 0.60,
@@ -86,104 +86,104 @@ const fluffyDragonActions: BossAction[] = [
         messages: ['<USER>の体毛が<TARGET>を優しくマッサージする...', '<TARGET>は心地よさで力が抜けていく...']
     },
 
-    // 拘束中＋プレイヤーダウン時の特殊攻撃（第一胃袋フェーズ）
+    // 拘束中＋プレイヤーダウン時の特殊攻撃（ふわふわ安眠室フェーズ）
     {
         id: 'first-stomach-transfer',
         type: ActionType.EatAttack,
-        name: 'ふかふか胃袋への移送',
-        description: '眠り気味の獲物をふかふかな第一胃袋に送り込む',
+        name: 'ふわふわ安眠室への移送',
+        description: '眠り気味の獲物をふわふわな安眠室に送り込む',
         damageFormula: (user: Boss) => user.attackPower * 1.2,
         weight: 50,
         playerStateCondition: 'ko',
         messages: [
             '<USER>は<TARGET>を優しく持ち上げると、そのまま口の中に運んでいく...',
-            'ふかふかな食道を通って、<TARGET>は第一の胃袋に到着した...',
-            '第一胃袋はまるで毛布のようにふかふかで、<TARGET>を優しく包み込む...'
+            'ふわふわな食道を通って、<TARGET>は安眠室に到着した...',
+            '安眠室はまるで毛布のようにふわふわで、<TARGET>を優しく包み込む...'
         ]
     },
 
-    // 第一胃袋での行動（眠り誘導専用）
+    // ふわふわ安眠室での行動（眠り誘導専用）
     {
         id: 'fluffy-stomach-lullaby',
         type: ActionType.PostDefeatedAttack,
-        name: 'ふかふか胃袋の子守唄',
-        description: 'ふかふかな胃袋が子守唄のように優しく収縮する',
+        name: 'ふわふわ安眠室の子守唄',
+        description: 'ふわふわな安眠室が子守唄のように優しく収縮する',
         statusEffect: StatusEffectType.Sleep,
         statusChance: 0.9,
         weight: 35,
         playerStateCondition: 'defeated',
         canUse: (boss: Boss, _player: Player, _turn: number) => {
-            const stomachPhase = boss.getCustomVariable<string>('stomachPhase', 'first');
-            return stomachPhase === 'first';
+            const stomachPhase = boss.getCustomVariable<string>('stomachPhase', 'fluffy-rest');
+            return stomachPhase === 'fluffy-rest';
         },
         messages: [
-            'ふかふかな胃袋が心地よいリズムで収縮を繰り返す...',
+            'ふわふわな安眠室が心地よいリズムで収縮を繰り返す...',
             '<TARGET>は包まれるような安心感に深い眠りへ誘われていく...'
         ]
     },
     {
         id: 'fluffy-stomach-warmth',
         type: ActionType.PostDefeatedAttack,
-        name: 'ふかふか胃袋の温もり',
-        description: 'ふかふかな毛に覆われた胃袋の温もりで眠気を誘う',
+        name: 'ふわふわ安眠室の温もり',
+        description: 'ふわふわな毛に覆われた安眠室の温もりで眠気を誘う',
         statusEffect: StatusEffectType.Drowsiness,
         statusChance: 0.8,
         weight: 30,
         playerStateCondition: 'defeated',
         canUse: (boss: Boss, _player: Player, _turn: number) => {
-            const stomachPhase = boss.getCustomVariable<string>('stomachPhase', 'first');
-            return stomachPhase === 'first';
+            const stomachPhase = boss.getCustomVariable<string>('stomachPhase', 'fluffy-rest');
+            return stomachPhase === 'fluffy-rest';
         },
         messages: [
-            'ふかふかな胃袋の温もりが<TARGET>を包み込む...',
+            'ふわふわな安眠室の温もりが<TARGET>を包み込む...',
             '<TARGET>は母の胸に抱かれるような安心感を感じる...'
         ]
     },
     {
         id: 'transfer-to-second-stomach',
         type: ActionType.PostDefeatedAttack,
-        name: '第二胃袋への移送',
-        description: '完全に眠った獲物を第二の胃袋に送り込む',
+        name: '夢見の深層への移送',
+        description: '完全に眠った獲物を夢見の深層に送り込む',
         weight: 100,
         playerStateCondition: 'defeated',
         canUse: (boss: Boss, player: Player, _turn: number) => {
-            const stomachPhase = boss.getCustomVariable<string>('stomachPhase', 'first');
+            const stomachPhase = boss.getCustomVariable<string>('stomachPhase', 'fluffy-rest');
             const turnsSinceEaten = boss.getCustomVariable<number>('turnsSinceEaten', 0);
             const playerAsleep = player.statusEffects.hasEffect(StatusEffectType.Sleep);
             
-            // 第一胃袋で5ターン経過し、プレイヤーが眠っている場合
-            return stomachPhase === 'first' && turnsSinceEaten >= 5 && playerAsleep;
+            // ふわふわ安眠室で5ターン経過し、プレイヤーが眠っている場合
+            return stomachPhase === 'fluffy-rest' && turnsSinceEaten >= 5 && playerAsleep;
         },
         onUse: (boss: Boss, player: Player) => {
-            // 第二胃袋フェーズに移行
-            boss.setCustomVariable('stomachPhase', 'second');
+            // 夢見の深層フェーズに移行
+            boss.setCustomVariable('stomachPhase', 'dream-depth');
             boss.setCustomVariable('dreamShareStarted', true);
             // 夢の共有状態を付与
             player.statusEffects.addEffect(StatusEffectType.DreamShare);
             return [];
         },
         messages: [
-            '完全に眠りに落ちた<TARGET>は、ゆっくりと第二の胃袋へ運ばれていく...',
-            '第二の胃袋は毛に覆われておらず、ヌメヌメした柔らかい胃壁が<TARGET>を迎える...',
+            '完全に眠りに落ちた<TARGET>は、ゆっくりと夢見の深層へ運ばれていく...',
+            '夢見の深層は毛に覆われておらず、ヌメヌメした柔らかい胃壁が<TARGET>を迎える...',
             '<TARGET>は<USER>の睡眠を肩代わりすることになった...'
         ]
     },
 
-    // 第二胃袋での行動（エネルギー吸収とマナ変換）
+    // 夢見の深層での行動（エネルギー吸収とマナ変換）
     {
         id: 'energy-absorption',
         type: ActionType.PostDefeatedAttack,
         name: 'エネルギー吸収',
-        description: '第二胃袋でゆっくりと獲物のエネルギーを吸収する',
+        description: '夢見の深層でゆっくりと獲物のエネルギーを吸収する',
         damageFormula: (user: Boss) => user.attackPower * 1.5,
         weight: 30,
         playerStateCondition: 'defeated',
         canUse: (boss: Boss, _player: Player, _turn: number) => {
-            const stomachPhase = boss.getCustomVariable<string>('stomachPhase', 'first');
-            return stomachPhase === 'second';
+            const stomachPhase = boss.getCustomVariable<string>('stomachPhase', 'fluffy-rest');
+            return stomachPhase === 'dream-depth';
         },
         messages: [
-            '第二胃袋の柔らかい胃壁が<TARGET>からエネルギーを吸い取る...',
+            '夢見の深層の柔らかい胃壁が<TARGET>からエネルギーを吸い取る...',
             '<TARGET>の生命力がゆっくりと<USER>に流れていく...'
         ]
     },
@@ -197,9 +197,9 @@ const fluffyDragonActions: BossAction[] = [
         weight: 25,
         playerStateCondition: 'defeated',
         canUse: (boss: Boss, _player: Player, _turn: number) => {
-            const stomachPhase = boss.getCustomVariable<string>('stomachPhase', 'first');
+            const stomachPhase = boss.getCustomVariable<string>('stomachPhase', 'fluffy-rest');
             const dreamShareStarted = boss.getCustomVariable<boolean>('dreamShareStarted', false);
-            return stomachPhase === 'second' && dreamShareStarted;
+            return stomachPhase === 'dream-depth' && dreamShareStarted;
         },
         messages: [
             '<USER>は<TARGET>の夢を操作し始める...',
@@ -215,8 +215,8 @@ const fluffyDragonActions: BossAction[] = [
         weight: 20,
         playerStateCondition: 'defeated',
         canUse: (boss: Boss, _player: Player, _turn: number) => {
-            const stomachPhase = boss.getCustomVariable<string>('stomachPhase', 'first');
-            return stomachPhase === 'second';
+            const stomachPhase = boss.getCustomVariable<string>('stomachPhase', 'fluffy-rest');
+            return stomachPhase === 'dream-depth';
         },
         onUse: (boss: Boss, _player: Player) => {
             // ボスのMPを少し回復
@@ -261,7 +261,7 @@ const fluffyDragonActions: BossAction[] = [
     }
 ];
 
-// AI戦略: 段階的な拘束→眠り→二段階胃袋システム
+// AI戦略: 段階的な拘束→眠り→ふわふわ安眠室→夢見の深層システム
 const fluffyDragonAIStrategy = (boss: Boss, player: Player, turn: number): BossAction => {
     const playerRestrained = player.statusEffects.hasEffect(StatusEffectType.Restrained);
     const playerKO = player.statusEffects.hasEffect(StatusEffectType.KnockedOut);
@@ -281,11 +281,11 @@ const fluffyDragonAIStrategy = (boss: Boss, player: Player, turn: number): BossA
         turnsSinceEaten++;
         boss.setCustomVariable('turnsSinceEaten', turnsSinceEaten);
         
-        const stomachPhase = boss.getCustomVariable<string>('stomachPhase', 'first');
+        const stomachPhase = boss.getCustomVariable<string>('stomachPhase', 'fluffy-rest');
         
-        // 第一胃袋フェーズ（眠り誘導）
-        if (stomachPhase === 'first') {
-            // 5ターン経過かつプレイヤーが眠っている場合、第二胃袋に移送
+        // ふわふわ安眠室フェーズ（眠り誘導）
+        if (stomachPhase === 'fluffy-rest') {
+            // 5ターン経過かつプレイヤーが眠っている場合、夢見の深層に移送
             if (turnsSinceEaten >= 5 && playerAsleep) {
                 const transferAction = fluffyDragonActions.find(action => 
                     action.id === 'transfer-to-second-stomach'
@@ -295,7 +295,7 @@ const fluffyDragonAIStrategy = (boss: Boss, player: Player, turn: number): BossA
                 }
             }
             
-            // 第一胃袋での眠り誘導行動
+            // ふわふわ安眠室での眠り誘導行動
             const firstStomachActions = fluffyDragonActions.filter(action => 
                 action.playerStateCondition === 'defeated' && 
                 action.canUse && action.canUse(boss, player, turn) &&
@@ -315,8 +315,8 @@ const fluffyDragonAIStrategy = (boss: Boss, player: Player, turn: number): BossA
             }
         }
         
-        // 第二胃袋フェーズ（エネルギー吸収）
-        if (stomachPhase === 'second') {
+        // 夢見の深層フェーズ（エネルギー吸収）
+        if (stomachPhase === 'dream-depth') {
             const secondStomachActions = fluffyDragonActions.filter(action => 
                 action.playerStateCondition === 'defeated' && 
                 action.canUse && action.canUse(boss, player, turn)
@@ -349,11 +349,11 @@ const fluffyDragonAIStrategy = (boss: Boss, player: Player, turn: number): BossA
         }
     }
     
-    // プレイヤーがKO状態で拘束中なら第一胃袋に移送
+    // プレイヤーがKO状態で拘束中ならふわふわ安眠室に移送
     if (playerKO && playerRestrained) {
         // 初期化（まだ設定されていない場合）
         if (!boss.getCustomVariable<string>('stomachPhase')) {
-            boss.setCustomVariable('stomachPhase', 'first');
+            boss.setCustomVariable('stomachPhase', 'fluffy-rest');
             boss.setCustomVariable('turnsSinceEaten', 0);
         }
         
@@ -373,7 +373,7 @@ const fluffyDragonAIStrategy = (boss: Boss, player: Player, turn: number): BossA
             if (sleepAction) return sleepAction;
         }
         
-        // ふかふか強化包みがまだ付与されていない場合は優先
+        // ふわふわ強化包みがまだ付与されていない場合は優先
         if (!playerHasFluffyWrap) {
             const enhanceAction = fluffyDragonActions.find(action => 
                 action.id === 'fluffy-wrap-enhance'
@@ -442,9 +442,9 @@ export const fluffyDragonData: BossData = {
     id: 'fluffy-dragon',
     name: 'FluffyDragon',
     icon: '🐉',
-    displayName: 'ふかふかドラゴン',
-    description: '寒冷地地方に住む真っ白でふかふかなドラゴン',
-    questNote: 'あなたは寒冷地の探検中、雪深い洞窟の奥で不思議な温もりを感じた。そこには真っ白でふかふかな体毛に覆われたドラゴンがいた。甘いラベンダーの香りが漂う中、ドラゴンはあなたを見つめている...',
+    displayName: 'ふわふわドラゴン',
+    description: '寒冷地地方に住む真っ白でふわふわなドラゴン',
+    questNote: 'あなたは寒冷地の探検中、雪深い洞窟の奥で不思議な温もりを感じた。そこには真っ白でふわふわな体毛に覆われたドラゴンがいた。甘いラベンダーの香りが漂う中、ドラゴンはあなたを見つめている...',
     personality: [
         'ふふ...温かい獲物が来てくれたのね',
         'ここは寒いでしょう？私が温めてあげる',
@@ -460,17 +460,17 @@ export const fluffyDragonData: BossData = {
     explorerLevelRequired: 7,
     
     victoryTrophy: {
-        name: 'ふかふかドラゴンの綿毛',
-        description: 'ふかふかドラゴンの美しい白い綿毛。触れると心地よい温もりと安らぎを感じられる。'
+        name: 'ふわふわドラゴンの綿毛',
+        description: 'ふわふわドラゴンの美しい白い綿毛。触れると心地よい温もりと安らぎを感じられる。'
     },
     defeatTrophy: {
-        name: 'ふかふかドラゴンの体液',
-        description: 'ふかふかドラゴンの体内から採取した甘い香りのする特殊な体液。ラベンダーの香りが漂い、安眠効果があるという。'
+        name: 'ふわふわドラゴンの体液',
+        description: 'ふわふわドラゴンの体内から採取した甘い香りのする特殊な体液。ラベンダーの香りが漂い、安眠効果があるという。'
     },
     
     // カスタム変数の初期化
     customVariables: {
-        stomachPhase: 'first',  // 'first' or 'second'
+        stomachPhase: 'fluffy-rest',  // 'fluffy-rest' or 'dream-depth'
         turnsSinceEaten: 0,     // 食べられてからのターン数
         dreamShareStarted: false // 夢の共有が開始されているか
     }
@@ -485,12 +485,12 @@ fluffyDragonData.getDialogue = function(situation: 'battle-start' | 'player-rest
             'ラベンダーの香りでリラックスしましょう？'
         ],
         'player-restrained': [
-            'ほら、ふかふかで気持ちいいでしょう？',
+            'ほら、ふわふわで気持ちいいでしょう？',
             'もう抵抗しなくていいのよ...',
             'このまま眠ってしまえば楽になれるわ'
         ],
         'player-eaten': [
-            'ふかふかな胃袋はどう？心地よいでしょう？',
+            'ふわふわな安眠室はどう？心地よいでしょう？',
             'ゆっくり眠りなさい...私が子守唄を歌ってあげる',
             'これからは私の中で安らかに過ごしましょう'
         ],
@@ -502,7 +502,7 @@ fluffyDragonData.getDialogue = function(situation: 'battle-start' | 'player-rest
         'low-hp': [
             '少し本気を出させてもらうわね...',
             'もう逃がさない...永遠に私の中で眠りなさい',
-            'ふかふかの温もりから逃れることはできないのよ'
+            'ふわふわの温もりから逃れることはできないのよ'
         ],
         'victory': [
             'いい戦いだったわ...満足よ',

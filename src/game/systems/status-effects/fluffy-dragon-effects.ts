@@ -4,8 +4,8 @@ import { Actor } from '../../entities/Actor';
 export const fluffyDragonEffectsConfigs = new Map<StatusEffectType, StatusEffectConfig>([
     [StatusEffectType.FluffyWrap, {
         type: StatusEffectType.FluffyWrap,
-        name: 'ふかふか包み',
-        description: 'ふかふかの体毛に包まれて身動きが取りづらく、心地よい眠気に襲われる',
+        name: 'ふわふわ包み',
+        description: 'ふわふわの体毛に包まれて身動きが取りづらく、心地よい眠気に襲われる',
         duration: 3,
         category: 'debuff',
         isDebuff: true,
@@ -27,12 +27,12 @@ export const fluffyDragonEffectsConfigs = new Map<StatusEffectType, StatusEffect
             // 除去時の処理（必要に応じて）
         },
         messages: {
-            onApplyPlayer: 'ふかふかの体毛に包まれ、心地よい感触で身動きが取りづらくなった...',
-            onApplyBoss: 'ふかふかの体毛に包まれた',
-            onTickPlayer: 'ふかふかの温もりで眠気が増し、集中力が削がれる...',
-            onTickBoss: 'ふかふかの効果で動きが鈍っている',
-            onRemovePlayer: 'ふかふかの包みから解放された',
-            onRemoveBoss: 'ふかふかの効果が消えた'
+            onApplyPlayer: 'ふわふわの体毛に包まれ、心地よい感触で身動きが取りづらくなった...',
+            onApplyBoss: 'ふわふわの体毛に包まれた',
+            onTickPlayer: 'ふわふわの温もりで眠気が増し、集中力が削がれる...',
+            onTickBoss: 'ふわふわの効果で動きが鈍っている',
+            onRemovePlayer: 'ふわふわの包みから解放された',
+            onRemoveBoss: 'ふわふわの効果が消えた'
         }
     }],
 
