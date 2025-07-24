@@ -93,7 +93,12 @@ export enum StatusEffectType {
     Petrified = 'petrified',
     
     // Bat Vampire effects
-    Darkness = 'darkness'
+    Darkness = 'darkness',
+    
+    // Fluffy Dragon effects
+    FluffyWrap = 'fluffy-wrap',
+    LavendasCent = 'lavendas-scent',
+    DreamShare = 'dream-share'
 }
 
 export interface StatusEffect {

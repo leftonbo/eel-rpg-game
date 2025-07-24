@@ -1471,6 +1471,29 @@ footer svg {
     animation: darkness-fade 3s ease-in-out infinite alternate;
 }
 
+/* Fluffy Dragon status effects */
+.status-fluffy-wrap {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #666;
+    border: 2px solid #e0e0e0;
+}
+
+.status-lavendas-scent {
+    background-color: rgba(147, 112, 219, 0.8);
+    color: #fff;
+}
+
+.status-dream-share {
+    background-color: rgba(72, 61, 139, 0.9);
+    color: #e6e6fa;
+    animation: dreamPulse 2s ease-in-out infinite;
+}
+
+@keyframes dreamPulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1.0; }
+}
+
 /* Clean Master animations */
 @keyframes bubble-float {
     0%, 100% { 
