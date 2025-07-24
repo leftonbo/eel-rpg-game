@@ -565,6 +565,45 @@ export const dreamDemonData: BossData = {
     actions: dreamDemonActions,
     icon: '😈',
     explorerLevelRequired: 3,
+    battleStartMessages: [
+        {
+            speaker: 'player',
+            style: 'default',
+            text: 'あなたは夢の世界に迷い込み、小さな淫魔と対峙した。'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'あっ♪ 新しい獲物が来たンメェ〜！'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '夢魔ちゃんはクスクス笑いながらあなたを見つめている...',
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'へへへ、とっても美味しそうな魂の匂いンメェ〜！一緒にあまあまな夢を見ようンメェ〜♪'
+        }
+    ],
+    victoryMessages: [
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'うぐっ...まさかあたいが負けるなんて...ンメェ...',
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'で、でもこれは運が悪かっただけンメェ！次は絶対勝つンメェ〜！'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '夢魔ちゃんは負けを認めずに悔しそうに夢の世界へと消えていった...'
+        }
+    ],
     victoryTrophy: {
         name: '夢魔の角',
         description: '夢の淫魔の小さくて可愛らしい角。夢の世界への扉を開く力を秘めている。'
