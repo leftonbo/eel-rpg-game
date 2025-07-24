@@ -139,7 +139,11 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Seduction,
         statusChance: 0.80,
         weight: 20,
-        messages: ['<USER>は急接近し深いべろちゅーをしてきた！', '<TARGET>は完全に悩殺されてしまった...']
+        messages: [
+            'きゃ〜ん♪ あたいの悩殺ポーズンメェ〜',
+            '<USER>は急接近し深いべろちゅーをしてきた！',
+            '<TARGET>は完全に悩殺されてしまった...'
+        ]
     },
     {
         id: 'magic-seal',
@@ -149,7 +153,11 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.MagicSeal,
         statusChance: 0.90,
         weight: 15,
-        messages: ['<USER>は封印の呪文を唱えた', '<TARGET>の魔力が封じられた！']
+        messages: [
+            'まほう使えなくしちゃうンメェ〜♪',
+            '<USER>は封印の呪文を唱えた',
+            '<TARGET>の魔力が封じられた！'
+        ]
     },
     {
         id: 'pleasure-curse',
@@ -159,7 +167,11 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.PleasureFall,
         statusChance: 0.70,
         weight: 15,
-        messages: ['<USER>は禁断の呪いをかけた...', '<TARGET>は快楽の波に飲み込まれていく...']
+        messages: [
+            'あまあま〜な快楽に溺れちゃえンメェ〜♪',
+            '<USER>は禁断の呪いをかけた...',
+            '<TARGET>は快楽の波に飲み込まれていく...'
+        ]
     },
     {
         id: 'lewdness-magic',
@@ -169,7 +181,11 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Lewdness,
         statusChance: 0.75,
         weight: 15,
-        messages: ['<USER>は淫らな魔法を唱えた', '<TARGET>の理性が揺らいでいく...']
+        messages: [
+            'えっちな魔法で理性を飛ばしちゃうンメェ〜♪',
+            '<USER>は淫らな魔法を唱えた',
+            '<TARGET>の理性が揺らいでいく...'
+        ]
     },
     {
         id: 'hypnotic-wave',
@@ -880,6 +896,7 @@ export const dreamDemonData: BossData = {
                     damageFormula: (user: Boss) => user.attackPower * 0.6,
                     description: '夢の中で触手を使って愛撫しながら生気を吸い取る',
                     messages: [
+                        'にゅるにゅる〜♪ 触手いっぱい出しちゃうンメェ〜',
                         '<USER>は夢の中で無数の触手で<TARGET>を愛撫した',
                         '<USER>の触手は<TARGET>の生気をじわじわと吸い取っている...',
                         '<TARGET>は触手に愛撫されながら生気を搾り取られていく...'
@@ -893,6 +910,7 @@ export const dreamDemonData: BossData = {
                     damageFormula: (user: Boss) => user.attackPower * 0.7,
                     description: '夢の中で魔法の力で圧迫しながら生気を吸い取る',
                     messages: [
+                        'ぎゅぎゅ〜っと魔法で圧迫しちゃうンメェ〜♪',
                         '<USER>は夢の中で魔法の力で<TARGET>を圧迫した',
                         '<USER>は魔法で<TARGET>の生気を強制的に吸い取っている...',
                         '<TARGET>は魔法に圧迫されながら生気を根こそぎ奪われている！'
@@ -906,6 +924,7 @@ export const dreamDemonData: BossData = {
                     damageFormula: (user: Boss) => user.attackPower * 0.5,
                     description: '夢の中で激しく揺さぶりながら生気を吸い取る',
                     messages: [
+                        'ゆさゆさ〜♪ 激しく揺さぶっちゃうンメェ〜',
                         '<USER>は夢の中で<TARGET>を激しく揺さぶった',
                         '<USER>は揺さぶりながら<TARGET>の生気をどんどん吸い取っている...',
                         '<TARGET>は激しく揺さぶられながら生気を吸い取られて意識が朦朧としている...'
@@ -919,6 +938,7 @@ export const dreamDemonData: BossData = {
                     damageFormula: (user: Boss) => user.attackPower * 0.6,
                     description: '夢の中で魅惑的な舞を踊りながら生気を吸い取る',
                     messages: [
+                        'くるくる〜♪ 魅惑の舞を踊っちゃうンメェ〜',
                         '<USER>は夢の中で<TARGET>の周りで魅惑的な舞を踊った',
                         '<USER>の舞は<TARGET>の生気を踊りながら吸い取っている...',
                         '<TARGET>は魅惑の舞に見とれながら生気をちゅーちゅー吸われている！'
