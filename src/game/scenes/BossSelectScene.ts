@@ -257,6 +257,10 @@ export class BossSelectScene {
         const player = this.game.getPlayer();
         const equipment = player.getEquipmentInfo();
         
+        // Update player header (name and icon)
+        this.updateElement('player-header-name', player.name);
+        this.updateElement('player-header-icon', player.icon);
+        
         // Update summary display
         const maxHpElement = document.getElementById('player-summary-max-hp');
         const maxMpElement = document.getElementById('player-summary-max-mp');
