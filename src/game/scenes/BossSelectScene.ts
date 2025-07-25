@@ -11,12 +11,12 @@ import type { BootstrapModal } from '../types/bootstrap';
 
 export class BossSelectScene {
     private game: Game;
-    private bossCards: NodeListOf<Element> | null = null;
     private bossModal: BootstrapModal | null = null; // Bootstrap modal for boss details
     private playerModal: BootstrapModal | null = null; // Bootstrap modal for player details
     private playerInfoEditModal: BootstrapModal | null = null; // Bootstrap modal for player info editing
     private selectedBossId: string = '';
     private selectedIcon: string = '🐍'; // Temporary storage for icon selection
+    private bossCardsGenerated: boolean = false; // Track if boss cards have been generated
     
     constructor(game: Game) {
         this.game = game;
@@ -24,20 +24,8 @@ export class BossSelectScene {
     }
     
     private init(): void {
-        // Generate boss cards dynamically
+        // Generate boss cards dynamically (only once)
         this.generateBossCards();
-        
-        this.bossCards = document.querySelectorAll('.boss-card');
-        
-        // Initialize boss cards
-        this.bossCards.forEach(card => {
-            card.addEventListener('click', (_e) => {
-                const bossId = card.getAttribute('data-boss');
-                if (bossId) {
-                    this.onBossSelect(bossId);
-                }
-            });
-        });
         
         // Initialize boss modal
         const bossModalElement = document.getElementById('boss-modal');
@@ -137,32 +125,23 @@ export class BossSelectScene {
     }
 
     private updateBossCards(): void {
-        // Regenerate boss cards to ensure proper sorting and data
+        // Ensure boss cards are generated first
         this.generateBossCards();
         
-        // Re-query boss cards after regeneration
-        this.bossCards = document.querySelectorAll('.boss-card');
-        
-        // Set up event listeners for the newly generated cards
-        this.bossCards.forEach(card => {
-            card.addEventListener('click', (_e) => {
-                const bossId = card.getAttribute('data-boss');
-                if (bossId) {
-                    this.onBossSelect(bossId);
-                }
-            });
-        });
+        // Get boss cards (only query once)
+        const bossCards = document.querySelectorAll('.boss-card');
         
         // Update status and visibility for each card
         const player = this.game.getPlayer();
         const memorialSystem = player.memorialSystem;
         const memorialData = memorialSystem.exportData();
         const playerExplorerLevel = player.getExplorerLevel();
+        const allBossData = getAllBossData();
         
-        this.bossCards.forEach(card => {
+        bossCards.forEach(card => {
             const bossId = card.getAttribute('data-boss');
             if (bossId) {
-                const bossData = getAllBossData().find(boss => boss.id === bossId);
+                const bossData = allBossData.find(boss => boss.id === bossId);
                 
                 if (bossData) {
                     const textElement = card.querySelector('.card-text');
@@ -242,9 +221,14 @@ export class BossSelectScene {
     }
     
     /**
-     * Generate boss cards dynamically from boss data
+     * Generate boss cards dynamically from boss data (only once)
      */
     private generateBossCards(): void {
+        // Only generate once
+        if (this.bossCardsGenerated) {
+            return;
+        }
+        
         const container = document.getElementById('boss-cards-container');
         if (!container) return;
         
@@ -263,28 +247,53 @@ export class BossSelectScene {
             return a.id.localeCompare(b.id);
         });
         
-        // Clear existing content
-        container.innerHTML = '';
+        // Use DocumentFragment for better performance
+        const fragment = document.createDocumentFragment();
         
         // Generate cards for each boss
         sortedBossData.forEach(bossData => {
+            const colDiv = document.createElement('div');
+            colDiv.className = 'col-md-4 mb-4';
+            
             const cardHTML = `
-                <div class="col-md-4 mb-4">
-                    <div class="card bg-secondary h-100 boss-card" data-boss="${bossData.id}">
-                        <div class="boss-status-container">
-                            <div class="boss-status-badge victory" id="boss-status-victory-${bossData.id}"></div>
-                            <div class="boss-status-badge defeat" id="boss-status-defeat-${bossData.id}"></div>
-                        </div>
-                        <div class="card-body text-center">
-                            <h3 class="card-title">${bossData.displayName}</h3>
-                            <p class="card-text">${bossData.description}</p>
-                            <button class="btn btn-primary w-100">選択</button>
-                        </div>
+                <div class="card bg-secondary h-100 boss-card" data-boss="${bossData.id}">
+                    <div class="boss-status-container">
+                        <div class="boss-status-badge victory" id="boss-status-victory-${bossData.id}"></div>
+                        <div class="boss-status-badge defeat" id="boss-status-defeat-${bossData.id}"></div>
+                    </div>
+                    <div class="card-body text-center">
+                        <h3 class="card-title">${bossData.displayName}</h3>
+                        <p class="card-text">${bossData.description}</p>
+                        <button class="btn btn-primary w-100">選択</button>
                     </div>
                 </div>
             `;
             
-            container.innerHTML += cardHTML;
+            colDiv.innerHTML = cardHTML;
+            fragment.appendChild(colDiv);
+        });
+        
+        // Single DOM operation
+        container.appendChild(fragment);
+        
+        // Set up event delegation for boss card clicks
+        this.setupBossCardEventDelegation(container);
+        
+        this.bossCardsGenerated = true;
+    }
+    
+    /**
+     * Set up event delegation for boss card clicks
+     */
+    private setupBossCardEventDelegation(container: HTMLElement): void {
+        container.addEventListener('click', (e) => {
+            const card = (e.target as HTMLElement).closest('.boss-card');
+            if (card) {
+                const bossId = card.getAttribute('data-boss');
+                if (bossId) {
+                    this.onBossSelect(bossId);
+                }
+            }
         });
     }
     
