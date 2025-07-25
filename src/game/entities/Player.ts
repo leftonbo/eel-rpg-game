@@ -36,8 +36,9 @@ export interface SkillResult {
     damage?: number; // Only for attack skills
 }
 
-// Player name constant for easy modification
-export const PLAYER_NAME = 'エルナル';
+// Default player values
+export const DEFAULT_PLAYER_NAME = 'エルナル';
+export const DEFAULT_PLAYER_ICON = '🐍';
 
 export interface PlayerItem {
     name: string;
@@ -48,7 +49,8 @@ export interface PlayerItem {
 }
 
 export class Player extends Actor {
-    public name: string = PLAYER_NAME;
+    public name: string = DEFAULT_PLAYER_NAME;
+    public icon: string = DEFAULT_PLAYER_ICON;
     
     // Base stats (before equipment/abilities)
     public baseMaxHp: number = 100;
@@ -68,7 +70,7 @@ export class Player extends Actor {
     public equippedArmor: string = 'naked';
     
     constructor() {
-        super(PLAYER_NAME, 100, 5, 50);
+        super(DEFAULT_PLAYER_NAME, 100, 5, 50);
     }
 
     /**
@@ -104,6 +106,15 @@ export class Player extends Actor {
             console.log('[Player][loadFromSave] Loading memorials:', saveData.memorials);
             this.memorialSystem.importData(saveData.memorials || {});
             
+            // Load player info (name and icon)
+            if (saveData.playerInfo) {
+                console.log('[Player][loadFromSave] Loading player info:', saveData.playerInfo);
+                this.name = saveData.playerInfo.name;
+                this.icon = saveData.playerInfo.icon;
+                // Update Actor's name as well
+                this.actorName = saveData.playerInfo.name;
+            }
+            
             console.log('[Player][loadFromSave] Player data loaded successfully');
         } else {
             console.log('[Player][loadFromSave] No save data found, initializing with defaults');
@@ -123,6 +134,10 @@ export class Player extends Actor {
                 armor: this.equippedArmor
             },
             memorials: this.memorialSystem.exportData(),
+            playerInfo: {
+                name: this.name,
+                icon: this.icon
+            },
             version: 4
         };
         
@@ -920,6 +935,16 @@ export class Player extends Actor {
         return toughnessLevel >= 7;
     }
     
+    /**
+     * Update player name and icon
+     */
+    public updatePlayerInfo(name: string, icon: string): void {
+        this.name = name;
+        this.icon = icon;
+        this.actorName = name; // Update Actor's name as well
+        this.saveToStorage(); // Auto-save changes
+    }
+
     /**
      * Reset battle-specific state while preserving progression
      */
