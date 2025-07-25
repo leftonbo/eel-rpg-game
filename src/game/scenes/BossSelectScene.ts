@@ -136,46 +136,38 @@ export class BossSelectScene {
     }
     
     /**
-     * Update boss status badge based on battle history
+     * Update boss status badges based on battle history
      */
     private updateBossStatusBadge(bossId: string, memorialData: MemorialSaveData): void {
-        const badgeElement = document.getElementById(`boss-status-${bossId}`);
-        if (!badgeElement) return;
+        const victoryBadge = document.getElementById(`boss-status-victory-${bossId}`);
+        const defeatBadge = document.getElementById(`boss-status-defeat-${bossId}`);
+        
+        if (!victoryBadge || !defeatBadge) return;
         
         // Find boss memorial record
         const memorial = memorialData.bossMemorials.find(m => m.bossId === bossId);
         
-        // Clear existing classes and content
-        badgeElement.className = 'boss-status-badge';
-        badgeElement.textContent = '';
+        // Default: hide both badges
+        victoryBadge.style.display = 'none';
+        defeatBadge.style.display = 'none';
         
         if (memorial) {
             const hasVictory = memorial.dateFirstWin;
             const hasDefeat = memorial.dateFirstLost;
             
-            if (hasVictory && hasDefeat) {
-                // Both victory and defeat achieved - show both badges
-                badgeElement.classList.add('both');
-                badgeElement.textContent = '🏆☠';
-                badgeElement.title = '勝利済み・敗北済み';
-            } else if (hasVictory) {
-                // Victory only
-                badgeElement.classList.add('victory');
-                badgeElement.textContent = '🏆';
-                badgeElement.title = '勝利済み';
-            } else if (hasDefeat) {
-                // Defeat only
-                badgeElement.classList.add('defeat');
-                badgeElement.textContent = '☠';
-                badgeElement.title = '敗北済み';
+            if (hasVictory) {
+                // Show victory badge
+                victoryBadge.style.display = 'flex';
+                victoryBadge.textContent = '🏆';
+                victoryBadge.title = '勝利済み';
             }
-        }
-        
-        // If no memorial or no battles fought, hide the badge
-        if (!memorial || (!memorial.dateFirstWin && !memorial.dateFirstLost)) {
-            badgeElement.style.display = 'none';
-        } else {
-            badgeElement.style.display = 'flex';
+            
+            if (hasDefeat) {
+                // Show defeat badge
+                defeatBadge.style.display = 'flex';
+                defeatBadge.textContent = '☠';
+                defeatBadge.title = '敗北済み';
+            }
         }
     }
     
