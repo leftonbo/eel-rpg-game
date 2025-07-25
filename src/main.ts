@@ -1,11 +1,9 @@
 import './styles/main.css';
 import { Game } from './game/Game';
+import './game/types/bootstrap';
 
 // Declare global variables
 declare global {
-    interface Window {
-        bootstrap: any;
-    }
     const DEBUG: boolean;
 }
 
@@ -17,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const game = new Game();
     
     // Make game globally accessible for debugging
-    (window as any).game = game;
+    window.game = game;
     
     console.log('[ElnalFTB] Game initialized');
 });

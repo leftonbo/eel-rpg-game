@@ -4,12 +4,14 @@ import { PlayerSaveManager } from '../systems/PlayerSaveData';
 import { AbilityType } from '../systems/AbilitySystem';
 import { SkillData, UnlockCondition } from '../data/skills';
 import { ModalUtils } from '../utils/ModalUtils';
+import { Trophy } from '../systems/MemorialSystem';
+import type { BootstrapModal } from '../types/bootstrap';
 
 export class BossSelectScene {
     private game: Game;
     private bossCards: NodeListOf<Element> | null = null;
-    private bossModal: any = null; // Bootstrap modal for boss details
-    private playerModal: any = null; // Bootstrap modal for player details
+    private bossModal: BootstrapModal | null = null; // Bootstrap modal for boss details
+    private playerModal: BootstrapModal | null = null; // Bootstrap modal for player details
     private selectedBossId: string = '';
     
     constructor(game: Game) {
@@ -852,7 +854,7 @@ export class BossSelectScene {
     /**
      * Update trophies collection display
      */
-    private updateTrophiesCollection(trophies: any[]): void {
+    private updateTrophiesCollection(trophies: Trophy[]): void {
         const trophiesContainer = document.getElementById('trophies-collection');
         const noTrophiesMessage = document.getElementById('no-trophies-message');
         

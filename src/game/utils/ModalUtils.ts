@@ -3,35 +3,6 @@
  * Replaces browser's alert(), confirm(), prompt() with Bootstrap modals
  */
 
-// Bootstrap interface definitions for type safety
-interface BootstrapModal {
-    show(): void;
-    hide(): void;
-    dispose(): void;
-}
-
-interface BootstrapToast {
-    show(): void;
-    hide(): void;
-    dispose(): void;
-    isShown(): boolean;
-}
-
-interface ToastOptions {
-    animation?: boolean;
-    autohide?: boolean;
-    delay?: number;
-}
-
-interface BootstrapWindow extends Window {
-    bootstrap: {
-        Modal: new (element: HTMLElement, options?: any) => BootstrapModal;
-        Toast: new (element: HTMLElement, options?: ToastOptions) => BootstrapToast;
-    };
-}
-
-declare let window: BootstrapWindow;
-
 /**
  * モーダルユーティリティクラス
  * ブラウザ標準のalert、confirm、promptをBootstrapモーダルで置き換える機能を提供

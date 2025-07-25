@@ -5,6 +5,7 @@ import { StatusEffect, StatusEffectType } from '../systems/StatusEffect';
 import { calculateAttackResult } from '../utils/CombatUtils';
 import { BattleResultStatus, calculateBattleResult } from './BattleResultScene';
 import { ModalUtils } from '../utils/ModalUtils';
+import type { BootstrapModal } from '../types/bootstrap';
 
 /**
  * メッセージ進行データ
@@ -115,7 +116,7 @@ export class BattleScene {
     private energyDrinkCount: HTMLElement | null = null;
     
     // Debug Modal
-    private debugModal: any = null; // Bootstrap modal for debug
+    private debugModal: BootstrapModal | null = null; // Bootstrap modal for debug
     private debugPlayerHpInput: HTMLInputElement | null = null;
     private debugPlayerMaxHpInput: HTMLInputElement | null = null;
     private debugPlayerMpInput: HTMLInputElement | null = null;
