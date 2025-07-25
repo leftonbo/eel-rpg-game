@@ -6,6 +6,7 @@ import { SkillData, UnlockCondition } from '../data/skills';
 import { ModalUtils } from '../utils/ModalUtils';
 import { Trophy } from '../systems/MemorialSystem';
 import { getIconsByCategory } from '../data/PlayerIcons';
+import { DEFAULT_PLAYER_NAME, DEFAULT_PLAYER_ICON } from '../entities/Player';
 import type { BootstrapModal } from '../types/bootstrap';
 
 export class BossSelectScene {
@@ -74,6 +75,14 @@ export class BossSelectScene {
         if (savePlayerInfoButton) {
             savePlayerInfoButton.addEventListener('click', () => {
                 this.savePlayerInfo();
+            });
+        }
+
+        // Reset player info button
+        const resetPlayerInfoButton = document.getElementById('reset-player-info-btn');
+        if (resetPlayerInfoButton) {
+            resetPlayerInfoButton.addEventListener('click', () => {
+                this.resetPlayerInfo();
             });
         }
 
@@ -1099,5 +1108,41 @@ export class BossSelectScene {
             : '変更はありませんでした';
         
         ModalUtils.showToast(changeMessage, 'success');
+    }
+
+    /**
+     * Reset player info to default values
+     */
+    private async resetPlayerInfo(): Promise<void> {
+        // Show confirmation dialog
+        const confirmed = await ModalUtils.showConfirm(
+            'プレイヤー情報を初期状態（エルナル・🐍）にリセットしますか？'
+        );
+        
+        if (!confirmed) {
+            return;
+        }
+
+        // Reset form fields to default values
+        const nameInput = document.getElementById('player-name-input') as HTMLInputElement;
+        if (nameInput) {
+            nameInput.value = DEFAULT_PLAYER_NAME;
+        }
+
+        // Reset selected icon
+        this.selectedIcon = DEFAULT_PLAYER_ICON;
+        this.updateElement('selected-player-icon', this.selectedIcon);
+
+        // Update current values display
+        this.updateElement('current-player-name', DEFAULT_PLAYER_NAME);
+        this.updateElement('current-player-icon', DEFAULT_PLAYER_ICON);
+
+        // Refresh icon grid to update active state
+        const activeCategory = document.querySelector('#icon-category-tabs .nav-link.active')?.getAttribute('data-category');
+        if (activeCategory) {
+            this.showIconCategory(activeCategory);
+        }
+
+        ModalUtils.showToast('プレイヤー情報を初期状態にリセットしました', 'info');
     }
 }
