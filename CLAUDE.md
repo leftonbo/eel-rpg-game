@@ -73,10 +73,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### セーブデータ管理（PlayerSaveData）
 
-- **PlayerSaveData interface**: アビリティ、装備、解放アイテム/スキル、トロフィーを含むプレイヤー進行状態
+- **PlayerSaveData interface**: アビリティ、装備、戦闘記録を含むプレイヤー進行状態
 - **PlayerSaveManager**: localStorage操作、データマイグレーション、バリデーション機能を提供
 - 保存データ: `localStorage['eelfood_player_data']` にJSONで格納
-- バージョン管理: 現在v3、自動マイグレーション機能付き
+- バージョン管理: 現在v4、自動マイグレーション機能付き
 
 #### セーブデータ構造
 
@@ -84,8 +84,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 interface PlayerSaveData {
     abilities: { [key: string]: AbilityData };     // アビリティレベル/経験値
     equipment: { weapon: string; armor: string; };  // 装備武器/防具ID
-    unlockedItems: string[];                        // 解放済みアイテムID配列
-    unlockedSkills: string[];                       // 解放済みスキルID配列
     memorials: MemorialSaveData;                    // ボス撃破記録・統計
     version: number;                                // データバージョン（マイグレーション用）
 }
@@ -97,7 +95,9 @@ interface PlayerSaveData {
 - `createDefaultSaveData()`: デフォルト初期値作成
 - `exportSaveData()` / `importSaveData()`: JSON形式でインポート/エクスポート
 - `clearSaveData()`: 全データ削除（テスト/リセット用）
-- `saveEquipment()` / `saveAbilities()` / `saveUnlockedItems()` 等: 部分保存ユーティリティ
+- `saveEquipment()` / `saveAbilities()` / `saveBattleMemorials()` 等: 部分保存ユーティリティ
+- `hasSaveData()`: セーブデータ存在チェック
+- `validateSaveDataStructure()`: セーブデータ構造検証（インポート時）
 
 ### ゲームバランス調整
 
