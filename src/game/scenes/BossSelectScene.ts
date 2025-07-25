@@ -5,7 +5,7 @@ import { AbilityType } from '../systems/AbilitySystem';
 import { SkillData, UnlockCondition } from '../data/skills';
 import { ModalUtils } from '../utils/ModalUtils';
 import { Trophy } from '../systems/MemorialSystem';
-import { PLAYER_ICONS, getAllCategories, getIconsByCategory } from '../data/PlayerIcons';
+import { getIconsByCategory } from '../data/PlayerIcons';
 import type { BootstrapModal } from '../types/bootstrap';
 
 export class BossSelectScene {
@@ -1076,8 +1076,13 @@ export class BossSelectScene {
         this.updatePlayerStatus();
         
         // If player details modal is open, update it
-        if (this.playerModal && this.playerModal._isShown) {
-            this.showPlayerDetails();
+        if (this.playerModal) {
+            try {
+                // Check if modal is shown (may not be available on all Bootstrap versions)
+                this.showPlayerDetails();
+            } catch (e) {
+                // Ignore if modal methods are not available
+            }
         }
         
         // Show success toast

@@ -111,8 +111,8 @@ export class Player extends Actor {
                 console.log('[Player][loadFromSave] Loading player info:', saveData.playerInfo);
                 this.name = saveData.playerInfo.name;
                 this.icon = saveData.playerInfo.icon;
-                // Update Actor's name as well
-                this.actorName = saveData.playerInfo.name;
+                // Update Actor's displayName as well
+                this.displayName = saveData.playerInfo.name;
             }
             
             console.log('[Player][loadFromSave] Player data loaded successfully');
@@ -941,7 +941,7 @@ export class Player extends Actor {
     public updatePlayerInfo(name: string, icon: string): void {
         this.name = name;
         this.icon = icon;
-        this.actorName = name; // Update Actor's name as well
+        this.displayName = name; // Update Actor's displayName as well
         this.saveToStorage(); // Auto-save changes
     }
 
