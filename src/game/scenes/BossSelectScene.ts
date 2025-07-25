@@ -24,6 +24,9 @@ export class BossSelectScene {
     }
     
     private init(): void {
+        // Generate boss cards dynamically
+        this.generateBossCards();
+        
         this.bossCards = document.querySelectorAll('.boss-card');
         
         // Initialize boss cards
@@ -134,47 +137,59 @@ export class BossSelectScene {
     }
 
     private updateBossCards(): void {
-        const allBossData = getAllBossData();
-        const playerExplorerLevel = this.game.getPlayer().getExplorerLevel();
+        // Regenerate boss cards to ensure proper sorting and data
+        this.generateBossCards();
+        
+        // Re-query boss cards after regeneration
+        this.bossCards = document.querySelectorAll('.boss-card');
+        
+        // Set up event listeners for the newly generated cards
+        this.bossCards.forEach(card => {
+            card.addEventListener('click', (_e) => {
+                const bossId = card.getAttribute('data-boss');
+                if (bossId) {
+                    this.onBossSelect(bossId);
+                }
+            });
+        });
+        
+        // Update status and visibility for each card
         const player = this.game.getPlayer();
         const memorialSystem = player.memorialSystem;
         const memorialData = memorialSystem.exportData();
+        const playerExplorerLevel = player.getExplorerLevel();
         
-        this.bossCards?.forEach(card => {
+        this.bossCards.forEach(card => {
             const bossId = card.getAttribute('data-boss');
-            const bossData = allBossData.find(boss => boss.id === bossId);
-            
-            if (bossData) {
-                const titleElement = card.querySelector('.card-title');
-                const textElement = card.querySelector('.card-text');
-                const requiredLevel = bossData.explorerLevelRequired || 0;
-                const isUnlocked = playerExplorerLevel >= requiredLevel;
+            if (bossId) {
+                const bossData = getAllBossData().find(boss => boss.id === bossId);
                 
-                if (titleElement) {
-                    titleElement.textContent = bossData.displayName;
-                }
-                
-                if (textElement) {
-                    if (isUnlocked) {
-                        textElement.textContent = bossData.description;
-                    } else {
-                        textElement.textContent = `🔒 エクスプローラーLv.${requiredLevel}で解禁`;
+                if (bossData) {
+                    const textElement = card.querySelector('.card-text');
+                    const requiredLevel = bossData.explorerLevelRequired || 0;
+                    const isUnlocked = playerExplorerLevel >= requiredLevel;
+                    
+                    // Update description based on unlock status
+                    if (textElement) {
+                        if (isUnlocked) {
+                            textElement.textContent = bossData.description;
+                        } else {
+                            textElement.textContent = `🔒 エクスプローラーLv.${requiredLevel}で解禁`;
+                        }
                     }
-                }
-                
-                // Update boss status badge
-                if (bossId) {
+                    
+                    // Update boss status badges
                     this.updateBossStatusBadge(bossId, memorialData);
-                }
-                
-                // Show/hide boss cards based on unlock status
-                if (isUnlocked) {
-                    card.classList.remove('d-none');
-                    card.classList.remove('boss-card-locked');
-                    (card as HTMLElement).style.pointerEvents = 'auto';
-                    (card as HTMLElement).style.opacity = '1';
-                } else {
-                    card.classList.add('d-none');
+                    
+                    // Show/hide card based on unlock status
+                    if (isUnlocked) {
+                        card.classList.remove('d-none');
+                        card.classList.remove('boss-card-locked');
+                        (card as HTMLElement).style.pointerEvents = 'auto';
+                        (card as HTMLElement).style.opacity = '1';
+                    } else {
+                        card.classList.add('d-none');
+                    }
                 }
             }
         });
@@ -224,6 +239,53 @@ export class BossSelectScene {
                 defeatBadge.title = '敗北済み';
             }
         }
+    }
+    
+    /**
+     * Generate boss cards dynamically from boss data
+     */
+    private generateBossCards(): void {
+        const container = document.getElementById('boss-cards-container');
+        if (!container) return;
+        
+        // Get all boss data and sort by explorerLevelRequired first, then by id
+        const allBossData = getAllBossData();
+        const sortedBossData = allBossData.sort((a, b) => {
+            const aLevel = a.explorerLevelRequired || 0;
+            const bLevel = b.explorerLevelRequired || 0;
+            
+            // First sort by explorer level required
+            if (aLevel !== bLevel) {
+                return aLevel - bLevel;
+            }
+            
+            // Then sort by id alphabetically
+            return a.id.localeCompare(b.id);
+        });
+        
+        // Clear existing content
+        container.innerHTML = '';
+        
+        // Generate cards for each boss
+        sortedBossData.forEach(bossData => {
+            const cardHTML = `
+                <div class="col-md-4 mb-4">
+                    <div class="card bg-secondary h-100 boss-card" data-boss="${bossData.id}">
+                        <div class="boss-status-container">
+                            <div class="boss-status-badge victory" id="boss-status-victory-${bossData.id}"></div>
+                            <div class="boss-status-badge defeat" id="boss-status-defeat-${bossData.id}"></div>
+                        </div>
+                        <div class="card-body text-center">
+                            <h3 class="card-title">${bossData.displayName}</h3>
+                            <p class="card-text">${bossData.description}</p>
+                            <button class="btn btn-primary w-100">選択</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML += cardHTML;
+        });
     }
     
     private onBossSelect(bossId: string): void {
