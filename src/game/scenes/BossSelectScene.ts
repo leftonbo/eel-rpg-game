@@ -5,6 +5,7 @@ import { AbilityType } from '../systems/AbilitySystem';
 import { SkillData, UnlockCondition } from '../data/skills';
 import { ModalUtils } from '../utils/ModalUtils';
 import { Trophy } from '../systems/MemorialSystem';
+import { PLAYER_ICONS, getAllCategories, getIconsByCategory } from '../data/PlayerIcons';
 import type { BootstrapModal } from '../types/bootstrap';
 
 export class BossSelectScene {
@@ -12,7 +13,9 @@ export class BossSelectScene {
     private bossCards: NodeListOf<Element> | null = null;
     private bossModal: BootstrapModal | null = null; // Bootstrap modal for boss details
     private playerModal: BootstrapModal | null = null; // Bootstrap modal for player details
+    private playerInfoEditModal: BootstrapModal | null = null; // Bootstrap modal for player info editing
     private selectedBossId: string = '';
+    private selectedIcon: string = '🐍'; // Temporary storage for icon selection
     
     constructor(game: Game) {
         this.game = game;
@@ -43,6 +46,12 @@ export class BossSelectScene {
         if (playerModalElement && window.bootstrap) {
             this.playerModal = new window.bootstrap.Modal(playerModalElement);
         }
+
+        // Initialize player info edit modal
+        const playerInfoEditModalElement = document.getElementById('player-info-edit-modal');
+        if (playerInfoEditModalElement && window.bootstrap) {
+            this.playerInfoEditModal = new window.bootstrap.Modal(playerInfoEditModalElement);
+        }
         
         // Player details button
         const playerDetailsButton = document.getElementById('player-details-btn');
@@ -51,6 +60,33 @@ export class BossSelectScene {
                 this.showPlayerDetails();
             });
         }
+
+        // Player info edit button
+        const editPlayerInfoButton = document.getElementById('edit-player-info-btn');
+        if (editPlayerInfoButton) {
+            editPlayerInfoButton.addEventListener('click', () => {
+                this.showPlayerInfoEditModal();
+            });
+        }
+
+        // Save player info button
+        const savePlayerInfoButton = document.getElementById('save-player-info-btn');
+        if (savePlayerInfoButton) {
+            savePlayerInfoButton.addEventListener('click', () => {
+                this.savePlayerInfo();
+            });
+        }
+
+        // Icon category tabs
+        document.querySelectorAll('[data-icon-category]').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                const category = (e.target as HTMLElement).getAttribute('data-icon-category');
+                if (category) {
+                    this.showIconCategory(category);
+                }
+            });
+        });
         
         // Confirm boss button
         const confirmButton = document.getElementById('confirm-boss-btn');
@@ -241,6 +277,10 @@ export class BossSelectScene {
     private showPlayerDetails(): void {
         const player = this.game.getPlayer();
         const abilityLevels = player.getAbilityLevels();
+
+        // Update player modal header
+        this.updateElement('player-modal-name', player.name);
+        this.updateElement('player-modal-icon', player.icon);
         
         // Update stats tab
         this.updateElement('detail-max-hp', player.maxHp.toString());
@@ -927,5 +967,128 @@ export class BossSelectScene {
             badge.textContent = terrain;
             container.appendChild(badge);
         });
+    }
+
+    /**
+     * Show player info edit modal
+     */
+    private showPlayerInfoEditModal(): void {
+        const player = this.game.getPlayer();
+        
+        // Update current player info display
+        this.updateElement('current-player-name', player.name);
+        this.updateElement('current-player-icon', player.icon);
+        
+        // Set current values in form
+        const nameInput = document.getElementById('player-name-input') as HTMLInputElement;
+        if (nameInput) {
+            nameInput.value = player.name;
+        }
+        
+        // Initialize icon selection
+        this.selectedIcon = player.icon;
+        this.updateElement('selected-player-icon', this.selectedIcon);
+        
+        // Show icons for default category
+        this.showIconCategory('動物');
+        
+        // Show modal
+        if (this.playerInfoEditModal) {
+            this.playerInfoEditModal.show();
+        }
+    }
+
+    /**
+     * Show icons for specified category
+     */
+    private showIconCategory(category: string): void {
+        const iconsGrid = document.getElementById('icon-selection-grid');
+        if (!iconsGrid) return;
+        
+        // Update tab active state
+        document.querySelectorAll('#icon-category-tabs .nav-link').forEach(tab => {
+            const tabCategory = tab.getAttribute('data-category');
+            if (tabCategory === category) {
+                tab.classList.add('active');
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+        
+        // Clear and populate icons
+        iconsGrid.innerHTML = '';
+        const categoryIcons = getIconsByCategory(category);
+        
+        categoryIcons.forEach(icon => {
+            const iconButton = document.createElement('button');
+            iconButton.type = 'button';
+            iconButton.className = `btn btn-outline-secondary m-1 ${this.selectedIcon === icon.emoji ? 'active' : ''}`;
+            iconButton.style.fontSize = '1.5rem';
+            iconButton.title = icon.name;
+            iconButton.textContent = icon.emoji;
+            
+            iconButton.addEventListener('click', () => {
+                this.selectedIcon = icon.emoji;
+                this.updateElement('selected-player-icon', this.selectedIcon);
+                
+                // Update active state
+                iconsGrid.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
+                iconButton.classList.add('active');
+            });
+            
+            iconsGrid.appendChild(iconButton);
+        });
+    }
+
+    /**
+     * Save player info changes
+     */
+    private savePlayerInfo(): void {
+        const nameInput = document.getElementById('player-name-input') as HTMLInputElement;
+        if (!nameInput) return;
+        
+        const newName = nameInput.value.trim();
+        
+        // Validation
+        if (!newName) {
+            ModalUtils.showToast('名前を入力してください', 'error');
+            return;
+        }
+        
+        if (newName.length > 32) {
+            ModalUtils.showToast('名前は32文字以内で入力してください', 'error');
+            return;
+        }
+        
+        // Update player info
+        const player = this.game.getPlayer();
+        const oldName = player.name;
+        const oldIcon = player.icon;
+        
+        player.updatePlayerInfo(newName, this.selectedIcon);
+        
+        // Close modal
+        if (this.playerInfoEditModal) {
+            this.playerInfoEditModal.hide();
+        }
+        
+        // Update player status display
+        this.updatePlayerStatus();
+        
+        // If player details modal is open, update it
+        if (this.playerModal && this.playerModal._isShown) {
+            this.showPlayerDetails();
+        }
+        
+        // Show success toast
+        const changedItems = [];
+        if (oldName !== newName) changedItems.push('名前');
+        if (oldIcon !== this.selectedIcon) changedItems.push('アイコン');
+        
+        const changeMessage = changedItems.length > 0 
+            ? `${changedItems.join('と')}を変更しました` 
+            : '変更はありませんでした';
+        
+        ModalUtils.showToast(changeMessage, 'success');
     }
 }
