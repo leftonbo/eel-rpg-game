@@ -1113,16 +1113,7 @@ export class BossSelectScene {
     /**
      * Reset player info to default values
      */
-    private async resetPlayerInfo(): Promise<void> {
-        // Show confirmation dialog
-        const confirmed = await ModalUtils.showConfirm(
-            'プレイヤー情報を初期状態（エルナル・🐍）にリセットしますか？'
-        );
-        
-        if (!confirmed) {
-            return;
-        }
-
+    private resetPlayerInfo(): void {
         // Reset form fields to default values
         const nameInput = document.getElementById('player-name-input') as HTMLInputElement;
         if (nameInput) {
