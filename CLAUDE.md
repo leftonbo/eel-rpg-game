@@ -58,6 +58,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 新ボスの追加方法については、[包括的なボス追加ガイド](docs/boss-creation-guide.md)を参照してください。
 
+既存ボスの詳細な資料については、[ボス資料集](docs/bosses/README.md)を参照してください。
+
 概要：
 1. `src/game/data/bosses/{boss-id}.ts` でボスデータ作成
 2. `src/game/data/index.ts` にエクスポート追加
