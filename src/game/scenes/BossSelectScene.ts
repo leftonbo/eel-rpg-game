@@ -136,7 +136,17 @@ export class BossSelectScene {
     }
     
     /**
-     * Update boss status badges based on battle history
+     * Update boss status badges based on battle history.
+     * 
+     * This method updates the visibility and content of the victory and defeat badges
+     * for a given boss based on the player's battle history stored in the memorial data.
+     * 
+     * - If the player has achieved a victory (`dateFirstWin` is present), the victory badge
+     *   is displayed with a trophy icon (🏆) and a tooltip indicating "勝利済み" (victory achieved).
+     * - If the player has experienced a defeat (`dateFirstLost` is present), the defeat badge
+     *   is displayed with a skull icon (💀) and a tooltip indicating "敗北済み" (defeat experienced).
+     * - If both victory and defeat are present, both badges are displayed side by side.
+     * - By default, both badges are hidden if no battle history is available for the boss.
      */
     private updateBossStatusBadge(bossId: string, memorialData: MemorialSaveData): void {
         const victoryBadge = document.getElementById(`boss-status-victory-${bossId}`);
