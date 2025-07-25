@@ -117,6 +117,13 @@ export interface BossData {
     defeatTrophy?: TrophyData;
 }
 
+// Constants for Boss class
+const BOSS_UNLIMITED_MP = 999999;
+const DEFAULT_MAX_HP_ABSORPTION_RATIO = 0.1;
+const DEFAULT_MP_DRAIN_RATIO = 0.5;
+const DEFAULT_STATUS_CHANCE = 1.0;
+const RESTRAINT_STUN_DURATION = 3;
+
 export class Boss extends Actor {
     public id: string;
     public name: string;
@@ -151,7 +158,7 @@ export class Boss extends Actor {
     
     constructor(data: BossData) {
         // Boss has unlimited MP (無尽蔵) - set to a high value
-        super(data.displayName, data.maxHp, data.attackPower, 999999);
+        super(data.displayName, data.maxHp, data.attackPower, BOSS_UNLIMITED_MP);
         this.id = data.id;
         this.name = data.name;
         this.description = data.description;
@@ -371,7 +378,27 @@ export class Boss extends Actor {
     }
     
     executeAction(action: BossAction, player: Player, turn: number = 0): string[] {
-        const messages = [];
+        const messages = this.processActionStart(action, player);
+        
+        // Check for invincible status first
+        if (player.statusEffects.hasEffect(StatusEffectType.Invincible)) {
+            messages.push(`${player.name}は攻撃を華麗に回避した！`);
+            return messages;
+        }
+        
+        // Execute action based on type
+        const actionMessages = this.executeActionByType(action, player, turn);
+        messages.push(...actionMessages);
+        
+        // Execute custom onUse callback if provided
+        const customMessages = this.executeCustomCallback(action, player, turn);
+        messages.push(...customMessages);
+        
+        return messages;
+    }
+    
+    private processActionStart(action: BossAction, player: Player): string[] {
+        const messages: string[] = [];
         
         // Record skill usage for Explorer experience calculation
         this.addUsedSkill(action.name);
@@ -386,248 +413,299 @@ export class Boss extends Actor {
             // Default message if no custom messages provided
             messages.push(`${this.displayName}の${action.name}！`);
         }
+        
+        return messages;
+    }
+    
+    private executeActionByType(action: BossAction, player: Player, _turn: number): string[] {
+        switch (action.type) {
+            case ActionType.Attack:
+                return this.executeAttackAction(action, player);
+            case ActionType.StatusAttack:
+                return this.executeStatusAttackAction(action, player);
+            case ActionType.RestraintAttack:
+                return this.executeRestraintAttackAction(action, player);
+            case ActionType.CocoonAttack:
+                return this.executeCocoonAttackAction(action, player);
+            case ActionType.CocoonAction:
+                return this.executeCocoonAction(action, player);
+            case ActionType.EatAttack:
+                return this.executeEatAttackAction(action, player);
+            case ActionType.DevourAttack:
+                return this.executeDevourAttackAction(action, player);
+            case ActionType.FinishingMove:
+                return this.executeFinishingMoveAction(action, player);
+            case ActionType.PostDefeatedAttack:
+                return this.executePostDefeatedAttackAction(action, player);
+            case ActionType.Skip:
+                return this.executeSkipAction(action);
+            default:
+                return [];
+        }
+    }
+    
+    private executeCustomCallback(action: BossAction, player: Player, turn: number): string[] {
+        if (!action.onUse) {
+            return [];
+        }
+        
+        const customMessages = action.onUse(this, player, turn);
+        if (!customMessages || customMessages.length === 0) {
+            return [];
+        }
+        
+        // Format custom messages with actor names
+        return customMessages.map(msg => formatMessage(msg, this.displayName, player.name));
+    }
+    
+    private executeAttackAction(action: BossAction, player: Player): string[] {
+        const messages: string[] = [];
+        const baseDamage = this.calculateActionDamage(action) || this.attackPower;
+        const attackResult = calculateAttackResult(
+            baseDamage, 
+            player.isKnockedOut(), 
+            action.hitRate, 
+            action.criticalRate,
+            action.damageVarianceMin,
+            action.damageVarianceMax
+        );
+        
+        if (attackResult.message) {
+            messages.push(attackResult.message);
+        }
+        
+        if (attackResult.isMiss) {
+            messages.push(`しかし、攻撃は外れた！`);
+        } else {
+            const actualDamage = player.takeDamage(attackResult.damage);
+            if (attackResult.isCritical) {
+                messages.push(`痛恨の一撃！ ${player.name}に${actualDamage}のダメージ！`);
+            } else {
+                messages.push(`${player.name}に${actualDamage}のダメージ！`);
+            }
+            
+            // Check for HP absorption
+            const healMessages = this.processHpAbsorption(action, actualDamage);
+            messages.push(...healMessages);
+        }
+        
+        return messages;
+    }
+    
+    private executeStatusAttackAction(action: BossAction, player: Player): string[] {
+        const messages: string[] = [];
+        let isMiss = false;
+        
+        const baseDamage = this.calculateActionDamage(action);
+        if (baseDamage && baseDamage > 0) {
+            const attackResult = calculateAttackResult(
+                baseDamage, 
+                player.isKnockedOut(), 
+                action.hitRate, 
+                action.criticalRate,
+                action.damageVarianceMin,
+                action.damageVarianceMax
+            );
 
-        // Check for invincible status first
-        if (player.statusEffects.hasEffect(StatusEffectType.Invincible)) {
-            messages.push(`${player.name}は攻撃を華麗に回避した！`);
+            if (attackResult.isMiss) {
+                isMiss = true;
+                messages.push(`しかし、攻撃は外れた！`);
+            } else {
+                const actualDamage = player.takeDamage(attackResult.damage);
+                if (attackResult.isCritical) {
+                    messages.push(`痛恨の一撃！ ${player.name}に${actualDamage}のダメージ！`);
+                } else {
+                    messages.push(`${player.name}に${actualDamage}のダメージ！`);
+                }
+
+                // Check for HP absorption
+                const healMessages = this.processHpAbsorption(action, actualDamage);
+                messages.push(...healMessages);
+            }
+        }
+        
+        if (!isMiss && action.statusEffect) {
+            const statusMessages = this.processStatusEffect(action, player);
+            messages.push(...statusMessages);
+        }
+        
+        return messages;
+    }
+    
+    private executeRestraintAttackAction(_action: BossAction, player: Player): string[] {
+        player.statusEffects.addEffect(StatusEffectType.Restrained);
+        player.struggleAttempts = 0; // Reset struggle attempts
+        return [`${player.name}が拘束された！`];
+    }
+    
+    private executeCocoonAttackAction(_action: BossAction, player: Player): string[] {
+        // Transform restrained state to cocoon state
+        if (player.isRestrained()) {
+            player.statusEffects.removeEffect(StatusEffectType.Restrained);
+        }
+        player.statusEffects.addEffect(StatusEffectType.Cocoon);
+        player.struggleAttempts = 0; // Reset struggle attempts
+        return [`${player.name}が繭状態になった！`];
+    }
+    
+    private executeCocoonAction(action: BossAction, player: Player): string[] {
+        const messages: string[] = [];
+        
+        if (!player.statusEffects.isCocoon()) {
             return messages;
         }
         
-        switch (action.type) {
-            case ActionType.Attack:
-                {
-                    const baseDamage = this.calculateActionDamage(action) || this.attackPower;
-                    const attackResult = calculateAttackResult(
-                        baseDamage, 
-                        player.isKnockedOut(), 
-                        action.hitRate, 
-                        action.criticalRate,
-                        action.damageVarianceMin,
-                        action.damageVarianceMax
-                    );
-                    
-                    if (attackResult.message) {
-                        messages.push(attackResult.message);
-                    }
-                    
-                    if (attackResult.isMiss) {
-                        messages.push(`しかし、攻撃は外れた！`);
-                    } else {
-                        const actualDamage = player.takeDamage(attackResult.damage);
-                        if (attackResult.isCritical) {
-                            messages.push(`痛恨の一撃！ ${player.name}に${actualDamage}のダメージ！`);
-                        } else {
-                            messages.push(`${player.name}に${actualDamage}のダメージ！`);
-                        }
-                        
-                        // Check for HP absorption
-                        if (action.healRatio && action.healRatio > 0 && actualDamage > 0) {
-                            const healedAmount = this.healFromDamage(actualDamage, action.healRatio);
-                            if (healedAmount > 0) {
-                                messages.push(` ${this.displayName}は${healedAmount}HP回復した！`);
-                            }
-                        }
-                    }
-                }
-                break;
-                
-            case ActionType.StatusAttack:
-                // Check for invincible status first
-                {
-                    let isMiss = false;
-                    const baseDamage = this.calculateActionDamage(action);
-                    if (baseDamage && baseDamage > 0) {
-                        const attackResult = calculateAttackResult(
-                            baseDamage, 
-                            player.isKnockedOut(), 
-                            action.hitRate, 
-                            action.criticalRate,
-                            action.damageVarianceMin,
-                            action.damageVarianceMax
-                        );
-
-                        if (attackResult.isMiss) {
-                            isMiss = true;
-                            messages.push(`しかし、攻撃は外れた！`);
-                        } else {
-                            const actualDamage = player.takeDamage(attackResult.damage);
-                            if (attackResult.isCritical) {
-                                messages.push(`痛恨の一撃！ ${player.name}に${actualDamage}のダメージ！`);
-                            } else {
-                                messages.push(`${player.name}に${actualDamage}のダメージ！`);
-                            }
-
-                            // Check for HP absorption
-                            if (action.healRatio && action.healRatio > 0 && actualDamage > 0) {
-                                const healedAmount = this.healFromDamage(actualDamage, action.healRatio);
-                                if (healedAmount > 0) {
-                                    messages.push(` ${this.displayName}は${healedAmount}HP回復した！`);
-                                }
-                            }
-                        }
-                    }
-                    
-                    if (!isMiss && action.statusEffect) {
-                        const statusChance = action.statusChance !== undefined ? action.statusChance : 1.0;
-                        if (Math.random() < statusChance) {
-                            player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
-                            messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
-                        }
-                        else if (!action.damage)
-                        {
-                            // If it's a status-only attack and the status didn't apply
-                            // we still want to show a message
-                            messages.push(`${player.name}は${this.getStatusEffectName(action.statusEffect)}状態にならなかった。`);
-                        }
-                    }
-                }
-                break;
-                
-            case ActionType.RestraintAttack:
-                player.statusEffects.addEffect(StatusEffectType.Restrained);
-                player.struggleAttempts = 0; // Reset struggle attempts
-                messages.push(`${player.name}が拘束された！`);
-                break;
-                
-            case ActionType.CocoonAttack:
-                // Transform restrained state to cocoon state
-                if (player.isRestrained()) {
-                    player.statusEffects.removeEffect(StatusEffectType.Restrained);
-                }
-                player.statusEffects.addEffect(StatusEffectType.Cocoon);
-                player.struggleAttempts = 0; // Reset struggle attempts
-                messages.push(`${player.name}が繭状態になった！`);
-                break;
-                
-            case ActionType.CocoonAction:
-                if (player.statusEffects.isCocoon()) {
-                    const actionDamage = this.calculateActionDamage(action);
-                    const maxHpReduction = actionDamage || Math.floor(player.maxHp * 0.1); // Default 10% max HP reduction
-                    
-                    if (maxHpReduction > 0) {
-                        player.loseMaxHp(maxHpReduction);
-                        messages.push(`${player.name}の最大HPが${maxHpReduction}減少した！`);
-                        
-                        // Check for HP absorption for boss healing/growth
-                        if (action.healRatio && action.healRatio > 0) {
-                            const healedAmount = this.healFromDamage(maxHpReduction, action.healRatio);
-                            if (healedAmount > 0) {
-                                messages.push(`${this.displayName}は${healedAmount}HP回復した！`);
-                            }
-                            
-                            // Boss can also gain max HP (for certain actions like "circulation")
-                            const maxHpGain = Math.floor(maxHpReduction * (action.healRatio || 0));
-                            if (maxHpGain > 0) {
-                                this.gainMaxHp(maxHpGain);
-                                messages.push(`${this.displayName}の最大HPが${maxHpGain}増加した！`);
-                            }
-                        }
-                    }
-                    
-                    // Apply direct damage if specified
-                    if (actionDamage && actionDamage > 0) {
-                        const actualDamage = player.takeDamage(actionDamage);
-                        messages.push(`${player.name}に${actualDamage}のダメージ！`);
-                    }
-                    
-                    // Apply status effect if specified
-                    if (action.statusEffect) {
-                        const statusChance = action.statusChance !== undefined ? action.statusChance : 1.0;
-                        if (Math.random() < statusChance) {
-                            player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
-                            messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
-                        }
-                    }
-                }
-                break;
-                
-            case ActionType.EatAttack:
-                if (player.isRestrained()) {
-                    // Transform restrained state to eaten state
-                    player.statusEffects.removeEffect(StatusEffectType.Restrained);
-                }
-                player.statusEffects.addEffect(StatusEffectType.Eaten);
-                messages.push(`${player.name}が食べられてしまった！`);
-                break;
-                
-            case ActionType.DevourAttack:
-                {
-                    // Apply variance to absorption amount
-                    const baseAbsorption = this.calculateActionDamage(action) || Math.floor(player.maxHp * 0.1); // Default 10% max HP absorption
-                    const statusAttackResult = calculateAttackResult(
-                        baseAbsorption, 
-                        player.isKnockedOut(), 
-                        action.hitRate, 
-                        action.criticalRate,
-                        action.damageVarianceMin,
-                        action.damageVarianceMax
-                    );
-                    const hpAbsorbed = statusAttackResult.damage;
-                    
-                    player.loseMaxHp(hpAbsorbed);
-                    messages.push(`${player.name}の最大ヘルスが${hpAbsorbed}奪われた！`);
-                    
-                    // Boss gains the absorbed max HP
-                    this.gainMaxHp(hpAbsorbed);
-                    
-                    // Absorb MP (also with variance)
-                    const baseMpDrain = Math.floor(baseAbsorption / 2);
-                    const statusMpDrainResult = calculateAttackResult(
-                        baseMpDrain, 
-                        player.isKnockedOut(), 
-                        1.0, 
-                        0.0,
-                        action.damageVarianceMin,
-                        action.damageVarianceMax
-                    );
-                    const mpDrainAmount = statusMpDrainResult.damage;
-                    
-                    const mpDrained = Math.min(player.mp, mpDrainAmount);
-                    if (mpDrained > 0) {
-                        player.loseMp(mpDrained);
-                        messages.push(`${player.name}のMPが${mpDrained}奪われた！`);
-                    }
-
-                    if (action.statusEffect) {
-                        const statusChance = action.statusChance !== undefined ? action.statusChance : 1.0;
-                        if (Math.random() < statusChance) {
-                            player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
-                            messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
-                        }
-                    }
-                }
-                break;
-
-            case ActionType.FinishingMove:
-                // Custom finishing move logic
-                if (action.statusEffect) {
-                    player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
-                    messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
-                }
-                break;
+        const actionDamage = this.calculateActionDamage(action);
+        const maxHpReduction = actionDamage || Math.floor(player.maxHp * DEFAULT_MAX_HP_ABSORPTION_RATIO);
+        
+        if (maxHpReduction > 0) {
+            player.loseMaxHp(maxHpReduction);
+            messages.push(`${player.name}の最大HPが${maxHpReduction}減少した！`);
             
-            case ActionType.PostDefeatedAttack:
-                // Post-defeat actions (status effects only, no HP/MP changes)
-                if (action.statusEffect) {
-                    player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
-                    messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
+            // Check for HP absorption for boss healing/growth
+            if (action.healRatio && action.healRatio > 0) {
+                const healedAmount = this.healFromDamage(maxHpReduction, action.healRatio);
+                if (healedAmount > 0) {
+                    messages.push(`${this.displayName}は${healedAmount}HP回復した！`);
                 }
-                break;
                 
-            case ActionType.Skip:
-                // Skip action, just return a message
-                messages.push(action.description || `${this.displayName}は行動できない...`);
-                break;
+                // Boss can also gain max HP (for certain actions like "circulation")
+                const maxHpGain = Math.floor(maxHpReduction * (action.healRatio || 0));
+                if (maxHpGain > 0) {
+                    this.gainMaxHp(maxHpGain);
+                    messages.push(`${this.displayName}の最大HPが${maxHpGain}増加した！`);
+                }
+            }
         }
         
-        // Execute custom onUse callback if provided
-        if (action.onUse) {
-            const customMessages = action.onUse(this, player, turn);
-            if (customMessages && customMessages.length > 0) {
-                // Format custom messages with actor names
-                const formattedMessages = customMessages.map(msg => formatMessage(msg, this.displayName, player.name));
-                messages.push(...formattedMessages);
+        // Apply direct damage if specified
+        if (actionDamage && actionDamage > 0) {
+            const actualDamage = player.takeDamage(actionDamage);
+            messages.push(`${player.name}に${actualDamage}のダメージ！`);
+        }
+        
+        // Apply status effect if specified
+        if (action.statusEffect) {
+            const statusMessages = this.processStatusEffect(action, player);
+            messages.push(...statusMessages);
+        }
+        
+        return messages;
+    }
+    
+    private executeEatAttackAction(_action: BossAction, player: Player): string[] {
+        if (player.isRestrained()) {
+            // Transform restrained state to eaten state
+            player.statusEffects.removeEffect(StatusEffectType.Restrained);
+        }
+        player.statusEffects.addEffect(StatusEffectType.Eaten);
+        return [`${player.name}が食べられてしまった！`];
+    }
+    
+    private executeDevourAttackAction(action: BossAction, player: Player): string[] {
+        const messages: string[] = [];
+        
+        // Apply variance to absorption amount
+        const baseAbsorption = this.calculateActionDamage(action) || Math.floor(player.maxHp * DEFAULT_MAX_HP_ABSORPTION_RATIO);
+        const statusAttackResult = calculateAttackResult(
+            baseAbsorption, 
+            player.isKnockedOut(), 
+            action.hitRate, 
+            action.criticalRate,
+            action.damageVarianceMin,
+            action.damageVarianceMax
+        );
+        const hpAbsorbed = statusAttackResult.damage;
+        
+        player.loseMaxHp(hpAbsorbed);
+        messages.push(`${player.name}の最大ヘルスが${hpAbsorbed}奪われた！`);
+        
+        // Boss gains the absorbed max HP
+        this.gainMaxHp(hpAbsorbed);
+        
+        // Absorb MP (also with variance)
+        const baseMpDrain = Math.floor(baseAbsorption * DEFAULT_MP_DRAIN_RATIO);
+        const statusMpDrainResult = calculateAttackResult(
+            baseMpDrain, 
+            player.isKnockedOut(), 
+            1.0, 
+            0.0,
+            action.damageVarianceMin,
+            action.damageVarianceMax
+        );
+        const mpDrainAmount = statusMpDrainResult.damage;
+        
+        const mpDrained = Math.min(player.mp, mpDrainAmount);
+        if (mpDrained > 0) {
+            player.loseMp(mpDrained);
+            messages.push(`${player.name}のMPが${mpDrained}奪われた！`);
+        }
+
+        if (action.statusEffect) {
+            const statusMessages = this.processStatusEffect(action, player);
+            messages.push(...statusMessages);
+        }
+        
+        return messages;
+    }
+    
+    private executeFinishingMoveAction(action: BossAction, player: Player): string[] {
+        const messages: string[] = [];
+        
+        // Custom finishing move logic
+        if (action.statusEffect) {
+            player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
+            messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
+        }
+        
+        return messages;
+    }
+    
+    private executePostDefeatedAttackAction(action: BossAction, player: Player): string[] {
+        const messages: string[] = [];
+        
+        // Post-defeat actions (status effects only, no HP/MP changes)
+        if (action.statusEffect) {
+            player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
+            messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
+        }
+        
+        return messages;
+    }
+    
+    private executeSkipAction(action: BossAction): string[] {
+        // Skip action, just return a message
+        return [action.description || `${this.displayName}は行動できない...`];
+    }
+    
+    private processHpAbsorption(action: BossAction, actualDamage: number): string[] {
+        const messages: string[] = [];
+        
+        if (action.healRatio && action.healRatio > 0 && actualDamage > 0) {
+            const healedAmount = this.healFromDamage(actualDamage, action.healRatio);
+            if (healedAmount > 0) {
+                messages.push(` ${this.displayName}は${healedAmount}HP回復した！`);
             }
+        }
+        
+        return messages;
+    }
+    
+    private processStatusEffect(action: BossAction, player: Player): string[] {
+        const messages: string[] = [];
+        
+        if (!action.statusEffect) {
+            return messages;
+        }
+        
+        const statusChance = action.statusChance !== undefined ? action.statusChance : DEFAULT_STATUS_CHANCE;
+        if (Math.random() < statusChance) {
+            player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
+            messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
+        } else if (!action.damage) {
+            // If it's a status-only attack and the status didn't apply
+            // we still want to show a message
+            messages.push(`${player.name}は${this.getStatusEffectName(action.statusEffect)}状態にならなかった。`);
         }
         
         return messages;
@@ -639,7 +717,7 @@ export class Boss extends Actor {
     
     onRestraintBroken(): void {
         // Boss gets stunned for 3 turns when restraint is broken (including the turn it was broken)
-        this.statusEffects.addEffect(StatusEffectType.Stunned);
+        this.statusEffects.addEffect(StatusEffectType.Stunned, RESTRAINT_STUN_DURATION);
     }
     
     startTurn(): void {
