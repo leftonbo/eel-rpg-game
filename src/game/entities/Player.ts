@@ -476,7 +476,7 @@ export class Player extends Actor {
         if (this.isDefeated()) {
             return [{
                 type: SkillType.SubmitToFate,
-                name: '☠なすがまま',
+                name: '💀なすがまま',
                 description: '......',
                 mpCost: 0,
                 priority: ActionPriority.CannotAct,
@@ -494,7 +494,7 @@ export class Player extends Actor {
         if (this.statusEffects.isDoomed()) {
             return [{
                 type: SkillType.GiveUp,
-                name: '☠なすがまま',
+                name: '💀なすがまま',
                 description: '再起不能でもう行動できない',
                 mpCost: 0,
                 priority: ActionPriority.CannotAct,
