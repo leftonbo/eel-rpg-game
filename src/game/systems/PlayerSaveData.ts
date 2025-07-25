@@ -86,7 +86,7 @@ export class PlayerSaveManager {
     /**
      * Migrate save data from older versions
      */
-    private static migrateSaveData(oldData: any): PlayerSaveData {
+    private static migrateSaveData(oldData: Record<string, any>): PlayerSaveData {
         // For unknown versions, return default data
         if (oldData.version && oldData.version > this.CURRENT_VERSION) {
             console.log('Unknown version, creating new save data');
@@ -130,7 +130,7 @@ export class PlayerSaveManager {
         // Set final version
         migratedData.version = this.CURRENT_VERSION;
         
-        return migratedData;
+        return migratedData as PlayerSaveData;
     }
     
     /**
@@ -219,7 +219,7 @@ export class PlayerSaveManager {
     /**
      * Validate save data structure
      */
-    private static validateSaveDataStructure(data: any): boolean {
+    private static validateSaveDataStructure(data: Record<string, any>): boolean {
         if (!data || typeof data !== 'object') return false;
         
         // Check required fields
@@ -232,8 +232,9 @@ export class PlayerSaveManager {
         // Check abilities structure
         for (const [, ability] of Object.entries(data.abilities)) {
             if (!ability || typeof ability !== 'object') return false;
-            if (typeof (ability as any).level !== 'number') return false;
-            if (typeof (ability as any).experience !== 'number') return false;
+            const abilityObj = ability as Record<string, any>;
+            if (typeof abilityObj.level !== 'number') return false;
+            if (typeof abilityObj.experience !== 'number') return false;
         }
         
         return true;
