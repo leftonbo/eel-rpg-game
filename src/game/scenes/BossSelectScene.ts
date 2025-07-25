@@ -165,7 +165,7 @@ export class BossSelectScene {
             if (hasDefeat) {
                 // Show defeat badge
                 defeatBadge.style.display = 'flex';
-                defeatBadge.textContent = '☠';
+                defeatBadge.textContent = '💀';
                 defeatBadge.title = '敗北済み';
             }
         }
