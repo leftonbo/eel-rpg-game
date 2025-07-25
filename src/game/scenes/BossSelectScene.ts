@@ -4,7 +4,7 @@ import { PlayerSaveManager } from '../systems/PlayerSaveData';
 import { AbilityType } from '../systems/AbilitySystem';
 import { SkillData, UnlockCondition } from '../data/skills';
 import { ModalUtils } from '../utils/ModalUtils';
-import { Trophy } from '../systems/MemorialSystem';
+import { Trophy, MemorialSaveData } from '../systems/MemorialSystem';
 import type { BootstrapModal } from '../types/bootstrap';
 
 export class BossSelectScene {
@@ -91,6 +91,9 @@ export class BossSelectScene {
     private updateBossCards(): void {
         const allBossData = getAllBossData();
         const playerExplorerLevel = this.game.getPlayer().getExplorerLevel();
+        const player = this.game.getPlayer();
+        const memorialSystem = player.memorialSystem;
+        const memorialData = memorialSystem.exportData();
         
         this.bossCards?.forEach(card => {
             const bossId = card.getAttribute('data-boss');
@@ -114,6 +117,11 @@ export class BossSelectScene {
                     }
                 }
                 
+                // Update boss status badge
+                if (bossId) {
+                    this.updateBossStatusBadge(bossId, memorialData);
+                }
+                
                 // Show/hide boss cards based on unlock status
                 if (isUnlocked) {
                     card.classList.remove('d-none');
@@ -125,6 +133,52 @@ export class BossSelectScene {
                 }
             }
         });
+    }
+    
+    /**
+     * Update boss status badges based on battle history.
+     * 
+     * This method updates the visibility and content of the victory and defeat badges
+     * for a given boss based on the player's battle history stored in the memorial data.
+     * 
+     * - If the player has achieved a victory (`dateFirstWin` is present), the victory badge
+     *   is displayed with a trophy icon (🏆) and a tooltip indicating "勝利済み" (victory achieved).
+     * - If the player has experienced a defeat (`dateFirstLost` is present), the defeat badge
+     *   is displayed with a skull icon (💀) and a tooltip indicating "敗北済み" (defeat experienced).
+     * - If both victory and defeat are present, both badges are displayed side by side.
+     * - By default, both badges are hidden if no battle history is available for the boss.
+     */
+    private updateBossStatusBadge(bossId: string, memorialData: MemorialSaveData): void {
+        const victoryBadge = document.getElementById(`boss-status-victory-${bossId}`);
+        const defeatBadge = document.getElementById(`boss-status-defeat-${bossId}`);
+        
+        if (!victoryBadge || !defeatBadge) return;
+        
+        // Find boss memorial record
+        const memorial = memorialData.bossMemorials.find(m => m.bossId === bossId);
+        
+        // Default: hide both badges
+        victoryBadge.style.display = 'none';
+        defeatBadge.style.display = 'none';
+        
+        if (memorial) {
+            const hasVictory = memorial.dateFirstWin;
+            const hasDefeat = memorial.dateFirstLost;
+            
+            if (hasVictory) {
+                // Show victory badge
+                victoryBadge.style.display = 'flex';
+                victoryBadge.textContent = '🏆';
+                victoryBadge.title = '勝利済み';
+            }
+            
+            if (hasDefeat) {
+                // Show defeat badge
+                defeatBadge.style.display = 'flex';
+                defeatBadge.textContent = '💀';
+                defeatBadge.title = '敗北済み';
+            }
+        }
     }
     
     private onBossSelect(bossId: string): void {
