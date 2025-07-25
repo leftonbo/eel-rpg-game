@@ -114,6 +114,7 @@ body {
     background: linear-gradient(135deg, #ffd700, #ffed4e);
     color: #8b4513;
     border: 2px solid #ffa500;
+    animation: trophy-glow 2s ease-in-out infinite alternate;
 }
 
 .boss-status-badge.defeat {
@@ -125,11 +126,6 @@ body {
 .boss-status-badge:hover {
     transform: scale(1.1);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
-
-/* Victory badge animation */
-.boss-status-badge.victory {
-    animation: trophy-glow 2s ease-in-out infinite alternate;
 }
 
 @keyframes trophy-glow {
