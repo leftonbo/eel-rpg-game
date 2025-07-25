@@ -4,7 +4,7 @@ import { PlayerSaveManager } from '../systems/PlayerSaveData';
 import { AbilityType } from '../systems/AbilitySystem';
 import { SkillData, UnlockCondition } from '../data/skills';
 import { ModalUtils } from '../utils/ModalUtils';
-import { Trophy } from '../systems/MemorialSystem';
+import { Trophy, MemorialSaveData } from '../systems/MemorialSystem';
 import type { BootstrapModal } from '../types/bootstrap';
 
 export class BossSelectScene {
@@ -91,6 +91,9 @@ export class BossSelectScene {
     private updateBossCards(): void {
         const allBossData = getAllBossData();
         const playerExplorerLevel = this.game.getPlayer().getExplorerLevel();
+        const player = this.game.getPlayer();
+        const memorialSystem = player.memorialSystem;
+        const memorialData = memorialSystem.exportData();
         
         this.bossCards?.forEach(card => {
             const bossId = card.getAttribute('data-boss');
@@ -114,6 +117,11 @@ export class BossSelectScene {
                     }
                 }
                 
+                // Update boss status badge
+                if (bossId) {
+                    this.updateBossStatusBadge(bossId, memorialData);
+                }
+                
                 // Show/hide boss cards based on unlock status
                 if (isUnlocked) {
                     card.classList.remove('d-none');
@@ -125,6 +133,41 @@ export class BossSelectScene {
                 }
             }
         });
+    }
+    
+    /**
+     * Update boss status badge based on battle history
+     */
+    private updateBossStatusBadge(bossId: string, memorialData: MemorialSaveData): void {
+        const badgeElement = document.getElementById(`boss-status-${bossId}`);
+        if (!badgeElement) return;
+        
+        // Find boss memorial record
+        const memorial = memorialData.bossMemorials.find(m => m.bossId === bossId);
+        
+        // Clear existing classes and content
+        badgeElement.className = 'boss-status-badge';
+        badgeElement.textContent = '';
+        
+        if (memorial) {
+            // If both victory and defeat exist, prioritize victory
+            if (memorial.dateFirstWin) {
+                badgeElement.classList.add('victory');
+                badgeElement.textContent = '🏆';
+                badgeElement.title = '勝利済み';
+            } else if (memorial.dateFirstLost) {
+                badgeElement.classList.add('defeat');
+                badgeElement.textContent = '☠';
+                badgeElement.title = '敗北済み';
+            }
+        }
+        
+        // If no memorial or no battles fought, hide the badge
+        if (!memorial || (!memorial.dateFirstWin && !memorial.dateFirstLost)) {
+            badgeElement.style.display = 'none';
+        } else {
+            badgeElement.style.display = 'flex';
+        }
     }
     
     private onBossSelect(bossId: string): void {
