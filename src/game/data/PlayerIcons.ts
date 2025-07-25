@@ -22,7 +22,7 @@ export const PLAYER_ICONS: PlayerIcon[] = [
     
     // ファンタジー・神話系
     { id: 'unicorn', emoji: '🦄', name: 'ユニコーン', category: 'ファンタジー' },
-    { id: 'phoenix', emoji: '🔥', name: 'フェニックス', category: 'ファンタジー' },
+    { id: 'phoenix', emoji: '🐦‍🔥', name: 'フェニックス', category: 'ファンタジー' },
     { id: 'crystal', emoji: '💎', name: 'クリスタル', category: 'ファンタジー' },
     { id: 'crown', emoji: '👑', name: '王冠', category: 'ファンタジー' },
     { id: 'wizard', emoji: '🧙', name: '魔法使い', category: 'ファンタジー' },
@@ -37,7 +37,7 @@ export const PLAYER_ICONS: PlayerIcon[] = [
     { id: 'tree', emoji: '🌳', name: '木', category: '自然' },
     
     // アイテム・武器系
-    { id: 'sword', emoji: '⚔️', name: '剣', category: '武器' },
+    { id: 'sword', emoji: '🗡️', name: '剣', category: '武器' },
     { id: 'shield', emoji: '🛡️', name: '盾', category: '武器' },
     { id: 'bow', emoji: '🏹', name: '弓', category: '武器' },
     { id: 'magic-wand', emoji: '🪄', name: '魔法の杖', category: '武器' },
