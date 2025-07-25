@@ -150,12 +150,21 @@ export class BossSelectScene {
         badgeElement.textContent = '';
         
         if (memorial) {
-            // If both victory and defeat exist, prioritize victory
-            if (memorial.dateFirstWin) {
+            const hasVictory = memorial.dateFirstWin;
+            const hasDefeat = memorial.dateFirstLost;
+            
+            if (hasVictory && hasDefeat) {
+                // Both victory and defeat achieved - show both badges
+                badgeElement.classList.add('both');
+                badgeElement.textContent = '🏆☠';
+                badgeElement.title = '勝利済み・敗北済み';
+            } else if (hasVictory) {
+                // Victory only
                 badgeElement.classList.add('victory');
                 badgeElement.textContent = '🏆';
                 badgeElement.title = '勝利済み';
-            } else if (memorial.dateFirstLost) {
+            } else if (hasDefeat) {
+                // Defeat only
                 badgeElement.classList.add('defeat');
                 badgeElement.textContent = '☠';
                 badgeElement.title = '敗北済み';

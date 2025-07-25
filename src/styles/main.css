@@ -116,6 +116,14 @@ body {
     border: 2px solid #343a40;
 }
 
+.boss-status-badge.both {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #6c757d 50%, #495057 100%);
+    color: #ffffff;
+    border: 2px solid #ffa500;
+    min-width: 48px;
+    font-size: 14px;
+}
+
 .boss-status-badge:hover {
     transform: scale(1.1);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -126,11 +134,28 @@ body {
     animation: trophy-glow 2s ease-in-out infinite alternate;
 }
 
+/* Both badges animation */
+.boss-status-badge.both {
+    animation: both-glow 3s ease-in-out infinite alternate;
+}
+
 @keyframes trophy-glow {
     from {
         box-shadow: 0 2px 6px rgba(255, 215, 0, 0.4);
     }
     to {
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.7);
+    }
+}
+
+@keyframes both-glow {
+    0% {
+        box-shadow: 0 2px 6px rgba(255, 215, 0, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 12px rgba(108, 117, 125, 0.6);
+    }
+    100% {
         box-shadow: 0 4px 15px rgba(255, 215, 0, 0.7);
     }
 }
