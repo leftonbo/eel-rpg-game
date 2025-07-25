@@ -16,35 +16,18 @@ export class BossSelectScene {
     private playerInfoEditModal: BootstrapModal | null = null; // Bootstrap modal for player info editing
     private selectedBossId: string = '';
     private selectedIcon: string = '🐍'; // Temporary storage for icon selection
-    private bossCardsGenerated: boolean = false; // Track if boss cards have been generated
     
     constructor(game: Game) {
         this.game = game;
         this.init();
     }
     
+    /**
+     * Initialize the scene
+     * Sets up event listeners and initializes modals
+     */
     private init(): void {
-        // Generate boss cards dynamically (only once)
-        this.generateBossCards();
-        
-        // Initialize boss modal
-        const bossModalElement = document.getElementById('boss-modal');
-        if (bossModalElement && window.bootstrap) {
-            this.bossModal = new window.bootstrap.Modal(bossModalElement);
-        }
-        
-        // Initialize player modal
-        const playerModalElement = document.getElementById('player-details-modal');
-        if (playerModalElement && window.bootstrap) {
-            this.playerModal = new window.bootstrap.Modal(playerModalElement);
-        }
 
-        // Initialize player info edit modal
-        const playerInfoEditModalElement = document.getElementById('player-info-edit-modal');
-        if (playerInfoEditModalElement && window.bootstrap) {
-            this.playerInfoEditModal = new window.bootstrap.Modal(playerInfoEditModalElement);
-        }
-        
         // Player details button
         const playerDetailsButton = document.getElementById('player-details-btn');
         if (playerDetailsButton) {
@@ -53,91 +36,133 @@ export class BossSelectScene {
             });
         }
 
-        // Player info edit button
-        const editPlayerInfoButton = document.getElementById('edit-player-info-btn');
-        if (editPlayerInfoButton) {
-            editPlayerInfoButton.addEventListener('click', () => {
-                this.showPlayerInfoEditModal();
-            });
-        }
-
-        // Save player info button
-        const savePlayerInfoButton = document.getElementById('save-player-info-btn');
-        if (savePlayerInfoButton) {
-            savePlayerInfoButton.addEventListener('click', () => {
-                this.savePlayerInfo();
-            });
-        }
-
-        // Reset player info button
-        const resetPlayerInfoButton = document.getElementById('reset-player-info-btn');
-        if (resetPlayerInfoButton) {
-            resetPlayerInfoButton.addEventListener('click', () => {
-                this.resetPlayerInfo();
-            });
-        }
-
-        // Icon category tabs
-        document.querySelectorAll('[data-icon-category]').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                e.preventDefault();
-                const category = (e.target as HTMLElement).getAttribute('data-icon-category');
-                if (category) {
-                    this.showIconCategory(category);
-                }
-            });
-        });
+        // Initialize boss modal
+        this.initializeBossModal();
         
-        // Confirm boss button
-        const confirmButton = document.getElementById('confirm-boss-btn');
-        if (confirmButton) {
-            confirmButton.addEventListener('click', () => {
-                this.onConfirmBoss();
-            });
-        }
+        // Initialize player modal
+        this.initializePlayerModal();
+
+        // Initialize player info edit modal event listeners
+        this.initializeModalEditPlayerInfo();
         
         // Initialize modal save data buttons
         this.initializeModalSaveDataButtons();
     }
     
+    /**
+     * Late initialization to ensure all data is loaded before generating boss cards
+     */
+    public lateInitialize(): void {
+        // Generate boss cards
+        this.generateBossCards();
+    }
+
+    /**
+     * Called when the scene is entered
+     * Updates boss cards and player status display
+     */
     enter(): void {
         console.log('Entered boss select scene');
-        
-        // Reset boss selection button state
-        this.resetConfirmButtonState();
         
         // Update boss card information
         this.updateBossCards();
         
         // Update player status display
-        this.updatePlayerStatus();
+        this.updatePlayerSummary();
         
         // Show/hide debug controls based on debug mode
         this.updateDebugControlsVisibilityInModal();
     }
     
-    private resetConfirmButtonState(): void {
-        const confirmButton = document.getElementById('confirm-boss-btn') as HTMLButtonElement;
-        if (confirmButton) {
-            confirmButton.disabled = false;
-            confirmButton.textContent = '戦闘開始';
+    //#region Boss Cards
+    
+    /**
+     * Generate boss cards dynamically from boss data
+     * Must be called after boss data is loaded
+     */
+    private generateBossCards(): void {
+        const container = document.getElementById('boss-cards-container');
+        if (!container) return;
+        
+        // Get all boss data and sort by explorerLevelRequired first, then by id
+        const allBossData = getAllBossData();
+        if (!allBossData || allBossData.length === 0) {
+            console.error('No boss data found');
+            return;
         }
+        
+        const sortedBossData = allBossData.sort((a, b) => {
+            const aLevel = a.explorerLevelRequired || 0;
+            const bLevel = b.explorerLevelRequired || 0;
+            
+            // First sort by explorer level required
+            if (aLevel !== bLevel) {
+                return aLevel - bLevel;
+            }
+            
+            // Then sort by id alphabetically
+            return a.id.localeCompare(b.id);
+        });
+        
+        // Use DocumentFragment for better performance
+        const fragment = document.createDocumentFragment();
+        
+        // Generate cards for each boss
+        sortedBossData.forEach(bossData => {
+            const colDiv = document.createElement('div');
+            colDiv.className = 'col-md-4 mb-4';
+            
+            const cardHTML = `
+                <div class="card bg-secondary h-100 boss-card" data-boss="${bossData.id}">
+                    <div class="boss-status-container">
+                        <div class="boss-status-badge victory" id="boss-status-victory-${bossData.id}"></div>
+                        <div class="boss-status-badge defeat" id="boss-status-defeat-${bossData.id}"></div>
+                    </div>
+                    <div class="card-body text-center">
+                        <h3 class="card-title">${bossData.displayName}</h3>
+                        <p class="card-text">${bossData.description}</p>
+                        <button class="btn btn-success w-100">選択</button>
+                    </div>
+                </div>
+            `;
+            
+            colDiv.innerHTML = cardHTML;
+            fragment.appendChild(colDiv);
+        });
+        
+        // Single DOM operation
+        container.appendChild(fragment);
+        
+        // Set up event delegation for boss card clicks
+        this.setupBossCardEventDelegation(container);
+    }
+    
+    /**
+     * Set up event delegation for boss card clicks
+     */
+    private setupBossCardEventDelegation(container: HTMLElement): void {
+        container.addEventListener('click', (e) => {
+            const card = (e.target as HTMLElement).closest('.boss-card');
+            if (card) {
+                const bossId = card.getAttribute('data-boss');
+                if (bossId) {
+                    this.onBossSelect(bossId);
+                }
+            }
+        });
     }
 
     private updateBossCards(): void {
-        // Ensure boss cards are generated first
-        this.generateBossCards();
-        
         // Get boss cards (only query once)
         const bossCards = document.querySelectorAll('.boss-card');
-        
+
         // Update status and visibility for each card
         const player = this.game.getPlayer();
         const memorialSystem = player.memorialSystem;
         const memorialData = memorialSystem.exportData();
         const playerExplorerLevel = player.getExplorerLevel();
         const allBossData = getAllBossData();
-        
+
         bossCards.forEach(card => {
             const bossId = card.getAttribute('data-boss');
             if (bossId) {
@@ -220,81 +245,23 @@ export class BossSelectScene {
         }
     }
     
-    /**
-     * Generate boss cards dynamically from boss data (only once)
-     */
-    private generateBossCards(): void {
-        // Only generate once
-        if (this.bossCardsGenerated) {
-            return;
+    //#endregion
+    
+    //#region Modal - Boss Selection
+    
+    private initializeBossModal() {
+        const bossModalElement = document.getElementById('boss-modal');
+        if (bossModalElement && window.bootstrap) {
+            this.bossModal = new window.bootstrap.Modal(bossModalElement);
         }
         
-        const container = document.getElementById('boss-cards-container');
-        if (!container) return;
-        
-        // Get all boss data and sort by explorerLevelRequired first, then by id
-        const allBossData = getAllBossData();
-        const sortedBossData = allBossData.sort((a, b) => {
-            const aLevel = a.explorerLevelRequired || 0;
-            const bLevel = b.explorerLevelRequired || 0;
-            
-            // First sort by explorer level required
-            if (aLevel !== bLevel) {
-                return aLevel - bLevel;
-            }
-            
-            // Then sort by id alphabetically
-            return a.id.localeCompare(b.id);
-        });
-        
-        // Use DocumentFragment for better performance
-        const fragment = document.createDocumentFragment();
-        
-        // Generate cards for each boss
-        sortedBossData.forEach(bossData => {
-            const colDiv = document.createElement('div');
-            colDiv.className = 'col-md-4 mb-4';
-            
-            const cardHTML = `
-                <div class="card bg-secondary h-100 boss-card" data-boss="${bossData.id}">
-                    <div class="boss-status-container">
-                        <div class="boss-status-badge victory" id="boss-status-victory-${bossData.id}"></div>
-                        <div class="boss-status-badge defeat" id="boss-status-defeat-${bossData.id}"></div>
-                    </div>
-                    <div class="card-body text-center">
-                        <h3 class="card-title">${bossData.displayName}</h3>
-                        <p class="card-text">${bossData.description}</p>
-                        <button class="btn btn-primary w-100">選択</button>
-                    </div>
-                </div>
-            `;
-            
-            colDiv.innerHTML = cardHTML;
-            fragment.appendChild(colDiv);
-        });
-        
-        // Single DOM operation
-        container.appendChild(fragment);
-        
-        // Set up event delegation for boss card clicks
-        this.setupBossCardEventDelegation(container);
-        
-        this.bossCardsGenerated = true;
-    }
-    
-    /**
-     * Set up event delegation for boss card clicks
-     */
-    private setupBossCardEventDelegation(container: HTMLElement): void {
-        container.addEventListener('click', (e) => {
-            const card = (e.target as HTMLElement).closest('.boss-card');
-            if (card) {
-                const bossId = card.getAttribute('data-boss');
-                if (bossId) {
-                    this.onBossSelect(bossId);
-                }
-            }
-        });
+        // Confirm boss button
+        const confirmButton = document.getElementById('confirm-boss-btn');
+        if (confirmButton) {
+            confirmButton.addEventListener('click', () => {
+                this.onConfirmBoss();
+            });
+        }
     }
     
     private onBossSelect(bossId: string): void {
@@ -384,10 +351,14 @@ export class BossSelectScene {
         }
     }
     
+    //#endregion
+    
+    //#region Panel - Player Summary
+    
     /**
      * Update player status display in boss select screen
      */
-    private updatePlayerStatus(): void {
+    private updatePlayerSummary(): void {
         const player = this.game.getPlayer();
         const equipment = player.getEquipmentInfo();
         
@@ -407,6 +378,29 @@ export class BossSelectScene {
         if (attackElement) attackElement.textContent = player.getAttackPower().toString();
         if (weaponElement) weaponElement.textContent = equipment.weapon?.name || '素手';
         if (armorElement) armorElement.textContent = equipment.armor?.name || 'はだか';
+    }
+    
+    //#endregion Panel - Player Summary
+
+    //#region Modal - Player Info
+
+    /**
+     * Initialize player info edit modal and event listeners
+     */
+    private initializePlayerModal() {
+        // Initialize player modal
+        const playerModalElement = document.getElementById('player-details-modal');
+        if (playerModalElement && window.bootstrap) {
+            this.playerModal = new window.bootstrap.Modal(playerModalElement);
+        }
+
+        // Player info edit button
+        const editPlayerInfoButton = document.getElementById('edit-player-info-btn');
+        if (editPlayerInfoButton) {
+            editPlayerInfoButton.addEventListener('click', () => {
+                this.showPlayerInfoEditModal();
+            });
+        }
     }
     
     /**
@@ -513,7 +507,7 @@ export class BossSelectScene {
                 input.addEventListener('change', () => {
                     if (input.checked) {
                         player.equipWeapon(weapon.id);
-                        this.updatePlayerStatus();
+                        this.updatePlayerSummary();
                         PlayerSaveManager.saveEquipment(player.equippedWeapon, player.equippedArmor);
                     }
                 });
@@ -542,7 +536,7 @@ export class BossSelectScene {
                 input.addEventListener('change', () => {
                     if (input.checked) {
                         player.equipArmor(armor.id);
-                        this.updatePlayerStatus();
+                        this.updatePlayerSummary();
                     }
                 });
             });
@@ -577,9 +571,6 @@ export class BossSelectScene {
         }
     }
     
-    /**
-     * Helper method to update element text content
-     */
     /**
      * Update skills tab
      */
@@ -748,15 +739,6 @@ export class BossSelectScene {
             default: return abilityType;
         }
     }
-    
-    private updateElement(id: string, value: string): void {
-        const element = document.getElementById(id);
-        if (element) {
-            element.textContent = value;
-        }
-    }
-    
-    
     
     /**
      * Export save data to file
@@ -951,7 +933,7 @@ export class BossSelectScene {
             
             player.recalculateStats();
             player.saveToStorage();
-            this.updatePlayerStatus();
+            this.updatePlayerSummary();
             this.showPlayerDetails(); // Refresh modal content
             ModalUtils.showToast(`${this.getAbilityName(abilityType)}をレベル ${level} に設定しました`, 'success');
         }
@@ -981,7 +963,7 @@ export class BossSelectScene {
         
         player.recalculateStats();
         player.saveToStorage();
-        this.updatePlayerStatus();
+        this.updatePlayerSummary();
         this.showPlayerDetails(); // Refresh modal content
         ModalUtils.showToast(`全てのアビリティをレベル ${level} に設定しました`, 'success');
     }
@@ -1135,7 +1117,49 @@ export class BossSelectScene {
             this.playerInfoEditModal.show();
         }
     }
+    
+    //#endregion Modal - Player Info
+    
+    //#region Modal - Player Info Edit
+    
+    /**
+     * Initialize player info buttons and event listeners
+     */
+    private initializeModalEditPlayerInfo() {
+        // Initialize player info edit modal
+        const playerInfoEditModalElement = document.getElementById('player-info-edit-modal');
+        if (playerInfoEditModalElement && window.bootstrap) {
+            this.playerInfoEditModal = new window.bootstrap.Modal(playerInfoEditModalElement);
+        }
+        
+        // Save player info button
+        const savePlayerInfoButton = document.getElementById('save-player-info-btn');
+        if (savePlayerInfoButton) {
+            savePlayerInfoButton.addEventListener('click', () => {
+                this.savePlayerInfo();
+            });
+        }
 
+        // Reset player info button
+        const resetPlayerInfoButton = document.getElementById('reset-player-info-btn');
+        if (resetPlayerInfoButton) {
+            resetPlayerInfoButton.addEventListener('click', () => {
+                this.resetPlayerInfo();
+            });
+        }
+
+        // Icon category tabs
+        document.querySelectorAll('[data-icon-category]').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                const category = (e.target as HTMLElement).getAttribute('data-icon-category');
+                if (category) {
+                    this.showIconCategory(category);
+                }
+            });
+        });
+    }
+    
     /**
      * Show icons for specified category
      */
@@ -1211,7 +1235,7 @@ export class BossSelectScene {
         }
         
         // Update player status display
-        this.updatePlayerStatus();
+        this.updatePlayerSummary();
         
         // If player details modal is open, update it
         if (this.playerModal) {
@@ -1260,5 +1284,17 @@ export class BossSelectScene {
         }
 
         ModalUtils.showToast('プレイヤー情報を初期状態にリセットしました', 'info');
+    }
+    
+    //#endregion Modal - Player Info Edit
+    
+    /**
+     * Helper method to update element text content
+     */
+    private updateElement(id: string, value: string): void {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+        }
     }
 }
