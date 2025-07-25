@@ -344,6 +344,12 @@ export class BattleScene {
     private updatePlayerUI(): void {
         if (!this.player) return;
         
+        // Update player name and icon
+        const battlePlayerNameElement = document.getElementById('battle-player-name');
+        const battlePlayerIconElement = document.getElementById('battle-player-icon');
+        if (battlePlayerNameElement) battlePlayerNameElement.textContent = this.player.name;
+        if (battlePlayerIconElement) battlePlayerIconElement.textContent = this.player.icon;
+        
         // HP
         if (this.playerHpElement) this.playerHpElement.textContent = this.player.hp.toString();
         if (this.playerMaxHpElement) this.playerMaxHpElement.textContent = this.player.maxHp.toString();

@@ -8,6 +8,10 @@ export interface PlayerSaveData {
         armor: string;
     };
     memorials: MemorialSaveData; // Trophy system data
+    playerInfo: {
+        name: string;
+        icon: string;
+    };
     version: number; // For future save data migration
 }
 
@@ -79,6 +83,10 @@ export class PlayerSaveManager {
                 armor: 'naked'
             },
             memorials: MemorialSystem.INITIAL_SAVE_DATA, // Start with no boss memorials
+            playerInfo: {
+                name: 'エルナル',
+                icon: '🐍'
+            },
             version: this.CURRENT_VERSION
         };
     }
@@ -124,6 +132,14 @@ export class PlayerSaveManager {
             migratedData = {
                 ...rest,
                 version: 4
+            };
+        }
+
+        // Ensure playerInfo exists (add if missing in any version)
+        if (!migratedData.playerInfo) {
+            migratedData.playerInfo = {
+                name: 'エルナル',
+                icon: '🐍'
             };
         }
         
@@ -180,6 +196,15 @@ export class PlayerSaveManager {
         currentData.memorials.bossMemorials = Object.values(battleMemorials);
         this.savePlayerData(currentData);
     }
+
+    /**
+     * Quick save just player info (name and icon)
+     */
+    static savePlayerInfo(name: string, icon: string): void {
+        const currentData = this.loadPlayerData() || this.createDefaultSaveData();
+        currentData.playerInfo = { name, icon };
+        this.savePlayerData(currentData);
+    }
     
     /**
      * Export save data as JSON string
@@ -228,6 +253,9 @@ export class PlayerSaveManager {
         if (!data.equipment.weapon || typeof data.equipment.weapon !== 'string') return false;
         if (!data.equipment.armor || typeof data.equipment.armor !== 'string') return false;
         if (!data.memorials || typeof data.memorials !== 'object') return false;
+        if (!data.playerInfo || typeof data.playerInfo !== 'object') return false;
+        if (typeof data.playerInfo.name !== 'string') return false;
+        if (typeof data.playerInfo.icon !== 'string') return false;
         
         // Check abilities structure
         for (const [, ability] of Object.entries(data.abilities)) {

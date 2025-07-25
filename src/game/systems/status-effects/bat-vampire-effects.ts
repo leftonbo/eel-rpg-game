@@ -13,10 +13,10 @@ export const batVampireEffectsConfigs = new Map<StatusEffectType, StatusEffectCo
             accuracy: 0.3 // 命中率70%低下
         },
         messages: {
-            onApplyPlayer: 'エルナルの視界が暗闇に包まれた！',
-            onApplyBoss: 'ボスの視界が暗闇に包まれた！',
-            onRemovePlayer: 'エルナルの視界が回復した。',
-            onRemoveBoss: 'ボスの視界が回復した。'
+            onApplyPlayer: '{name}の視界が暗闇に包まれた！',
+            onApplyBoss: '{name}の視界が暗闇に包まれた！',
+            onRemovePlayer: '{name}の視界が回復した。',
+            onRemoveBoss: '{name}の視界が回復した。'
         }
     }]
 ]);
