@@ -6,6 +6,7 @@ import type { BootstrapModal } from '../../types/bootstrap';
 import { TrophyDisplayComponent } from '../components/TrophyDisplayComponent';
 import { EquipmentSelectorComponent } from '../components/EquipmentSelectorComponent';
 import { SkillDisplayComponent } from '../components/SkillDisplayComponent';
+import { Player } from '@/game/entities/Player';
 
 export class PlayerModalManager {
     private game: Game;
@@ -367,7 +368,7 @@ export class PlayerModalManager {
     /**
      * Get max level experience requirement
      */
-    private getMaxLevelRequirement(player: any): number {
+    private getMaxLevelRequirement(player: Player): number {
         return player.abilitySystem.getRequiredExperienceForLevel(AbilitySystem.MAX_LEVEL);
     }
     
