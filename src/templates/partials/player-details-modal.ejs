@@ -4,354 +4,669 @@
         <div class="modal-content bg-dark">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <span id="player-modal-icon">🐍</span> 
-                    <span id="player-modal-name">エルナル</span> - 詳細ステータス
-                    <button type="button" class="btn btn-sm btn-outline-info ms-2" id="edit-player-info-btn">
+                    <span id="player-modal-icon">🐍</span>
+                    <span id="player-modal-name">エルナル</span> -
+                    詳細ステータス
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-outline-info ms-2"
+                        id="edit-player-info-btn"
+                    >
                         ✏️ 編集
                     </button>
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"
+                ></button>
             </div>
             <div class="modal-body">
                 <!-- Tabs -->
-<!-- Tabs -->
-<ul class="nav nav-tabs mb-3" id="player-details-tabs">
-    <li class="nav-item">
-        <a class="nav-link active" id="stats-tab" data-bs-toggle="tab" href="#stats-panel">ステータス</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" id="equipment-tab" data-bs-toggle="tab" href="#equipment-panel">装備</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" id="skills-tab" data-bs-toggle="tab" href="#skills-panel">スキル</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" id="items-tab" data-bs-toggle="tab" href="#items-panel">アイテム</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" id="explorer-tab" data-bs-toggle="tab" href="#explorer-panel">探検記録</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" id="data-management-tab" data-bs-toggle="tab" href="#data-management-panel">データ管理</a>
-    </li>
-</ul>
-                
+                <ul class="nav nav-tabs mb-3" id="player-details-tabs">
+                    <li class="nav-item">
+                        <a
+                            class="nav-link active"
+                            id="stats-tab"
+                            data-bs-toggle="tab"
+                            href="#stats-panel"
+                            >ステータス</a
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            id="equipment-tab"
+                            data-bs-toggle="tab"
+                            href="#equipment-panel"
+                            >装備</a
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            id="skills-tab"
+                            data-bs-toggle="tab"
+                            href="#skills-panel"
+                            >スキル</a
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            id="items-tab"
+                            data-bs-toggle="tab"
+                            href="#items-panel"
+                            >アイテム</a
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            id="explorer-tab"
+                            data-bs-toggle="tab"
+                            href="#explorer-panel"
+                            >探検記録</a
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            id="data-management-tab"
+                            data-bs-toggle="tab"
+                            href="#data-management-panel"
+                            >データ管理</a
+                        >
+                    </li>
+                </ul>
+
                 <!-- Tab Contents -->
-                <!-- Tab Contents -->
-<div class="tab-content">
-    <!-- Stats Panel -->
-    <!-- Stats Panel -->
-<div class="tab-pane fade show active" id="stats-panel">
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <h6>基本ステータス</h6>
-            <div class="mb-2">ヘルス: <span id="detail-max-hp">100</span></div>
-            <div class="mb-2">マナ: <span id="detail-max-mp">40</span></div>
-            <div class="mb-2">攻撃力: <span id="detail-attack">5</span></div>
-        </div>
-        <div class="col-md-6">
-            <h6>装備効果</h6>
-            <div class="mb-2">武器ボーナス: +<span id="detail-weapon-bonus">0</span></div>
-            <div class="mb-2">防具ボーナス: +<span id="detail-armor-bonus">0</span> HP</div>
-        </div>
-    </div>
-    
-    <h6>アビリティ</h6>
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">⚔️ コンバット Lv.<span id="combat-level">0</span></h6>
-                    <div class="progress mb-2">
-                        <div id="combat-progress" class="progress-bar"></div>
+                <div class="tab-content">
+                    <!-- Stats Panel -->
+                    <div class="tab-pane fade show active" id="stats-panel">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <h6>基本ステータス</h6>
+                                <div class="mb-2">
+                                    ヘルス: <span id="detail-max-hp">100</span>
+                                </div>
+                                <div class="mb-2">
+                                    マナ: <span id="detail-max-mp">40</span>
+                                </div>
+                                <div class="mb-2">
+                                    攻撃力: <span id="detail-attack">5</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>装備効果</h6>
+                                <div class="mb-2">
+                                    武器ボーナス: +<span
+                                        id="detail-weapon-bonus"
+                                        >0</span
+                                    >
+                                </div>
+                                <div class="mb-2">
+                                    防具ボーナス: +<span id="detail-armor-bonus"
+                                        >0</span
+                                    >
+                                    HP
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6>アビリティ</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card bg-secondary">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            ⚔️ コンバット Lv.<span
+                                                id="combat-level"
+                                                >0</span
+                                            >
+                                        </h6>
+                                        <div class="progress mb-2">
+                                            <div
+                                                id="combat-progress"
+                                                class="progress-bar"
+                                            ></div>
+                                        </div>
+                                        <small class="text-muted"
+                                            >経験値:
+                                            <span id="combat-exp">0</span> /
+                                            <span id="combat-next"
+                                                >100</span
+                                            ></small
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card bg-secondary">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            🛡️ タフネス Lv.<span
+                                                id="toughness-level"
+                                                >0</span
+                                            >
+                                        </h6>
+                                        <div class="progress mb-2">
+                                            <div
+                                                id="toughness-progress"
+                                                class="progress-bar"
+                                            ></div>
+                                        </div>
+                                        <small class="text-muted"
+                                            >経験値:
+                                            <span id="toughness-exp">0</span> /
+                                            <span id="toughness-next"
+                                                >100</span
+                                            ></small
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card bg-secondary">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            🔧 クラフトワーク Lv.<span
+                                                id="craftwork-level"
+                                                >0</span
+                                            >
+                                        </h6>
+                                        <div class="progress mb-2">
+                                            <div
+                                                id="craftwork-progress"
+                                                class="progress-bar"
+                                            ></div>
+                                        </div>
+                                        <small class="text-muted"
+                                            >経験値:
+                                            <span id="craftwork-exp">0</span> /
+                                            <span id="craftwork-next"
+                                                >100</span
+                                            ></small
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card bg-secondary">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            💪 エンデュランス Lv.<span
+                                                id="endurance-level"
+                                                >0</span
+                                            >
+                                        </h6>
+                                        <div class="progress mb-2">
+                                            <div
+                                                id="endurance-progress"
+                                                class="progress-bar"
+                                            ></div>
+                                        </div>
+                                        <small class="text-muted"
+                                            >経験値:
+                                            <span id="endurance-exp">0</span> /
+                                            <span id="endurance-next"
+                                                >100</span
+                                            ></small
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card bg-secondary">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            🏃 アジリティ Lv.<span
+                                                id="agility-level"
+                                                >0</span
+                                            >
+                                        </h6>
+                                        <div class="progress mb-2">
+                                            <div
+                                                id="agility-progress"
+                                                class="progress-bar"
+                                            ></div>
+                                        </div>
+                                        <small class="text-muted"
+                                            >経験値:
+                                            <span id="agility-exp">0</span> /
+                                            <span id="agility-next"
+                                                >100</span
+                                            ></small
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card bg-secondary">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            🗺️ エクスプローラー Lv.<span
+                                                id="explorer-level-stats"
+                                                >0</span
+                                            >
+                                        </h6>
+                                        <div class="progress mb-2">
+                                            <div
+                                                id="explorer-progress-stats"
+                                                class="progress-bar"
+                                            ></div>
+                                        </div>
+                                        <small class="text-muted"
+                                            >経験値:
+                                            <span id="explorer-exp-stats"
+                                                >0</span
+                                            >
+                                            /
+                                            <span id="explorer-next-stats"
+                                                >100</span
+                                            ></small
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Debug Controls for Skills Tab -->
+                        <div id="debug-controls-skills" class="mt-4 d-none">
+                            <h6>🔧 デバッグ機能 - アビリティレベル変更</h6>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="card bg-secondary">
+                                        <div class="card-body">
+                                            <h6 class="card-title">
+                                                ⚔️ コンバット
+                                            </h6>
+                                            <div class="input-group mb-2">
+                                                <span class="input-group-text"
+                                                    >Lv</span
+                                                >
+                                                <input
+                                                    type="number"
+                                                    id="debug-combat-level"
+                                                    class="form-control"
+                                                    min="0"
+                                                    max="10"
+                                                    value="0"
+                                                />
+                                                <button
+                                                    class="btn btn-outline-warning btn-sm"
+                                                    id="debug-combat-btn"
+                                                >
+                                                    変更
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card bg-secondary">
+                                        <div class="card-body">
+                                            <h6 class="card-title">
+                                                🛡️ タフネス
+                                            </h6>
+                                            <div class="input-group mb-2">
+                                                <span class="input-group-text"
+                                                    >Lv</span
+                                                >
+                                                <input
+                                                    type="number"
+                                                    id="debug-toughness-level"
+                                                    class="form-control"
+                                                    min="0"
+                                                    max="10"
+                                                    value="0"
+                                                />
+                                                <button
+                                                    class="btn btn-outline-warning btn-sm"
+                                                    id="debug-toughness-btn"
+                                                >
+                                                    変更
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card bg-secondary">
+                                        <div class="card-body">
+                                            <h6 class="card-title">
+                                                🔧 クラフトワーク
+                                            </h6>
+                                            <div class="input-group mb-2">
+                                                <span class="input-group-text"
+                                                    >Lv</span
+                                                >
+                                                <input
+                                                    type="number"
+                                                    id="debug-craftwork-level"
+                                                    class="form-control"
+                                                    min="0"
+                                                    max="10"
+                                                    value="0"
+                                                />
+                                                <button
+                                                    class="btn btn-outline-warning btn-sm"
+                                                    id="debug-craftwork-btn"
+                                                >
+                                                    変更
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card bg-secondary">
+                                        <div class="card-body">
+                                            <h6 class="card-title">
+                                                💪 エンデュランス
+                                            </h6>
+                                            <div class="input-group mb-2">
+                                                <span class="input-group-text"
+                                                    >Lv</span
+                                                >
+                                                <input
+                                                    type="number"
+                                                    id="debug-endurance-level"
+                                                    class="form-control"
+                                                    min="0"
+                                                    max="10"
+                                                    value="0"
+                                                />
+                                                <button
+                                                    class="btn btn-outline-warning btn-sm"
+                                                    id="debug-endurance-btn"
+                                                >
+                                                    変更
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card bg-secondary">
+                                        <div class="card-body">
+                                            <h6 class="card-title">
+                                                🏃 アジリティ
+                                            </h6>
+                                            <div class="input-group mb-2">
+                                                <span class="input-group-text"
+                                                    >Lv</span
+                                                >
+                                                <input
+                                                    type="number"
+                                                    id="debug-agility-level"
+                                                    class="form-control"
+                                                    min="0"
+                                                    max="10"
+                                                    value="0"
+                                                />
+                                                <button
+                                                    class="btn btn-outline-warning btn-sm"
+                                                    id="debug-agility-btn"
+                                                >
+                                                    変更
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card bg-secondary">
+                                        <div class="card-body">
+                                            <h6 class="card-title">
+                                                📊 一括設定
+                                            </h6>
+                                            <div class="input-group mb-2">
+                                                <span class="input-group-text"
+                                                    >Lv</span
+                                                >
+                                                <input
+                                                    type="number"
+                                                    id="debug-all-level"
+                                                    class="form-control"
+                                                    min="0"
+                                                    max="10"
+                                                    value="0"
+                                                />
+                                                <button
+                                                    class="btn btn-outline-warning btn-sm"
+                                                    id="debug-all-btn"
+                                                >
+                                                    全て変更
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <small class="text-muted">経験値: <span id="combat-exp">0</span> / <span id="combat-next">100</span></small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">🛡️ タフネス Lv.<span id="toughness-level">0</span></h6>
-                    <div class="progress mb-2">
-                        <div id="toughness-progress" class="progress-bar"></div>
+
+                    <!-- Equipment Panel -->
+                    <div class="tab-pane fade" id="equipment-panel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>武器</h6>
+                                <div id="weapon-selection" class="mb-3">
+                                    <!-- Weapon options will be populated here -->
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>防具</h6>
+                                <div id="armor-selection" class="mb-3">
+                                    <!-- Armor options will be populated here -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <small class="text-muted">経験値: <span id="toughness-exp">0</span> / <span id="toughness-next">100</span></small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">🔧 クラフトワーク Lv.<span id="craftwork-level">0</span></h6>
-                    <div class="progress mb-2">
-                        <div id="craftwork-progress" class="progress-bar"></div>
+
+                    <!-- Skills Panel -->
+                    <div class="tab-pane fade" id="skills-panel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>アクティブスキル</h6>
+                                <div
+                                    id="active-skills-list"
+                                    class="skills-list"
+                                >
+                                    <!-- Active skills will be populated here -->
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>パッシブスキル</h6>
+                                <div
+                                    id="passive-skills-list"
+                                    class="skills-list"
+                                >
+                                    <!-- Passive skills will be populated here -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <small class="text-muted">経験値: <span id="craftwork-exp">0</span> / <span id="craftwork-next">100</span></small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">💪 エンデュランス Lv.<span id="endurance-level">0</span></h6>
-                    <div class="progress mb-2">
-                        <div id="endurance-progress" class="progress-bar"></div>
+
+                    <!-- Items Panel -->
+                    <div class="tab-pane fade" id="items-panel">
+                        <h6>所持アイテム</h6>
+                        <div id="item-list">
+                            <!-- Item list will be populated here -->
+                        </div>
                     </div>
-                    <small class="text-muted">経験値: <span id="endurance-exp">0</span> / <span id="endurance-next">100</span></small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">🏃 アジリティ Lv.<span id="agility-level">0</span></h6>
-                    <div class="progress mb-2">
-                        <div id="agility-progress" class="progress-bar"></div>
+
+                    <!-- Explorer Panel -->
+                    <div class="tab-pane fade" id="explorer-panel">
+                        <h6>🗺️ エクスプローラー</h6>
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="card bg-secondary">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            🗺️ エクスプローラー Lv.<span
+                                                id="explorer-level"
+                                                >0</span
+                                            >
+                                        </h6>
+                                        <div class="progress mb-2">
+                                            <div
+                                                id="explorer-progress"
+                                                class="progress-bar"
+                                            ></div>
+                                        </div>
+                                        <small class="text-muted"
+                                            >経験値:
+                                            <span id="explorer-exp">0</span> /
+                                            <span id="explorer-next"
+                                                >100</span
+                                            ></small
+                                        >
+                                        <p class="mt-2 mb-0 small">
+                                            探検できる範囲が広がり、新しいボスとの戦闘がアンロックされます
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-secondary">
+                                    <div class="card-body">
+                                        <h6 class="card-title">📊 探検統計</h6>
+                                        <div class="mb-2">
+                                            アンロック済みボス:
+                                            <span id="unlocked-bosses-count"
+                                                >3</span
+                                            >
+                                            / 9
+                                        </div>
+                                        <div class="mb-2">
+                                            獲得記念品:
+                                            <span id="total-trophies-count"
+                                                >0</span
+                                            >
+                                        </div>
+                                        <div class="mb-0">
+                                            探検経験値総計:
+                                            <span id="total-explorer-exp"
+                                                >0</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6>🗺️ 探検可能な地形</h6>
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card bg-secondary">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            🌍 現在アクセス可能な地形
+                                        </h6>
+                                        <div
+                                            id="accessible-terrains-container"
+                                            class="d-flex flex-wrap gap-2"
+                                        >
+                                            <!-- Terrain badges will be dynamically populated here -->
+                                        </div>
+                                        <p class="mt-2 mb-0 small text-muted">
+                                            エクスプローラーレベルを上げることで、より遠くの未知の地形に足を踏み入れることができます。
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6>🏆 記念品コレクション</h6>
+                        <div id="trophies-collection" class="row">
+                            <!-- Trophy cards will be dynamically populated here -->
+                        </div>
+
+                        <div class="text-center mt-3" id="no-trophies-message">
+                            <p class="text-muted">
+                                まだ記念品を獲得していません。<br />ボスとの戦闘で初回勝利や敗北を経験して記念品を集めましょう！
+                            </p>
+                        </div>
                     </div>
-                    <small class="text-muted">経験値: <span id="agility-exp">0</span> / <span id="agility-next">100</span></small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">🗺️ エクスプローラー Lv.<span id="explorer-level-stats">0</span></h6>
-                    <div class="progress mb-2">
-                        <div id="explorer-progress-stats" class="progress-bar"></div>
-                    </div>
-                    <small class="text-muted">経験値: <span id="explorer-exp-stats">0</span> / <span id="explorer-next-stats">100</span></small>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Debug Controls for Skills Tab -->
-<div id="debug-controls-skills" class="mt-4 d-none">
-    <h6>🔧 デバッグ機能 - アビリティレベル変更</h6>
-    <div class="row">
-        <div class="col-md-4 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">⚔️ コンバット</h6>
-                    <div class="input-group mb-2">
-                        <span class="input-group-text">Lv</span>
-                        <input type="number" id="debug-combat-level" class="form-control" min="0" max="10" value="0">
-                        <button class="btn btn-outline-warning btn-sm" id="debug-combat-btn">変更</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">🛡️ タフネス</h6>
-                    <div class="input-group mb-2">
-                        <span class="input-group-text">Lv</span>
-                        <input type="number" id="debug-toughness-level" class="form-control" min="0" max="10" value="0">
-                        <button class="btn btn-outline-warning btn-sm" id="debug-toughness-btn">変更</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">🔧 クラフトワーク</h6>
-                    <div class="input-group mb-2">
-                        <span class="input-group-text">Lv</span>
-                        <input type="number" id="debug-craftwork-level" class="form-control" min="0" max="10" value="0">
-                        <button class="btn btn-outline-warning btn-sm" id="debug-craftwork-btn">変更</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">💪 エンデュランス</h6>
-                    <div class="input-group mb-2">
-                        <span class="input-group-text">Lv</span>
-                        <input type="number" id="debug-endurance-level" class="form-control" min="0" max="10" value="0">
-                        <button class="btn btn-outline-warning btn-sm" id="debug-endurance-btn">変更</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">🏃 アジリティ</h6>
-                    <div class="input-group mb-2">
-                        <span class="input-group-text">Lv</span>
-                        <input type="number" id="debug-agility-level" class="form-control" min="0" max="10" value="0">
-                        <button class="btn btn-outline-warning btn-sm" id="debug-agility-btn">変更</button>
+
+                    <!-- Data Management Panel -->
+                    <div class="tab-pane fade" id="data-management-panel">
+                        <h6>💾 データ管理</h6>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card bg-secondary mb-3">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">
+                                            📤 データエクスポート
+                                        </h6>
+                                        <p class="card-text">
+                                            セーブデータをファイルとして保存します
+                                        </p>
+                                        <button
+                                            id="export-save-btn-modal"
+                                            class="btn btn-outline-info w-100"
+                                        >
+                                            エクスポート
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-secondary mb-3">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">
+                                            📥 データインポート
+                                        </h6>
+                                        <p class="card-text">
+                                            セーブデータをファイルから読み込みます
+                                        </p>
+                                        <button
+                                            id="import-save-btn-modal"
+                                            class="btn btn-outline-success w-100"
+                                        >
+                                            インポート
+                                        </button>
+                                        <input
+                                            type="file"
+                                            id="import-file-input-modal"
+                                            accept=".json"
+                                            class="d-none"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-secondary mb-3">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">
+                                            🗑️ データ削除
+                                        </h6>
+                                        <p class="card-text">
+                                            全てのセーブデータを削除します
+                                        </p>
+                                        <button
+                                            id="delete-save-btn-modal"
+                                            class="btn btn-outline-danger w-100"
+                                        >
+                                            削除
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">📊 一括設定</h6>
-                    <div class="input-group mb-2">
-                        <span class="input-group-text">Lv</span>
-                        <input type="number" id="debug-all-level" class="form-control" min="0" max="10" value="0">
-                        <button class="btn btn-outline-warning btn-sm" id="debug-all-btn">全て変更</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-    
-    <!-- Equipment Panel -->
-    <!-- Equipment Panel -->
-<div class="tab-pane fade" id="equipment-panel">
-    <div class="row">
-        <div class="col-md-6">
-            <h6>武器</h6>
-            <div id="weapon-selection" class="mb-3">
-                <!-- Weapon options will be populated here -->
-            </div>
-        </div>
-        <div class="col-md-6">
-            <h6>防具</h6>
-            <div id="armor-selection" class="mb-3">
-                <!-- Armor options will be populated here -->
-            </div>
-        </div>
-    </div>
-</div>
-    
-    <!-- Skills Panel -->
-    <!-- Skills Panel -->
-<div class="tab-pane fade" id="skills-panel">
-    <div class="row">
-        <div class="col-md-6">
-            <h6>アクティブスキル</h6>
-            <div id="active-skills-list" class="skills-list">
-                <!-- Active skills will be populated here -->
-            </div>
-        </div>
-        <div class="col-md-6">
-            <h6>パッシブスキル</h6>
-            <div id="passive-skills-list" class="skills-list">
-                <!-- Passive skills will be populated here -->
-            </div>
-        </div>
-    </div>
-</div>
-    
-    <!-- Items Panel -->
-    <!-- Items Panel -->
-<div class="tab-pane fade" id="items-panel">
-    <h6>所持アイテム</h6>
-    <div id="item-list">
-        <!-- Item list will be populated here -->
-    </div>
-</div>
-    
-    <!-- Explorer Panel -->
-    <!-- Explorer Panel -->
-<div class="tab-pane fade" id="explorer-panel">
-    <h6>🗺️ エクスプローラー</h6>
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">🗺️ エクスプローラー Lv.<span id="explorer-level">0</span></h6>
-                    <div class="progress mb-2">
-                        <div id="explorer-progress" class="progress-bar"></div>
-                    </div>
-                    <small class="text-muted">経験値: <span id="explorer-exp">0</span> / <span id="explorer-next">100</span></small>
-                    <p class="mt-2 mb-0 small">探検できる範囲が広がり、新しいボスとの戦闘がアンロックされます</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">📊 探検統計</h6>
-                    <div class="mb-2">アンロック済みボス: <span id="unlocked-bosses-count">3</span> / 9</div>
-                    <div class="mb-2">獲得記念品: <span id="total-trophies-count">0</span></div>
-                    <div class="mb-0">探検経験値総計: <span id="total-explorer-exp">0</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <h6>🗺️ 探検可能な地形</h6>
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">🌍 現在アクセス可能な地形</h6>
-                    <div id="accessible-terrains-container" class="d-flex flex-wrap gap-2">
-                        <!-- Terrain badges will be dynamically populated here -->
-                    </div>
-                    <p class="mt-2 mb-0 small text-muted">エクスプローラーレベルを上げることで、より遠くの未知の地形に足を踏み入れることができます。</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <h6>🏆 記念品コレクション</h6>
-    <div id="trophies-collection" class="row">
-        <!-- Trophy cards will be dynamically populated here -->
-    </div>
-    
-    <div class="text-center mt-3" id="no-trophies-message">
-        <p class="text-muted">まだ記念品を獲得していません。<br>ボスとの戦闘で初回勝利や敗北を経験して記念品を集めましょう！</p>
-    </div>
-</div>
-    
-    <!-- Data Management Panel -->
-    <!-- Data Management Panel -->
-<div class="tab-pane fade" id="data-management-panel">
-    <h6>💾 データ管理</h6>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card bg-secondary mb-3">
-                <div class="card-body text-center">
-                    <h6 class="card-title">📤 データエクスポート</h6>
-                    <p class="card-text">セーブデータをファイルとして保存します</p>
-                    <button id="export-save-btn-modal" class="btn btn-outline-info w-100">
-                        エクスポート
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-secondary mb-3">
-                <div class="card-body text-center">
-                    <h6 class="card-title">📥 データインポート</h6>
-                    <p class="card-text">セーブデータをファイルから読み込みます</p>
-                    <button id="import-save-btn-modal" class="btn btn-outline-success w-100">
-                        インポート
-                    </button>
-                    <input type="file" id="import-file-input-modal" accept=".json" class="d-none">
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-secondary mb-3">
-                <div class="card-body text-center">
-                    <h6 class="card-title">🗑️ データ削除</h6>
-                    <p class="card-text">全てのセーブデータを削除します</p>
-                    <button id="delete-save-btn-modal" class="btn btn-outline-danger w-100">
-                        削除
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    閉じる
+                </button>
             </div>
         </div>
     </div>
