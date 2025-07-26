@@ -81,8 +81,8 @@ export class PlayerModalManager {
         this.updateElement('detail-max-hp', player.maxHp.toString());
         this.updateElement('detail-max-mp', player.maxMp.toString());
         this.updateElement('detail-attack', player.getAttackPower().toString());
-        this.updateElement('detail-weapon-bonus', player.getWeaponAttackBonus().toString());
-        this.updateElement('detail-armor-bonus', player.getArmorHpBonus().toString());
+        this.updateElement('detail-weapon-bonus', player.equipmentManager.getWeaponAttackBonus().toString());
+        this.updateElement('detail-armor-bonus', player.equipmentManager.getArmorHpBonus().toString());
         
         // Update ability levels
         Object.entries(abilityLevels).forEach(([abilityType, data]: [string, any]) => {
