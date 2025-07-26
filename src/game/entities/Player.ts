@@ -1,11 +1,12 @@
 import { StatusEffectType, ActionPriority } from '../systems/StatusEffect';
-import { AbilitySystem, AbilityType, Equipment, WEAPONS, ARMORS } from '../systems/AbilitySystem';
+import { AbilitySystem, AbilityType, Equipment } from '../systems/AbilitySystem';
 import { PlayerSaveManager, PlayerSaveData } from '../systems/PlayerSaveData';
 import { updatePlayerItems } from '../data/ExtendedItems';
 import { Actor } from './Actor';
 import { SkillRegistry, SkillData } from '../data/skills';
 import { MemorialSystem } from '../systems/MemorialSystem';
 import { SkillStrategyFactory } from './SkillStrategy';
+import { PlayerEquipmentManager } from './PlayerEquipmentManager';
 
 
 export interface SkillResult {
@@ -45,11 +46,11 @@ export class Player extends Actor {
     // Ability and equipment system
     public abilitySystem: AbilitySystem = new AbilitySystem();
     public memorialSystem: MemorialSystem = new MemorialSystem();
-    public equippedWeapon: string = 'bare-hands';
-    public equippedArmor: string = 'naked';
+    public equipmentManager: PlayerEquipmentManager;
     
     constructor() {
         super(DEFAULT_PLAYER_NAME, 100, 5, 50);
+        this.equipmentManager = new PlayerEquipmentManager(this.abilitySystem);
     }
 
     /**
@@ -78,8 +79,7 @@ export class Player extends Actor {
             
             // Load equipment
             console.log('[Player][loadFromSave] Loading equipment:', saveData.equipment);
-            this.equippedWeapon = saveData.equipment.weapon;
-            this.equippedArmor = saveData.equipment.armor;
+            this.equipmentManager.loadEquipment(saveData.equipment.weapon, saveData.equipment.armor);
             
             // Load battle memorials into MemorialSystem
             console.log('[Player][loadFromSave] Loading memorials:', saveData.memorials);
@@ -108,10 +108,7 @@ export class Player extends Actor {
     public saveToStorage(): void {
         const saveData: PlayerSaveData = {
             abilities: this.abilitySystem.exportForSave(),
-            equipment: {
-                weapon: this.equippedWeapon,
-                armor: this.equippedArmor
-            },
+            equipment: this.equipmentManager.exportEquipment(),
             memorials: this.memorialSystem.exportData(),
             playerInfo: {
                 name: this.name,
@@ -129,7 +126,7 @@ export class Player extends Actor {
     public recalculateStats(): void {
         // Calculate HP with toughness bonus and armor
         const toughnessMultiplier = 1 + this.abilitySystem.getToughnessHpBonus();
-        const armorBonus = this.getArmorHpBonus();
+        const armorBonus = this.equipmentManager.getArmorHpBonus();
         this.maxHp = Math.round((this.baseMaxHp + armorBonus) * toughnessMultiplier);
         
         // Calculate MP with endurance bonus
@@ -207,7 +204,7 @@ export class Player extends Actor {
     getAttackPower(): number {
         // Calculate base attack power with combat ability and weapon
         const combatMultiplier = 1 + this.abilitySystem.getCombatAttackBonus();
-        const weaponBonus = this.getWeaponAttackBonus();
+        const weaponBonus = this.equipmentManager.getWeaponAttackBonus();
         const baseWithAbilityAndWeapon = (this.baseAttackPower + weaponBonus) * combatMultiplier;
         
         // Apply status effect modifiers
@@ -216,65 +213,39 @@ export class Player extends Actor {
     }
     
     /**
-     * Get weapon attack bonus from equipped weapon
-     */
-    public getWeaponAttackBonus(): number {
-        const weapon = WEAPONS.find(w => w.id === this.equippedWeapon);
-        return weapon?.attackPowerBonus || 0;
-    }
-    
-    /**
-     * Get armor HP bonus from equipped armor
-     */
-    public getArmorHpBonus(): number {
-        const armor = ARMORS.find(a => a.id === this.equippedArmor);
-        return armor?.hpBonus || 0;
-    }
-    
-    /**
      * Equip a weapon (if unlocked)
      */
     public equipWeapon(weaponId: string): boolean {
-        const weapon = WEAPONS.find(w => w.id === weaponId);
-        if (!weapon) return false;
-        
-        const combatLevel = this.abilitySystem.getAbility(AbilityType.Combat)?.level || 0;
-        if (combatLevel < weapon.requiredLevel) return false;
-        
-        this.equippedWeapon = weaponId;
-        this.recalculateStats();
-        return true;
+        const success = this.equipmentManager.equipWeapon(weaponId);
+        if (success) {
+            this.recalculateStats();
+        }
+        return success;
     }
     
     /**
      * Equip armor (if unlocked)
      */
     public equipArmor(armorId: string): boolean {
-        const armor = ARMORS.find(a => a.id === armorId);
-        if (!armor) return false;
-        
-        const toughnessLevel = this.abilitySystem.getAbility(AbilityType.Toughness)?.level || 0;
-        if (toughnessLevel < armor.requiredLevel) return false;
-        
-        this.equippedArmor = armorId;
-        this.recalculateStats();
-        return true;
+        const success = this.equipmentManager.equipArmor(armorId);
+        if (success) {
+            this.recalculateStats();
+        }
+        return success;
     }
     
     /**
      * Get available weapons based on combat level
      */
     public getAvailableWeapons(): Equipment[] {
-        const combatLevel = this.abilitySystem.getAbility(AbilityType.Combat)?.level || 0;
-        return WEAPONS.filter(weapon => weapon.requiredLevel <= combatLevel);
+        return this.equipmentManager.getAvailableWeapons();
     }
     
     /**
      * Get available armors based on toughness level
      */
     public getAvailableArmors(): Equipment[] {
-        const toughnessLevel = this.abilitySystem.getAbility(AbilityType.Toughness)?.level || 0;
-        return ARMORS.filter(armor => armor.requiredLevel <= toughnessLevel);
+        return this.equipmentManager.getAvailableArmors();
     }
     
     /**
@@ -553,9 +524,7 @@ export class Player extends Actor {
      * Get display information for current equipment
      */
     public getEquipmentInfo(): { weapon: Equipment | null; armor: Equipment | null } {
-        const weapon = WEAPONS.find(w => w.id === this.equippedWeapon) || null;
-        const armor = ARMORS.find(a => a.id === this.equippedArmor) || null;
-        return { weapon, armor };
+        return this.equipmentManager.getEquipmentInfo();
     }
     
     /**
