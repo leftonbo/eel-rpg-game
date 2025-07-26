@@ -1,0 +1,52 @@
+<!-- Explorer Panel -->
+<div class="tab-pane fade" id="explorer-panel">
+    <h6>🗺️ エクスプローラー</h6>
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card bg-secondary">
+                <div class="card-body">
+                    <h6 class="card-title">🗺️ エクスプローラー Lv.<span id="explorer-level">0</span></h6>
+                    <div class="progress mb-2">
+                        <div id="explorer-progress" class="progress-bar"></div>
+                    </div>
+                    <small class="text-muted">経験値: <span id="explorer-exp">0</span> / <span id="explorer-next">100</span></small>
+                    <p class="mt-2 mb-0 small">探検できる範囲が広がり、新しいボスとの戦闘がアンロックされます</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-secondary">
+                <div class="card-body">
+                    <h6 class="card-title">📊 探検統計</h6>
+                    <div class="mb-2">アンロック済みボス: <span id="unlocked-bosses-count">3</span> / 9</div>
+                    <div class="mb-2">獲得記念品: <span id="total-trophies-count">0</span></div>
+                    <div class="mb-0">探検経験値総計: <span id="total-explorer-exp">0</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <h6>🗺️ 探検可能な地形</h6>
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-secondary">
+                <div class="card-body">
+                    <h6 class="card-title">🌍 現在アクセス可能な地形</h6>
+                    <div id="accessible-terrains-container" class="d-flex flex-wrap gap-2">
+                        <!-- Terrain badges will be dynamically populated here -->
+                    </div>
+                    <p class="mt-2 mb-0 small text-muted">エクスプローラーレベルを上げることで、より遠くの未知の地形に足を踏み入れることができます。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <h6>🏆 記念品コレクション</h6>
+    <div id="trophies-collection" class="row">
+        <!-- Trophy cards will be dynamically populated here -->
+    </div>
+    
+    <div class="text-center mt-3" id="no-trophies-message">
+        <p class="text-muted">まだ記念品を獲得していません。<br>ボスとの戦闘で初回勝利や敗北を経験して記念品を集めましょう！</p>
+    </div>
+</div>

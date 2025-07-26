@@ -1,0 +1,52 @@
+<!-- Player Info Edit Modal -->
+<div class="modal fade" id="player-info-edit-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title">プレイヤー情報編集</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="player-name-input" class="form-label">名前（32文字まで）</label>
+                    <input type="text" class="form-control" id="player-name-input" maxlength="32" placeholder="プレイヤー名を入力">
+                    <div class="form-text">現在の名前: <span id="current-player-name">エルナル</span></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">アイコン選択</label>
+                    <div class="form-text mb-2">現在のアイコン: <span id="current-player-icon">🐍</span></div>
+                    
+                    <!-- Icon category tabs -->
+                    <ul class="nav nav-pills nav-sm mb-3" id="icon-category-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-category="動物" href="#" data-icon-category="動物">動物</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-category="ファンタジー" href="#" data-icon-category="ファンタジー">ファンタジー</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-category="自然" href="#" data-icon-category="自然">自然</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-category="武器" href="#" data-icon-category="武器">武器</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-category="エレメント" href="#" data-icon-category="エレメント">エレメント</a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Icon selection grid -->
+                    <div id="icon-selection-grid" class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
+                        <!-- Icons will be populated here -->
+                    </div>
+                    <div class="form-text">選択中のアイコン: <span id="selected-player-icon">🐍</span></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                <button type="button" class="btn btn-warning" id="reset-player-info-btn">🔄 リセット</button>
+                <button type="button" class="btn btn-primary" id="save-player-info-btn">保存</button>
+            </div>
+        </div>
+    </div>
+</div>

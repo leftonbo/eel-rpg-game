@@ -9,9 +9,10 @@
     "./src/main.ts"
   ],
   "scripts": {
-    "build": "webpack --mode production",
-    "build:analyze": "webpack --mode production --env analyze",
-    "dev": "webpack serve --mode development --open",
+    "build": "npm run build:templates && webpack --mode production",
+    "build:analyze": "npm run build:templates && webpack --mode production --env analyze",
+    "build:templates": "node scripts/build-templates.js",
+    "dev": "npm run build:templates && webpack serve --mode development --open",
     "start": "npm run dev",
     "clean": "rimraf dist",
     "lint": "eslint src",
@@ -32,6 +33,7 @@
     "@typescript-eslint/parser": "^8.36.0",
     "copy-webpack-plugin": "^13.0.0",
     "css-loader": "^6.8.0",
+    "ejs": "^3.1.10",
     "eslint": "^9.31.0",
     "html-webpack-plugin": "^5.5.0",
     "rimraf": "^5.0.0",

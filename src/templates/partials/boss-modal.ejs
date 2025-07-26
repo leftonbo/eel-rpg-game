@@ -1,0 +1,25 @@
+<!-- Boss Description Modal -->
+<div class="modal fade" id="boss-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-boss-name">ボス名</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modal-boss-description">ボスの説明</p>
+                <p id="modal-boss-stats">
+                    <!-- Boss stats will be displayed here -->
+                </p>
+                <p id="modal-boss-quest-note">雰囲気ノート</p>
+                <div id="modal-boss-guest-info" class="d-none">
+                    <!-- Guest character info will be displayed here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                <button type="button" class="btn btn-primary" id="confirm-boss-btn">戦闘開始！</button>
+            </div>
+        </div>
+    </div>
+</div>
