@@ -26,8 +26,17 @@ async function buildTemplate() {
             encoding: 'utf8'
         });
 
+        // Add header comment to indicate this is an auto-generated file
+        const headerComment = `<!-- 
+  このファイルは自動生成されます
+  元ファイル: src/templates/index.ejs
+  生成スクリプト: scripts/build-templates.js
+  手動編集しないでください
+-->
+`;
+        
         // Write the output with UTF-8 encoding
-        fs.writeFileSync(outputFile, rendered, 'utf8');
+        fs.writeFileSync(outputFile, headerComment + rendered, 'utf8');
         console.log('Templates built successfully!');
         
     } catch (error) {
