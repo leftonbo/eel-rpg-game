@@ -143,7 +143,7 @@ export class PlayerModalManager {
         EquipmentSelectorComponent.updateWeaponSelection(
             'weapon-selection',
             availableWeapons,
-            player.equippedWeapon,
+            player.getEquipmentInfo().weapon?.id || null,
             (weaponId: string) => {
                 player.equipWeapon(weaponId);
                 const event = new CustomEvent('updatePlayerSummary');
@@ -155,7 +155,7 @@ export class PlayerModalManager {
         EquipmentSelectorComponent.updateArmorSelection(
             'armor-selection',
             availableArmors,
-            player.equippedArmor,
+            player.getEquipmentInfo().armor?.id || null,
             (armorId: string) => {
                 player.equipArmor(armorId);
                 const event = new CustomEvent('updatePlayerSummary');
@@ -175,7 +175,7 @@ export class PlayerModalManager {
         if (itemList) {
             itemList.innerHTML = '';
             
-            Array.from(player.items.entries()).forEach(([_itemId, item]: [string, any]) => {
+            player.itemManager.getUsableItems().forEach((item) => {
                 if (item.count > 0) {
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'mb-2 p-2 border rounded';

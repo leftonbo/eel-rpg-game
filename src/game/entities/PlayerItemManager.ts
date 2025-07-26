@@ -120,4 +120,11 @@ export class PlayerItemManager {
     getUsableItems(): PlayerItem[] {
         return Array.from(this.items.values()).filter(item => item.count > 0);
     }
+    
+    /**
+     * 何らかのアイテムを所持しているかチェック
+     */
+    hasAnyItems(): boolean {
+        return Array.from(this.items.values()).some(item => item.count > 0);
+    }
 }

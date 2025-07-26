@@ -1,4 +1,4 @@
-import { StatusEffectType, ActionPriority } from '../systems/StatusEffect';
+import { StatusEffectType } from '../systems/StatusEffect';
 import { AbilitySystem, AbilityType, Equipment } from '../systems/AbilitySystem';
 import { PlayerSaveManager, PlayerSaveData } from '../systems/PlayerSaveData';
 import { updatePlayerItems } from '../data/ExtendedItems';

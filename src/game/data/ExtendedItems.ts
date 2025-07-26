@@ -1,7 +1,6 @@
 import { AbilityType } from '../systems/AbilitySystem';
 import { StatusEffectType, StatusEffectManager } from '../systems/StatusEffect';
 import { Player } from '../entities/Player';
-import { PlayerItem } from '../entities/PlayerItemManager';
 
 export interface ExtendedItemData {
     id: string;
