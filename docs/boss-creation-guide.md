@@ -309,26 +309,25 @@ case 'new-boss':
     break;
 ```
 
-**注意**: 現在のシステムでは動的インポートを使用しているため、新しいボスを追加する際は：
+**重要**: 現在のシステムでは動的インポートを使用しているため、新しいボスを追加する際は：
 1. `registeredBossIds`配列に新しいボスIDを追加
 2. `loadBossData`関数のswitch文に対応するケースを追加
 3. 実際のボスファイル（`./bosses/new-boss.ts`）を作成
 
-### 3. HTMLファイルの更新
+**EJSテンプレートの恩恵**: HTMLの手動編集は不要で、ボスデータの定義だけでUIに自動反映されます。
 
-`src/index.html` のボス選択画面にカードを追加：
+### 3. EJSテンプレートシステムによるHTML自動生成
 
-```html
-<div class="col-md-4 mb-4">
-    <div class="card bg-secondary h-100 boss-card" data-boss="new-boss">
-        <div class="card-body text-center">
-            <h3 class="card-title">🔥 新しいボス</h3>
-            <p class="card-text">ボスの説明文</p>
-            <button class="btn btn-danger w-100">選択</button>
-        </div>
-    </div>
-</div>
-```
+**重要**: ボス追加時はHTMLを手動で編集する必要はありません。
+
+EJSテンプレートシステムが以下を自動で行います：
+
+1. **ボスカードの自動生成**: `registeredBossIds` 配列から動的にボスカードを生成
+2. **エクスプローラーレベル制御**: `explorerLevelRequired` に基づいてボスの解禁状態を制御
+3. **アイコン表示**: ボスデータの `icon` プロパティを使用
+4. **説明文表示**: ボスデータの `description` プロパティを使用
+
+このシステムにより、新ボスは `registeredBossIds` に追加するだけで自動的にゲームに組み込まれます。
 
 ### 4. 新しい状態異常の追加（必要な場合）
 
@@ -518,18 +517,30 @@ aiStrategy: (boss, player, turn) => {
 
 ### 既存ボスとの比較
 
-**現在実装済みのボス**
+**現在実装済みのボス11体**
+
+#### 基本エリア (explorerLevelRequired: 0)
 - 沼のドラゴン: HP 400, 攻撃力 18 (高火力タイプ)
 - 闇のおばけ: HP 150, 攻撃力 12 (状態異常タイプ)
 - 機械のクモ: HP 180, 攻撃力 15 (拘束タイプ)
+
+#### 砂漠エリア (explorerLevelRequired: 1)
+- スコーピオンキャリア: HP 260, 攻撃力 14 (毒+麻痺タイプ)
+
+#### 海エリア (explorerLevelRequired: 2)
 - 海のクラーケン: HP 350, 攻撃力 15 (拘束+吸収タイプ)
 - アクアサーペント: HP 350, 攻撃力 20 (水属性+体内攻撃タイプ)
-- クリーンマスター: HP 280, 攻撃力 16 (清掃+状態異常タイプ)
-- みかんドラゴン: HP 320, 攻撃力 17 (果物+睡眠タイプ)
-- スコーピオンキャリア: HP 260, 攻撃力 14 (毒+麻痺タイプ)
+
+#### ゲストキャラエリア (explorerLevelRequired: 3)
 - ドリームデーモン: HP 240, 攻撃力 13 (夢+特殊状態異常タイプ)
-- 地下のワーム: HP 380, 攻撃力 12 (地下型拘束タイプ)
+
+#### ジャングルエリア (explorerLevelRequired: 4)
+- みかんドラゴン: HP 320, 攻撃力 17 (果物+睡眠タイプ)
+
+#### 遺跡エリア (explorerLevelRequired: 6)
+- クリーンマスター: HP 280, 攻撃力 16 (清掃+状態異常タイプ)
 - 蝙蝠のヴァンパイア: HP 310, 攻撃力 14 (拘束+魅了+生気吸収タイプ)
+- 地下のワーム: HP 380, 攻撃力 12 (地下型拘束タイプ)
 
 **バランス設計指針**
 - HP 150-200: 状態異常特化型（短期決戦型）
@@ -628,18 +639,29 @@ defeatTrophy: {
 - 既存ボスとの難易度バランスを考慮
 - 記念品名は「{ボス名}のたてがみ」（勝利）、「{ボス名}の粘液」（敗北）で自動生成も可能ですが、ボス固有の特徴を反映した独自の記念品設定を推奨
 
-## テスト項目
+## ## テスト項目
 
+### 特に重要なテスト
+- [ ] **TypeScript型チェック**: `npm run typecheck` でエラーがないこと
+- [ ] **ビルドテスト**: `npm run build` でビルドが成功すること
+- [ ] **エクスプローラーレベル制御**: 適切なレベルでボスが解禁されること
+
+### 基本機能テスト
 - [ ] ボス選択画面での表示確認
 - [ ] 戦闘開始・終了の動作確認
 - [ ] 各アクションの動作確認
 - [ ] AIの行動パターン確認
 - [ ] 状態異常の動作確認
 - [ ] バランスの調整確認
+- [ ] 記念品システムの動作確認
 
 ## 参考ファイル
 
 実装の参考として以下のファイルを確認してください：
+
+### コアシステムファイル
+- `templates/` - EJSテンプレートシステム（HTML自動生成）
+- `webpack.config.js` - ビルド設定、EJSテンプレート統合
 
 ### 古い実装（参考用）
 - `src/game/data/bosses/swamp-dragon.ts` - 複雑なAI戦略の例
@@ -652,6 +674,7 @@ defeatTrophy: {
 - `src/game/data/bosses/clean-master.ts` - 新しい状態異常システムの例
 - `src/game/data/bosses/dream-demon.ts` - 多様な状態異常と複雑な行動パターンの例
 - `src/game/data/bosses/bat-vampire.ts` - FinishingMoveアクション、給餌システム、詳細なAI戦略の例
+- `src/game/data/bosses/underground-worm.ts` - 最新のEJSテンプレート対応、記念品システムの例
 
 ### システムファイル
 - `src/game/entities/Boss.ts` - ボスクラスの実装
@@ -662,8 +685,9 @@ defeatTrophy: {
 
 ### ボスが表示されない
 
-- `src/game/data/index.ts` でのエクスポート確認
-- HTML内の `data-boss` 属性がIDと一致しているか確認
+- `src/game/data/index.ts` での `registeredBossIds` 配列と `loadBossData` 関数の更新確認
+- EJSテンプレートシステムのビルド結果確認（HTMLは自動生成）
+- エクスプローラーレベル不足による非表示ではないか確認
 
 ### 行動が選択されない
 
@@ -676,3 +700,8 @@ defeatTrophy: {
 - `StatusEffectType` の定義確認
 - CSS クラスの追加確認
 - `statusChance` の設定確認（0.0-1.0の範囲で設定）
+
+### コード品質関連エラー
+- **EJSテンプレート関連**: webpackビルドエラーが出る場合はテンプレート構文を確認
+- **registeredBossIdsの不一致**: ボスIDが配列とswitch文で一致しているか確認
+- **TypeScriptエラー**: ボスデータのBossDataインターフェース適合性を確認

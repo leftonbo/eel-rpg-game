@@ -62,9 +62,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 概要：
 1. `src/game/data/bosses/{boss-id}.ts` でボスデータ作成
-2. `src/game/data/index.ts` にエクスポート追加
-3. `src/index.html` のボス選択画面にカード追加
-4. 必要に応じて新しい状態異常を追加
+2. `src/game/data/index.ts` の `registeredBossIds` 配列とloadBossData関数に追加
+3. EJSテンプレートシステムでHTML自動生成（手動HTML編集は不要）
+4. 必要に応じて新しい状態異常をStatusEffectTypesに追加
+5. エクスプローラーレベル設定（explorerLevelRequired）でボス解禁制御
 
 ### 状態異常追加
 
@@ -101,11 +102,27 @@ interface PlayerSaveData {
 - `hasSaveData()`: セーブデータ存在チェック
 - `validateSaveDataStructure()`: セーブデータ構造検証（インポート時）
 
+#### PlayerManagerクラス群の分離
+
+- **PlayerModalManager**: プレイヤー詳細モーダル管理（タブ切り替え、表示制御）
+- **PlayerEquipmentManager**: 装備システム管理（武器・防具の装備変更、ボーナス計算）
+- **PlayerItemManager**: アイテム管理（使用、効果適用、個数管理）
+- **PlayerBattleActions**: 戦闘行動管理（攻撃、防御、スキル使用）
+- **PlayerProgressionManager**: 成長管理（アビリティ経験値、レベルアップ処理）
+
 ### ゲームバランス調整
 
 - Player.ts: maxHp=100, baseAttackPower=5
 - 状態異常ダメージ: 火だるま=8, 毒=3（毎ターン）
-- 現在のボス（11体）: 沼のドラゴン=400, 闇のおばけ=150, 機械のクモ=180, ドリームデーモン=240, スコーピオンキャリア=260, みかんドラゴン=320, 海のクラーケン=350, アクアサーペント=350, クリーンマスター=280, 地下のワーム=380, 蝙蝠のヴァンパイア=310
+- アビリティ: 6種類（Combat, Toughness, Endurance, Agility, CraftWork, Explorer）
+- 装備: 武器4段階（素手→ナイフ→剣→大剣）、防具4段階（裸→服→軽装甲→重装甲）
+- 現在のボス（11体）:
+  - 基本エリア: 沼のドラゴン(HP400), 闇のおばけ(HP150), 機械のクモ(HP180)
+  - 砂漠: スコーピオンキャリア(HP260)
+  - 海: 海のクラーケン(HP350), アクアサーペント(HP350)
+  - ゲスト: ドリームデーモン(HP240)
+  - ジャングル: みかんドラゴン(HP320)
+  - 遺跡: クリーンマスター(HP280), 蝙蝠のヴァンパイア(HP310), 地下のワーム(HP380)
 - コミット時はgitmojiと日本語メッセージを使用
 
 ## UI設計・実装方針
@@ -134,12 +151,13 @@ interface PlayerSaveData {
 #### 特に重要なUI要素（実装済み）
 
 - **バトル画面**: `.card` でプレイヤー/ボス情報を整理、`.progress-bar` でHP/MPゲージ表示
-- **ボス選択画面**: `.row .col-md-4` でボスカードをグリッド配置、各ボスは `.card` コンポーネント
+- **ボス選択画面**: EJSテンプレートで動的生成、エクスプローラーレベルによる解禁制御
 - **モーダル画面**: ボス詳細、プレイヤー詳細、デバッグコンソールに `.modal` コンポーネント活用
-- **アクションボタン**: `.d-grid gap-2` でボタンを縦配置、スキル/アイテムパネルの切り替え
+- **アクションボタン**: EJSパーシャル（action-buttons.ejs）による統一コンポーネント
 - **タブインターフェース**: プレイヤー詳細モーダルで `.nav-tabs` を使用（ステータス、装備、スキル、アイテム、データ管理）
 - **プログレスバー**: HP/MP表示、アビリティレベル表示に活用
 - **バッジ**: ステータス効果の表示（実装は `StatusEffectManager` が担当）
+- **アビリティカード**: ability-card.ejsによるコンポーネント化、レベル・経験値・効果表示
 
 ## TypeScript設定
 
@@ -181,6 +199,13 @@ Claude Codeは以下の方針に従ってgitコミットを行うこと
 - `refactor/` + リファクタリング内容
 - `docs/` + ドキュメント更新内容
 
+### コード品質管理
+
+- **型チェック**: `npm run typecheck` で TypeScript 型エラーを確認
+- **リント**: `npm run lint` で ESLint によるコード品質チェック
+- **ビルド**: `npm run build` でプロダクション用ビルド実行
+- Claude Code による編集後は必ずこれらのコマンドを実行してエラーがないことを確認すること
+
 ### PR 作成時の注意点
 
 - PRタイトルと内容は日本語で記述すること
@@ -189,3 +214,17 @@ Claude Codeは以下の方針に従ってgitコミットを行うこと
 ### プロンプト履歴、アイデア草案の保存先
 
 - プロンプト履歴やアイデア草案を保存する場合、 `docs/drafts/` ディレクトリに .md 形式で保存すること
+
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
+
+## プロジェクト固有の重要な注意事項
+
+- **EJSテンプレート**: HTMLの生成は templates/ ディレクトリのEJSファイルで行う。手動でHTMLを編集してはいけない
+- **ボス追加**: 新ボス追加時は必ず registeredBossIds 配列と loadBossData 関数の両方を更新
+- **状態異常**: 新しい状態異常追加時は StatusEffectTypes.ts の enum とCSSクラスの両方を追加
+- **コミット**: 必ず gitmoji + 日本語メッセージ + Co-Authored-By を含める
+- **品質チェック**: 編集後は npm run typecheck && npm run build を実行して確認
