@@ -141,6 +141,12 @@ export class TrophyDisplayComponent {
             } else {
                 dateObj = date;
             }
+            
+            if (isNaN(dateObj.getTime())) {
+                console.warn('Invalid date provided:', date);
+                return '不明';
+            }
+            
             return dateObj.toLocaleDateString('ja-JP');
         } catch (error) {
             console.warn('Failed to format date:', date, error);

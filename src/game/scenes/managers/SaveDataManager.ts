@@ -1,6 +1,6 @@
 import { Game } from '../../Game';
 import { PlayerSaveManager } from '../../systems/PlayerSaveData';
-import { AbilityType } from '../../systems/AbilitySystem';
+import { AbilityData, AbilityType } from '../../systems/AbilitySystem';
 import { ModalUtils } from '../../utils/ModalUtils';
 import { AbilityNameResolver } from '../utils/AbilityNameResolver';
 
@@ -221,7 +221,7 @@ export class SaveDataManager {
     /**
      * Set ability level and experience
      */
-    private setAbilityLevel(ability: any, level: number): void {
+    private setAbilityLevel(ability: AbilityData, level: number): void {
         ability.level = level;
         ability.experience = level > 0 ? Math.pow(level, 3) * 50 : 0;
     }

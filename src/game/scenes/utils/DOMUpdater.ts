@@ -160,8 +160,8 @@ export class DOMUpdater {
      * 要素を安全に取得する（型チェック付き）
      */
     static getElement<T extends HTMLElement>(id: string): T | null {
-        const element = document.getElementById(id) as T;
-        return element || null;
+        const element = document.getElementById(id);
+        return (element instanceof HTMLElement ? (element as T) : null);
     }
 
     /**
