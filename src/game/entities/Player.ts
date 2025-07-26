@@ -71,35 +71,68 @@ export class Player extends Actor {
         const saveData = PlayerSaveManager.loadPlayerData();
         
         if (saveData) {
-            console.log('[Player][loadFromSave] Save data found:', saveData);
-            
-            // Load abilities
-            console.log('[Player][loadFromSave] Loading abilities:', saveData.abilities);
-            this.abilitySystem.loadFromSaveData(saveData.abilities);
-            
-            // Load equipment
-            console.log('[Player][loadFromSave] Loading equipment:', saveData.equipment);
-            this.equipmentManager.loadEquipment(saveData.equipment.weapon, saveData.equipment.armor);
-            
-            // Load battle memorials into MemorialSystem
-            console.log('[Player][loadFromSave] Loading memorials:', saveData.memorials);
-            this.memorialSystem.importData(saveData.memorials || {});
-            
-            // Load player info (name and icon)
-            if (saveData.playerInfo) {
-                console.log('[Player][loadFromSave] Loading player info:', saveData.playerInfo);
-                this.name = saveData.playerInfo.name;
-                this.icon = saveData.playerInfo.icon;
-                // Update Actor's displayName as well
-                this.displayName = saveData.playerInfo.name;
-            }
-            
-            console.log('[Player][loadFromSave] Player data loaded successfully');
+            this.loadSaveDataComponents(saveData);
         } else {
-            console.log('[Player][loadFromSave] No save data found, initializing with defaults');
-            // Initialize MemorialSystem with empty data
-            this.memorialSystem.initializeData();
+            this.initializeDefaultData();
         }
+    }
+    
+    /**
+     * Load all components from save data
+     */
+    private loadSaveDataComponents(saveData: any): void {
+        console.log('[Player][loadFromSave] Save data found:', saveData);
+        
+        this.loadAbilities(saveData.abilities);
+        this.loadEquipment(saveData.equipment);
+        this.loadMemorials(saveData.memorials);
+        this.loadPlayerInfo(saveData.playerInfo);
+        
+        console.log('[Player][loadFromSave] Player data loaded successfully');
+    }
+    
+    /**
+     * Load abilities from save data
+     */
+    private loadAbilities(abilitiesData: any): void {
+        console.log('[Player][loadFromSave] Loading abilities:', abilitiesData);
+        this.abilitySystem.loadFromSaveData(abilitiesData);
+    }
+    
+    /**
+     * Load equipment from save data
+     */
+    private loadEquipment(equipmentData: any): void {
+        console.log('[Player][loadFromSave] Loading equipment:', equipmentData);
+        this.equipmentManager.loadEquipment(equipmentData.weapon, equipmentData.armor);
+    }
+    
+    /**
+     * Load memorials from save data
+     */
+    private loadMemorials(memorialsData: any): void {
+        console.log('[Player][loadFromSave] Loading memorials:', memorialsData);
+        this.memorialSystem.importData(memorialsData || {});
+    }
+    
+    /**
+     * Load player info from save data
+     */
+    private loadPlayerInfo(playerInfoData: any): void {
+        if (playerInfoData) {
+            console.log('[Player][loadFromSave] Loading player info:', playerInfoData);
+            this.name = playerInfoData.name;
+            this.icon = playerInfoData.icon;
+            this.displayName = playerInfoData.name;
+        }
+    }
+    
+    /**
+     * Initialize default data when no save exists
+     */
+    private initializeDefaultData(): void {
+        console.log('[Player][loadFromSave] No save data found, initializing with defaults');
+        this.memorialSystem.initializeData();
     }
     
     /**
@@ -155,16 +188,31 @@ export class Player extends Actor {
      * Get all unlocked skills with their current stats (calculated from ability levels)
      */
     public getUnlockedSkills(): SkillData[] {
+        const abilityLevels = this.getAbilityLevelsMap();
+        const unlockedSkillIds = SkillRegistry.getUnlockedSkills(abilityLevels);
+        
+        return this.buildSkillsFromIds(unlockedSkillIds, abilityLevels);
+    }
+    
+    /**
+     * Get ability levels as a map for skill calculations
+     */
+    private getAbilityLevelsMap(): Map<AbilityType, number> {
         const abilityLevels = new Map<AbilityType, number>();
         Object.values(AbilityType).forEach(type => {
             const ability = this.abilitySystem.getAbility(type);
             abilityLevels.set(type, ability?.level || 0);
         });
-        
-        const unlockedSkillIds = SkillRegistry.getUnlockedSkills(abilityLevels);
+        return abilityLevels;
+    }
+    
+    /**
+     * Build skill data array from skill IDs
+     */
+    private buildSkillsFromIds(skillIds: string[], abilityLevels: Map<AbilityType, number>): SkillData[] {
         const skills: SkillData[] = [];
         
-        unlockedSkillIds.forEach(skillId => {
+        skillIds.forEach(skillId => {
             const skill = SkillRegistry.getUpgradedSkill(skillId, abilityLevels);
             if (skill) {
                 skills.push(skill);
@@ -178,12 +226,7 @@ export class Player extends Actor {
      * Get unlocked passive skills
      */
     public getUnlockedPassiveSkills(): SkillData[] {
-        const abilityLevels = new Map<AbilityType, number>();
-        Object.values(AbilityType).forEach(type => {
-            const ability = this.abilitySystem.getAbility(type);
-            abilityLevels.set(type, ability?.level || 0);
-        });
-        
+        const abilityLevels = this.getAbilityLevelsMap();
         return SkillRegistry.getUnlockedPassiveSkills(abilityLevels);
     }
     
@@ -191,12 +234,7 @@ export class Player extends Actor {
      * Check if a specific skill is unlocked (calculated from ability levels)
      */
     public hasSkill(skillId: string): boolean {
-        const abilityLevels = new Map<AbilityType, number>();
-        Object.values(AbilityType).forEach(type => {
-            const ability = this.abilitySystem.getAbility(type);
-            abilityLevels.set(type, ability?.level || 0);
-        });
-        
+        const abilityLevels = this.getAbilityLevelsMap();
         const unlockedSkillIds = SkillRegistry.getUnlockedSkills(abilityLevels);
         return unlockedSkillIds.includes(skillId);
     }
@@ -337,16 +375,7 @@ export class Player extends Actor {
     }
     
     getAvailableSkills(): SkillData[] {
-        // Get unlocked skills from SkillRegistry
-        const abilityLevels = new Map<AbilityType, number>();
-        Object.values(AbilityType).forEach(type => {
-            const ability = this.abilitySystem.getAbility(type);
-            abilityLevels.set(type, ability?.level || 0);
-        });
-        
         const unlockedSkills = this.getUnlockedSkills();
-        
-        // Filter usable skills based on current state
         return unlockedSkills.filter(skill => this.canUseSkill(skill));
     }
     
