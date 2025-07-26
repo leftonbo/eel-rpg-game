@@ -12,6 +12,9 @@
                 経験値: <span id="<%= abilityId %>-exp">0</span> / 
                 <span id="<%= abilityId %>-next">100</span>
             </small>
+            <% if (locals?.description) { %>
+                <p class="mt-2 mb-0 small"><%= description %></p>
+            <% } %>
         </div>
     </div>
 </div>
