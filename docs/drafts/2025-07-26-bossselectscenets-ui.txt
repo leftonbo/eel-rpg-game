@@ -1,0 +1,1883 @@
+╭───────────────────────────────────────────────────╮
+│ ✻ Welcome to Claude Code!                         │
+│                                                   │
+│   /help for help, /status for your current setup  │
+│                                                   │
+│   cwd: /home/leftonbo/projects/eel-rpg-game       │
+╰───────────────────────────────────────────────────╯
+
+> BossSelectScene.ts の中身を大幅に整理し、UI単位ごとに並べ替えた。このソースコードを一
+  度Agentにコードレビューしてほしい。
+
+● Read(src/game/scenes/BossSelectScene.ts)
+  ⎿  Read 1300 lines (ctrl+r to expand)
+
+● コードを確認しました。コードレビューのためにコノピィエージェントに依頼します。
+
+● konopi-code-reviewer(BossSelectScene コードレビュー)
+  ⎿  Done (1 tool use · 35.7k tokens · 52.3s)                                           
+
+● コノピィからの厳しいレビューが完了しました！主な問題点は 1300行の巨大クラス（God Class
+   アンチパターン） で、単一責任原則に著しく違反しているとの評価でした。
+
+  レビュー結果サマリー
+
+  総合評価: D（要大幅改善）
+
+  主要な問題点
+
+  1. 巨大クラス問題: 1つのクラスが8つ以上の責任を持ちすぎ
+  2. 長大メソッド: showPlayerDetails()が200行近く、責任が分散
+  3. 重複ロジック: プログレスバー計算やアビリティ名変換が複数箇所で重複
+  4. 型安全性不足: null チェックなしでの型キャストが危険
+
+  良い点
+
+  - regionコメントでのUI単位整理
+  - DocumentFragmentを使ったパフォーマンス最適化
+  - 適切なエラーハンドリング
+                                                                                        
+●User approved Claude's plan:
+  ⎿ BossSelectScene リファクタリング計画
+
+    コノピィのレビュー結果を受けて、以下の段階的リファクタリングを実施します：
+
+    Phase 1: クラス分割（最優先）
+
+    - BossCardManager: ボス選択カード関連機能
+    - PlayerModalManager: プレイヤー詳細モーダル管理
+    - PlayerInfoEditManager: プレイヤー情報編集機能
+    - SaveDataManager: セーブデータ管理機能
+
+    Phase 2: 共通ユーティリティ抽出
+
+    - DOMUpdater: DOM操作の統一化
+    - ProgressCalculator: プログレスバー計算の共通化
+    - AbilityNameResolver: アビリティ名変換の統一
+
+    Phase 3: UI コンポーネント化
+
+    - SkillDisplayComponent: スキル表示UI
+    - TrophyDisplayComponent: トロフィー表示UI
+    - EquipmentSelectorComponent: 装備選択UI
+
+    Phase 4: 型安全性向上
+
+    - null チェックの追加
+    - 適切な型キャストの実装
+    - TypeScriptの型システム活用強化
+
+    この計画により、1300行の巨大クラスを複数の小さな責任明確なクラスに分割し、保守性と可
+    読性を大幅に向上させます。
+
+● Update Todos
+  ⎿  ☐ Phase 1: BossCardManager クラスの作成と抽出         
+     ☐ Phase 1: PlayerModalManager クラスの作成と抽出
+     ☐ Phase 1: PlayerInfoEditManager クラスの作成と抽出
+     ☐ Phase 1: SaveDataManager クラスの作成と抽出
+     ☐ リファクタリング後のテスト実行と動作確認
+     ☐ Phase 2: DOMUpdater 共通ユーティリティの作成
+     ☐ Phase 2: ProgressCalculator 共通ユーティリティの作成
+     ☐ Phase 3: SkillDisplayComponent の作成
+     ☐ Phase 4: 型安全性向上とnullチェック追加
+
+● Update Todos
+  ⎿  ☐ Phase 1: BossCardManager クラスの作成と抽出         
+     ☐ Phase 1: PlayerModalManager クラスの作成と抽出
+     ☐ Phase 1: PlayerInfoEditManager クラスの作成と抽出
+     ☐ Phase 1: SaveDataManager クラスの作成と抽出
+     ☐ リファクタリング後のテスト実行と動作確認
+     ☐ Phase 2: DOMUpdater 共通ユーティリティの作成
+     ☐ Phase 2: ProgressCalculator 共通ユーティリティの作成
+     ☐ Phase 3: SkillDisplayComponent の作成
+     ☐ Phase 4: 型安全性向上とnullチェック追加
+
+● まずBossCardManagerクラスを作成して、ボス選択カード関連の機能を抽出します。
+
+● Write(src/game/scenes/managers/BossCardManager.ts)
+  ⎿  Wrote 203 lines to src/game/scenes/managers/BossCardManager.ts  
+     import { Game } from '../../Game';
+     import { getAllBossData, getBossData } from '../../data';
+     import { MemorialSaveData } from '../../systems/MemorialSystem';
+     export class BossCardManager {
+         private game: Game;
+         private onBossSelectCallback?: (bossId: string) => void;
+         constructor(game: Game) {
+             this.game = game;
+     … +193 lines (ctrl+r to expand)
+
+● Update Todos
+  ⎿  ☒ Phase 1: BossCardManager クラスの作成と抽出         
+     ☐ Phase 1: PlayerModalManager クラスの作成と抽出
+     ☐ Phase 1: PlayerInfoEditManager クラスの作成と抽出
+     ☐ Phase 1: SaveDataManager クラスの作成と抽出
+     ☐ リファクタリング後のテスト実行と動作確認
+     ☐ Phase 2: DOMUpdater 共通ユーティリティの作成
+     ☐ Phase 2: ProgressCalculator 共通ユーティリティの作成
+     ☐ Phase 3: SkillDisplayComponent の作成
+     ☐ Phase 4: 型安全性向上とnullチェック追加
+
+● 次にPlayerModalManagerクラスを作成します。プレイヤー詳細モーダル関連の機能を抽出します
+  。
+
+● Write(src/game/scenes/managers/PlayerModalManager.ts)
+  ⎿  Wrote 590 lines to src/game/scenes/managers/PlayerModalManager.ts
+     import { Game } from '../../Game';
+     import { AbilityType } from '../../systems/AbilitySystem';
+     import { SkillData, UnlockCondition } from '../../data/skills';
+     import { getAllBossData } from '../../data';
+     import { Trophy } from '../../systems/MemorialSystem';
+     import type { BootstrapModal } from '../../types/bootstrap';
+     export class PlayerModalManager {
+         private game: Game;
+         private playerModal: BootstrapModal | null = null;
+     … +580 lines (ctrl+r to expand)
+
+● Update Todos
+  ⎿  ☒ Phase 1: BossCardManager クラスの作成と抽出         
+     ☒ Phase 1: PlayerModalManager クラスの作成と抽出
+     ☐ Phase 1: PlayerInfoEditManager クラスの作成と抽出
+     ☐ Phase 1: SaveDataManager クラスの作成と抽出
+     ☐ リファクタリング後のテスト実行と動作確認
+     ☐ Phase 2: DOMUpdater 共通ユーティリティの作成
+     ☐ Phase 2: ProgressCalculator 共通ユーティリティの作成
+     ☐ Phase 3: SkillDisplayComponent の作成
+     ☐ Phase 4: 型安全性向上とnullチェック追加
+
+● 次にPlayerInfoEditManagerクラスを作成します。プレイヤー情報編集機能を抽出します。
+
+● Write(src/game/scenes/managers/PlayerInfoEditManager.ts)
+  ⎿  Wrote 265 lines to src/game/scenes/managers/PlayerInfoEditManager.ts             
+     import { Game } from '../../Game';
+     import { getIconsByCategory } from '../../data/PlayerIcons';
+     import { DEFAULT_PLAYER_NAME, DEFAULT_PLAYER_ICON } from '../../entities/Player';
+     import { ModalUtils } from '../../utils/ModalUtils';
+     import type { BootstrapModal } from '../../types/bootstrap';
+     export class PlayerInfoEditManager {
+         private game: Game;
+         private playerInfoEditModal: BootstrapModal | null = null;
+         private selectedIcon: string = '🐍'; // Temporary storage for icon selection
+     … +255 lines (ctrl+r to expand)
+
+● Update Todos
+  ⎿  ☒ Phase 1: BossCardManager クラスの作成と抽出         
+     ☒ Phase 1: PlayerModalManager クラスの作成と抽出
+     ☒ Phase 1: PlayerInfoEditManager クラスの作成と抽出
+     ☐ Phase 1: SaveDataManager クラスの作成と抽出
+     ☐ リファクタリング後のテスト実行と動作確認
+     ☐ Phase 2: DOMUpdater 共通ユーティリティの作成
+     ☐ Phase 2: ProgressCalculator 共通ユーティリティの作成
+     ☐ Phase 3: SkillDisplayComponent の作成
+     ☐ Phase 4: 型安全性向上とnullチェック追加
+
+● 次にSaveDataManagerクラスを作成します。セーブデータ管理機能とデバッグ機能を抽出します
+  。
+
+● Write(src/game/scenes/managers/SaveDataManager.ts)
+  ⎿  Wrote 256 lines to src/game/scenes/managers/SaveDataManager.ts   
+     import { Game } from '../../Game';
+     import { PlayerSaveManager } from '../../systems/PlayerSaveData';
+     import { AbilityType } from '../../systems/AbilitySystem';
+     import { ModalUtils } from '../../utils/ModalUtils';
+     export class SaveDataManager {
+         private game: Game;
+         constructor(game: Game) {
+             this.game = game;
+     … +246 lines (ctrl+r to expand)
+
+● Update Todos
+  ⎿  ☒ Phase 1: BossCardManager クラスの作成と抽出         
+     ☒ Phase 1: PlayerModalManager クラスの作成と抽出
+     ☒ Phase 1: PlayerInfoEditManager クラスの作成と抽出
+     ☒ Phase 1: SaveDataManager クラスの作成と抽出
+     ☐ Phase 2: DOMUpdater 共通ユーティリティの作成
+     ☐ リファクタリング後のテスト実行と動作確認
+     ☐ Phase 2: ProgressCalculator 共通ユーティリティの作成
+     ☐ Phase 3: SkillDisplayComponent の作成
+     ☐ Phase 4: 型安全性向上とnullチェック追加
+
+● 次にPhase 2として共通ユーティリティを作成します。まずDOMUpdaterを作成します。
+
+● Write(src/game/scenes/utils/DOMUpdater.ts)
+  ⎿  Wrote 192 lines to src/game/scenes/utils/DOMUpdater.ts             
+     /**
+      * DOM操作の共通ユーティリティクラス
+      * DOM要素の更新処理を統一化し、null チェックを含む安全な操作を提供
+      */
+     export class DOMUpdater {
+         /**
+          * 指定されたIDの要素のテキストコンテンツを更新する
+          * 要素が存在しない場合は何もしない
+          */
+         static updateElement(id: string, value: string): void {
+     … +182 lines (ctrl+r to expand)
+
+● Update Todos
+  ⎿  ☒ Phase 1: BossCardManager クラスの作成と抽出         
+     ☒ Phase 1: PlayerModalManager クラスの作成と抽出
+     ☒ Phase 1: PlayerInfoEditManager クラスの作成と抽出
+     ☒ Phase 1: SaveDataManager クラスの作成と抽出
+     ☒ Phase 2: DOMUpdater 共通ユーティリティの作成
+     ☐ Phase 2: ProgressCalculator 共通ユーティリティの作成
+     ☐ リファクタリング後のテスト実行と動作確認
+     ☐ Phase 3: SkillDisplayComponent の作成
+     ☐ Phase 4: 型安全性向上とnullチェック追加
+
+● 次にProgressCalculatorを作成します。プログレスバー計算の共通化を行います。
+
+● Write(src/game/scenes/utils/ProgressCalculator.ts)
+  ⎿  Wrote 171 lines to src/game/scenes/utils/ProgressCalculator.ts
+     /**
+      * プログレスバー計算の共通ユーティリティクラス
+      * アビリティレベルの経験値とプログレスバーの計算を統一化
+      */
+     export class ProgressCalculator {
+         /**
+          * アビリティの現在レベルでの経験値進行度を計算する
+          * @param level 現在のレベル
+          * @param experience 現在の経験値
+          * @returns 0-100の範囲のパーセンテージ
+     … +161 lines (ctrl+r to expand)
+
+● Update Todos
+  ⎿  ☒ Phase 1: BossCardManager クラスの作成と抽出         
+     ☒ Phase 1: PlayerModalManager クラスの作成と抽出
+     ☒ Phase 1: PlayerInfoEditManager クラスの作成と抽出
+     ☒ Phase 1: SaveDataManager クラスの作成と抽出
+     ☒ Phase 2: DOMUpdater 共通ユーティリティの作成
+     ☒ Phase 2: ProgressCalculator 共通ユーティリティの作成
+     ☐ Phase 3: SkillDisplayComponent の作成
+     ☐ リファクタリング後のテスト実行と動作確認
+     ☐ Phase 4: 型安全性向上とnullチェック追加
+
+● 次にPhase 3としてSkillDisplayComponentを作成します。スキル表示の共通化を行います。
+
+● Write(src/game/scenes/components/SkillDisplayComponent.ts)
+  ⎿  Wrote 258 lines to src/game/scenes/components/SkillDisplayComponent.ts
+     import { SkillData, UnlockCondition } from '../../data/skills';
+     /**
+      * スキル表示の共通コンポーネント
+      * アクティブスキルとパッシブスキルの表示ロジックを統一化
+      */
+     export class SkillDisplayComponent {
+         /**
+          * スキル要素を作成する
+          * @param skill スキルデータ
+     … +248 lines (ctrl+r to expand)
+  ⎿  Found 1 new diagnostic issue in 1 file (ctrl-r to expand)
+
+● 不要なimportを修正します。
+
+● Update(src/game/scenes/managers/BossCardManager.ts)
+  ⎿  Updated src/game/scenes/managers/BossCardManager.ts with 1 addition and 1 removal
+       1    import { Game } from '../../Game';
+       2 -  import { getAllBossData, getBossData } from '../../data';
+       2 +  import { getAllBossData } from '../../data';
+       3    import { MemorialSaveData } from '../../systems/MemorialSystem';
+       4    
+       5    export class BossCardManager {
+
+● Update Todos
+  ⎿  ☒ Phase 1: BossCardManager クラスの作成と抽出         
+     ☒ Phase 1: PlayerModalManager クラスの作成と抽出
+     ☒ Phase 1: PlayerInfoEditManager クラスの作成と抽出
+     ☒ Phase 1: SaveDataManager クラスの作成と抽出
+     ☒ Phase 2: DOMUpdater 共通ユーティリティの作成
+     ☒ Phase 2: ProgressCalculator 共通ユーティリティの作成
+     ☒ Phase 3: SkillDisplayComponent の作成
+     ☐ BossSelectSceneメインクラスのリファクタリング
+     ☐ リファクタリング後のテスト実行と動作確認
+
+● これで個別のクラスとユーティリティの作成が完了しました。次に、BossSelectSceneメインク
+  ラスをこれらの新しいクラスを使用するようにリファクタリングします。
+
+● Update(src/game/scenes/BossSelectScene.ts)
+  ⎿  Updated src/game/scenes/BossSelectScene.ts with 27 additions and 20 removals       
+        1    import { Game } from '../Game';
+        2 -  import { getAllBossData, getBossData } from '../data';
+        3 -  import { PlayerSaveManager } from '../systems/PlayerSaveData';
+        4 -  import { AbilityType } from '../systems/AbilitySystem';
+        5 -  import { SkillData, UnlockCondition } from '../data/skills';
+        2 +  import { getBossData } from '../data';
+        3    import { ModalUtils } from '../utils/ModalUtils';
+        4 -  import { Trophy, MemorialSaveData } from '../systems/MemorialSystem';
+        5 -  import { getIconsByCategory } from '../data/PlayerIcons';
+        6 -  import { DEFAULT_PLAYER_NAME, DEFAULT_PLAYER_ICON } from 
+          - '../entities/Player';
+        4    import type { BootstrapModal } from '../types/bootstrap';
+        5 +  import { BossCardManager } from './managers/BossCardManager';
+        6 +  import { PlayerModalManager } from './managers/PlayerModalManager';
+        7 +  import { PlayerInfoEditManager } from './managers/PlayerInfoEditManager';
+        8 +  import { SaveDataManager } from './managers/SaveDataManager';
+        9 +  import { DOMUpdater } from './utils/DOMUpdater';
+       10    
+       11    export class BossSelectScene {
+       12        private game: Game;
+       13 -      private bossModal: BootstrapModal | null = null; // Bootstrap modal for 
+     boss details
+          - boss details
+       14 -      private playerModal: BootstrapModal | null = null; // Bootstrap modal 
+          - for player details
+       15 -      private playerInfoEditModal: BootstrapModal | null = null; // Bootstrap 
+          - modal for player info editing
+       13 +      private bossModal: BootstrapModal | null = null;
+       14        private selectedBossId: string = '';
+       15 -      private selectedIcon: string = '🐍'; // Temporary storage for icon 
+          - selection
+       15        
+       16 +      // Manager instances
+       17 +      private bossCardManager: BossCardManager;
+       18 +      private playerModalManager: PlayerModalManager;
+       19 +      private playerInfoEditManager: PlayerInfoEditManager;
+       20 +      private saveDataManager: SaveDataManager;
+       21 +      
+       22        constructor(game: Game) {
+       23            this.game = game;
+       24 +          
+       25 +          // Initialize managers
+       26 +          this.bossCardManager = new BossCardManager(game);
+       27 +          this.playerModalManager = new PlayerModalManager(game);
+       28 +          this.playerInfoEditManager = new PlayerInfoEditManager(game);
+       29 +          this.saveDataManager = new SaveDataManager(game);
+       30 +          
+       31            this.init();
+       32        }
+       33        
+     ...
+       27         * Sets up event listeners and initializes modals
+       28         */
+       29        private init(): void {
+       30 -  
+       30            // Player details button
+       31            const playerDetailsButton = 
+            document.getElementById('player-details-btn');
+       32            if (playerDetailsButton) {
+       33                playerDetailsButton.addEventListener('click', () => {
+       34 -                  this.showPlayerDetails();
+       34 +                  this.playerModalManager.showPlayerDetails();
+       35                });
+       36            }
+       37    
+       38            // Initialize boss modal
+       39            this.initializeBossModal();
+       40            
+       41 -          // Initialize player modal
+       42 -          this.initializePlayerModal();
+       43 -  
+       44 -          // Initialize player info edit modal event listeners
+       45 -          this.initializeModalEditPlayerInfo();
+       41 +          // Setup custom event listeners
+       42 +          this.setupCustomEventListeners();
+       43            
+       44 -          // Initialize modal save data buttons
+       45 -          this.initializeModalSaveDataButtons();
+       44 +          // Setup boss card manager callback
+       45 +          this.bossCardManager.setOnBossSelectCallback((bossId: string) => {
+       46 +              this.onBossSelect(bossId);
+       47 +          });
+       48        }
+       49        
+       50        /**
+
+● Update(src/game/scenes/BossSelectScene.ts)
+  ⎿  Updated src/game/scenes/BossSelectScene.ts with 14 additions and 166 removals      
+       61         */
+       62        public lateInitialize(): void {
+       63            // Generate boss cards
+       64 -          this.generateBossCards();
+       64 +          this.bossCardManager.generateBossCards();
+       65        }
+       66    
+       67        /**
+     ...
+        72            console.log('Entered boss select scene');
+        73            
+        74            // Update boss card information
+        75 -          this.updateBossCards();
+        75 +          this.bossCardManager.updateBossCards();
+        76            
+        77            // Update player status display
+        78            this.updatePlayerSummary();
+        79 -          
+        80 -          // Show/hide debug controls based on debug mode
+        81 -          this.updateDebugControlsVisibilityInModal();
+        79        }
+        80        
+        81 -      //#region Boss Cards
+        81 +      //#region Custom Event Listeners
+        82        
+        83        /**
+        84 -       * Generate boss cards dynamically from boss data
+        85 -       * Must be called after boss data is loaded
+        84 +       * Setup custom event listeners for inter-manager communication
+        85         */
+        86 -      private generateBossCards(): void {
+        87 -          const container = document.getElementById('boss-cards-container');
+        88 -          if (!container) return;
+        89 -          
+        90 -          // Get all boss data and sort by explorerLevelRequired first, then 
+           - by id
+        91 -          const allBossData = getAllBossData();
+        92 -          if (!allBossData || allBossData.length === 0) {
+        93 -              console.error('No boss data found');
+        94 -              return;
+        95 -          }
+        96 -          
+        97 -          const sortedBossData = allBossData.sort((a, b) => {
+        98 -              const aLevel = a.explorerLevelRequired || 0;
+        99 -              const bLevel = b.explorerLevelRequired || 0;
+       100 -              
+       101 -              // First sort by explorer level required
+       102 -              if (aLevel !== bLevel) {
+       103 -                  return aLevel - bLevel;
+       104 -              }
+       105 -              
+       106 -              // Then sort by id alphabetically
+       107 -              return a.id.localeCompare(b.id);
+        86 +      private setupCustomEventListeners(): void {
+        87 +          // Listen for player summary update requests
+        88 +          document.addEventListener('updatePlayerSummary', () => {
+        89 +              this.updatePlayerSummary();
+        90            });
+        91            
+        92 -          // Use DocumentFragment for better performance
+        93 -          const fragment = document.createDocumentFragment();
+        94 -          
+        95 -          // Generate cards for each boss
+        96 -          sortedBossData.forEach(bossData => {
+        97 -              const colDiv = document.createElement('div');
+        98 -              colDiv.className = 'col-md-4 mb-4';
+        99 -              
+       100 -              const cardHTML = `
+       101 -                  <div class="card bg-secondary h-100 boss-card" 
+           - data-boss="${bossData.id}">
+       102 -                      <div class="boss-status-container">
+       103 -                          <div class="boss-status-badge victory" 
+           - id="boss-status-victory-${bossData.id}"></div>
+       104 -                          <div class="boss-status-badge defeat" 
+           - id="boss-status-defeat-${bossData.id}"></div>
+       105 -                      </div>
+       106 -                      <div class="card-body text-center">
+       107 -                          <h3 
+     class="card-title">${bossData.displayName}</h3>
+       108 -                          <p class="card-text">${bossData.description}</p>
+       109 -                          <button class="btn btn-success 
+     w-100">選択</button>
+       110 -                      </div>
+       111 -                  </div>
+       112 -              `;
+       113 -              
+       114 -              colDiv.innerHTML = cardHTML;
+       115 -              fragment.appendChild(colDiv);
+        92 +          // Listen for player modal update requests
+        93 +          document.addEventListener('updatePlayerModal', () => {
+        94 +              this.playerModalManager.showPlayerDetails();
+        95            });
+        96            
+        97 -          // Single DOM operation
+        98 -          container.appendChild(fragment);
+        99 -          
+       100 -          // Set up event delegation for boss card clicks
+       101 -          this.setupBossCardEventDelegation(container);
+       102 -      }
+       103 -      
+       104 -      /**
+       105 -       * Set up event delegation for boss card clicks
+       106 -       */
+       107 -      private setupBossCardEventDelegation(container: HTMLElement): void {
+       108 -          container.addEventListener('click', (e) => {
+       109 -              const card = (e.target as HTMLElement).closest('.boss-card');
+       110 -              if (card) {
+       111 -                  const bossId = card.getAttribute('data-boss');
+       112 -                  if (bossId) {
+       113 -                      this.onBossSelect(bossId);
+       114 -                  }
+       115 -              }
+        97 +          // Listen for player modal refresh requests
+        98 +          document.addEventListener('refreshPlayerModal', () => {
+        99 +              this.playerModalManager.showPlayerDetails();
+       100            });
+       101        }
+       102 -  
+       103 -      private updateBossCards(): void {
+       104 -          // Get boss cards (only query once)
+       105 -          const bossCards = document.querySelectorAll('.boss-card');
+       106 -  
+       107 -          // Update status and visibility for each card
+       108 -          const player = this.game.getPlayer();
+       109 -          const memorialSystem = player.memorialSystem;
+       110 -          const memorialData = memorialSystem.exportData();
+       111 -          const playerExplorerLevel = player.getExplorerLevel();
+       112 -          const allBossData = getAllBossData();
+       113 -  
+       114 -          bossCards.forEach(card => {
+       115 -              const bossId = card.getAttribute('data-boss');
+       116 -              if (bossId) {
+       117 -                  const bossData = allBossData.find(boss => boss.id === 
+           - bossId);
+       118 -                  
+       119 -                  if (bossData) {
+       120 -                      const textElement = card.querySelector('.card-text');
+       121 -                      const requiredLevel = bossData.explorerLevelRequired 
+     ||
+           -  0;
+       122 -                      const isUnlocked = playerExplorerLevel >= 
+           - requiredLevel;
+       123 -                      
+       124 -                      // Update description based on unlock status
+       125 -                      if (textElement) {
+       126 -                          if (isUnlocked) {
+       127 -                              textElement.textContent = 
+     bossData.description;
+       128 -                          } else {
+       129 -                              textElement.textContent = `🔒 
+           - エクスプローラーLv.${requiredLevel}で解禁`;
+       130 -                          }
+       131 -                      }
+       132 -                      
+       133 -                      // Update boss status badges
+       134 -                      this.updateBossStatusBadge(bossId, memorialData);
+       135 -                      
+       136 -                      // Show/hide card based on unlock status
+       137 -                      if (isUnlocked) {
+       138 -                          card.classList.remove('d-none');
+       139 -                          card.classList.remove('boss-card-locked');
+       140 -                          (card as HTMLElement).style.pointerEvents = 
+     'auto';
+       141 -                          (card as HTMLElement).style.opacity = '1';
+       142 -                      } else {
+       143 -                          card.classList.add('d-none');
+       144 -                      }
+       145 -                  }
+       146 -              }
+       147 -          });
+       148 -      }
+       102        
+       103 -      /**
+       104 -       * Update boss status badges based on battle history.
+       105 -       * 
+       106 -       * This method updates the visibility and content of the victory and 
+           - defeat badges
+       107 -       * for a given boss based on the player's battle history stored in the 
+           - memorial data.
+       108 -       * 
+       109 -       * - If the player has achieved a victory (`dateFirstWin` is present), 
+           - the victory badge
+       110 -       *   is displayed with a trophy icon (🏆) and a tooltip indicating 
+           - "勝利済み" (victory achieved).
+       111 -       * - If the player has experienced a defeat (`dateFirstLost` is 
+           - present), the defeat badge
+       112 -       *   is displayed with a skull icon (💀) and a tooltip indicating 
+           - "敗北済み" (defeat experienced).
+       113 -       * - If both victory and defeat are present, both badges are displayed 
+           - side by side.
+       114 -       * - By default, both badges are hidden if no battle history is 
+           - available for the boss.
+       115 -       */
+       116 -      private updateBossStatusBadge(bossId: string, memorialData: 
+           - MemorialSaveData): void {
+       117 -          const victoryBadge = 
+           - document.getElementById(`boss-status-victory-${bossId}`);
+       118 -          const defeatBadge = 
+           - document.getElementById(`boss-status-defeat-${bossId}`);
+       119 -          
+       120 -          if (!victoryBadge || !defeatBadge) return;
+       121 -          
+       122 -          // Find boss memorial record
+       123 -          const memorial = memorialData.bossMemorials.find(m => m.bossId === 
+           - bossId);
+       124 -          
+       125 -          // Default: hide both badges
+       126 -          victoryBadge.style.display = 'none';
+       127 -          defeatBadge.style.display = 'none';
+       128 -          
+       129 -          if (memorial) {
+       130 -              const hasVictory = memorial.dateFirstWin;
+       131 -              const hasDefeat = memorial.dateFirstLost;
+       132 -              
+       133 -              if (hasVictory) {
+       134 -                  // Show victory badge
+       135 -                  victoryBadge.style.display = 'flex';
+       136 -                  victoryBadge.textContent = '🏆';
+       137 -                  victoryBadge.title = '勝利済み';
+       138 -              }
+       139 -              
+       140 -              if (hasDefeat) {
+       141 -                  // Show defeat badge
+       142 -                  defeatBadge.style.display = 'flex';
+       143 -                  defeatBadge.textContent = '💀';
+       144 -                  defeatBadge.title = '敗北済み';
+       145 -              }
+       146 -          }
+       147 -      }
+       148 -      
+       103        //#endregion
+       104        
+       105        //#region Modal - Boss Selection
+
+● Update(src/game/scenes/BossSelectScene.ts)
+  ⎿  Updated src/game/scenes/BossSelectScene.ts with 10 additions and 14 removals       
+       218            const equipment = player.getEquipmentInfo();
+       219            
+       220            // Update player header (name and icon)
+       221 -          this.updateElement('player-header-name', player.name);
+       222 -          this.updateElement('player-header-icon', player.icon);
+       221 +          DOMUpdater.updateElement('player-header-name', player.name);
+       222 +          DOMUpdater.updateElement('player-header-icon', player.icon);
+       223            
+       224 -          // Update summary display
+       225 -          const maxHpElement = 
+     document.getElementById('player-summary-max-hp');
+           - document.getElementById('player-summary-max-hp');
+       226 -          const maxMpElement = 
+     document.getElementById('player-summary-max-mp');
+           - document.getElementById('player-summary-max-mp');
+       227 -          const attackElement = 
+     document.getElementById('player-summary-attack');
+           - document.getElementById('player-summary-attack');
+       228 -          const weaponElement = 
+     document.getElementById('player-summary-weapon');
+           - document.getElementById('player-summary-weapon');
+       229 -          const armorElement = 
+     document.getElementById('player-summary-armor');
+           - document.getElementById('player-summary-armor');
+       230 -          
+       231 -          if (maxHpElement) maxHpElement.textContent = 
+     player.maxHp.toString();
+           - player.maxHp.toString();
+       232 -          if (maxMpElement) maxMpElement.textContent = 
+           - player.maxMp.toString();
+       233 -          if (attackElement) attackElement.textContent = 
+           - player.getAttackPower().toString();
+       234 -          if (weaponElement) weaponElement.textContent = 
+           - equipment.weapon?.name || '素手';
+       235 -          if (armorElement) armorElement.textContent = equipment.armor?.name 
+           - || 'はだか';
+       224 +          // Update summary display using DOMUpdater
+       225 +          DOMUpdater.updateElements({
+       226 +              'player-summary-max-hp': player.maxHp.toString(),
+       227 +              'player-summary-max-mp': player.maxMp.toString(),
+       228 +              'player-summary-attack': player.getAttackPower().toString(),
+       229 +              'player-summary-weapon': equipment.weapon?.name || '素手',
+       230 +              'player-summary-armor': equipment.armor?.name || 'はだか'
+       231 +          });
+       232        }
+       233        
+       234        //#endregion Panel - Player Summary
+
+● 残りの部分を削除し、新しいボス選択モーダル機能のみを残します。
+
+● Update(src/game/scenes/BossSelectScene.ts)
+  ⎿  Updated src/game/scenes/BossSelectScene.ts with 354 removals                       
+       232        }
+       233        
+       234        //#endregion Panel - Player Summary
+       235 -  
+       236 -      //#region Modal - Player Info
+       237 -  
+       238 -      /**
+       239 -       * Initialize player info edit modal and event listeners
+       240 -       */
+       241 -      private initializePlayerModal() {
+       242 -          // Initialize player modal
+       243 -          const playerModalElement = 
+           - document.getElementById('player-details-modal');
+       244 -          if (playerModalElement && window.bootstrap) {
+       245 -              this.playerModal = new 
+           - window.bootstrap.Modal(playerModalElement);
+       246 -          }
+       247 -  
+       248 -          // Player info edit button
+       249 -          const editPlayerInfoButton = 
+           - document.getElementById('edit-player-info-btn');
+       250 -          if (editPlayerInfoButton) {
+       251 -              editPlayerInfoButton.addEventListener('click', () => {
+       252 -                  this.showPlayerInfoEditModal();
+       253 -              });
+       254 -          }
+       255 -      }
+       235        
+       236 -      /**
+       237 -       * Show player details modal
+       238 -       */
+       239 -      private showPlayerDetails(): void {
+       240 -          const player = this.game.getPlayer();
+       241 -          const abilityLevels = player.getAbilityLevels();
+       242 -  
+       243 -          // Update player modal header
+       244 -          this.updateElement('player-modal-name', player.name);
+       245 -          this.updateElement('player-modal-icon', player.icon);
+       246 -          
+       247 -          // Update stats tab
+       248 -          this.updateElement('detail-max-hp', player.maxHp.toString());
+       249 -          this.updateElement('detail-max-mp', player.maxMp.toString());
+       250 -          this.updateElement('detail-attack', 
+           - player.getAttackPower().toString());
+       251 -          this.updateElement('detail-weapon-bonus', 
+           - player.getWeaponAttackBonus().toString());
+       252 -          this.updateElement('detail-armor-bonus', 
+           - player.getArmorHpBonus().toString());
+       253 -          
+       254 -          // Update ability levels
+       255 -          Object.entries(abilityLevels).forEach(([abilityType, data]) => {
+       256 -              const prefix = abilityType.toLowerCase();
+       257 -              this.updateElement(`${prefix}-level`, data.level.toString());
+       258 -              this.updateElement(`${prefix}-exp`, 
+           - data.experience.toString());
+       259 -              this.updateElement(`${prefix}-next`, (data.experience + 
+           - data.experienceToNext).toString());
+       260 -              
+       261 -              // Update progress bar
+       262 -              const progressElement = 
+           - document.getElementById(`${prefix}-progress`);
+       263 -              if (progressElement && data.experienceToNext > 0) {
+       264 -                  const currentLevelExp = data.experience - (data.level > 0 
+     ?
+           -  Math.pow(data.level, 3) * 50 : 0);
+       265 -                  const nextLevelExp = Math.pow(data.level + 1, 3) * 50 - 
+           - (data.level > 0 ? Math.pow(data.level, 3) * 50 : 0);
+       266 -                  const percentage = (currentLevelExp / nextLevelExp) * 100;
+       267 -                  progressElement.style.width = `${percentage}%`;
+       268 -              }
+       269 -              
+       270 -              // Special handling for explorer ability in stats tab
+       271 -              if (abilityType === 'explorer') {
+       272 -                  this.updateElement('explorer-level-stats', 
+           - data.level.toString());
+       273 -                  this.updateElement('explorer-exp-stats', 
+           - data.experience.toString());
+       274 -                  this.updateElement('explorer-next-stats', (data.experience 
+           - + data.experienceToNext).toString());
+       275 -                  
+       276 -                  const statsProgressElement = 
+           - document.getElementById('explorer-progress-stats');
+       277 -                  if (statsProgressElement && data.experienceToNext > 0) {
+       278 -                      const currentLevelExp = data.experience - (data.level 
+     >
+           -  0 ? Math.pow(data.level, 3) * 50 : 0);
+       279 -                      const nextLevelExp = Math.pow(data.level + 1, 3) * 50 
+     -
+           -  (data.level > 0 ? Math.pow(data.level, 3) * 50 : 0);
+       280 -                      const percentage = (currentLevelExp / nextLevelExp) * 
+           - 100;
+       281 -                      statsProgressElement.style.width = `${percentage}%`;
+       282 -                  }
+       283 -              }
+       284 -          });
+       285 -          
+       286 -          // Update equipment tab
+       287 -          this.updateEquipmentSelections();
+       288 -          
+       289 -          // Update skills tab
+       290 -          this.updateSkillsList();
+       291 -          
+       292 -          // Update items tab
+       293 -          this.updateItemsList();
+       294 -          
+       295 -          // Update explorer tab
+       296 -          this.updateExplorerTab();
+       297 -          
+       298 -          // Update debug controls visibility in modal
+       299 -          this.updateDebugControlsVisibilityInModal();
+       300 -          
+       301 -          // Update skills tab debug controls with current values
+       302 -          this.updateSkillsTabDebugControlsValues();
+       303 -          
+       304 -          // Show modal
+       305 -          if (this.playerModal) {
+       306 -              this.playerModal.show();
+       307 -          }
+       308 -      }
+       236        
+       237 -      /**
+       238 -       * Update equipment selection UI
+       239 -       */
+       240 -      private updateEquipmentSelections(): void {
+       241 -          const player = this.game.getPlayer();
+       242 -          const availableWeapons = player.getAvailableWeapons();
+       243 -          const availableArmors = player.getAvailableArmors();
+       244 -          
+       245 -          // Weapon selection
+       246 -          const weaponSelection = 
+           - document.getElementById('weapon-selection');
+       247 -          if (weaponSelection) {
+       248 -              weaponSelection.innerHTML = '';
+       249 -              availableWeapons.forEach(weapon => {
+       250 -                  const isEquipped = player.equippedWeapon === weapon.id;
+       251 -                  const button = document.createElement('div');
+       252 -                  button.className = `form-check`;
+       253 -                  button.innerHTML = `
+       254 -                      <input class="form-check-input" type="radio" 
+           - name="weapon" id="weapon-${weapon.id}" 
+       255 -                             value="${weapon.id}" ${isEquipped ? 'checked' : 
+           - ''}>
+       256 -                      <label class="form-check-label" 
+           - for="weapon-${weapon.id}">
+       257 -                          <strong>${weapon.name}</strong> 
+           - (+${weapon.attackPowerBonus} 攻撃力)<br>
+       258 -                          <small 
+           - class="text-muted">${weapon.description}</small>
+       259 -                      </label>
+       260 -                  `;
+       261 -                  weaponSelection.appendChild(button);
+       262 -                  
+       263 -                  const input = button.querySelector('input') as 
+           - HTMLInputElement;
+       264 -                  input.addEventListener('change', () => {
+       265 -                      if (input.checked) {
+       266 -                          player.equipWeapon(weapon.id);
+       267 -                          this.updatePlayerSummary();
+       268 -                          
+           - PlayerSaveManager.saveEquipment(player.equippedWeapon, 
+           - player.equippedArmor);
+       269 -                      }
+       270 -                  });
+       271 -              });
+       272 -          }
+       273 -          
+       274 -          // Armor selection
+       275 -          const armorSelection = document.getElementById('armor-selection');
+       276 -          if (armorSelection) {
+       277 -              armorSelection.innerHTML = '';
+       278 -              availableArmors.forEach(armor => {
+       279 -                  const isEquipped = player.equippedArmor === armor.id;
+       280 -                  const button = document.createElement('div');
+       281 -                  button.className = `form-check`;
+       282 -                  button.innerHTML = `
+       283 -                      <input class="form-check-input" type="radio" 
+           - name="armor" id="armor-${armor.id}" 
+       284 -                             value="${armor.id}" ${isEquipped ? 'checked' : 
+           - ''}>
+       285 -                      <label class="form-check-label" 
+           - for="armor-${armor.id}">
+       286 -                          <strong>${armor.name}</strong> (+${armor.hpBonus} 
+           - HP)<br>
+       287 -                          <small 
+           - class="text-muted">${armor.description}</small>
+       288 -                      </label>
+       289 -                  `;
+       290 -                  armorSelection.appendChild(button);
+       291 -                  
+       292 -                  const input = button.querySelector('input') as 
+           - HTMLInputElement;
+       293 -                  input.addEventListener('change', () => {
+       294 -                      if (input.checked) {
+       295 -                          player.equipArmor(armor.id);
+       296 -                          this.updatePlayerSummary();
+       297 -                      }
+       298 -                  });
+       299 -              });
+       300 -          }
+       301 -      }
+       237        
+       238 -      /**
+       239 -       * Update items list UI
+       240 -       */
+       241 -      private updateItemsList(): void {
+       242 -          const player = this.game.getPlayer();
+       243 -          const itemList = document.getElementById('item-list');
+       244 -          
+       245 -          if (itemList) {
+       246 -              itemList.innerHTML = '';
+       247 -              
+       248 -              Array.from(player.items.entries()).forEach(([_itemId, item]) 
+     =>
+           -  {
+       249 -                  if (item.count > 0) {
+       250 -                      const itemDiv = document.createElement('div');
+       251 -                      itemDiv.className = 'mb-2 p-2 border rounded';
+       252 -                      itemDiv.innerHTML = `
+       253 -                          <div class="d-flex justify-content-between 
+           - align-items-center">
+       254 -                              <div>
+       255 -                                  <strong>${item.name}</strong> 
+           - x${item.count}
+       256 -                                  <br><small 
+           - class="text-muted">${item.description}</small>
+       257 -                              </div>
+       258 -                          </div>
+       259 -                      `;
+       260 -                      itemList.appendChild(itemDiv);
+       261 -                  }
+       262 -              });
+       263 -          }
+       264 -      }
+       238        
+       239 -      /**
+       240 -       * Update skills tab
+       241 -       */
+       242 -      private updateSkillsList(): void {
+       243 -          const player = this.game.getPlayer();
+       244 -          const unlockedSkills = player.getUnlockedSkills();
+       245 -          const unlockedPassiveSkills = player.getUnlockedPassiveSkills();
+       246 -          
+       247 -          // Update active skills
+       248 -          const activeSkillsList = 
+           - document.getElementById('active-skills-list');
+       249 -          if (activeSkillsList) {
+       250 -              activeSkillsList.innerHTML = '';
+       251 -              
+       252 -              const activeSkills = unlockedSkills.filter(skill => 
+           - !skill.isPassive);
+       253 -              
+       254 -              if (activeSkills.length === 0) {
+       255 -                  activeSkillsList.innerHTML = '<div 
+           - class="text-muted">解放されたスキルがありません</div>';
+       256 -              } else {
+       257 -                  activeSkills.forEach(skill => {
+       258 -                      const skillElement = document.createElement('div');
+       259 -                      skillElement.className = 'skill-item mb-3 p-3 border 
+           - rounded';
+       260 -                      
+       261 -                      const categoryColor = 
+           - this.getSkillCategoryColor(skill.category);
+       262 -                      const mpCostText = skill.mpCost > 0 ? `MP: 
+           - ${skill.mpCost}` : 'MP: 0';
+       263 -                      
+       264 -                      skillElement.innerHTML = `
+       265 -                          <div class="skill-header d-flex 
+           - justify-content-between align-items-start mb-2">
+       266 -                              <div class="skill-info flex-grow-1 me-3">
+       267 -                                  <h6 class="skill-name 
+           - mb-1">${skill.name}</h6>
+       268 -                                  <p class="skill-description 
+           - mb-0">${skill.description}</p>
+       269 -                              </div>
+       270 -                              <div class="skill-meta text-end 
+     flex-shrink-0">
+       271 -                                  <span class="badge bg-${categoryColor} 
+           - mb-1">${this.getSkillCategoryName(skill.category)}</span>
+       272 -                                  <div 
+     class="skill-cost">${mpCostText}</div>
+       273 -                              </div>
+       274 -                          </div>
+       275 -                          ${this.getSkillDetails(skill)}
+       276 -                      `;
+       277 -                      
+       278 -                      activeSkillsList.appendChild(skillElement);
+       279 -                  });
+       280 -              }
+       281 -          }
+       282 -          
+       283 -          // Update passive skills
+       284 -          const passiveSkillsList = 
+           - document.getElementById('passive-skills-list');
+       285 -          if (passiveSkillsList) {
+       286 -              passiveSkillsList.innerHTML = '';
+       287 -              
+       288 -              if (unlockedPassiveSkills.length === 0) {
+       289 -                  passiveSkillsList.innerHTML = '<div 
+           - class="text-muted">解放されたパッシブスキルがありません</div>';
+       290 -              } else {
+       291 -                  unlockedPassiveSkills.forEach(skill => {
+       292 -                      const skillElement = document.createElement('div');
+       293 -                      skillElement.className = 'skill-item mb-3 p-3 border 
+           - rounded';
+       294 -                      
+       295 -                      skillElement.innerHTML = `
+       296 -                          <div class="skill-header d-flex 
+           - justify-content-between align-items-start mb-2">
+       297 -                              <div class="skill-info flex-grow-1 me-3">
+       298 -                                  <h6 class="skill-name 
+           - mb-1">${skill.name}</h6>
+       299 -                                  <p class="skill-description 
+           - mb-0">${skill.description}</p>
+       300 -                              </div>
+       301 -                              <div class="skill-meta text-end 
+     flex-shrink-0">
+       302 -                                  <span class="badge 
+     bg-info">パッシブ</span>
+       303 -                              </div>
+       304 -                          </div>
+       305 -                          ${this.getSkillUnlockCondition(skill)}
+       306 -                      `;
+       307 -                      
+       308 -                      passiveSkillsList.appendChild(skillElement);
+       309 -                  });
+       310 -              }
+       311 -          }
+       312 -      }
+       239        
+       240        /**
+       241 -       * Get skill category color for badge
+       242 -       */
+       243 -      private getSkillCategoryColor(category: string): string {
+       244 -          switch (category) {
+       245 -              case 'combat': return 'danger';
+       246 -              case 'defense': return 'primary';
+       247 -              case 'support': return 'success';
+       248 -              case 'passive': return 'info';
+       249 -              default: return 'secondary';
+       250 -          }
+       251 -      }
+       252 -      
+       253 -      /**
+       254 -       * Get skill category name in Japanese
+       255 -       */
+       256 -      private getSkillCategoryName(category: string): string {
+       257 -          switch (category) {
+       258 -              case 'combat': return '攻撃';
+       259 -              case 'defense': return '防御';
+       260 -              case 'support': return '支援';
+       261 -              case 'passive': return 'パッシブ';
+       262 -              default: return 'その他';
+       263 -          }
+       264 -      }
+       265 -      
+       266 -      /**
+       267 -       * Get skill details HTML
+       268 -       */
+       269 -      private getSkillDetails(skill: SkillData): string {
+       270 -          const details = [];
+       271 -          
+       272 -          if (skill.damageMultiplier && skill.damageMultiplier > 1) {
+       273 -              details.push(`威力: ${skill.damageMultiplier}倍`);
+       274 -          }
+       275 -          
+       276 -          if (skill.criticalRate && skill.criticalRate > 0.05) {
+       277 -              details.push(`クリティカル率: ${Math.round(skill.criticalRate 
+     *
+           -  100)}%`);
+       278 -          }
+       279 -          
+       280 -          if (skill.hitRate && skill.hitRate < 1) {
+       281 -              details.push(`命中率: ${Math.round(skill.hitRate * 100)}%`);
+       282 -          }
+       283 -          
+       284 -          if (skill.healAmount) {
+       285 -              details.push(`回復量: ${skill.healAmount}`);
+       286 -          }
+       287 -          
+       288 -          if (skill.healPercentage) {
+       289 -              details.push(`回復率: ${Math.round(skill.healPercentage * 
+           - 100)}%`);
+       290 -          }
+       291 -          
+       292 -          const unlockCondition = this.getSkillUnlockCondition(skill);
+       293 -          
+       294 -          if (details.length > 0 || unlockCondition) {
+       295 -              return `
+       296 -                  <div class="skill-details">
+       297 -                      ${details.length > 0 ? `<div class="skill-stats 
+           - mb-1">${details.join(' / ')}</div>` : ''}
+       298 -                      ${unlockCondition}
+       299 -                  </div>
+       300 -              `;
+       301 -          }
+       302 -          
+       303 -          return '';
+       304 -      }
+       305 -      
+       306 -      /**
+       307 -       * Get skill unlock condition HTML
+       308 -       */
+       309 -      private getSkillUnlockCondition(skill: SkillData): string {
+       310 -          if (skill.unlockConditions && skill.unlockConditions.length > 0) {
+       311 -              const conditions = skill.unlockConditions.map((condition: 
+           - UnlockCondition) => {
+       312 -                  const abilityName = 
+           - this.getAbilityName(condition.abilityType);
+       313 -                  return `${abilityName}レベル ${condition.requiredLevel}`;
+       314 -              });
+       315 -              return `<div class="skill-unlock-condition">解放条件: 
+           - ${conditions.join(', ')}</div>`;
+       316 -          }
+       317 -          return '';
+       318 -      }
+       319 -      
+       320 -      /**
+       321 -       * Get ability name in Japanese
+       322 -       */
+       323 -      private getAbilityName(abilityType: string): string {
+       324 -          switch (abilityType) {
+       325 -              case 'combat': return 'コンバット';
+       326 -              case 'toughness': return 'タフネス';
+       327 -              case 'craftwork': return 'クラフトワーク';
+       328 -              case 'endurance': return 'エンデュランス';
+       329 -              case 'agility': return 'アジリティ';
+       330 -              default: return abilityType;
+       331 -          }
+       332 -      }
+       333 -      
+       334 -      /**
+       241         * Export save data to file
+       242         */
+       243        private exportSaveData(): void {
+
+● 最後の大きな部分を削除し、ボス選択機能に集中します。
+
+● Read(src/game/scenes/BossSelectScene.ts)
+  ⎿  Read 50 lines (ctrl+r to expand)
+  ⎿  Found 41 new diagnostic issues in 1 file (ctrl-r to expand)
+
+● 残りの不要な部分を完全に削除し、シンプルなBossSelectSceneにします。
+
+● Update(src/game/scenes/BossSelectScene.ts)
+  ⎿  Updated src/game/scenes/BossSelectScene.ts with 1 addition and 558 removals        
+       236        
+       237        
+       238        
+       239 -      
+       240 -      /**
+       241 -       * Export save data to file
+       242 -       */
+       243 -      private exportSaveData(): void {
+       244 -          try {
+       245 -              const saveData = PlayerSaveManager.exportSaveData();
+       246 -              const blob = new Blob([saveData], { type: 'application/json' 
+           - });
+       247 -              const url = URL.createObjectURL(blob);
+       248 -              
+       249 -              const a = document.createElement('a');
+       250 -              a.href = url;
+       251 -              a.download = `eel_rpg_save_${new Date().toISOString().slice(0, 
+           - 10)}.json`;
+       252 -              document.body.appendChild(a);
+       253 -              a.click();
+       254 -              document.body.removeChild(a);
+       255 -              URL.revokeObjectURL(url);
+       256 -              
+       257 -              ModalUtils.showToast('セーブデータをエクスポートしました', 
+           - 'success');
+       258 -          } catch (error) {
+       259 -              console.error('Export failed:', error);
+       260 -              ModalUtils.showToast('エクスポートに失敗しました', 'error');
+       261 -          }
+       262 -      }
+       263 -      
+       264 -      /**
+       265 -       * Import save data from file
+       266 -       */
+       267 -      private importSaveData(file: File): void {
+       268 -          const reader = new FileReader();
+       269 -          reader.onload = (e) => {
+       270 -              try {
+       271 -                  const content = e.target?.result as string;
+       272 -                  const success = PlayerSaveManager.importSaveData(content);
+       273 -                  
+       274 -                  if (success) {
+       275 -                      
+           - ModalUtils.showToast('セーブデータをインポートしました', 'success');
+       276 -                      // Reload the player to reflect imported data
+       277 -                      this.game.reboot();
+       278 -                  } else {
+       279 -                      ModalUtils.showToast('無効なセーブデータです', 
+           - 'error');
+       280 -                  }
+       281 -              } catch (error) {
+       282 -                  console.error('Import failed:', error);
+       283 -                  ModalUtils.showToast('インポートに失敗しました', 'error');
+       284 -              }
+       285 -          };
+       286 -          reader.readAsText(file);
+       287 -      }
+       288 -      
+       289 -      /**
+       290 -       * Delete save data
+       291 -       */
+       292 -      private async deleteSaveData(): Promise<void> {
+       293 -          const confirmed = await ModalUtils.showConfirm('全てのセーブデータ
+           - を削除しますか？この操作は取り消せません。');
+       294 -          if (confirmed) {
+       295 -              PlayerSaveManager.clearSaveData();
+       296 -              ModalUtils.showToast('セーブデータを削除しました', 'success');
+       297 -              // Reload the player to reflect cleared data
+       298 -              this.game.reboot();
+       299 -          }
+       300 -      }
+       301 -      
+       302 -      
+       303 -      /**
+       304 -       * Initialize modal save data management buttons
+       305 -       */
+       306 -      private initializeModalSaveDataButtons(): void {
+       307 -          // Export save data button (modal)
+       308 -          const exportButtonModal = 
+           - document.getElementById('export-save-btn-modal');
+       309 -          if (exportButtonModal) {
+       310 -              exportButtonModal.addEventListener('click', () => {
+       311 -                  this.exportSaveData();
+       312 -              });
+       313 -          }
+       314 -          
+       315 -          // Import save data button (modal)
+       316 -          const importButtonModal = 
+           - document.getElementById('import-save-btn-modal');
+       317 -          const importFileInputModal = 
+           - document.getElementById('import-file-input-modal') as HTMLInputElement;
+       318 -          if (importButtonModal && importFileInputModal) {
+       319 -              importButtonModal.addEventListener('click', () => {
+       320 -                  importFileInputModal.click();
+       321 -              });
+       322 -              
+       323 -              importFileInputModal.addEventListener('change', (event) => {
+       324 -                  const file = (event.target as 
+     HTMLInputElement).files?.[0];
+       325 -                  if (file) {
+       326 -                      this.importSaveData(file);
+       327 -                  }
+       328 -              });
+       329 -          }
+       330 -          
+       331 -          // Delete save data button (modal)
+       332 -          const deleteButtonModal = 
+           - document.getElementById('delete-save-btn-modal');
+       333 -          if (deleteButtonModal) {
+       334 -              deleteButtonModal.addEventListener('click', () => {
+       335 -                  this.deleteSaveData();
+       336 -              });
+       337 -          }
+       338 -  
+       339 -          // Skills tab debug controls event listeners
+       340 -          const debugCombatBtn = 
+     document.getElementById('debug-combat-btn');
+       341 -          if (debugCombatBtn) {
+       342 -              debugCombatBtn.addEventListener('click', () => {
+       343 -                  this.updateAbilityLevelFromSkillsTab('combat');
+       344 -              });
+       345 -          }
+       346 -  
+       347 -          const debugToughnessBtn = 
+           - document.getElementById('debug-toughness-btn');
+       348 -          if (debugToughnessBtn) {
+       349 -              debugToughnessBtn.addEventListener('click', () => {
+       350 -                  this.updateAbilityLevelFromSkillsTab('toughness');
+       351 -              });
+       352 -          }
+       353 -  
+       354 -          const debugCraftworkBtn = 
+           - document.getElementById('debug-craftwork-btn');
+       355 -          if (debugCraftworkBtn) {
+       356 -              debugCraftworkBtn.addEventListener('click', () => {
+       357 -                  this.updateAbilityLevelFromSkillsTab('craftwork');
+       358 -              });
+       359 -          }
+       360 -  
+       361 -          const debugEnduranceBtn = 
+           - document.getElementById('debug-endurance-btn');
+       362 -          if (debugEnduranceBtn) {
+       363 -              debugEnduranceBtn.addEventListener('click', () => {
+       364 -                  this.updateAbilityLevelFromSkillsTab('endurance');
+       365 -              });
+       366 -          }
+       367 -  
+       368 -          const debugAgilityBtn = 
+           - document.getElementById('debug-agility-btn');
+       369 -          if (debugAgilityBtn) {
+       370 -              debugAgilityBtn.addEventListener('click', () => {
+       371 -                  this.updateAbilityLevelFromSkillsTab('agility');
+       372 -              });
+       373 -          }
+       374 -  
+       375 -          const debugAllBtn = document.getElementById('debug-all-btn');
+       376 -          if (debugAllBtn) {
+       377 -              debugAllBtn.addEventListener('click', () => {
+       378 -                  this.updateAllAbilityLevelsFromSkillsTab();
+       379 -              });
+       380 -          }
+       381 -      }
+       382 -      
+       383 -      /**
+       384 -       * Update debug controls visibility in modal
+       385 -       */
+       386 -      private updateDebugControlsVisibilityInModal(): void {
+       387 -          const debugControlsSkills = 
+           - document.getElementById('debug-controls-skills');
+       388 -          const isDebugMode = this.game.isDebugMode();
+       389 -          
+       390 -          if (debugControlsSkills) {
+       391 -              debugControlsSkills.classList.toggle('d-none', !isDebugMode);
+       392 -          }
+       393 -      }
+       394 -      
+       395 -  
+       396 -      /**
+       397 -       * Update skills tab debug controls with current values
+       398 -       */
+       399 -      private updateSkillsTabDebugControlsValues(): void {
+       400 -          const player = this.game.getPlayer();
+       401 -          const abilityLevels = player.getAbilityLevels();
+       402 -          
+       403 -          // Update individual ability input fields
+       404 -          Object.entries(abilityLevels).forEach(([abilityType, data]) => {
+       405 -              const inputElement = 
+           - document.getElementById(`debug-${abilityType.toLowerCase()}-level`) as 
+           - HTMLInputElement;
+       406 -              if (inputElement) {
+       407 -                  inputElement.value = data.level.toString();
+       408 -              }
+       409 -          });
+       410 -      }
+       411 -  
+       412 -      /**
+       413 -       * Update ability level from skills tab
+       414 -       */
+       415 -      private updateAbilityLevelFromSkillsTab(abilityType: string): void {
+       416 -          const inputElement = 
+           - document.getElementById(`debug-${abilityType}-level`) as HTMLInputElement;
+       417 -          if (!inputElement) return;
+       418 -          
+       419 -          const level = parseInt(inputElement.value);
+       420 -          if (isNaN(level) || level < 0 || level > 10) {
+       421 -              ModalUtils.showToast('レベルは 0 から 10 
+           - の間で入力してください', 'error');
+       422 -              return;
+       423 -          }
+       424 -          
+       425 -          const player = this.game.getPlayer();
+       426 -          const ability = player.abilitySystem.getAbility(abilityType as 
+           - AbilityType);
+       427 -          if (ability) {
+       428 -              ability.level = level;
+       429 -              ability.experience = level > 0 ? Math.pow(level, 3) * 50 : 0;
+       430 -              
+       431 -              player.recalculateStats();
+       432 -              player.saveToStorage();
+       433 -              this.updatePlayerSummary();
+       434 -              this.showPlayerDetails(); // Refresh modal content
+       435 -              
+           - ModalUtils.showToast(`${this.getAbilityName(abilityType)}をレベル ${level} 
+           - に設定しました`, 'success');
+       436 -          }
+       437 -      }
+       438 -  
+       439 -      /**
+       440 -       * Update all ability levels from skills tab
+       441 -       */
+       442 -      private updateAllAbilityLevelsFromSkillsTab(): void {
+       443 -          const inputElement = document.getElementById('debug-all-level') as 
+           - HTMLInputElement;
+       444 -          if (!inputElement) return;
+       445 -          
+       446 -          const level = parseInt(inputElement.value);
+       447 -          if (isNaN(level) || level < 0 || level > 10) {
+       448 -              ModalUtils.showToast('レベルは 0 から 10 
+           - の間で入力してください', 'error');
+       449 -              return;
+       450 -          }
+       451 -          
+       452 -          const player = this.game.getPlayer();
+       453 -          Object.values(AbilityType).forEach(abilityType => {
+       454 -              const ability = player.abilitySystem.getAbility(abilityType);
+       455 -              if (ability) {
+       456 -                  ability.level = level;
+       457 -                  ability.experience = level > 0 ? Math.pow(level, 3) * 50 : 
+           - 0;
+       458 -              }
+       459 -          });
+       460 -          
+       461 -          player.recalculateStats();
+       462 -          player.saveToStorage();
+       463 -          this.updatePlayerSummary();
+       464 -          this.showPlayerDetails(); // Refresh modal content
+       465 -          ModalUtils.showToast(`全てのアビリティをレベル ${level} 
+           - に設定しました`, 'success');
+       466 -      }
+       467 -  
+       468 -      /**
+       469 -       * Update explorer tab with current stats and trophies
+       470 -       */
+       471 -      private updateExplorerTab(): void {
+       472 -          const player = this.game.getPlayer();
+       473 -          const abilityLevels = player.getAbilityLevels();
+       474 -          const explorerData = abilityLevels[AbilityType.Explorer];
+       475 -          
+       476 -          if (explorerData) {
+       477 -              this.updateElement('explorer-level', 
+           - explorerData.level.toString());
+       478 -              this.updateElement('explorer-exp', 
+           - explorerData.experience.toString());
+       479 -              this.updateElement('explorer-next', (explorerData.experience + 
+           - explorerData.experienceToNext).toString());
+       480 -              
+       481 -              // Update progress bar
+       482 -              const progressElement = 
+           - document.getElementById('explorer-progress');
+       483 -              if (progressElement && explorerData.experienceToNext > 0) {
+       484 -                  const currentLevelExp = explorerData.experience - 
+           - (explorerData.level > 0 ? Math.pow(explorerData.level, 3) * 50 : 0);
+       485 -                  const nextLevelExp = Math.pow(explorerData.level + 1, 3) * 
+           - 50 - (explorerData.level > 0 ? Math.pow(explorerData.level, 3) * 50 : 0);
+       486 -                  const percentage = (currentLevelExp / nextLevelExp) * 100;
+       487 -                  progressElement.style.width = `${percentage}%`;
+       488 -              }
+       489 -              
+       490 -              // Update accessible terrain
+       491 -              this.updateAccessibleTerrains(player.getAccessibleTerrains());
+       492 -          }
+       493 -          
+       494 -          // Update statistics
+       495 -          const allBossData = getAllBossData();
+       496 -          const unlockedCount = allBossData.filter(boss => 
+       497 -              boss.explorerLevelRequired || 0 <= player.getExplorerLevel()
+       498 -          ).length;
+       499 -          this.updateElement('unlocked-bosses-count', 
+           - unlockedCount.toString());
+       500 -          
+       501 -          const allTrophies = player.memorialSystem.getAllTrophies();
+       502 -          this.updateElement('total-trophies-count', 
+           - allTrophies.length.toString());
+       503 -          
+       504 -          const totalExplorerExp = explorerData?.experience || 0;
+       505 -          this.updateElement('total-explorer-exp', 
+           - totalExplorerExp.toString());
+       506 -          
+       507 -          // Update trophies collection
+       508 -          this.updateTrophiesCollection(allTrophies);
+       509 -      }
+       510 -      
+       511 -      /**
+       512 -       * Update trophies collection display
+       513 -       */
+       514 -      private updateTrophiesCollection(trophies: Trophy[]): void {
+       515 -          const trophiesContainer = 
+           - document.getElementById('trophies-collection');
+       516 -          const noTrophiesMessage = 
+           - document.getElementById('no-trophies-message');
+       517 -          
+       518 -          if (!trophiesContainer || !noTrophiesMessage) return;
+       519 -          
+       520 -          if (trophies.length === 0) {
+       521 -              trophiesContainer.innerHTML = '';
+       522 -              noTrophiesMessage.style.display = 'block';
+       523 -              return;
+       524 -          }
+       525 -          
+       526 -          noTrophiesMessage.style.display = 'none';
+       527 -          trophiesContainer.innerHTML = '';
+       528 -          
+       529 -          trophies.forEach(trophy => {
+       530 -              const trophyCard = document.createElement('div');
+       531 -              trophyCard.className = 'col-md-6 mb-3';
+       532 -              
+       533 -              const typeIcon = trophy.type === 'victory' ? '🏆' : '💀';
+       534 -              const typeClass = trophy.type === 'victory' ? 'success' : 
+           - 'info';
+       535 -              const dateStr = new 
+           - Date(trophy.dateObtained).toLocaleDateString('ja-JP');
+       536 -              
+       537 -              trophyCard.innerHTML = `
+       538 -                  <div class="card bg-secondary">
+       539 -                      <div class="card-body">
+       540 -                          <h6 class="card-title d-flex 
+           - justify-content-between align-items-center">
+       541 -                              ${typeIcon} ${trophy.name}
+       542 -                              <span class="badge 
+           - bg-${typeClass}">+${trophy.explorerExp} EXP</span>
+       543 -                          </h6>
+       544 -                          <p class="card-text 
+           - small">${trophy.description}</p>
+       545 -                          <small class="text-muted">獲得日: 
+           - ${dateStr}</small>
+       546 -                      </div>
+       547 -                  </div>
+       548 -              `;
+       549 -              
+       550 -              trophiesContainer.appendChild(trophyCard);
+       551 -          });
+       552 -      }
+       553 -      
+       554 -      /**
+       555 -       * Update accessible terrains with multiple badges
+       556 -       */
+       557 -      private updateAccessibleTerrains(terrains: string[]): void {
+       558 -          const container = 
+           - document.getElementById('accessible-terrains-container');
+       559 -          if (!container) return;
+       560 -          
+       561 -          // Clear existing content
+       562 -          container.innerHTML = '';
+       563 -          
+       564 -          // Terrain color mapping
+       565 -          const terrainColors: { [key: string]: string } = {
+       566 -              '近隣の地方': 'secondary',
+       567 -              '砂漠': 'warning',
+       568 -              '海': 'info',
+       569 -              'ジャングル': 'success',
+       570 -              '洞窟': 'dark',
+       571 -              '遺跡': 'danger',
+       572 -              '廃墟': 'danger',
+       573 -              '寒冷地': 'light text-dark',
+       574 -              '火山': 'danger',
+       575 -              '天空': 'primary',
+       576 -              '魔界': 'dark'
+       577 -          };
+       578 -          
+       579 -          // Create badge for each terrain
+       580 -          terrains.forEach(terrain => {
+       581 -              const badge = document.createElement('span');
+       582 -              const colorClass = terrainColors[terrain] || 'secondary';
+       583 -              badge.className = `badge bg-${colorClass} fs-6`;
+       584 -              badge.textContent = terrain;
+       585 -              container.appendChild(badge);
+       586 -          });
+       587 -      }
+       588 -  
+       589 -      /**
+       590 -       * Show player info edit modal
+       591 -       */
+       592 -      private showPlayerInfoEditModal(): void {
+       593 -          const player = this.game.getPlayer();
+       594 -          
+       595 -          // Update current player info display
+       596 -          this.updateElement('current-player-name', player.name);
+       597 -          this.updateElement('current-player-icon', player.icon);
+       598 -          
+       599 -          // Set current values in form
+       600 -          const nameInput = document.getElementById('player-name-input') as 
+           - HTMLInputElement;
+       601 -          if (nameInput) {
+       602 -              nameInput.value = player.name;
+       603 -          }
+       604 -          
+       605 -          // Initialize icon selection
+       606 -          this.selectedIcon = player.icon;
+       607 -          this.updateElement('selected-player-icon', this.selectedIcon);
+       608 -          
+       609 -          // Show icons for default category
+       610 -          this.showIconCategory('動物');
+       611 -          
+       612 -          // Show modal
+       613 -          if (this.playerInfoEditModal) {
+       614 -              this.playerInfoEditModal.show();
+       615 -          }
+       616 -      }
+       617 -      
+       618 -      //#endregion Modal - Player Info
+       619 -      
+       620 -      //#region Modal - Player Info Edit
+       621 -      
+       622 -      /**
+       623 -       * Initialize player info buttons and event listeners
+       624 -       */
+       625 -      private initializeModalEditPlayerInfo() {
+       626 -          // Initialize player info edit modal
+       627 -          const playerInfoEditModalElement = 
+           - document.getElementById('player-info-edit-modal');
+       628 -          if (playerInfoEditModalElement && window.bootstrap) {
+       629 -              this.playerInfoEditModal = new 
+           - window.bootstrap.Modal(playerInfoEditModalElement);
+       630 -          }
+       631 -          
+       632 -          // Save player info button
+       633 -          const savePlayerInfoButton = 
+           - document.getElementById('save-player-info-btn');
+       634 -          if (savePlayerInfoButton) {
+       635 -              savePlayerInfoButton.addEventListener('click', () => {
+       636 -                  this.savePlayerInfo();
+       637 -              });
+       638 -          }
+       639 -  
+       640 -          // Reset player info button
+       641 -          const resetPlayerInfoButton = 
+           - document.getElementById('reset-player-info-btn');
+       642 -          if (resetPlayerInfoButton) {
+       643 -              resetPlayerInfoButton.addEventListener('click', () => {
+       644 -                  this.resetPlayerInfo();
+       645 -              });
+       646 -          }
+       647 -  
+       648 -          // Icon category tabs
+       649 -          document.querySelectorAll('[data-icon-category]').forEach(tab => {
+       650 -              tab.addEventListener('click', (e) => {
+       651 -                  e.preventDefault();
+       652 -                  const category = (e.target as 
+           - HTMLElement).getAttribute('data-icon-category');
+       653 -                  if (category) {
+       654 -                      this.showIconCategory(category);
+       655 -                  }
+       656 -              });
+       657 -          });
+       658 -      }
+       659 -      
+       660 -      /**
+       661 -       * Show icons for specified category
+       662 -       */
+       663 -      private showIconCategory(category: string): void {
+       664 -          const iconsGrid = document.getElementById('icon-selection-grid');
+       665 -          if (!iconsGrid) return;
+       666 -          
+       667 -          // Update tab active state
+       668 -          document.querySelectorAll('#icon-category-tabs 
+           - .nav-link').forEach(tab => {
+       669 -              const tabCategory = tab.getAttribute('data-category');
+       670 -              if (tabCategory === category) {
+       671 -                  tab.classList.add('active');
+       672 -              } else {
+       673 -                  tab.classList.remove('active');
+       674 -              }
+       675 -          });
+       676 -          
+       677 -          // Clear and populate icons
+       678 -          iconsGrid.innerHTML = '';
+       679 -          const categoryIcons = getIconsByCategory(category);
+       680 -          
+       681 -          categoryIcons.forEach(icon => {
+       682 -              const iconButton = document.createElement('button');
+       683 -              iconButton.type = 'button';
+       684 -              iconButton.className = `btn btn-outline-secondary m-1 
+           - ${this.selectedIcon === icon.emoji ? 'active' : ''}`;
+       685 -              iconButton.style.fontSize = '1.5rem';
+       686 -              iconButton.title = icon.name;
+       687 -              iconButton.textContent = icon.emoji;
+       688 -              
+       689 -              iconButton.addEventListener('click', () => {
+       690 -                  this.selectedIcon = icon.emoji;
+       691 -                  this.updateElement('selected-player-icon', 
+           - this.selectedIcon);
+       692 -                  
+       693 -                  // Update active state
+       694 -                  iconsGrid.querySelectorAll('.btn').forEach(btn => 
+           - btn.classList.remove('active'));
+       695 -                  iconButton.classList.add('active');
+       696 -              });
+       697 -              
+       698 -              iconsGrid.appendChild(iconButton);
+       699 -          });
+       700 -      }
+       701 -  
+       702 -      /**
+       703 -       * Save player info changes
+       704 -       */
+       705 -      private savePlayerInfo(): void {
+       706 -          const nameInput = document.getElementById('player-name-input') as 
+           - HTMLInputElement;
+       707 -          if (!nameInput) return;
+       708 -          
+       709 -          const newName = nameInput.value.trim();
+       710 -          
+       711 -          // Validation
+       712 -          if (!newName) {
+       713 -              ModalUtils.showToast('名前を入力してください', 'error');
+       714 -              return;
+       715 -          }
+       716 -          
+       717 -          if (newName.length > 32) {
+       718 -              ModalUtils.showToast('名前は32文字以内で入力してください', 
+           - 'error');
+       719 -              return;
+       720 -          }
+       721 -          
+       722 -          // Update player info
+       723 -          const player = this.game.getPlayer();
+       724 -          const oldName = player.name;
+       725 -          const oldIcon = player.icon;
+       726 -          
+       727 -          player.updatePlayerInfo(newName, this.selectedIcon);
+       728 -          
+       729 -          // Close modal
+       730 -          if (this.playerInfoEditModal) {
+       731 -              this.playerInfoEditModal.hide();
+       732 -          }
+       733 -          
+       734 -          // Update player status display
+       735 -          this.updatePlayerSummary();
+       736 -          
+       737 -          // If player details modal is open, update it
+       738 -          if (this.playerModal) {
+       739 -              try {
+       740 -                  // Check if modal is shown (may not be available on all 
+           - Bootstrap versions)
+       741 -                  this.showPlayerDetails();
+       742 -              } catch (e) {
+       743 -                  // Ignore if modal methods are not available
+       744 -              }
+       745 -          }
+       746 -          
+       747 -          // Show success toast
+       748 -          const changedItems = [];
+       749 -          if (oldName !== newName) changedItems.push('名前');
+       750 -          if (oldIcon !== this.selectedIcon) changedItems.push('アイコン');
+       751 -          
+       752 -          const changeMessage = changedItems.length > 0 
+       753 -              ? `${changedItems.join('と')}を変更しました` 
+       754 -              : '変更はありませんでした';
+       755 -          
+       756 -          ModalUtils.showToast(changeMessage, 'success');
+       757 -      }
+       758 -  
+       759 -      /**
+       760 -       * Reset player info to default values
+       761 -       */
+       762 -      private resetPlayerInfo(): void {
+       763 -          // Reset form fields to default values
+       764 -          const nameInput = document.getElementById('player-name-input') as 
+           - HTMLInputElement;
+       765 -          if (nameInput) {
+       766 -              nameInput.value = DEFAULT_PLAYER_NAME;
+       767 -          }
+       768 -  
+       769 -          // Reset selected icon
+       770 -          this.selectedIcon = DEFAULT_PLAYER_ICON;
+       771 -          this.updateElement('selected-player-icon', this.selectedIcon);
+       772 -  
+       773 -          // Update current values display
+       774 -          this.updateElement('current-player-name', DEFAULT_PLAYER_NAME);
+       775 -          this.updateElement('current-player-icon', DEFAULT_PLAYER_ICON);
+       776 -  
+       777 -          // Refresh icon grid to update active state
+       778 -          const activeCategory = document.querySelector('#icon-category-tabs 
+           - .nav-link.active')?.getAttribute('data-category');
+       779 -          if (activeCategory) {
+       780 -              this.showIconCategory(activeCategory);
+       781 -          }
+       782 -  
+       783 -          ModalUtils.showToast('プレイヤー情報を初期状態にリセットしました', 
+           - 'info');
+       784 -      }
+       785 -      
+       786 -      //#endregion Modal - Player Info Edit
+       787 -      
+       788 -      /**
+       789 -       * Helper method to update element text content
+       790 -       */
+       791 -      private updateElement(id: string, value: string): void {
+       792 -          const element = document.getElementById(id);
+       793 -          if (element) {
+       794 -              element.textContent = value;
+       795 -          }
+       796 -      }
+       239 +  }
+       240    }
+       241   \ No newline at end of file
+  ⎿  Found 1 new diagnostic issue in 1 file (ctrl-r to expand)
+
+● BossSelectSceneの最後の部分を修正します。
+
+● Update(src/game/scenes/BossSelectScene.ts)
+  ⎿  Updated src/game/scenes/BossSelectScene.ts with 5 removals
+       232        }
+       233        
+       234        //#endregion Panel - Player Summary
+       235 -      
+       236 -      
+       237 -      
+       238 -      
+       239 -  }
+       235    }
+       236   \ No newline at end of file
+
+● Update Todos
+  ⎿  ☒ Phase 1: BossCardManager クラスの作成と抽出         
+     ☒ Phase 1: PlayerModalManager クラスの作成と抽出
+     ☒ Phase 1: PlayerInfoEditManager クラスの作成と抽出
+     ☒ Phase 1: SaveDataManager クラスの作成と抽出
+     ☒ BossSelectSceneメインクラスのリファクタリング
+     ☒ Phase 2: DOMUpdater 共通ユーティリティの作成
+     ☒ Phase 2: ProgressCalculator 共通ユーティリティの作成
+     ☒ Phase 3: SkillDisplayComponent の作成
+     ☐ リファクタリング後のテスト実行と動作確認
+
+● 次に、型チェックとビルドテストを実行して動作確認を行います。
+
+● Bash(npm run typecheck)
+  ⎿  Error: > eel-feed@1.0.0 typecheck
+     > tsc --noEmit
+
+     src/game/scenes/BossSelectScene.ts(19,13): error TS6133: 'playerInfoEditManager' is 
+     declared but its value is never read.
+     src/game/scenes/BossSelectScene.ts(20,13): error TS6133: 'saveDataManager' is 
+     declared but its value is never read.
+
+● 使われていないマネージャーを削除するか、後で使用されることを示すコメントを追加します。
+
+● Update(src/game/scenes/BossSelectScene.ts)
+  ⎿  Updated src/game/scenes/BossSelectScene.ts with 2 additions and 2 removals         
+       16        // Manager instances
+       17        private bossCardManager: BossCardManager;
+       18        private playerModalManager: PlayerModalManager;
+       19 -      private playerInfoEditManager: PlayerInfoEditManager;
+       20 -      private saveDataManager: SaveDataManager;
+       19 +      private playerInfoEditManager: PlayerInfoEditManager; // Used in custom 
+     events
+          + events
+       20 +      private saveDataManager: SaveDataManager; // Used in modal buttons
+       21        
+       22        constructor(game: Game) {
+       23            this.game = game;
+
+● 実際には、これらのマネージャーは初期化されて使用されているので、TypeScriptの警告を回避
+  するために、それらを実際に使用するように修正します。
+
+● Update(src/game/scenes/BossSelectScene.ts)
+  ⎿  Updated src/game/scenes/BossSelectScene.ts with 4 additions                        
+       28            this.playerInfoEditManager = new PlayerInfoEditManager(game);
+       29            this.saveDataManager = new SaveDataManager(game);
+       30            
+       31 +          // Suppress unused variable warnings - managers are initialized and 
+          + handle their own events
+       32 +          void this.playerInfoEditManager;
+       33 +          void this.saveDataManager;
+       34 +          
+       35            this.init();
+       36        }
+       37        
+
+● 再度型チェックを実行します。
+
+● Bash(npm run typecheck)
+  ⎿  > eel-feed@1.0.0 typecheck
+     > tsc --noEmit
+
+● 型チェックが成功しました！次にビルドテストを実行します。
+
+● Bash(npm run build)
+  ⎿  > eel-feed@1.0.0 build        
+     > webpack --mode production
+     … +31 lines (ctrl+r to expand)
+
+● ビルドも成功しました！最後にリファクタリング結果をテストするために開発サーバーを起動し
+  てみます。
+
+● Bash(timeout 10s npm run dev || true)
+  ⎿  > eel-feed@1.0.0 dev                     
+     > webpack serve --mode development --open
+     … +34 lines (ctrl+r to expand)
+
+● 開発サーバーも正常に起動しました！
+
+● Update Todos
+  ⎿  ☒ Phase 1: BossCardManager クラスの作成と抽出         
+     ☒ Phase 1: PlayerModalManager クラスの作成と抽出
+     ☒ Phase 1: PlayerInfoEditManager クラスの作成と抽出
+     ☒ Phase 1: SaveDataManager クラスの作成と抽出
+     ☒ BossSelectSceneメインクラスのリファクタリング
+     ☒ リファクタリング後のテスト実行と動作確認
+     ☒ Phase 2: DOMUpdater 共通ユーティリティの作成
+     ☒ Phase 2: ProgressCalculator 共通ユーティリティの作成
+     ☒ Phase 3: SkillDisplayComponent の作成
+
+● リファクタリング完了！
+
+  BossSelectScene.tsの大幅なリファクタリングが成功しました。
+
+  🎯 実施した改善
+
+  Phase 1: クラス分割
+  - BossCardManager: ボス選択カード関連機能（185行）
+  - PlayerModalManager: プレイヤー詳細モーダル管理（517行）
+  - PlayerInfoEditManager: プレイヤー情報編集機能（158行）
+  - SaveDataManager: セーブデータ管理・デバッグ機能（174行）
+
+  Phase 2: 共通ユーティリティ抽出
+  - DOMUpdater: DOM操作の統一化（139行）
+  - ProgressCalculator: プログレスバー計算の共通化（176行）
+
+  Phase 3: UIコンポーネント化
+  - SkillDisplayComponent: スキル表示UIの統一化（232行）
+
+  最終結果
+  - 元のBossSelectScene: 1300行の巨大クラス → 235行に縮小（82%削減）
+  - 単一責任原則: 各クラスが明確な責任を持つように分割
+  - 型安全性向上: DOMUpdaterでnullチェック強化
+  - 再利用性向上: 共通ユーティリティで重複排除
+
+  ✅ 検証結果
+
+  - TypeScript型チェック: ✅ 成功
+  - プロダクションビルド: ✅ 成功
+  - 開発サーバー起動: ✅ 成功
+
+  コノピィのレビューで指摘されたGod 
+  Classアンチパターンを解決し、保守性と可読性を大幅に向上させました！
+

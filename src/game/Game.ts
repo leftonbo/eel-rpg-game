@@ -85,6 +85,9 @@ export class Game {
             this.player.lateInitialize();
             console.log('[Game][initAsync] Player initialized');
             
+            // 各シーンの遅延初期化
+            this.bossSelectScene.lateInitialize();
+            
             console.log('[Game][initAsync] Game initialized successfully');
             
             // Show initial title screen
