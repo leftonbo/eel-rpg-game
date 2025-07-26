@@ -16,72 +16,12 @@
     
     <h6>アビリティ</h6>
     <div class="row">
-        <div class="col-md-6 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">⚔️ コンバット Lv.<span id="combat-level">0</span></h6>
-                    <div class="progress mb-2">
-                        <div id="combat-progress" class="progress-bar"></div>
-                    </div>
-                    <small class="text-muted">経験値: <span id="combat-exp">0</span> / <span id="combat-next">100</span></small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">🛡️ タフネス Lv.<span id="toughness-level">0</span></h6>
-                    <div class="progress mb-2">
-                        <div id="toughness-progress" class="progress-bar"></div>
-                    </div>
-                    <small class="text-muted">経験値: <span id="toughness-exp">0</span> / <span id="toughness-next">100</span></small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">🔧 クラフトワーク Lv.<span id="craftwork-level">0</span></h6>
-                    <div class="progress mb-2">
-                        <div id="craftwork-progress" class="progress-bar"></div>
-                    </div>
-                    <small class="text-muted">経験値: <span id="craftwork-exp">0</span> / <span id="craftwork-next">100</span></small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">💪 エンデュランス Lv.<span id="endurance-level">0</span></h6>
-                    <div class="progress mb-2">
-                        <div id="endurance-progress" class="progress-bar"></div>
-                    </div>
-                    <small class="text-muted">経験値: <span id="endurance-exp">0</span> / <span id="endurance-next">100</span></small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">🏃 アジリティ Lv.<span id="agility-level">0</span></h6>
-                    <div class="progress mb-2">
-                        <div id="agility-progress" class="progress-bar"></div>
-                    </div>
-                    <small class="text-muted">経験値: <span id="agility-exp">0</span> / <span id="agility-next">100</span></small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="card bg-secondary">
-                <div class="card-body">
-                    <h6 class="card-title">🗺️ エクスプローラー Lv.<span id="explorer-level-stats">0</span></h6>
-                    <div class="progress mb-2">
-                        <div id="explorer-progress-stats" class="progress-bar"></div>
-                    </div>
-                    <small class="text-muted">経験値: <span id="explorer-exp-stats">0</span> / <span id="explorer-next-stats">100</span></small>
-                </div>
-            </div>
-        </div>
+        <%- include('../components/ability-card', { icon: '⚔️', name: 'コンバット', abilityId: 'combat' }) %>
+        <%- include('../components/ability-card', { icon: '🛡️', name: 'タフネス', abilityId: 'toughness' }) %>
+        <%- include('../components/ability-card', { icon: '🔧', name: 'クラフトワーク', abilityId: 'craftwork' }) %>
+        <%- include('../components/ability-card', { icon: '💪', name: 'エンデュランス', abilityId: 'endurance' }) %>
+        <%- include('../components/ability-card', { icon: '🏃', name: 'アジリティ', abilityId: 'agility' }) %>
+        <%- include('../components/ability-card', { icon: '🗺️', name: 'エクスプローラー', abilityId: 'explorer-stats' }) %>
     </div>
     
     <!-- Debug Controls for Skills Tab -->

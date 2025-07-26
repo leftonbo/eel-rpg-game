@@ -153,19 +153,19 @@
             <div class="card bg-primary">
                 <div class="card-header">
                     <h5 class="mb-0">
-                        <span id="battle-player-icon">=</span> 
-                        <span id="battle-player-name">����</span>
+                        <span id="battle-player-icon">🐍</span> 
+                        <span id="battle-player-name">エルナル</span>
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-2">
-                        ��: <span id="player-hp">1000</span> / <span id="player-max-hp">1000</span>
+                        ヘルス: <span id="player-hp">1000</span> / <span id="player-max-hp">1000</span>
                         <div id="player-hp-progress" class="progress">
                             <div id="player-hp-bar" class="progress-bar bg-success"></div>
                         </div>
                     </div>
                     <div class="mb-2">
-                        ��: <span id="player-mp">40</span> / <span id="player-max-mp">40</span>
+                        マナ: <span id="player-mp">40</span> / <span id="player-max-mp">40</span>
                         <div id="player-mp-progress" class="progress">
                             <div id="player-mp-bar" class="progress-bar bg-info"></div>
                         </div>
@@ -181,11 +181,11 @@
         <div class="col-md-6">
             <div class="card bg-danger">
                 <div class="card-header">
-                    <h5 id="boss-name" class="mb-0">ܹ</h5>
+                    <h5 id="boss-name" class="mb-0">ボス</h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-2">
-                        ��: <span id="boss-hp">0</span> / <span id="boss-max-hp">0</span>
+                        ヘルス: <span id="boss-hp">0</span> / <span id="boss-max-hp">0</span>
                         <div id="boss-hp-progress" class="progress">
                             <div id="boss-hp-bar" class="progress-bar bg-danger"></div>
                         </div>
@@ -202,10 +202,10 @@
 <div class="col-md-8">
     <div class="card bg-dark border-secondary h-100">
         <div class="card-header">
-            <h6 class="mb-0">�����</h6>
+            <h6 class="mb-0">バトルログ</h6>
         </div>
         <div class="card-body overflow-auto max-height-400" id="battle-log">
-            <p class="text-muted">����</p>
+            <p class="text-muted">バトル開始！</p>
         </div>
     </div>
 </div>
@@ -213,59 +213,58 @@
 <div class="col-md-4">
     <div class="card bg-secondary h-100">
         <div class="card-header">
-            <h6 class="mb-0">L�x�</h6>
+            <h6 class="mb-0">行動選択</h6>
         </div>
         <div class="card-body">
             <!-- Basic Action Buttons -->
 <div id="action-buttons" class="d-grid gap-2">
-    <button id="attack-btn" class="btn btn-danger">� ;�</button>
-    <button id="defend-btn" class="btn btn-primary">=� 2�</button>
-    <button id="skill-btn" class="btn btn-warning">� ���</button>
-    <button id="item-btn" class="btn btn-success">=� ����</button>
+    <button id="attack-btn" class="btn btn-danger">⚔️ 攻撃</button>
+    <button id="defend-btn" class="btn btn-primary">🛡️ 防御</button>
+    <button id="skill-btn" class="btn btn-warning">⚡ スキル</button>
+    <button id="item-btn" class="btn btn-success">💊 アイテム</button>
 </div>
             <!-- Skill Panel (hidden by default) -->
 <div id="skill-panel" class="d-none mt-3">
-    <h6>���</h6>
+    <h6>スキル</h6>
     <div class="d-grid gap-2">
-        <button id="power-attack-btn" class="btn btn-outline-danger" title="2.5n;��g��k;�20MP	">
-            =� �����ï (20MP)
+        <button id="power-attack-btn" class="btn btn-outline-danger" title="2.5倍の攻撃力で確実に攻撃（20MP）">
+            💥 パワーアタック (20MP)
         </button>
-        <button id="heal-skill-btn" class="btn btn-outline-success" title="HP�100ީ30MP	">
-            ( ��� (30MP)
+        <button id="heal-skill-btn" class="btn btn-outline-success" title="HPを100回復（30MP）">
+            ✨ ヒール (30MP)
         </button>
-        <button id="struggle-skill-btn" class="btn btn-outline-warning" title="�_�K(1���230MP	">
-            =% Bp�� (30MP)
+        <button id="struggle-skill-btn" class="btn btn-outline-warning" title="拘束状態専用：脱出確率2倍（30MP）">
+            🔥 あばれる (30MP)
         </button>
-        <button id="ultra-smash-btn" class="btn btn-outline-danger" title="h�;�">
-            =� �����÷� (MPh��)
+        <button id="ultra-smash-btn" class="btn btn-outline-danger" title="全力攻撃">
+            💀 ウルトラスマッシュ (MP全消費)
         </button>
-        <button id="skill-back-btn" class="btn btn-outline-secondary">;�</button>
+        <button id="skill-back-btn" class="btn btn-outline-secondary">戻る</button>
     </div>
 </div>
             <!-- Item Panel (hidden by default) -->
 <div id="item-panel" class="d-none mt-3">
-    <h6>����</h6>
+    <h6>アイテム</h6>
     <div class="d-grid gap-2">
-        <button id="heal-potion-btn" class="btn btn-outline-success" title="�빒80%ީW�Kp8��dY�">
-            =� ީ� (<span id="heal-potion-count">9</span>)
+        <button id="heal-potion-btn" class="btn btn-outline-success" title="ヘルスを80%回復し、状態異常を解除する">
+            💊 回復薬 (<span id="heal-potion-count">9</span>)
         </button>
-        <button id="adrenaline-btn" class="btn btn-outline-warning" title="3���n�!ukj�">
-            =� ������� (<span id="adrenaline-count">3</span>)
+        <button id="adrenaline-btn" class="btn btn-outline-warning" title="3ターンの間、無敵になる">
+            💉 アドレナリン注射 (<span id="adrenaline-count">3</span>)
         </button>
-        <button id="energy-drink-btn" class="btn btn-outline-info" title="3���n�MPL8k���kj�">
-            � C��� (<span id="energy-drink-count">3</span>)
+        <button id="energy-drink-btn" class="btn btn-outline-info" title="3ターンの間、MPが常に満タンになる">
+            ⚡ 元気ドリンク (<span id="energy-drink-count">3</span>)
         </button>
-        <button id="item-back-btn" class="btn btn-outline-secondary">;�</button>
+        <button id="item-back-btn" class="btn btn-outline-secondary">戻る</button>
     </div>
 </div>
             <!-- Special Actions Panel (for restrained state) -->
 <div id="special-actions" class="d-none">
     <div class="d-grid gap-2">
-        <button id="struggle-btn" class="btn btn-warning" title="�_K�1��f���ofL�pg
-	">=� �LO</button>
-        <button id="struggle-skill-special-btn" class="btn btn-outline-warning" title="�_�K(1���230MP	">=% Bp�� (30MP)</button>
-        <button id="stay-still-btn" class="btn btn-info" title="S��ީY� 'HPn5%	">= XchY�</button>
-        <button id="give-up-btn" class="btn btn-secondary" title="U�WjD">=� jYL~~</button>
+        <button id="struggle-btn" class="btn btn-warning" title="拘束から脱出を試みる（成功率は試行回数で上昇）">💪 もがく</button>
+        <button id="struggle-skill-special-btn" class="btn btn-outline-warning" title="拘束状態専用：脱出確率2倍（30MP）">🔥 あばれる (30MP)</button>
+        <button id="stay-still-btn" class="btn btn-info" title="体力を回復する（最大HPの5%）">😌 じっとする</button>
+        <button id="give-up-btn" class="btn btn-secondary" title="何もしない">️💀 なすがまま</button>
         <!-- Omamori button will be dynamically inserted here -->
         <div id="omamori-special-container" class="d-grid gap-2"></div>
     </div>
@@ -273,13 +272,13 @@
             <!-- Battle End Panel (for when battle is over) -->
 <div id="battle-end-actions" class="d-none">
     <div class="d-grid gap-2">
-        <button id="battle-end-btn" class="btn btn-success"><� ���B�</button>
+        <button id="battle-end-btn" class="btn btn-success">🎯 バトル終了</button>
     </div>
 </div>
             <!-- Debug Button (always visible when debug mode is on) -->
 <div id="debug-button-container" class="mt-2">
     <div class="d-grid gap-2">
-        <button id="debug-btn" class="btn btn-outline-info btn-sm d-none">=' ��ð</button>
+        <button id="debug-btn" class="btn btn-outline-info btn-sm d-none">🔧 デバッグ</button>
     </div>
 </div>
         </div>
@@ -1138,145 +1137,181 @@
 </div>
         <!-- Utility Modals -->
 <!-- Alert Modal -->
-<div class="modal fade" id="alert-modal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
+
+<!-- Base Modal Template -->
+<div class="modal fade" id="alert-modal" tabindex="-1" aria-labelledby="alert-modal-label" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content bg-dark">
             <div class="modal-header">
-                <h5 class="modal-title" id="alert-modal-title">通知</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="alert-modal-label">
+                    
+                    通知
+                    
+                </h5>
+                <button type="button" 
+                        class="btn-close btn-close-white" 
+                        data-bs-dismiss="modal" 
+                        aria-label="Close">
+                </button>
             </div>
-            <div class="modal-body" id="alert-modal-body">
-                <!-- Alert message goes here -->
+            <div class="modal-body">
+                <div id="alert-modal-body"><!-- Alert message goes here --></div>
             </div>
+            
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
             </div>
+            
         </div>
     </div>
 </div>
 
 <!-- Confirm Modal -->
-<div class="modal fade" id="confirm-modal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
+
+<!-- Base Modal Template -->
+<div class="modal fade" id="confirm-modal" tabindex="-1" aria-labelledby="confirm-modal-label" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content bg-dark">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirm-modal-title">確認</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="confirm-modal-label">
+                    
+                    確認
+                    
+                </h5>
+                <button type="button" 
+                        class="btn-close btn-close-white" 
+                        data-bs-dismiss="modal" 
+                        aria-label="Close">
+                </button>
             </div>
-            <div class="modal-body" id="confirm-modal-body">
-                <!-- Confirm message goes here -->
+            <div class="modal-body">
+                <div id="confirm-modal-body"><!-- Confirm message goes here --></div>
             </div>
+            
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="confirm-cancel-btn">キャンセル</button>
-                <button type="button" class="btn btn-danger" id="confirm-ok-btn">OK</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="confirm-cancel-btn">キャンセル</button><button type="button" class="btn btn-danger" id="confirm-ok-btn">OK</button>
             </div>
+            
         </div>
     </div>
 </div>
 
 <!-- Prompt Modal -->
-<div class="modal fade" id="prompt-modal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
+
+<!-- Base Modal Template -->
+<div class="modal fade" id="prompt-modal" tabindex="-1" aria-labelledby="prompt-modal-label" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content bg-dark">
             <div class="modal-header">
-                <h5 class="modal-title" id="prompt-modal-title">入力</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="prompt-modal-label">
+                    
+                    入力
+                    
+                </h5>
+                <button type="button" 
+                        class="btn-close btn-close-white" 
+                        data-bs-dismiss="modal" 
+                        aria-label="Close">
+                </button>
             </div>
             <div class="modal-body">
-                <div id="prompt-modal-body" class="mb-3">
-                    <!-- Prompt message goes here -->
-                </div>
-                <input type="text" class="form-control" id="prompt-modal-input" placeholder="入力してください">
+                <div id="prompt-modal-body" class="mb-3"><!-- Prompt message goes here --></div><input type="text" class="form-control" id="prompt-modal-input" placeholder="入力してください">
             </div>
+            
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="prompt-cancel-btn">キャンセル</button>
-                <button type="button" class="btn btn-primary" id="prompt-ok-btn">OK</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="prompt-cancel-btn">キャンセル</button><button type="button" class="btn btn-primary" id="prompt-ok-btn">OK</button>
             </div>
+            
         </div>
     </div>
 </div>
 
 <!-- Select Modal -->
-<div class="modal fade" id="select-modal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
+
+<!-- Base Modal Template -->
+<div class="modal fade" id="select-modal" tabindex="-1" aria-labelledby="select-modal-label" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content bg-dark">
             <div class="modal-header">
-                <h5 class="modal-title" id="select-modal-title">選択</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="select-modal-label">
+                    
+                    選択
+                    
+                </h5>
+                <button type="button" 
+                        class="btn-close btn-close-white" 
+                        data-bs-dismiss="modal" 
+                        aria-label="Close">
+                </button>
             </div>
             <div class="modal-body">
-                <div id="select-modal-body" class="mb-3">
-                    <!-- Select message goes here -->
-                </div>
-                <select class="form-select" id="select-modal-select">
-                    <!-- Options will be populated here -->
-                </select>
+                <div id="select-modal-body" class="mb-3"><!-- Select message goes here --></div><select class="form-select" id="select-modal-select"><!-- Options will be populated here --></select>
             </div>
+            
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="select-cancel-btn">キャンセル</button>
-                <button type="button" class="btn btn-primary" id="select-ok-btn">選択</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="select-cancel-btn">キャンセル</button><button type="button" class="btn btn-primary" id="select-ok-btn">選択</button>
             </div>
+            
         </div>
     </div>
 </div>
 
 <!-- Custom Variable Add Modal -->
-<div class="modal fade" id="custom-var-modal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
+
+<!-- Base Modal Template -->
+<div class="modal fade" id="custom-var-modal" tabindex="-1" aria-labelledby="custom-var-modal-label" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content bg-dark">
             <div class="modal-header">
-                <h5 class="modal-title">カスタム変数を追加</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="custom-var-modal-label">
+                    
+                    カスタム変数を追加
+                    
+                </h5>
+                <button type="button" 
+                        class="btn-close btn-close-white" 
+                        data-bs-dismiss="modal" 
+                        aria-label="Close">
+                </button>
             </div>
             <div class="modal-body">
-                <div id="custom-var-error" class="alert alert-danger d-none mb-3" role="alert">
-                    <!-- Error message will be displayed here -->
-                </div>
-                <div class="mb-3">
-                    <label for="custom-var-key" class="form-label">変数名</label>
-                    <input type="text" class="form-control" id="custom-var-key" placeholder="変数名を入力してください">
-                </div>
-                <div class="mb-3">
-                    <label for="custom-var-value" class="form-label">値</label>
-                    <input type="text" class="form-control" id="custom-var-value" placeholder="値を入力してください">
-                    <div class="form-text">数値やtrue/falseは自動的に変換されます</div>
-                </div>
+                <div id="custom-var-error" class="alert alert-danger d-none mb-3" role="alert"><!-- Error message will be displayed here --></div><div class="mb-3">  <label for="custom-var-key" class="form-label">変数名</label>  <input type="text" class="form-control" id="custom-var-key" placeholder="変数名を入力してください"></div><div class="mb-3">  <label for="custom-var-value" class="form-label">値</label>  <input type="text" class="form-control" id="custom-var-value" placeholder="値を入力してください">  <div class="form-text">数値やtrue/falseは自動的に変換されます</div></div>
             </div>
+            
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-                <button type="button" class="btn btn-primary" id="custom-var-add-btn">追加</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button><button type="button" class="btn btn-primary" id="custom-var-add-btn">追加</button>
             </div>
+            
         </div>
     </div>
 </div>
 
 <!-- Status Effect Add Modal -->
-<div class="modal fade" id="status-effect-modal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
+
+<!-- Base Modal Template -->
+<div class="modal fade" id="status-effect-modal" tabindex="-1" aria-labelledby="status-effect-modal-label" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content bg-dark">
             <div class="modal-header">
-                <h5 class="modal-title" id="status-effect-modal-title">ステータス効果を追加</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="status-effect-modal-label">
+                    
+                    ステータス効果を追加
+                    
+                </h5>
+                <button type="button" 
+                        class="btn-close btn-close-white" 
+                        data-bs-dismiss="modal" 
+                        aria-label="Close">
+                </button>
             </div>
             <div class="modal-body">
-                <div id="status-effect-error" class="alert alert-danger d-none mb-3" role="alert">
-                    <!-- Error message will be displayed here -->
-                </div>
-                <div class="mb-3">
-                    <label for="status-effect-type" class="form-label">ステータス効果</label>
-                    <select class="form-select" id="status-effect-type">
-                        <!-- Options will be populated here -->
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="status-effect-duration" class="form-label">持続ターン数</label>
-                    <input type="number" class="form-control" id="status-effect-duration" value="3" min="1" max="99">
-                </div>
+                <div id="status-effect-error" class="alert alert-danger d-none mb-3" role="alert"><!-- Error message will be displayed here --></div><div class="mb-3">  <label for="status-effect-type" class="form-label">ステータス効果</label>  <select class="form-select" id="status-effect-type"><!-- Options will be populated here --></select></div><div class="mb-3">  <label for="status-effect-duration" class="form-label">持続ターン数</label>  <input type="number" class="form-control" id="status-effect-duration" value="3" min="1" max="99"></div>
             </div>
+            
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-                <button type="button" class="btn btn-primary" id="status-effect-add-btn">追加</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button><button type="button" class="btn btn-primary" id="status-effect-add-btn">追加</button>
             </div>
+            
         </div>
     </div>
 </div>

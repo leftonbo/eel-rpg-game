@@ -19,7 +19,10 @@ async function buildTemplate() {
                 }
             }
         }, {
-            views: [path.resolve(templatesDir, 'partials')],
+            views: [
+                path.resolve(templatesDir, 'partials'),
+                path.resolve(templatesDir, 'components')
+            ],
             encoding: 'utf8'
         });
 
