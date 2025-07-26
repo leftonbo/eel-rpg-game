@@ -11,31 +11,20 @@ const outputFile = path.resolve(__dirname, '../src/index.html');
 
 async function buildTemplate() {
     try {
-        // Create an include function that reads partial files
-        const includeFunction = (partialPath) => {
-            const fullPath = path.resolve(templatesDir, 'partials', `${partialPath}.ejs`);
-            if (fs.existsSync(fullPath)) {
-                return fs.readFileSync(fullPath, 'utf8');
-            }
-            console.warn(`Partial not found: ${fullPath}`);
-            return `<!-- Partial not found: ${partialPath} -->`;
-        };
-
-        // Read the main template
-        const mainTemplate = fs.readFileSync(path.resolve(templatesDir, 'index.ejs'), 'utf8');
-        
-        // Render the template with includes
-        const rendered = ejs.render(mainTemplate, {
+        // Render the template with EJS renderFile function for proper include support
+        const rendered = await ejs.renderFile(path.resolve(templatesDir, 'index.ejs'), {
             htmlWebpackPlugin: {
                 options: {
                     title: 'ElnalFTB - Turn-based RPG'
                 }
-            },
-            include: includeFunction
+            }
+        }, {
+            views: [path.resolve(templatesDir, 'partials')],
+            encoding: 'utf8'
         });
 
-        // Write the output
-        fs.writeFileSync(outputFile, rendered);
+        // Write the output with UTF-8 encoding
+        fs.writeFileSync(outputFile, rendered, 'utf8');
         console.log('Templates built successfully!');
         
     } catch (error) {
