@@ -7,6 +7,7 @@ import { SkillRegistry, SkillData } from '../data/skills';
 import { MemorialSystem } from '../systems/MemorialSystem';
 import { SkillStrategyFactory } from './SkillStrategy';
 import { PlayerEquipmentManager } from './PlayerEquipmentManager';
+import { PlayerItemManager } from './PlayerItemManager';
 
 
 export interface SkillResult {
@@ -20,14 +21,6 @@ export interface SkillResult {
 export const DEFAULT_PLAYER_NAME = 'エルナル';
 export const DEFAULT_PLAYER_ICON = '🐍';
 
-export interface PlayerItem {
-    name: string;
-    count: number;
-    description: string;
-    use: (player: Player) => boolean;
-    experienceGain: number; // Experience gain for using the item
-}
-
 export class Player extends Actor {
     public name: string = DEFAULT_PLAYER_NAME;
     public icon: string = DEFAULT_PLAYER_ICON;
@@ -39,7 +32,6 @@ export class Player extends Actor {
     
     // Agility experience callback
     public agilityExperienceCallback?: (amount: number) => void;
-    public items: Map<string, PlayerItem> = new Map();
     public isDefending: boolean = false;
     public struggleAttempts: number = 0; // For restrain escape probability
     
@@ -47,6 +39,7 @@ export class Player extends Actor {
     public abilitySystem: AbilitySystem = new AbilitySystem();
     public memorialSystem: MemorialSystem = new MemorialSystem();
     public equipmentManager: PlayerEquipmentManager;
+    public itemManager: PlayerItemManager = new PlayerItemManager();
     
     constructor() {
         super(DEFAULT_PLAYER_NAME, 100, 5, 50);
@@ -291,10 +284,7 @@ export class Player extends Actor {
     }
     
     useItem(itemName: string): boolean {
-        const item = this.items.get(itemName);
-        if (!item || item.count <= 0) return false;
-        
-        return item.use(this);
+        return this.itemManager.useItem(itemName, this);
     }
     
     attemptStruggle(): boolean {
@@ -505,8 +495,7 @@ export class Player extends Actor {
     }
     
     getItemCount(itemName: string): number {
-        const item = this.items.get(itemName);
-        return item ? item.count : 0;
+        return this.itemManager.getItemCount(itemName);
     }
     
     getStatusEffectsList(): string[] {
