@@ -10,6 +10,7 @@ import { PlayerEquipmentManager } from './PlayerEquipmentManager';
 import { PlayerItemManager } from './PlayerItemManager';
 import { PlayerBattleActions } from './PlayerBattleActions';
 import { PlayerProgressionManager } from './PlayerProgressionManager';
+import * as PlayerConstants from './PlayerConstants';
 
 
 export interface SkillResult {
@@ -19,18 +20,18 @@ export interface SkillResult {
     damage?: number; // Only for attack skills
 }
 
-// Default player values
-export const DEFAULT_PLAYER_NAME = 'エルナル';
-export const DEFAULT_PLAYER_ICON = '🐍';
+// Re-export constants for backward compatibility
+export const DEFAULT_PLAYER_NAME = PlayerConstants.DEFAULT_PLAYER_NAME;
+export const DEFAULT_PLAYER_ICON = PlayerConstants.DEFAULT_PLAYER_ICON;
 
 export class Player extends Actor {
     public name: string = DEFAULT_PLAYER_NAME;
     public icon: string = DEFAULT_PLAYER_ICON;
     
     // Base stats (before equipment/abilities)
-    public baseMaxHp: number = 100;
-    public baseMaxMp: number = 50;
-    public baseAttackPower: number = 5;
+    public baseMaxHp: number = PlayerConstants.BASE_MAX_HP;
+    public baseMaxMp: number = PlayerConstants.BASE_MAX_MP;
+    public baseAttackPower: number = PlayerConstants.BASE_ATTACK_POWER;
     
     // Agility experience callback
     public agilityExperienceCallback?: (amount: number) => void;
@@ -46,7 +47,7 @@ export class Player extends Actor {
     public progressionManager: PlayerProgressionManager;
     
     constructor() {
-        super(DEFAULT_PLAYER_NAME, 100, 5, 50);
+        super(DEFAULT_PLAYER_NAME, PlayerConstants.BASE_MAX_HP, PlayerConstants.BASE_ATTACK_POWER, PlayerConstants.BASE_MAX_MP);
         this.equipmentManager = new PlayerEquipmentManager(this.abilitySystem);
         this.battleActions = new PlayerBattleActions(this);
         this.progressionManager = new PlayerProgressionManager(this.abilitySystem);
@@ -113,7 +114,7 @@ export class Player extends Actor {
                 name: this.name,
                 icon: this.icon
             },
-            version: 4
+            version: PlayerConstants.SAVE_DATA_VERSION
         };
         
         PlayerSaveManager.savePlayerData(saveData);
@@ -124,12 +125,12 @@ export class Player extends Actor {
      */
     public recalculateStats(): void {
         // Calculate HP with toughness bonus and armor
-        const toughnessMultiplier = 1 + this.abilitySystem.getToughnessHpBonus();
+        const toughnessMultiplier = PlayerConstants.STAT_MULTIPLIER_BASE + this.abilitySystem.getToughnessHpBonus();
         const armorBonus = this.equipmentManager.getArmorHpBonus();
         this.maxHp = Math.round((this.baseMaxHp + armorBonus) * toughnessMultiplier);
         
         // Calculate MP with endurance bonus
-        const enduranceMultiplier = 1 + this.abilitySystem.getEnduranceMpBonus();
+        const enduranceMultiplier = PlayerConstants.STAT_MULTIPLIER_BASE + this.abilitySystem.getEnduranceMpBonus();
         this.maxMp = Math.round(this.baseMaxMp * enduranceMultiplier);
         
         // Update items based on new ability levels
@@ -202,7 +203,7 @@ export class Player extends Actor {
     
     getAttackPower(): number {
         // Calculate base attack power with combat ability and weapon
-        const combatMultiplier = 1 + this.abilitySystem.getCombatAttackBonus();
+        const combatMultiplier = PlayerConstants.STAT_MULTIPLIER_BASE + this.abilitySystem.getCombatAttackBonus();
         const weaponBonus = this.equipmentManager.getWeaponAttackBonus();
         const baseWithAbilityAndWeapon = (this.baseAttackPower + weaponBonus) * combatMultiplier;
         
@@ -269,7 +270,7 @@ export class Player extends Actor {
         if (this.hp >= this.maxHp) return 0;
         
         // Apply craftwork healing bonus
-        const craftworkMultiplier = 1 + this.abilitySystem.getCraftworkHealingBonus();
+        const craftworkMultiplier = PlayerConstants.CRAFTWORK_HEALING_MULTIPLIER_BASE + this.abilitySystem.getCraftworkHealingBonus();
         const enhancedAmount = Math.round(amount * craftworkMultiplier);
         
         const oldHp = this.hp;

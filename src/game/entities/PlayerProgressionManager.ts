@@ -1,4 +1,5 @@
 import { AbilitySystem, AbilityType } from '../systems/AbilitySystem';
+import * as PlayerConstants from './PlayerConstants';
 
 /**
  * プレイヤーの進行管理クラス（経験値、レベルアップ、探索者レベル等）
@@ -50,7 +51,7 @@ export class PlayerProgressionManager {
         
         for (let i = 0; i <= level; i++) {
             // レベル3はゲストキャラ関係のため表示しない
-            if (i === 3) continue;
+            if (i === PlayerConstants.EXPLORER_LEVEL_SKIP) continue;
             
             const terrain = terrainMap[i];
             if (terrain) {
@@ -144,12 +145,12 @@ export class PlayerProgressionManager {
     getPowerRating(): number {
         // 各アビリティレベルに重み付けして計算
         const weights = {
-            [AbilityType.Combat]: 2.0,
-            [AbilityType.Toughness]: 1.5,
-            [AbilityType.Endurance]: 1.2,
-            [AbilityType.Agility]: 1.3,
-            [AbilityType.CraftWork]: 1.0,
-            [AbilityType.Explorer]: 0.8
+            [AbilityType.Combat]: PlayerConstants.ABILITY_WEIGHT.COMBAT,
+            [AbilityType.Toughness]: PlayerConstants.ABILITY_WEIGHT.TOUGHNESS,
+            [AbilityType.Endurance]: PlayerConstants.ABILITY_WEIGHT.ENDURANCE,
+            [AbilityType.Agility]: PlayerConstants.ABILITY_WEIGHT.AGILITY,
+            [AbilityType.CraftWork]: PlayerConstants.ABILITY_WEIGHT.CRAFTWORK,
+            [AbilityType.Explorer]: PlayerConstants.ABILITY_WEIGHT.EXPLORER
         };
         
         let rating = 0;

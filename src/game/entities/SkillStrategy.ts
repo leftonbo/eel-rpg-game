@@ -4,6 +4,7 @@ import { Actor } from './Actor';
 import { SkillResult } from './Player';
 import { StatusEffectType } from '../systems/StatusEffect';
 import { AbilityType } from '../systems/AbilitySystem';
+import * as PlayerConstants from './PlayerConstants';
 
 /**
  * スキル実行戦略の基底インターフェース
@@ -18,10 +19,10 @@ export interface SkillStrategy {
 export class PowerAttackStrategy implements SkillStrategy {
     execute(player: Player, skillData: SkillData): SkillResult {
         const mpInsufficient = !player.consumeMp(skillData.mpCost);
-        let powerMultiplier = skillData.damageMultiplier || 2.5;
+        let powerMultiplier = skillData.damageMultiplier || PlayerConstants.POWER_ATTACK_DEFAULT_MULTIPLIER;
         
         if (mpInsufficient) {
-            powerMultiplier *= 2; // Double effect when MP insufficient
+            powerMultiplier *= PlayerConstants.POWER_ATTACK_NO_MP_MULTIPLIER;
         }
         
         const damage = Math.floor(player.getAttackPower() * powerMultiplier);
@@ -66,14 +67,14 @@ export class UltraSmashStrategy implements SkillStrategy {
 export class StruggleStrategy implements SkillStrategy {
     execute(player: Player, skillData: SkillData): SkillResult {
         const mpInsufficient = !player.consumeMp(skillData.mpCost);
-        let successMultiplier = 2;
+        let successMultiplier = PlayerConstants.STRUGGLE_ENHANCED_SUCCESS_MULTIPLIER;
         
         if (mpInsufficient) {
-            successMultiplier = 4; // Double effect when MP insufficient
+            successMultiplier = PlayerConstants.STRUGGLE_ENHANCED_SUCCESS_MULTIPLIER_NO_MP;
         }
         
         // Calculate enhanced struggle success rate
-        let baseSuccessRate = 0.3 + (player.struggleAttempts) * 0.2;
+        let baseSuccessRate = PlayerConstants.STRUGGLE_BASE_SUCCESS_RATE + (player.struggleAttempts) * PlayerConstants.STRUGGLE_SUCCESS_INCREASE_PER_ATTEMPT;
         baseSuccessRate = Math.min(baseSuccessRate, 1.0);
         
         // Apply agility bonus
@@ -90,8 +91,8 @@ export class StruggleStrategy implements SkillStrategy {
         // Check if agility level 5+ for damage dealing
         const agilityLevel = player.abilitySystem.getAbility(AbilityType.Agility)?.level || 0;
         let damageDealt = 0;
-        if (agilityLevel >= 5) {
-            damageDealt = Math.floor(player.getAttackPower() * 1.5);
+        if (agilityLevel >= PlayerConstants.AGILITY_DAMAGE_DEALING_LEVEL) {
+            damageDealt = Math.floor(player.getAttackPower() * PlayerConstants.STRUGGLE_DAMAGE_MULTIPLIER);
         }
         
         if (success) {
@@ -101,7 +102,7 @@ export class StruggleStrategy implements SkillStrategy {
             
             // Notify agility experience for successful escape
             if (player.agilityExperienceCallback) {
-                player.agilityExperienceCallback(100);
+                player.agilityExperienceCallback(PlayerConstants.AGILITY_EXP_FAILED_ESCAPE);
             }
             
             return {
@@ -114,11 +115,11 @@ export class StruggleStrategy implements SkillStrategy {
             };
         } else {
             // Increase future struggle success significantly on failure
-            player.struggleAttempts += mpInsufficient ? 8 : 4;
+            player.struggleAttempts += mpInsufficient ? PlayerConstants.STRUGGLE_ATTEMPT_INCREASE_FAIL_NO_MP : PlayerConstants.STRUGGLE_ATTEMPT_INCREASE_FAIL;
             
             // Notify agility experience for failed escape (2x amount)
             if (player.agilityExperienceCallback) {
-                player.agilityExperienceCallback(400);
+                player.agilityExperienceCallback(PlayerConstants.AGILITY_EXP_ENHANCED_FAILED_ESCAPE);
             }
             
             return {
@@ -142,7 +143,7 @@ export class DefendStrategy implements SkillStrategy {
         
         // Check if endurance level 3+ for MP recovery
         const enduranceLevel = player.abilitySystem.getAbility(AbilityType.Endurance)?.level || 0;
-        if (enduranceLevel >= 3) {
+        if (enduranceLevel >= PlayerConstants.ENDURANCE_FULL_MP_RECOVERY_LEVEL) {
             player.mp = player.maxMp;
         }
         
@@ -162,7 +163,7 @@ export class StayStillStrategy implements SkillStrategy {
         
         // Check if endurance level 3+ for MP recovery
         const enduranceLevel = player.abilitySystem.getAbility(AbilityType.Endurance)?.level || 0;
-        if (enduranceLevel >= 3) {
+        if (enduranceLevel >= PlayerConstants.ENDURANCE_FULL_MP_RECOVERY_LEVEL) {
             player.mp = player.maxMp;
         }
         

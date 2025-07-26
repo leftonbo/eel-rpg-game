@@ -1,6 +1,7 @@
 import { Player } from './Player';
 import { StatusEffectType } from '../systems/StatusEffect';
 import { AbilityType } from '../systems/AbilitySystem';
+import * as PlayerConstants from './PlayerConstants';
 
 /**
  * プレイヤーのバトル行動管理クラス
@@ -29,8 +30,8 @@ export class PlayerBattleActions {
         this.player.struggleAttempts++;
         
         // Base success rate starts at 30% and increases by 20% each attempt
-        let baseSuccessRate = 0.3 + (this.player.struggleAttempts - 1) * 0.2;
-        baseSuccessRate = Math.min(baseSuccessRate, 0.9); // Cap at 90%
+        let baseSuccessRate = PlayerConstants.STRUGGLE_BASE_SUCCESS_RATE + (this.player.struggleAttempts - 1) * PlayerConstants.STRUGGLE_SUCCESS_INCREASE_PER_ATTEMPT;
+        baseSuccessRate = Math.min(baseSuccessRate, PlayerConstants.STRUGGLE_MAX_SUCCESS_RATE);
         
         // Apply agility bonus
         const agilityBonus = this.player.abilitySystem.getAgilityEscapeBonus();
@@ -56,7 +57,7 @@ export class PlayerBattleActions {
             
             // Notify agility experience for successful escape
             if (this.player.agilityExperienceCallback) {
-                this.player.agilityExperienceCallback(50);
+                this.player.agilityExperienceCallback(PlayerConstants.AGILITY_EXP_SUCCESS_ESCAPE);
             }
             
             return true;
@@ -64,7 +65,7 @@ export class PlayerBattleActions {
         
         // Notify agility experience for failed escape (2x amount)
         if (this.player.agilityExperienceCallback) {
-            this.player.agilityExperienceCallback(100);
+            this.player.agilityExperienceCallback(PlayerConstants.AGILITY_EXP_FAILED_ESCAPE);
         }
         
         return false;
@@ -75,11 +76,11 @@ export class PlayerBattleActions {
      */
     stayStill(): void {
         // Staying still provides a small amount of healing
-        const healAmount = Math.floor(this.player.maxHp * 0.05); // 5% of max health
+        const healAmount = Math.floor(this.player.maxHp * PlayerConstants.STAY_STILL_HEAL_RATE);
         this.player.heal(healAmount);
         
         // Also recover a small amount of MP
-        const mpRecovery = Math.floor(this.player.maxMp * 0.25); // 25% of max MP
+        const mpRecovery = Math.floor(this.player.maxMp * PlayerConstants.STAY_STILL_MP_RECOVERY_RATE);
         this.player.recoverMp(mpRecovery);
     }
     
@@ -145,7 +146,7 @@ export class PlayerBattleActions {
                 this.player.statusEffects.removeEffect(StatusEffectType.KnockedOut);
                 
                 // Recover 50% health
-                const healAmount = Math.floor(this.player.maxHp * 0.5);
+                const healAmount = Math.floor(this.player.maxHp * PlayerConstants.KNOCKEDOUT_RECOVERY_RATE);
                 this.player.heal(healAmount);
                 
                 messages.push(`${this.player.name}が意識を取り戻した！`);
@@ -166,7 +167,7 @@ export class PlayerBattleActions {
         passiveSkills.forEach(skill => {
             switch (skill.passiveEffect) {
                 case 'regeneration':
-                    const healAmount = Math.max(1, Math.round(this.player.maxHp / 50));
+                    const healAmount = Math.max(1, Math.round(this.player.maxHp / PlayerConstants.REGENERATION_HEAL_DIVISOR));
                     if (!this.player.isKnockedOut() && !this.player.isAnyRestrained() && this.player.hp < this.player.maxHp) {
                         this.player.heal(healAmount);
                     }
@@ -188,7 +189,7 @@ export class PlayerBattleActions {
         const hasEscapeRecovery = passiveSkills.some(skill => skill.passiveEffect === 'escape-recovery');
         if (hasEscapeRecovery) {
             const lostMaxHp = this.player.initialMaxHp - this.player.maxHp;
-            const recoveryAmount = Math.floor(lostMaxHp * 0.2); // 20% of lost max HP
+            const recoveryAmount = Math.floor(lostMaxHp * PlayerConstants.ESCAPE_RECOVERY_RATE);
             if (recoveryAmount > 0) {
                 const actualHeal = this.player.gainMaxHp(recoveryAmount);
                 if (actualHeal > 0) {
@@ -205,7 +206,7 @@ export class PlayerBattleActions {
      */
     shouldCutDefendDamage(): boolean {
         const toughnessLevel = this.player.abilitySystem.getAbility(AbilityType.Toughness)?.level || 0;
-        return toughnessLevel >= 7;
+        return toughnessLevel >= PlayerConstants.TOUGHNESS_DEFEND_CUT_LEVEL;
     }
     
     /**
