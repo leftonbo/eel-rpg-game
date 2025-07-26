@@ -64,7 +64,7 @@ export class Player extends Actor {
     }
     
     /**
-     * Load player data from localStorage
+     * ローカルストレージからプレイヤーデータを読み込む
      */
     private loadFromSave(): void {
         console.log('[Player][loadFromSave] Loading player data from localStorage...');
@@ -78,7 +78,8 @@ export class Player extends Actor {
     }
     
     /**
-     * Load all components from save data
+     * セーブデータから全コンポーネントを読み込む
+     * @param saveData セーブデータオブジェクト
      */
     private loadSaveDataComponents(saveData: any): void {
         console.log('[Player][loadFromSave] Save data found:', saveData);
@@ -92,7 +93,8 @@ export class Player extends Actor {
     }
     
     /**
-     * Load abilities from save data
+     * セーブデータからアビリティを読み込む
+     * @param abilitiesData アビリティデータ
      */
     private loadAbilities(abilitiesData: any): void {
         console.log('[Player][loadFromSave] Loading abilities:', abilitiesData);
@@ -100,7 +102,8 @@ export class Player extends Actor {
     }
     
     /**
-     * Load equipment from save data
+     * セーブデータから装備を読み込む
+     * @param equipmentData 装備データ
      */
     private loadEquipment(equipmentData: any): void {
         console.log('[Player][loadFromSave] Loading equipment:', equipmentData);
@@ -108,7 +111,8 @@ export class Player extends Actor {
     }
     
     /**
-     * Load memorials from save data
+     * セーブデータから記念品を読み込む
+     * @param memorialsData 記念品データ
      */
     private loadMemorials(memorialsData: any): void {
         console.log('[Player][loadFromSave] Loading memorials:', memorialsData);
@@ -116,7 +120,8 @@ export class Player extends Actor {
     }
     
     /**
-     * Load player info from save data
+     * セーブデータからプレイヤー情報を読み込む
+     * @param playerInfoData プレイヤー情報データ
      */
     private loadPlayerInfo(playerInfoData: any): void {
         if (playerInfoData) {
@@ -128,7 +133,7 @@ export class Player extends Actor {
     }
     
     /**
-     * Initialize default data when no save exists
+     * セーブデータが存在しない場合のデフォルトデータを初期化
      */
     private initializeDefaultData(): void {
         console.log('[Player][loadFromSave] No save data found, initializing with defaults');
@@ -136,7 +141,7 @@ export class Player extends Actor {
     }
     
     /**
-     * Save player data to localStorage
+     * プレイヤーデータをローカルストレージに保存
      */
     public saveToStorage(): void {
         const saveData: PlayerSaveData = {
@@ -154,7 +159,7 @@ export class Player extends Actor {
     }
     
     /**
-     * Recalculate all stats based on abilities and equipment
+     * アビリティと装備に基づいて全ステータスを再計算
      */
     public recalculateStats(): void {
         // Calculate HP with toughness bonus and armor
@@ -171,7 +176,7 @@ export class Player extends Actor {
     }
     
     /**
-     * Initialize default unlocks for basic skills and items
+     * 基本スキルとアイテムのデフォルトアンロックを初期化
      */
     private initializeDefaultUnlocks(): void {
         // Default unlocks are now handled by ability-based calculation
@@ -185,7 +190,8 @@ export class Player extends Actor {
     
     
     /**
-     * Get all unlocked skills with their current stats (calculated from ability levels)
+     * アビリティレベルから計算された現在のステータスでアンロックされた全スキルを取得
+     * @returns アンロック済みスキルの配列
      */
     public getUnlockedSkills(): SkillData[] {
         const abilityLevels = this.getAbilityLevelsMap();
@@ -195,7 +201,8 @@ export class Player extends Actor {
     }
     
     /**
-     * Get ability levels as a map for skill calculations
+     * スキル計算用のアビリティレベルマップを取得
+     * @returns アビリティタイプとレベルのマップ
      */
     private getAbilityLevelsMap(): Map<AbilityType, number> {
         const abilityLevels = new Map<AbilityType, number>();
@@ -207,7 +214,10 @@ export class Player extends Actor {
     }
     
     /**
-     * Build skill data array from skill IDs
+     * スキルIDからスキルデータ配列を構築
+     * @param skillIds スキルIDの配列
+     * @param abilityLevels アビリティレベルマップ
+     * @returns スキルデータの配列
      */
     private buildSkillsFromIds(skillIds: string[], abilityLevels: Map<AbilityType, number>): SkillData[] {
         const skills: SkillData[] = [];
@@ -223,7 +233,8 @@ export class Player extends Actor {
     }
     
     /**
-     * Get unlocked passive skills
+     * アンロック済みパッシブスキルを取得
+     * @returns パッシブスキルの配列
      */
     public getUnlockedPassiveSkills(): SkillData[] {
         const abilityLevels = this.getAbilityLevelsMap();
@@ -231,7 +242,9 @@ export class Player extends Actor {
     }
     
     /**
-     * Check if a specific skill is unlocked (calculated from ability levels)
+     * アビリティレベルから計算して特定のスキルがアンロックされているかチェック
+     * @param skillId スキルID
+     * @returns アンロック済みの場合true
      */
     public hasSkill(skillId: string): boolean {
         const abilityLevels = this.getAbilityLevelsMap();
@@ -251,7 +264,9 @@ export class Player extends Actor {
     }
     
     /**
-     * Equip a weapon (if unlocked)
+     * 武器を装備（アンロック済みの場合）
+     * @param weaponId 武器ID
+     * @returns 装備成功の場合true
      */
     public equipWeapon(weaponId: string): boolean {
         const success = this.equipmentManager.equipWeapon(weaponId);
@@ -262,7 +277,9 @@ export class Player extends Actor {
     }
     
     /**
-     * Equip armor (if unlocked)
+     * 防具を装備（アンロック済みの場合）
+     * @param armorId 防具ID
+     * @returns 装備成功の場合true
      */
     public equipArmor(armorId: string): boolean {
         const success = this.equipmentManager.equipArmor(armorId);
@@ -273,21 +290,26 @@ export class Player extends Actor {
     }
     
     /**
-     * Get available weapons based on combat level
+     * 戦闘レベルに基づいて利用可能な武器を取得
+     * @returns 利用可能な武器の配列
      */
     public getAvailableWeapons(): Equipment[] {
         return this.equipmentManager.getAvailableWeapons();
     }
     
     /**
-     * Get available armors based on toughness level
+     * 精神力レベルに基づいて利用可能な防具を取得
+     * @returns 利用可能な防具の配列
      */
     public getAvailableArmors(): Equipment[] {
         return this.equipmentManager.getAvailableArmors();
     }
     
     /**
-     * Add experience to an ability
+     * アビリティに経験値を追加
+     * @param abilityType アビリティタイプ
+     * @param amount 経験値量
+     * @returns レベルアップ情報
      */
     public addExperience(abilityType: AbilityType, amount: number): { leveledUp: boolean; newLevel: number; previousLevel: number } {
         const result = this.progressionManager.addExperience(abilityType, amount);
@@ -381,7 +403,9 @@ export class Player extends Actor {
     
     
     /**
-     * Check if a skill can be used
+     * スキルが使用可能かチェック
+     * @param skillData スキルデータ
+     * @returns 使用可能の場合true
      */
     private canUseSkill(skillData: SkillData): boolean {
         // Basic checks
@@ -410,7 +434,10 @@ export class Player extends Actor {
     }
     
     /**
-     * Use a skill from the new system
+     * 新システムからスキルを使用
+     * @param skillData スキルデータ
+     * @param target ターゲット（オプション）
+     * @returns スキル実行結果
      */
     private useSkillData(skillData: SkillData, target?: Actor): SkillResult {
         const strategy = SkillStrategyFactory.getStrategy(skillData.id);
@@ -443,35 +470,40 @@ export class Player extends Actor {
     }
     
     /**
-     * Add combat experience based on damage dealt
+     * 与えたダメージに基づいて戦闘経験値を追加
+     * @param damageDealt 与えたダメージ量
      */
     public addCombatExperience(damageDealt: number): void {
         this.progressionManager.addCombatExperience(damageDealt);
     }
     
     /**
-     * Get display information for current equipment
+     * 現在の装備の表示情報を取得
+     * @returns 武器と防具の情報
      */
     public getEquipmentInfo(): { weapon: Equipment | null; armor: Equipment | null } {
         return this.equipmentManager.getEquipmentInfo();
     }
     
     /**
-     * Get current explorer level
+     * 現在の探索者レベルを取得
+     * @returns 探索者レベル
      */
     public getExplorerLevel(): number {
         return this.progressionManager.getExplorerLevel();
     }
     
     /**
-     * Get accessible terrains based on explorer level
+     * 探索者レベルに基づいてアクセス可能な地形を取得
+     * @returns アクセス可能な地形の配列
      */
     public getAccessibleTerrains(): string[] {
         return this.progressionManager.getAccessibleTerrains();
     }
     
     /**
-     * Get ability levels for display
+     * 表示用のアビリティレベルを取得
+     * @returns アビリティレベル情報のオブジェクト
      */
     public getAbilityLevels(): { [key: string]: { level: number; experience: number; experienceToNext: number } } {
         return this.progressionManager.getAbilityLevels();
@@ -479,14 +511,17 @@ export class Player extends Actor {
 
     
     /**
-     * Check if defend damage should be 100% cut
+     * 防御ダメージが100%カットされるかチェック
+     * @returns 100%カットの場合true
      */
     public shouldCutDefendDamage(): boolean {
         return this.battleActions.shouldCutDefendDamage();
     }
     
     /**
-     * Update player name and icon
+     * プレイヤー名とアイコンを更新
+     * @param name プレイヤー名
+     * @param icon アイコン
      */
     public updatePlayerInfo(name: string, icon: string): void {
         this.name = name;
@@ -496,7 +531,7 @@ export class Player extends Actor {
     }
 
     /**
-     * Reset battle-specific state while preserving progression
+     * 進行状態を保持しながらバトル固有の状態をリセット
      */
     public resetBattleState(): void {
         // Call battle actions reset
