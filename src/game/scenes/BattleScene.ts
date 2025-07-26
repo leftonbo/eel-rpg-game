@@ -1,5 +1,5 @@
 import { Game } from '../Game';
-import { Player, SkillType } from '../entities/Player';
+import { Player } from '../entities/Player';
 import { Boss, ActionType, formatMessage } from '../entities/Boss';
 import { StatusEffect, StatusEffectType } from '../systems/StatusEffect';
 import { calculateAttackResult } from '../utils/CombatUtils';
@@ -194,10 +194,10 @@ export class BattleScene {
         document.getElementById('item-btn')?.addEventListener('click', () => this.showItemPanel());
         
         // Skill buttons
-        document.getElementById('power-attack-btn')?.addEventListener('click', () => this.useSkill(SkillType.PowerAttack));
-        document.getElementById('heal-skill-btn')?.addEventListener('click', () => this.useSkill(SkillType.Heal));
-        document.getElementById('struggle-skill-btn')?.addEventListener('click', () => this.useSkill(SkillType.Struggle));
-        document.getElementById('ultra-smash-btn')?.addEventListener('click', () => this.useSkill(SkillType.UltraSmash));
+        document.getElementById('power-attack-btn')?.addEventListener('click', () => this.useSkill('power-attack'));
+        document.getElementById('heal-skill-btn')?.addEventListener('click', () => this.useSkill('heal'));
+        document.getElementById('struggle-skill-btn')?.addEventListener('click', () => this.useSkill('struggle'));
+        document.getElementById('ultra-smash-btn')?.addEventListener('click', () => this.useSkill('ultra-smash'));
         document.getElementById('skill-back-btn')?.addEventListener('click', () => this.hideSkillPanel());
         
         // Item buttons
@@ -208,7 +208,7 @@ export class BattleScene {
         
         // Special action buttons
         document.getElementById('struggle-btn')?.addEventListener('click', () => this.playerStruggle());
-        document.getElementById('struggle-skill-special-btn')?.addEventListener('click', () => this.useSkill(SkillType.Struggle));
+        document.getElementById('struggle-skill-special-btn')?.addEventListener('click', () => this.useSkill('struggle'));
         document.getElementById('stay-still-btn')?.addEventListener('click', () => this.playerStayStill());
         document.getElementById('give-up-btn')?.addEventListener('click', () => this.playerGiveUp());
         
@@ -516,7 +516,7 @@ export class BattleScene {
         
         // Update heal potion
         const healPotionCount = this.player.getItemCount('heal-potion');
-        const healPotionUnlocked = this.player.items.has('heal-potion');
+        const healPotionUnlocked = this.player.getItemCount('heal-potion') > 0;
         if (this.healPotionCount) {
             this.healPotionCount.textContent = healPotionCount.toString();
         }
@@ -527,7 +527,7 @@ export class BattleScene {
         
         // Update adrenaline
         const adrenalineCount = this.player.getItemCount('adrenaline');
-        const adrenalineUnlocked = this.player.items.has('adrenaline');
+        const adrenalineUnlocked = this.player.getItemCount('adrenaline') > 0;
         if (this.adrenalineCount) {
             this.adrenalineCount.textContent = adrenalineCount.toString();
         }
@@ -538,7 +538,7 @@ export class BattleScene {
         
         // Update energy drink
         const energyDrinkCount = this.player.getItemCount('energy-drink');
-        const energyDrinkUnlocked = this.player.items.has('energy-drink');
+        const energyDrinkUnlocked = this.player.getItemCount('energy-drink') > 0;
         if (this.energyDrinkCount) {
             this.energyDrinkCount.textContent = energyDrinkCount.toString();
         }
@@ -606,7 +606,7 @@ export class BattleScene {
         // Check if basic actions are unlocked
         const hasBasicAttack = true; // Basic attack is always available
         const hasDefend = this.player.hasSkill('defend'); // Defend skill must be unlocked
-        const hasItemAccess = this.player.items.size > 0; // Has any items available
+        const hasItemAccess = this.player.itemManager.hasAnyItems(); // Has any items available
         const hasSkillAccess = this.player.getUnlockedSkills().length > 0; // Has any skills unlocked
         
         // Update attack button (always visible)
@@ -669,10 +669,10 @@ export class BattleScene {
     /**
      * Check if a specific skill can be used by the player
      * 
-     * @param skillType The type of skill to check
+     * @param skillId The ID of skill to check
      * @return True if the skill can be used, false otherwise
      */
-    private canUseSkill(skillType: SkillType): boolean {
+    private canUseSkillById(skillId: string): boolean {
         if (!this.player) return false;
         
         // Check basic conditions
@@ -682,9 +682,9 @@ export class BattleScene {
         
         // Check if skill is available
         const availableSkills = this.player.getAvailableSkills();
-        const skill = availableSkills.find(s => s.type === skillType);
+        const skill = availableSkills.find(s => s.id === skillId);
         
-        return skill ? skill.canUse(this.player) : false;
+        return skill !== undefined;
     }
     
     /**
@@ -704,17 +704,17 @@ export class BattleScene {
         
         // Check each skill button
         const skillButtons = [
-            { id: 'power-attack-btn', skillId: 'power-attack', skillType: SkillType.PowerAttack },
-            { id: 'heal-skill-btn', skillId: 'heal', skillType: SkillType.Heal },
-            { id: 'struggle-skill-btn', skillId: 'struggle', skillType: SkillType.Struggle },
-            { id: 'ultra-smash-btn', skillId: 'ultra-smash', skillType: SkillType.UltraSmash }
+            { id: 'power-attack-btn', skillId: 'power-attack' },
+            { id: 'heal-skill-btn', skillId: 'heal' },
+            { id: 'struggle-skill-btn', skillId: 'struggle' },
+            { id: 'ultra-smash-btn', skillId: 'ultra-smash' }
         ];
         
-        skillButtons.forEach(({ id, skillId, skillType }) => {
+        skillButtons.forEach(({ id, skillId }) => {
             const button = document.getElementById(id) as HTMLButtonElement;
             if (button) {
                 const isUnlocked = unlockedSkillIds.has(skillId);
-                const canUseSkill = this.canUseSkill(skillType);
+                const canUseSkill = this.canUseSkillById(skillId);
                 
                 // Hide button if skill is not unlocked
                 if (!isUnlocked) {
@@ -805,16 +805,16 @@ export class BattleScene {
         }
     }
     
-    private useSkill(skillType: SkillType): void {
+    private useSkill(skillId: string): void {
         if (!this.player || !this.boss || !this.playerTurn) return;
         
         // Use centralized skill availability check
-        if (!this.canUseSkill(skillType)) {
+        if (!this.canUseSkillById(skillId)) {
             this.addBattleLogMessage('そのスキルは使用できません', 'system', 'player');
             return;
         }
         
-        const result = this.player.useSkill(skillType, this.boss);
+        const result = this.player.useSkill(skillId, this.boss);
         
         if (result.success) {
             this.addBattleLogMessage(result.message, 'system', 'player');
@@ -826,7 +826,7 @@ export class BattleScene {
             }
             
             // Check if this was a successful struggle skill that broke restraint
-            if (skillType === SkillType.Struggle && result.success) {
+            if (skillId === 'struggle' && result.success) {
                 this.boss.onRestraintBroken();
                 this.addBattleLogMessage(`${this.boss.displayName}は反動で動けなくなった！`, 'system', 'boss');
             }
@@ -834,7 +834,7 @@ export class BattleScene {
             // Apply damage if applicable with custom variance
             if (result.damage && result.damage > 0) {
                 const skills = this.player.getAvailableSkills();
-                const skill = skills.find(s => s.type === skillType);
+                const skill = skills.find(s => s.id === skillId);
                 
                 let finalDamage = result.damage;
                 if (skill && skill.damageVarianceMin !== undefined && skill.damageVarianceMax !== undefined) {
@@ -883,21 +883,17 @@ export class BattleScene {
         const success = this.player.useItem(itemName);
         
         if (success) {
-            // Get display name from player's item data or fallback to predefined names
-            let itemDisplayName = itemName;
-            const playerItem = this.player.items.get(itemName);
-            if (playerItem) {
-                itemDisplayName = playerItem.name;
-                // Track items used for experience
-                this.battleStats.craftworkExperience += playerItem.experienceGain;
-            } else {
-                const itemDisplayNames: { [key: string]: string } = {
-                    'heal-potion': '回復薬',
-                    'adrenaline': 'アドレナリン注射',
-                    'energy-drink': '元気ドリンク'
-                };
-                itemDisplayName = itemDisplayNames[itemName] || itemName;
-            }
+            // 事前定義された名前から表示名を取得
+            const itemDisplayNames: { [key: string]: string } = {
+                'heal-potion': '回復薬',
+                'adrenaline': 'アドレナリン注射',
+                'energy-drink': '元気ドリンク',
+                'omamori': 'おまもり'
+            };
+            const itemDisplayName = itemDisplayNames[itemName] || itemName;
+            
+            // アイテム使用による経験値を追跡（基本経験値獲得）
+            this.battleStats.craftworkExperience += 10;
             
             this.addBattleLogMessage(`${this.player.name}は${itemDisplayName}を使った！`, 'heal', 'player');
             
@@ -905,12 +901,14 @@ export class BattleScene {
             // Items don't end turn
             this.updateUI();
         } else {
-            // Get display name for error message
-            let itemDisplayName = itemName;
-            const playerItem = this.player.items.get(itemName);
-            if (playerItem) {
-                itemDisplayName = playerItem.name;
-            }
+            // エラーメッセージ用の表示名を取得
+            const itemDisplayNames: { [key: string]: string } = {
+                'heal-potion': '回復薬',
+                'adrenaline': 'アドレナリン注射',
+                'energy-drink': '元気ドリンク',
+                'omamori': 'おまもり'
+            };
+            const itemDisplayName = itemDisplayNames[itemName] || itemName;
             this.addBattleLogMessage(`${itemDisplayName}を使用できない！`, 'system', 'player');
         }
     }
@@ -1024,11 +1022,8 @@ export class BattleScene {
         if (this.player) {
             this.player.startTurn();
             
-            // Check for exhausted recovery messages
-            const recoveryMessages = this.player.checkExhaustedRecovery();
-            recoveryMessages.forEach(message => {
-                this.addBattleLogMessage(message, 'system', 'player');
-            });
+            // プレイヤーの回復メッセージはprocessRoundEndで処理される
+            // この機能はPlayerのprocessRoundEndメソッドに移動されました
         }
         
         this.updateUI();

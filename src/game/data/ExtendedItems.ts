@@ -40,7 +40,7 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
                 console.log('回復薬で解除されたデバフ:', removedDebuffs.map(type => StatusEffectManager.getEffectName(type)).join(', '));
             }
             
-            player.items.get('heal-potion')!.count--;
+            player.itemManager.decrementItemCount('heal-potion');
             return true;
         }
     },
@@ -70,7 +70,7 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
             
             // Add energized effect for 3 turns
             player.statusEffects.addEffect(StatusEffectType.Energized);
-            player.items.get('energy-drink')!.count--;
+            player.itemManager.decrementItemCount('energy-drink');
             return true;
         }
     },
@@ -96,7 +96,7 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
             if (player.getItemCount('adrenaline') <= 0) return false;
             
             player.statusEffects.addEffect(StatusEffectType.Invincible);
-            player.items.get('adrenaline')!.count--;
+            player.itemManager.decrementItemCount('adrenaline');
             return true;
         }
     },
@@ -133,7 +133,7 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
             // Add energized effect
             player.statusEffects.addEffect(StatusEffectType.Energized);
             
-            player.items.get('elixir')!.count--;
+            player.itemManager.decrementItemCount('elixir');
             return true;
         }
     },
@@ -184,7 +184,7 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
                 console.log('おまもりで解除されたデバフ:', removedDebuffs.map(type => StatusEffectManager.getEffectName(type)).join(', '));
             }
             
-            player.items.get('omamori')!.count--;
+            player.itemManager.decrementItemCount('omamori');
             return true;
         }
     }
@@ -198,13 +198,13 @@ export function updatePlayerItems(player: Player): void {
         const currentCount = itemData.getCount(player);
         
         // Update item in player's inventory
-        const existingItem = player.items.get(itemData.id);
+        const existingItem = player.itemManager.getItem(itemData.id);
         if (existingItem) {
             existingItem.count = currentCount;
             existingItem.use = itemData.use;
         } else if (currentCount > 0) {
             // Add new item if it should be available
-            player.items.set(itemData.id, {
+            player.itemManager.addItem(itemData.id, {
                 name: itemData.name,
                 count: currentCount,
                 description: itemData.description,

@@ -81,8 +81,8 @@ export class PlayerModalManager {
         this.updateElement('detail-max-hp', player.maxHp.toString());
         this.updateElement('detail-max-mp', player.maxMp.toString());
         this.updateElement('detail-attack', player.getAttackPower().toString());
-        this.updateElement('detail-weapon-bonus', player.getWeaponAttackBonus().toString());
-        this.updateElement('detail-armor-bonus', player.getArmorHpBonus().toString());
+        this.updateElement('detail-weapon-bonus', player.equipmentManager.getWeaponAttackBonus().toString());
+        this.updateElement('detail-armor-bonus', player.equipmentManager.getArmorHpBonus().toString());
         
         // Update ability levels
         Object.entries(abilityLevels).forEach(([abilityType, data]: [string, any]) => {
@@ -143,7 +143,7 @@ export class PlayerModalManager {
         EquipmentSelectorComponent.updateWeaponSelection(
             'weapon-selection',
             availableWeapons,
-            player.equippedWeapon,
+            player.getEquipmentInfo().weapon?.id || null,
             (weaponId: string) => {
                 player.equipWeapon(weaponId);
                 const event = new CustomEvent('updatePlayerSummary');
@@ -155,7 +155,7 @@ export class PlayerModalManager {
         EquipmentSelectorComponent.updateArmorSelection(
             'armor-selection',
             availableArmors,
-            player.equippedArmor,
+            player.getEquipmentInfo().armor?.id || null,
             (armorId: string) => {
                 player.equipArmor(armorId);
                 const event = new CustomEvent('updatePlayerSummary');
@@ -175,7 +175,7 @@ export class PlayerModalManager {
         if (itemList) {
             itemList.innerHTML = '';
             
-            Array.from(player.items.entries()).forEach(([_itemId, item]: [string, any]) => {
+            player.itemManager.getUsableItems().forEach((item) => {
                 if (item.count > 0) {
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'mb-2 p-2 border rounded';
