@@ -1,15 +1,20 @@
 import { Game } from '../../Game';
-import { AbilityType } from '../../systems/AbilitySystem';
+import { AbilityType, AbilitySystem } from '../../systems/AbilitySystem';
 import { getAllBossData } from '../../data';
 import { Trophy } from '../../systems/MemorialSystem';
 import type { BootstrapModal } from '../../types/bootstrap';
 import { TrophyDisplayComponent } from '../components/TrophyDisplayComponent';
 import { EquipmentSelectorComponent } from '../components/EquipmentSelectorComponent';
 import { SkillDisplayComponent } from '../components/SkillDisplayComponent';
+import { Player } from '@/game/entities/Player';
 
 export class PlayerModalManager {
     private game: Game;
     private playerModal: BootstrapModal | null = null;
+    
+    // CSS class constants
+    private static readonly PROGRESS_BAR_WARNING = 'progress-bar bg-warning progress-bar-striped progress-bar-animated';
+    private static readonly PROGRESS_BAR_INFO = 'progress-bar bg-info';
 
     constructor(game: Game) {
         this.game = game;
@@ -89,14 +94,22 @@ export class PlayerModalManager {
             const prefix = abilityType.toLowerCase();
             this.updateElement(`${prefix}-level`, data.level.toString());
             this.updateElement(`${prefix}-exp`, data.experience.toString());
-            this.updateElement(`${prefix}-next`, (data.experience + data.experienceToNext).toString());
+            
+            // Update next level requirement display
+            if (data.level >= AbilitySystem.MAX_LEVEL) {
+                // Max level: show total experience required for max level
+                const maxLevelRequirement = this.getMaxLevelRequirement(player);
+                this.updateElement(`${prefix}-next`, maxLevelRequirement.toString());
+            } else {
+                this.updateElement(`${prefix}-next`, (data.experience + data.experienceToNext).toString());
+            }
             
             // Update progress bar
-            this.updateProgressBar(prefix, data);
+            this.updateProgressBar(prefix, data, player.abilitySystem);
             
             // Special handling for explorer ability in stats tab
             if (abilityType === 'explorer') {
-                this.updateExplorerStatsSection(data);
+                this.updateExplorerStatsSection(data, player.abilitySystem);
             }
         });
     }
@@ -104,30 +117,52 @@ export class PlayerModalManager {
     /**
      * Update progress bar for ability
      */
-    private updateProgressBar(prefix: string, data: any): void {
+    private updateProgressBar(prefix: string, data: any, abilitySystem: AbilitySystem): void {
         const progressElement = document.getElementById(`${prefix}-progress`);
-        if (progressElement && data.experienceToNext > 0) {
-            const currentLevelExp = data.experience - (data.level > 0 ? Math.pow(data.level, 3) * 50 : 0);
-            const nextLevelExp = Math.pow(data.level + 1, 3) * 50 - (data.level > 0 ? Math.pow(data.level, 3) * 50 : 0);
-            const percentage = (currentLevelExp / nextLevelExp) * 100;
+        if (!progressElement) return;
+        
+        if (data.level >= AbilitySystem.MAX_LEVEL) {
+            // Max level: 100% progress with warning style and stripes
+            progressElement.style.width = '100%';
+            progressElement.className = PlayerModalManager.PROGRESS_BAR_WARNING;
+        } else if (data.experienceToNext > 0) {
+            // Normal level progression using AbilitySystem methods
+            const { percentage } = this.calculateExperienceData(data, abilitySystem);
+            
             progressElement.style.width = `${percentage}%`;
+            progressElement.className = PlayerModalManager.PROGRESS_BAR_INFO;
         }
     }
 
     /**
      * Update explorer stats section
      */
-    private updateExplorerStatsSection(data: any): void {
+    private updateExplorerStatsSection(data: any, abilitySystem: AbilitySystem): void {
         this.updateElement('explorer-level-stats', data.level.toString());
         this.updateElement('explorer-exp-stats', data.experience.toString());
-        this.updateElement('explorer-next-stats', (data.experience + data.experienceToNext).toString());
+        
+        // Update next level requirement display for stats section
+        if (data.level >= AbilitySystem.MAX_LEVEL) {
+            // Max level: show total experience required for max level
+            const maxLevelRequirement = this.getMaxLevelRequirement(this.game.getPlayer());
+            this.updateElement('explorer-next-stats', maxLevelRequirement.toString());
+        } else {
+            this.updateElement('explorer-next-stats', (data.experience + data.experienceToNext).toString());
+        }
         
         const statsProgressElement = document.getElementById('explorer-progress-stats');
-        if (statsProgressElement && data.experienceToNext > 0) {
-            const currentLevelExp = data.experience - (data.level > 0 ? Math.pow(data.level, 3) * 50 : 0);
-            const nextLevelExp = Math.pow(data.level + 1, 3) * 50 - (data.level > 0 ? Math.pow(data.level, 3) * 50 : 0);
-            const percentage = (currentLevelExp / nextLevelExp) * 100;
-            statsProgressElement.style.width = `${percentage}%`;
+        if (statsProgressElement) {
+            if (data.level >= AbilitySystem.MAX_LEVEL) {
+                // Max level: 100% progress with warning style and stripes
+                statsProgressElement.style.width = '100%';
+                statsProgressElement.className = PlayerModalManager.PROGRESS_BAR_WARNING;
+            } else if (data.experienceToNext > 0) {
+                // Normal level progression using AbilitySystem methods
+                const { percentage } = this.calculateExperienceData(data, abilitySystem);
+                
+                statsProgressElement.style.width = `${percentage}%`;
+                statsProgressElement.className = PlayerModalManager.PROGRESS_BAR_INFO;
+            }
         }
     }
 
@@ -221,16 +256,18 @@ export class PlayerModalManager {
         if (explorerData) {
             this.updateElement('explorer-level', explorerData.level.toString());
             this.updateElement('explorer-exp', explorerData.experience.toString());
-            this.updateElement('explorer-next', (explorerData.experience + explorerData.experienceToNext).toString());
+            
+            // Update next level requirement display for explorer tab
+            if (explorerData.level >= AbilitySystem.MAX_LEVEL) {
+                // Max level: show total experience required for max level
+                const maxLevelRequirement = this.getMaxLevelRequirement(player);
+                this.updateElement('explorer-next', maxLevelRequirement.toString());
+            } else {
+                this.updateElement('explorer-next', (explorerData.experience + explorerData.experienceToNext).toString());
+            }
             
             // Update progress bar
-            const progressElement = document.getElementById('explorer-progress');
-            if (progressElement && explorerData.experienceToNext > 0) {
-                const currentLevelExp = explorerData.experience - (explorerData.level > 0 ? Math.pow(explorerData.level, 3) * 50 : 0);
-                const nextLevelExp = Math.pow(explorerData.level + 1, 3) * 50 - (explorerData.level > 0 ? Math.pow(explorerData.level, 3) * 50 : 0);
-                const percentage = (currentLevelExp / nextLevelExp) * 100;
-                progressElement.style.width = `${percentage}%`;
-            }
+            this.updateProgressBar('explorer', explorerData, player.abilitySystem);
             
             // Update accessible terrain
             this.updateAccessibleTerrains(player.getAccessibleTerrains());
@@ -328,6 +365,26 @@ export class PlayerModalManager {
         });
     }
 
+    /**
+     * Get max level experience requirement
+     */
+    private getMaxLevelRequirement(player: Player): number {
+        return player.abilitySystem.getRequiredExperienceForLevel(AbilitySystem.MAX_LEVEL);
+    }
+    
+    /**
+     * Calculate experience data for progress bar
+     */
+    private calculateExperienceData(data: any, abilitySystem: AbilitySystem): { currentLevelExp: number; levelRangeExp: number; percentage: number } {
+        const currentLevelRequirement = abilitySystem.getRequiredExperienceForLevel(data.level);
+        const nextLevelRequirement = abilitySystem.getRequiredExperienceForLevel(data.level + 1);
+        const currentLevelExp = data.experience - currentLevelRequirement;
+        const levelRangeExp = nextLevelRequirement - currentLevelRequirement;
+        const percentage = (currentLevelExp / levelRangeExp) * 100;
+        
+        return { currentLevelExp, levelRangeExp, percentage };
+    }
+    
     /**
      * Helper method to update element text content
      */

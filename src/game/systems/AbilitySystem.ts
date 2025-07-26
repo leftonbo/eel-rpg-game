@@ -35,6 +35,7 @@ export interface ExtendedItem {
 }
 
 export class AbilitySystem {
+    public static readonly MAX_LEVEL = 10;
     public abilities: Map<AbilityType, AbilityData> = new Map();
     
     constructor() {
@@ -67,7 +68,7 @@ export class AbilitySystem {
         let level = 0;
         while (this.getRequiredExperienceForLevel(level + 1) <= totalExperience) {
             level++;
-            if (level >= 10) break; // Max level is 10
+            if (level >= AbilitySystem.MAX_LEVEL) break; // Max level is 10
         }
         return level;
     }
@@ -86,7 +87,7 @@ export class AbilitySystem {
         
         // Recalculate level based on total experience
         const newLevel = this.calculateLevelFromExperience(ability.experience);
-        ability.level = Math.min(newLevel, 10); // Cap at level 10
+        ability.level = Math.min(newLevel, AbilitySystem.MAX_LEVEL); // Cap at max level
         
         const leveledUp = ability.level > previousLevel;
         
@@ -109,7 +110,7 @@ export class AbilitySystem {
      */
     getExperienceToNextLevel(abilityType: AbilityType): number {
         const ability = this.abilities.get(abilityType);
-        if (!ability || ability.level >= 10) return 0;
+        if (!ability || ability.level >= AbilitySystem.MAX_LEVEL) return 0;
         
         const nextLevelRequirement = this.getRequiredExperienceForLevel(ability.level + 1);
         return nextLevelRequirement - ability.experience;
