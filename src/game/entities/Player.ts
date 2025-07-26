@@ -5,6 +5,7 @@ import { updatePlayerItems } from '../data/ExtendedItems';
 import { Actor } from './Actor';
 import { SkillRegistry, SkillData } from '../data/skills';
 import { MemorialSystem } from '../systems/MemorialSystem';
+import { SkillStrategyFactory } from './SkillStrategy';
 
 
 export interface SkillResult {
@@ -496,173 +497,15 @@ export class Player extends Actor {
     /**
      * Use a skill from the new system
      */
-    private useSkillData(skillData: SkillData, _target?: Actor): SkillResult {
-        switch (skillData.id) {
-            case 'power-attack':
-                return this.usePowerAttack(skillData);
-            case 'ultra-smash':
-                return this.useUltraSmash(skillData);
-            case 'struggle':
-                return this.useStruggleSkill(skillData);
-            case 'defend':
-                return this.useDefend(skillData);
-            case 'stay-still':
-                return this.useStayStill(skillData);
-            default:
-                return { success: false, message: 'Unknown skill' };
+    private useSkillData(skillData: SkillData, target?: Actor): SkillResult {
+        const strategy = SkillStrategyFactory.getStrategy(skillData.id);
+        if (!strategy) {
+            return { success: false, message: 'Unknown skill' };
         }
+        
+        return strategy.execute(this, skillData, target);
     }
     
-    /**
-     * Use Power Attack skill
-     */
-    private usePowerAttack(skillData: SkillData): SkillResult {
-        const mpInsufficient = !this.consumeMp(skillData.mpCost);
-        let powerMultiplier = skillData.damageMultiplier || 2.5;
-        
-        if (mpInsufficient) {
-            powerMultiplier *= 2; // Double effect when MP insufficient
-        }
-        
-        const damage = Math.floor(this.getAttackPower() * powerMultiplier);
-        return {
-            success: true,
-            mpConsumed: mpInsufficient ? this.mp : skillData.mpCost,
-            message: mpInsufficient ? 
-                `${this.name}は最後の力を振り絞って${skillData.name}を放った！` :
-                `${this.name}は${skillData.name}を放った！`,
-            damage
-        };
-    }
-    
-    /**
-     * Use Ultra Smash skill
-     */
-    private useUltraSmash(skillData: SkillData): SkillResult {
-        const mpConsumed = this.mp;
-        this.mp = 0; // Consume all MP
-        
-        const baseDamage = this.getAttackPower();
-        const mpDamage = mpConsumed;
-        const totalDamage = baseDamage + mpDamage;
-        
-        // Add exhaustion effect
-        this.statusEffects.addEffect(StatusEffectType.Exhausted);
-        
-        return {
-            success: true,
-            mpConsumed: mpConsumed,
-            message: `${this.name}は${skillData.name}を放った！（消費MP: ${mpConsumed}）`,
-            damage: totalDamage
-        };
-    }
-    
-    /**
-     * Use Struggle skill
-     */
-    private useStruggleSkill(skillData: SkillData): SkillResult {
-        const mpInsufficient = !this.consumeMp(skillData.mpCost);
-        let successMultiplier = 2;
-        
-        if (mpInsufficient) {
-            successMultiplier = 4; // Double effect when MP insufficient
-        }
-        
-        // Calculate enhanced struggle success rate
-        let baseSuccessRate = 0.3 + (this.struggleAttempts) * 0.2;
-        baseSuccessRate = Math.min(baseSuccessRate, 1.0);
-        
-        // Apply agility bonus
-        const agilityBonus = this.abilitySystem.getAgilityEscapeBonus();
-        baseSuccessRate += agilityBonus;
-        
-        const modifier = this.statusEffects.getStruggleModifier();
-        let finalSuccessRate = baseSuccessRate * modifier * successMultiplier;
-        finalSuccessRate = Math.min(finalSuccessRate, 1.0);
-        
-        const success = Math.random() < finalSuccessRate;
-        this.struggleAttempts++;
-        
-        // Check if agility level 5+ for damage dealing
-        const agilityLevel = this.abilitySystem.getAbility(AbilityType.Agility)?.level || 0;
-        let damageDealt = 0;
-        if (agilityLevel >= 5) {
-            damageDealt = Math.floor(this.getAttackPower() * 1.5);
-        }
-        
-        if (success) {
-            this.struggleAttempts = 0;
-            this.statusEffects.removeEffect(StatusEffectType.Restrained);
-            this.statusEffects.removeEffect(StatusEffectType.Eaten);
-            
-            // Notify agility experience for successful escape
-            if (this.agilityExperienceCallback) {
-                this.agilityExperienceCallback(100);
-            }
-            
-            return {
-                success: true,
-                mpConsumed: mpInsufficient ? this.mp : skillData.mpCost,
-                message: mpInsufficient ? 
-                    `${this.name}は最後の力で激しくあばれた！拘束から脱出した！` :
-                    `${this.name}は激しくあばれた！拘束から脱出した！`,
-                damage: damageDealt
-            };
-        } else {
-            // Increase future struggle success significantly on failure
-            this.struggleAttempts += mpInsufficient ? 8 : 4;
-            
-            // Notify agility experience for failed escape (2x amount)
-            if (this.agilityExperienceCallback) {
-                this.agilityExperienceCallback(400);
-            }
-            
-            return {
-                success: false,
-                mpConsumed: mpInsufficient ? this.mp : skillData.mpCost,
-                message: mpInsufficient ? 
-                    `${this.name}は最後の力であばれたが、脱出できなかった...しかし次回の成功率が大幅に上がった！` :
-                    `${this.name}があばれたが、脱出できなかった...次回の成功率が上がった！`,
-                damage: damageDealt
-            };
-        }
-    }
-    
-    /**
-     * Use Defend skill
-     */
-    private useDefend(skillData: SkillData): SkillResult {
-        this.defend();
-        
-        // Check if endurance level 3+ for MP recovery
-        const enduranceLevel = this.abilitySystem.getAbility(AbilityType.Endurance)?.level || 0;
-        if (enduranceLevel >= 3) {
-            this.mp = this.maxMp;
-        }
-        
-        return {
-            success: true,
-            message: `${this.name}は${skillData.name}の構えを取った！`
-        };
-    }
-    
-    /**
-     * Use Stay Still skill
-     */
-    private useStayStill(skillData: SkillData): SkillResult {
-        this.stayStill();
-        
-        // Check if endurance level 3+ for MP recovery
-        const enduranceLevel = this.abilitySystem.getAbility(AbilityType.Endurance)?.level || 0;
-        if (enduranceLevel >= 3) {
-            this.mp = this.maxMp;
-        }
-        
-        return {
-            success: true,
-            message: `${this.name}は${skillData.name}して体力を回復した！`
-        };
-    }
     
     useSkill(skillId: string, target?: Actor): SkillResult {
         const skills = this.getAvailableSkills();
