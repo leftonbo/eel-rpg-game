@@ -242,6 +242,7 @@ export class PlayerModalManager {
             boss.explorerLevelRequired || 0 <= player.getExplorerLevel()
         ).length;
         this.updateElement('unlocked-bosses-count', unlockedCount.toString());
+        this.updateElement('unlockable-bosses-count', allBossData.length.toString());
         
         const allTrophies = player.memorialSystem.getAllTrophies();
         this.updateElement('total-trophies-count', allTrophies.length.toString());
