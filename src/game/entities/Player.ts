@@ -9,6 +9,7 @@ import { SkillStrategyFactory } from './SkillStrategy';
 import { PlayerEquipmentManager } from './PlayerEquipmentManager';
 import { PlayerItemManager } from './PlayerItemManager';
 import { PlayerBattleActions } from './PlayerBattleActions';
+import { PlayerProgressionManager } from './PlayerProgressionManager';
 
 
 export interface SkillResult {
@@ -42,11 +43,13 @@ export class Player extends Actor {
     public equipmentManager: PlayerEquipmentManager;
     public itemManager: PlayerItemManager = new PlayerItemManager();
     public battleActions: PlayerBattleActions;
+    public progressionManager: PlayerProgressionManager;
     
     constructor() {
         super(DEFAULT_PLAYER_NAME, 100, 5, 50);
         this.equipmentManager = new PlayerEquipmentManager(this.abilitySystem);
         this.battleActions = new PlayerBattleActions(this);
+        this.progressionManager = new PlayerProgressionManager(this.abilitySystem);
     }
 
     /**
@@ -248,7 +251,7 @@ export class Player extends Actor {
      * Add experience to an ability
      */
     public addExperience(abilityType: AbilityType, amount: number): { leveledUp: boolean; newLevel: number; previousLevel: number } {
-        const result = this.abilitySystem.addExperience(abilityType, amount);
+        const result = this.progressionManager.addExperience(abilityType, amount);
         
         if (result.leveledUp) {
             this.recalculateStats(); // This will update items automatically
@@ -413,7 +416,7 @@ export class Player extends Actor {
      * Add combat experience based on damage dealt
      */
     public addCombatExperience(damageDealt: number): void {
-        this.addExperience(AbilityType.Combat, damageDealt);
+        this.progressionManager.addCombatExperience(damageDealt);
     }
     
     /**
@@ -427,65 +430,21 @@ export class Player extends Actor {
      * Get current explorer level
      */
     public getExplorerLevel(): number {
-        return this.abilitySystem.getExplorerLevel();
+        return this.progressionManager.getExplorerLevel();
     }
     
     /**
      * Get accessible terrains based on explorer level
      */
     public getAccessibleTerrains(): string[] {
-        const level = this.getExplorerLevel();
-        
-        const terrainMap: { [key: number]: string | string[] } = {
-            0: '近隣の地方',
-            1: '砂漠',
-            2: '海',
-            4: 'ジャングル',
-            5: '洞窟',
-            6: ['遺跡', '廃墟'],
-            7: '寒冷地',
-            8: '火山',
-            9: '天空',
-            10: '魔界'
-        };
-        
-        const accessibleTerrains: string[] = [];
-        
-        for (let i = 0; i <= level; i++) {
-            // レベル3はゲストキャラ関係のため表示しない
-            if (i === 3) continue;
-            
-            const terrain = terrainMap[i];
-            if (terrain) {
-                if (Array.isArray(terrain)) {
-                    accessibleTerrains.push(...terrain);
-                } else {
-                    accessibleTerrains.push(terrain);
-                }
-            }
-        }
-        
-        return accessibleTerrains.length > 0 ? accessibleTerrains : ['未知の領域'];
+        return this.progressionManager.getAccessibleTerrains();
     }
     
     /**
      * Get ability levels for display
      */
     public getAbilityLevels(): { [key: string]: { level: number; experience: number; experienceToNext: number } } {
-        const result: { [key: string]: { level: number; experience: number; experienceToNext: number } } = {};
-        
-        Object.values(AbilityType).forEach(type => {
-            const ability = this.abilitySystem.getAbility(type);
-            if (ability) {
-                result[type] = {
-                    level: ability.level,
-                    experience: ability.experience,
-                    experienceToNext: this.abilitySystem.getExperienceToNextLevel(type)
-                };
-            }
-        });
-        
-        return result;
+        return this.progressionManager.getAbilityLevels();
     }
 
     
