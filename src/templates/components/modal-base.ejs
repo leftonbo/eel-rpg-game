@@ -1,0 +1,27 @@
+<!-- Base Modal Template -->
+<div class="modal fade" id="<%= modalId %>" tabindex="-1" aria-labelledby="<%= modalId %>-label" aria-hidden="true">
+    <div class="modal-dialog <%= typeof modalSize !== 'undefined' ? modalSize : '' %>">
+        <div class="modal-content <%= typeof theme !== 'undefined' ? theme : 'bg-dark' %>">
+            <div class="modal-header">
+                <h5 class="modal-title" id="<%= modalId %>-label">
+                    <% if (typeof icon !== 'undefined') { %><%= icon %> <% } %>
+                    <%= title %>
+                    <% if (typeof subtitle !== 'undefined') { %> - <%= subtitle %><% } %>
+                </h5>
+                <button type="button" 
+                        class="btn-close <%= typeof theme === 'undefined' || theme === 'bg-dark' ? 'btn-close-white' : '' %>" 
+                        data-bs-dismiss="modal" 
+                        aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <%- body %>
+            </div>
+            <% if (typeof footer !== 'undefined') { %>
+            <div class="modal-footer">
+                <%- footer %>
+            </div>
+            <% } %>
+        </div>
+    </div>
+</div>

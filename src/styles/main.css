@@ -13,22 +13,22 @@
     --game-warning-hover: #b45309;
     --game-info: #0891b2;
     --game-info-hover: #0e7490;
-    
+
     /* Status Card Backgrounds */
     --player-status-bg: #1e3a8a;
     --boss-status-bg: #991b1b;
     --battle-log-bg: #0f172a;
     --action-panel-bg: #374151;
-    
+
     /* Text Colors */
     --status-text: #e2e8f0;
     --status-text-secondary: #94a3b8;
     --log-text: #cbd5e1;
-    
+
     /* Card Border Colors */
     --card-border: #475569;
     --card-border-highlight: #64748b;
-    
+
     /* Battle Layout */
     --battle-log-offset: 300px;
 }
@@ -40,7 +40,7 @@
 
 /* Game Styles */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
     min-height: 100vh;
     overflow-x: hidden;
@@ -159,7 +159,7 @@ body {
 }
 
 #battle-log {
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     font-size: 0.95rem;
     line-height: 1.5;
     background-color: var(--battle-log-bg) !important;
@@ -177,7 +177,7 @@ body {
 }
 
 .battle-round-divider::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 0;
@@ -264,7 +264,7 @@ body {
 }
 
 .message-bubble.player::before {
-    content: '';
+    content: "";
     position: absolute;
     left: -8px;
     bottom: 8px;
@@ -283,7 +283,7 @@ body {
 }
 
 .message-bubble.boss::before {
-    content: '';
+    content: "";
     position: absolute;
     right: -8px;
     bottom: 8px;
@@ -660,7 +660,7 @@ body {
 }
 
 .status-petrified {
-    background-color: #8B7355;
+    background-color: #8b7355;
     color: #fff;
 }
 
@@ -714,7 +714,8 @@ body {
 }
 
 @keyframes heartbeat {
-    0%, 100% {
+    0%,
+    100% {
         transform: scale(1);
         box-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
     }
@@ -1216,12 +1217,12 @@ body {
     .game-title {
         font-size: 2.5rem;
     }
-    
+
     #battle-screen .row > .col-md-8,
     #battle-screen .row > .col-md-4 {
         margin-bottom: 1rem;
     }
-    
+
     .boss-card {
         margin-bottom: 1rem;
     }
@@ -1447,30 +1448,30 @@ footer svg {
         padding: 0;
         margin-bottom: 1rem;
     }
-    
+
     .skill-item {
         padding: 0.5rem !important;
         margin-bottom: 0.75rem !important;
     }
-    
+
     .skill-header {
         flex-direction: column;
         align-items: flex-start !important;
     }
-    
+
     .skill-meta {
         margin-top: 0.5rem;
         align-self: flex-start;
         min-width: auto;
         max-width: none;
     }
-    
+
     .skill-cost {
         margin-top: 0.25rem;
         display: inline-block;
         margin-left: 0.5rem;
     }
-    
+
     .skills-list {
         max-height: 300px;
     }
@@ -1480,15 +1481,15 @@ footer svg {
     .skill-name {
         font-size: 0.9rem;
     }
-    
+
     .skill-description {
         font-size: 0.8rem;
     }
-    
+
     .skill-stats {
         font-size: 0.75rem;
     }
-    
+
     .skill-unlock-condition {
         font-size: 0.7rem;
     }
@@ -1526,33 +1527,35 @@ footer svg {
 
 /* Clean Master animations */
 @keyframes bubble-float {
-    0%, 100% { 
+    0%,
+    100% {
         transform: scale(1) translateY(0px);
         box-shadow: 0 0 8px rgba(176, 224, 230, 0.5);
     }
-    50% { 
+    50% {
         transform: scale(1.05) translateY(-2px);
         box-shadow: 0 0 15px rgba(176, 224, 230, 0.8);
     }
 }
 
 @keyframes clean-spin {
-    0% { 
+    0% {
         transform: rotate(0deg);
         box-shadow: 0 0 8px rgba(255, 193, 7, 0.6);
     }
-    100% { 
+    100% {
         transform: rotate(360deg);
         box-shadow: 0 0 15px rgba(255, 193, 7, 0.8);
     }
 }
 
 @keyframes steam-wave {
-    0%, 100% { 
+    0%,
+    100% {
         opacity: 1;
         box-shadow: 0 0 8px rgba(255, 205, 210, 0.5);
     }
-    50% { 
+    50% {
         opacity: 0.7;
         box-shadow: 0 0 15px rgba(255, 205, 210, 0.8);
     }
@@ -1613,9 +1616,23 @@ footer svg {
 
 /* Modal shake effect for error feedback */
 @keyframes modal-shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-    20%, 40%, 60%, 80% { transform: translateX(5px); }
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translateX(-5px);
+    }
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translateX(5px);
+    }
 }
 
 .modal-shake {
@@ -1648,6 +1665,10 @@ footer svg {
 
 /* Bat Vampire Animations */
 @keyframes darkness-fade {
-    0% { opacity: 0.7; }
-    100% { opacity: 1.0; }
+    0% {
+        opacity: 0.7;
+    }
+    100% {
+        opacity: 1;
+    }
 }

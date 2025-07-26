@@ -19,6 +19,9 @@
 # HTML files
 *.html text eol=lf
 
+# EJS files
+*.ejs text eol=lf
+
 # CSS files
 *.css text eol=lf
 

@@ -1,0 +1,39 @@
+<!-- Player Details Modal -->
+<div class="modal fade" id="player-details-modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <span id="player-modal-icon">🐍</span>
+                    <span id="player-modal-name">エルナル</span> -
+                    詳細ステータス
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-outline-info ms-2"
+                        id="edit-player-info-btn"
+                    >
+                        ✏️ 編集
+                    </button>
+                </h5>
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"
+                ></button>
+            </div>
+            <div class="modal-body">
+                <%- include('player-tabs') %>
+                <%- include('player-tab-contents') %>
+            </div>
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    閉じる
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
