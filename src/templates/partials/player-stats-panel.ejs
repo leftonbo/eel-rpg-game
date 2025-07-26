@@ -16,12 +16,12 @@
     
     <h6>アビリティ</h6>
     <div class="row">
-        <%- include('../components/ability-card', { icon: '⚔️', name: 'コンバット', abilityId: 'combat' }) %>
-        <%- include('../components/ability-card', { icon: '🛡️', name: 'タフネス', abilityId: 'toughness' }) %>
-        <%- include('../components/ability-card', { icon: '🔧', name: 'クラフトワーク', abilityId: 'craftwork' }) %>
-        <%- include('../components/ability-card', { icon: '💪', name: 'エンデュランス', abilityId: 'endurance' }) %>
-        <%- include('../components/ability-card', { icon: '🏃', name: 'アジリティ', abilityId: 'agility' }) %>
-        <%- include('../components/ability-card', { icon: '🗺️', name: 'エクスプローラー', abilityId: 'explorer-stats' }) %>
+        <%- include('../components/ability-card', { icon: '⚔️', name: 'コンバット', abilityId: 'combat', description: '攻撃力を増加させ、新しい武器をアンロックします。ボスにダメージを与えると経験値が貯まります。' }) %>
+        <%- include('../components/ability-card', { icon: '🛡️', name: 'タフネス', abilityId: 'toughness', description: '最大ヘルスを増加させ、新しい防具をアンロックします。ヘルスが減ると経験値が貯まります。' }) %>
+        <%- include('../components/ability-card', { icon: '🔧', name: 'クラフトワーク', abilityId: 'craftwork', description: 'アイテムの所持数が増加し、新しいアイテムをアンロックします。アイテムを使用するたびに経験値が貯まります。' }) %>
+        <%- include('../components/ability-card', { icon: '💪', name: 'エンデュランス', abilityId: 'endurance', description: '最大マナが増加します。マナを消費するたびに経験値が貯まります。' }) %>
+        <%- include('../components/ability-card', { icon: '🏃', name: 'アジリティ', abilityId: 'agility', description: '拘束状態から脱出しやすくなります。拘束から脱出を試みるたびに経験値が貯まります。' }) %>
+        <%- include('../components/ability-card', { icon: '🗺️', name: 'エクスプローラー', abilityId: 'explorer-stats', description: '探検できる範囲が広がり、新しいボスをアンロックします。記念品を獲得したり、ボスからスキルを受けたりするたびに経験値が貯まります。' }) %>
     </div>
     
     <!-- Debug Controls for Skills Tab -->
@@ -84,6 +84,18 @@
                         <span class="input-group-text">Lv</span>
                         <input type="number" id="debug-agility-level" class="form-control" min="0" max="10" value="0">
                         <button class="btn btn-outline-warning btn-sm" id="debug-agility-btn">変更</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-secondary">
+                <div class="card-body">
+                    <h6 class="card-title">🗺️ エクスプローラー</h6>
+                    <div class="input-group mb-2">
+                        <span class="input-group-text">Lv</span>
+                        <input type="number" id="debug-explorer-level" class="form-control" min="0" max="10" value="0">
+                        <button class="btn btn-outline-warning btn-sm" id="debug-explorer-btn">変更</button>
                     </div>
                 </div>
             </div>
