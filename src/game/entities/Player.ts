@@ -8,6 +8,7 @@ import { MemorialSystem } from '../systems/MemorialSystem';
 import { SkillStrategyFactory } from './SkillStrategy';
 import { PlayerEquipmentManager } from './PlayerEquipmentManager';
 import { PlayerItemManager } from './PlayerItemManager';
+import { PlayerBattleActions } from './PlayerBattleActions';
 
 
 export interface SkillResult {
@@ -40,10 +41,12 @@ export class Player extends Actor {
     public memorialSystem: MemorialSystem = new MemorialSystem();
     public equipmentManager: PlayerEquipmentManager;
     public itemManager: PlayerItemManager = new PlayerItemManager();
+    public battleActions: PlayerBattleActions;
     
     constructor() {
         super(DEFAULT_PLAYER_NAME, 100, 5, 50);
         this.equipmentManager = new PlayerEquipmentManager(this.abilitySystem);
+        this.battleActions = new PlayerBattleActions(this);
     }
 
     /**
@@ -279,8 +282,7 @@ export class Player extends Actor {
     
     
     defend(): void {
-        this.isDefending = true;
-        this.statusEffects.addEffect(StatusEffectType.Defending);
+        this.battleActions.defend();
     }
     
     useItem(itemName: string): boolean {
@@ -288,113 +290,32 @@ export class Player extends Actor {
     }
     
     attemptStruggle(): boolean {
-        if (!this.statusEffects.isRestrained() && !this.statusEffects.isEaten() && !this.statusEffects.isCocoon()) {
-            return false;
-        }
-        
-        this.struggleAttempts++;
-        
-        // Base success rate starts at 30% and increases by 20% each attempt
-        let baseSuccessRate = 0.3 + (this.struggleAttempts - 1) * 0.2;
-        baseSuccessRate = Math.min(baseSuccessRate, 0.9); // Cap at 90%
-        
-        // Apply agility bonus
-        const agilityBonus = this.abilitySystem.getAgilityEscapeBonus();
-        baseSuccessRate += agilityBonus;
-        
-        // Apply charm modifier
-        const modifier = this.statusEffects.getStruggleModifier();
-        const finalSuccessRate = baseSuccessRate * modifier;
-        
-        const success = Math.random() < finalSuccessRate;
-        
-        if (success) {
-            // Reset struggle attempts
-            this.struggleAttempts = 0;
-            
-            // Remove restrained, eaten, or cocoon status
-            this.statusEffects.removeEffect(StatusEffectType.Restrained);
-            this.statusEffects.removeEffect(StatusEffectType.Eaten);
-            this.statusEffects.removeEffect(StatusEffectType.Cocoon);
-            
-            // Apply escape recovery passive skill
-            this.applyEscapeRecovery();
-            
-            // Notify agility experience for successful escape
-            if (this.agilityExperienceCallback) {
-                this.agilityExperienceCallback(50);
-            }
-            
-            return true;
-        }
-        
-        // Notify agility experience for failed escape (2x amount)
-        if (this.agilityExperienceCallback) {
-            this.agilityExperienceCallback(100);
-        }
-        
-        return false;
+        return this.battleActions.attemptStruggle();
     }
     
     stayStill(): void {
-        // Staying still provides a small amount of healing
-        const healAmount = Math.floor(this.maxHp * 0.05); // 5% of max health
-        this.heal(healAmount);
-        
-        // Also recover a small amount of MP
-        const mpRecovery = Math.floor(this.maxMp * 0.25); // 25% of max MP
-        this.recoverMp(mpRecovery);
+        this.battleActions.stayStill();
     }
     
     
-    recoverFromKnockOut(): string[] {
-        const messages: string[] = [];
-        
-        if (this.statusEffects.hasEffect(StatusEffectType.KnockedOut)) {
-            // Check if knock out duration is over
-            const knockOutEffect = this.statusEffects.getEffect(StatusEffectType.KnockedOut);
-            if (knockOutEffect && knockOutEffect.duration <= 1) {
-                this.statusEffects.removeEffect(StatusEffectType.KnockedOut);
-                
-                // Recover 50% health
-                const healAmount = Math.floor(this.maxHp * 0.5);
-                this.heal(healAmount);
-                
-                messages.push(`${this.name}が意識を取り戻した！`);
-                messages.push(`ヘルスが${healAmount}回復した！`);
-            }
-        }
-        
-        return messages;
-    }
     
     
     
     startTurn(): void {
-        // Reset defending status
-        this.isDefending = false;
+        // Call battle actions start turn
+        this.battleActions.startTurn();
         
         // Call parent startTurn for MP recovery
         super.startTurn();
-        
-        // Check exhausted recovery
-        const recoveryMessages = this.checkExhaustedRecovery();
-        if (recoveryMessages.length > 0) {
-            // This could be handled by the game to display messages
-        }
     }
     
     // Process all status effects at round end
     processRoundEnd(): string[] {
         const messages: string[] = [];
         
-        // Check for knock out recovery before decreasing durations
-        const recoveryMessages = this.recoverFromKnockOut();
-        messages.push(...recoveryMessages);
-        
-        // Apply passive skill effects
-        const passiveMessages = this.applyPassiveSkills();
-        messages.push(...passiveMessages);
+        // Call battle actions round end processing
+        const battleMessages = this.battleActions.processRoundEnd();
+        messages.push(...battleMessages);
         
         // Call parent processRoundEnd for status effect processing
         const parentMessages = super.processRoundEnd();
@@ -479,20 +400,6 @@ export class Player extends Actor {
         return this.useSkillData(skill, target);
     }
     
-    checkExhaustedRecovery(): string[] {
-        const messages: string[] = [];
-        
-        if (this.statusEffects.isExhausted()) {
-            // Check if MP is full or 4 turns have passed
-            const exhaustedEffect = this.statusEffects.getEffect(StatusEffectType.Exhausted);
-            if (this.mp >= this.maxMp || (exhaustedEffect && exhaustedEffect.duration <= 1)) {
-                this.statusEffects.removeEffect(StatusEffectType.Exhausted);
-                messages.push(`${this.name}の疲れが回復した！`);
-            }
-        }
-        
-        return messages;
-    }
     
     getItemCount(itemName: string): number {
         return this.itemManager.getItemCount(itemName);
@@ -581,56 +488,12 @@ export class Player extends Actor {
         return result;
     }
 
-    /**
-     * Apply passive skill effects
-     */
-    private applyPassiveSkills(): string[] {
-        const messages: string[] = [];
-        const passiveSkills = this.getUnlockedPassiveSkills();
-        
-        passiveSkills.forEach(skill => {
-            switch (skill.passiveEffect) {
-                case 'regeneration':
-                    const healAmount = Math.max(1, Math.round(this.maxHp / 50));
-                    if (!this.isKnockedOut() && !this.isAnyRestrained() && this.hp < this.maxHp) {
-                        this.heal(healAmount);
-                    }
-                    break;
-                // Other passive effects will be handled in specific situations
-            }
-        });
-        
-        return messages;
-    }
-    
-    /**
-     * Apply escape recovery passive skill
-     */
-    public applyEscapeRecovery(): string[] {
-        const messages: string[] = [];
-        const passiveSkills = this.getUnlockedPassiveSkills();
-        
-        const hasEscapeRecovery = passiveSkills.some(skill => skill.passiveEffect === 'escape-recovery');
-        if (hasEscapeRecovery) {
-            const lostMaxHp = this.initialMaxHp - this.maxHp;
-            const recoveryAmount = Math.floor(lostMaxHp * 0.2); // 20% of lost max HP
-            if (recoveryAmount > 0) {
-                const actualHeal = this.gainMaxHp(recoveryAmount);
-                if (actualHeal > 0) {
-                    messages.push(`${this.name}は拘束からの脱出で${actualHeal}の最大HPを回復した！`);
-                }
-            }
-        }
-        
-        return messages;
-    }
     
     /**
      * Check if defend damage should be 100% cut
      */
     public shouldCutDefendDamage(): boolean {
-        const toughnessLevel = this.abilitySystem.getAbility(AbilityType.Toughness)?.level || 0;
-        return toughnessLevel >= 7;
+        return this.battleActions.shouldCutDefendDamage();
     }
     
     /**
@@ -647,14 +510,10 @@ export class Player extends Actor {
      * Reset battle-specific state while preserving progression
      */
     public resetBattleState(): void {
-        // Reset battle-specific flags
-        this.struggleAttempts = 0;
-        this.isDefending = false;
+        // Call battle actions reset
+        this.battleActions.resetBattleState();
         
         // Call parent resetBattleState for common processing
         super.resetBattleState();
-        
-        // Note: Keep progression data (abilities, equipment, items) intact
-        // Also preserve maxHp changes from abilities/equipment
     }
 }
