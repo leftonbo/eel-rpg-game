@@ -615,7 +615,7 @@ export class ModalUtils {
     static async showStatusEffectModal(target: 'player' | 'boss', statusTypes: string[]): Promise<{type: string, duration: number} | null> {
         return new Promise((resolve) => {
             const modal = document.getElementById('status-effect-modal') as HTMLElement;
-            const titleElement = document.getElementById('status-effect-modal-title') as HTMLElement;
+            const titleElement = document.getElementById('status-effect-modal-label') as HTMLElement;
             const typeSelect = document.getElementById('status-effect-type') as HTMLSelectElement;
             const durationInput = document.getElementById('status-effect-duration') as HTMLInputElement;
             const errorDiv = document.getElementById('status-effect-error') as HTMLElement;
