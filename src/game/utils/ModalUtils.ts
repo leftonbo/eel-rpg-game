@@ -146,7 +146,7 @@ export class ModalUtils {
     static async showAlert(message: string, title: string = '通知'): Promise<void> {
         return new Promise((resolve) => {
             const modal = document.getElementById('alert-modal') as HTMLElement;
-            const titleElement = document.getElementById('alert-modal-title') as HTMLElement;
+            const titleElement = document.getElementById('alert-modal-label') as HTMLElement;
             const bodyElement = document.getElementById('alert-modal-body') as HTMLElement;
 
             titleElement.textContent = title;
@@ -191,7 +191,7 @@ export class ModalUtils {
     static async showConfirm(message: string, title: string = '確認'): Promise<boolean> {
         return new Promise((resolve) => {
             const modal = document.getElementById('confirm-modal') as HTMLElement;
-            const titleElement = document.getElementById('confirm-modal-title') as HTMLElement;
+            const titleElement = document.getElementById('confirm-modal-label') as HTMLElement;
             const bodyElement = document.getElementById('confirm-modal-body') as HTMLElement;
             const okBtn = document.getElementById('confirm-ok-btn') as HTMLButtonElement;
             const cancelBtn = document.getElementById('confirm-cancel-btn') as HTMLButtonElement;
@@ -261,7 +261,7 @@ export class ModalUtils {
     static async showPrompt(message: string, defaultValue: string = '', title: string = '入力', inputType: string = 'text'): Promise<string | null> {
         return new Promise((resolve) => {
             const modal = document.getElementById('prompt-modal') as HTMLElement;
-            const titleElement = document.getElementById('prompt-modal-title') as HTMLElement;
+            const titleElement = document.getElementById('prompt-modal-label') as HTMLElement;
             const bodyElement = document.getElementById('prompt-modal-body') as HTMLElement;
             const inputElement = document.getElementById('prompt-modal-input') as HTMLInputElement;
             const okBtn = document.getElementById('prompt-ok-btn') as HTMLButtonElement;
@@ -359,7 +359,7 @@ export class ModalUtils {
     static async showSelect(message: string, options: { value: string; text: string }[], title: string = '選択'): Promise<string | null> {
         return new Promise((resolve) => {
             const modal = document.getElementById('select-modal') as HTMLElement;
-            const titleElement = document.getElementById('select-modal-title') as HTMLElement;
+            const titleElement = document.getElementById('select-modal-label') as HTMLElement;
             const bodyElement = document.getElementById('select-modal-body') as HTMLElement;
             const selectElement = document.getElementById('select-modal-select') as HTMLSelectElement;
             const okBtn = document.getElementById('select-ok-btn') as HTMLButtonElement;
