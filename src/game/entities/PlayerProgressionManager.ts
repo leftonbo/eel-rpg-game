@@ -63,7 +63,7 @@ export class PlayerProgressionManager {
             }
         }
         
-        return accessibleTerrains.length > 0 ? accessibleTerrains : ['未知の領域'];
+        return accessibleTerrains.length > 0 ? accessibleTerrains : [PlayerConstants.DEFAULT_UNKNOWN_TERRAIN];
     }
     
     /**

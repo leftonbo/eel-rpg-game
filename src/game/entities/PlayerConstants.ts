@@ -104,6 +104,9 @@ export const TOUGHNESS_DEFEND_CUT_LEVEL = 7;
 /** 探索者レベル表示でスキップするレベル（ゲストキャラ関係） */
 export const EXPLORER_LEVEL_SKIP = 3;
 
+/** アクセス可能地形が存在しない場合のデフォルト表示 */
+export const DEFAULT_UNKNOWN_TERRAIN = '未知の領域';
+
 /**
  * アビリティの重み付け（パワーレーティング用）
  */

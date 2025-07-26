@@ -883,7 +883,7 @@ export class BattleScene {
         const success = this.player.useItem(itemName);
         
         if (success) {
-            // Get display name from predefined names
+            // 事前定義された名前から表示名を取得
             const itemDisplayNames: { [key: string]: string } = {
                 'heal-potion': '回復薬',
                 'adrenaline': 'アドレナリン注射',
@@ -892,7 +892,7 @@ export class BattleScene {
             };
             const itemDisplayName = itemDisplayNames[itemName] || itemName;
             
-            // Track items used for experience (basic experience gain)
+            // アイテム使用による経験値を追跡（基本経験値獲得）
             this.battleStats.craftworkExperience += 10;
             
             this.addBattleLogMessage(`${this.player.name}は${itemDisplayName}を使った！`, 'heal', 'player');
@@ -901,7 +901,7 @@ export class BattleScene {
             // Items don't end turn
             this.updateUI();
         } else {
-            // Get display name for error message
+            // エラーメッセージ用の表示名を取得
             const itemDisplayNames: { [key: string]: string } = {
                 'heal-potion': '回復薬',
                 'adrenaline': 'アドレナリン注射',
@@ -1022,8 +1022,8 @@ export class BattleScene {
         if (this.player) {
             this.player.startTurn();
             
-            // Player recovery messages are handled in processRoundEnd
-            // This functionality has been moved to the Player's processRoundEnd method
+            // プレイヤーの回復メッセージはprocessRoundEndで処理される
+            // この機能はPlayerのprocessRoundEndメソッドに移動されました
         }
         
         this.updateUI();

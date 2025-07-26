@@ -20,7 +20,7 @@ export interface SkillResult {
     damage?: number; // Only for attack skills
 }
 
-// Re-export constants for backward compatibility
+// 下位互換性のための定数の再エクスポート
 export const DEFAULT_PLAYER_NAME = PlayerConstants.DEFAULT_PLAYER_NAME;
 export const DEFAULT_PLAYER_ICON = PlayerConstants.DEFAULT_PLAYER_ICON;
 
