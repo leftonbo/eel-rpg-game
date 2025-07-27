@@ -65,6 +65,3 @@ coverage/
 
 # Claude code local config
 .claude/settings.local.json
-
-# Generated files from templates
-src/index.html
