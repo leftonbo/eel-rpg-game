@@ -32,8 +32,8 @@ export const CRAFTWORK_HEALING_MULTIPLIER_BASE = 1;
 /** 防御時の100%ダメージカット率 */
 export const DEFEND_DAMAGE_CUT_RATE = 1.0;
 
-/** もがく行動の基本成功率（30%） */
-export const STRUGGLE_BASE_SUCCESS_RATE = 0.3;
+/** もがく行動の基本成功率（20%） */
+export const STRUGGLE_BASE_SUCCESS_RATE = 0.2;
 
 /** もがく試行回数ごとの成功率増加（20%） */
 export const STRUGGLE_SUCCESS_INCREASE_PER_ATTEMPT = 0.2;

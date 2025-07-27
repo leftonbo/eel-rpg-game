@@ -75,15 +75,14 @@ export class StruggleStrategy implements SkillStrategy {
         
         // Calculate enhanced struggle success rate
         let baseSuccessRate = PlayerConstants.STRUGGLE_BASE_SUCCESS_RATE + (player.struggleAttempts) * PlayerConstants.STRUGGLE_SUCCESS_INCREASE_PER_ATTEMPT;
-        baseSuccessRate = Math.min(baseSuccessRate, 1.0);
         
         // Apply agility bonus
         const agilityBonus = player.abilitySystem.getAgilityEscapeBonus();
-        baseSuccessRate += agilityBonus;
+        baseSuccessRate *= 1 + agilityBonus;
         
         const modifier = player.statusEffects.getStruggleModifier();
         let finalSuccessRate = baseSuccessRate * modifier * successMultiplier;
-        finalSuccessRate = Math.min(finalSuccessRate, 1.0);
+        finalSuccessRate = Math.min(finalSuccessRate, PlayerConstants.STRUGGLE_MAX_SUCCESS_RATE);
         
         const success = Math.random() < finalSuccessRate;
         player.struggleAttempts++;

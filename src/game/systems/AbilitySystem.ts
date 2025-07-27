@@ -157,13 +157,13 @@ export class AbilitySystem {
     }
     
     /**
-     * Calculate agility restrain escape bonus (5% per level)
+     * Calculate agility restrain escape bonus (10% per level)
      */
     getAgilityEscapeBonus(): number {
         const agilityAbility = this.abilities.get(AbilityType.Agility);
         if (!agilityAbility) return 0;
         
-        return agilityAbility.level * 0.05; // 5% per level
+        return agilityAbility.level * 0.1; // 10% per level
     }
     
     /**

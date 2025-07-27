@@ -29,17 +29,20 @@ export class PlayerBattleActions {
         
         this.player.struggleAttempts++;
         
-        // Base success rate starts at 30% and increases by 20% each attempt
-        let baseSuccessRate = PlayerConstants.STRUGGLE_BASE_SUCCESS_RATE + (this.player.struggleAttempts - 1) * PlayerConstants.STRUGGLE_SUCCESS_INCREASE_PER_ATTEMPT;
-        baseSuccessRate = Math.min(baseSuccessRate, PlayerConstants.STRUGGLE_MAX_SUCCESS_RATE);
+        // Base success rate starts at 20% and increases by 20% each attempt
+        let baseSuccessRate = PlayerConstants.STRUGGLE_BASE_SUCCESS_RATE
+            + (this.player.struggleAttempts - 1) * PlayerConstants.STRUGGLE_SUCCESS_INCREASE_PER_ATTEMPT;
         
-        // Apply agility bonus
+        // Apply agility Bonus
         const agilityBonus = this.player.abilitySystem.getAgilityEscapeBonus();
-        baseSuccessRate += agilityBonus;
+        baseSuccessRate *= 1 + agilityBonus;
         
         // Apply charm modifier
         const modifier = this.player.statusEffects.getStruggleModifier();
-        const finalSuccessRate = baseSuccessRate * modifier;
+        baseSuccessRate *= modifier;
+        
+        // Cap success rate at 90%
+        const finalSuccessRate = Math.min(baseSuccessRate, PlayerConstants.STRUGGLE_MAX_SUCCESS_RATE);
         
         const success = Math.random() < finalSuccessRate;
         
