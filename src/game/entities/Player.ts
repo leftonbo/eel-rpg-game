@@ -392,10 +392,12 @@ export class Player extends Actor {
     /**
      * ターン開始時のマナ回復量を取得
      * 子クラスでオーバーライド可能
-     * @returns マナ回復量
+     * @returns マナ回復量（状態異常効果を含む）
      */
     getMpRecoveryAmount(): number {
-        return Math.floor(this.maxMp / 10);
+        const baseRecovery = Math.floor(this.maxMp / 10);
+        const modifier = this.statusEffects.getMpRecoveryModifier();
+        return Math.floor(baseRecovery * modifier);
     }
     
     // Process all status effects at round end
