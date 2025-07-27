@@ -1525,6 +1525,12 @@ footer svg {
     animation: darkness-fade 3s ease-in-out infinite alternate;
 }
 
+.status-sleepy {
+    background: rgba(147, 112, 219, 0.4);
+    border-color: #9370db;
+    color: #e6e6fa;
+}
+
 /* Clean Master animations */
 @keyframes bubble-float {
     0%,
