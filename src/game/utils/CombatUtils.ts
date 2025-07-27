@@ -42,6 +42,7 @@ export function applyCustomDamageVariance(baseDamage: number, minVariance: numbe
  * @param customCriticalRate カスタムクリティカル率（デフォルトは0.0）
  * @param damageVarianceMin ダメージの最小ゆらぎ（デフォルトは-0.2）
  * @param damageVarianceMax ダメージの最大ゆらぎ（デフォルトは0.2）
+ * @param accuracyModifier 状態異常による命中率修正（デフォルトは1.0）
  * @returns 攻撃結果オブジェクト
  * @property {number} damage - 実際のダメージ
  * @property {boolean} isMiss - ミスしたかどうか
@@ -52,6 +53,7 @@ export function applyCustomDamageVariance(baseDamage: number, minVariance: numbe
  * - `isTargetKnockedOut` がtrueの場合、ヒット率は1.0（必ずヒット）になります。
  * - `customHitRate` と `customCriticalRate` を指定することで、ヒット率とクリティカル率をカスタマイズできます。
  * - `damageVarianceMin` と `damageVarianceMax` を指定することで、ダメージのゆらぎをカスタマイズできます。
+ * - `accuracyModifier` で状態異常による命中率修正を適用できます。
  * - クリティカルヒットの場合、ダメージは通常の3倍になります。
  * - ミスした場合、ダメージは0になります。
  * - ダメージは最終計算時に四捨五入されます。
@@ -62,7 +64,8 @@ export function calculateAttackResult(
     customHitRate?: number,
     customCriticalRate?: number,
     damageVarianceMin?: number,
-    damageVarianceMax?: number
+    damageVarianceMax?: number,
+    accuracyModifier: number = 1.0
 ): AttackResult {
     if (baseDamage <= 0) {
         return {
@@ -75,7 +78,9 @@ export function calculateAttackResult(
     
     // プレイヤーが行動不能の場合、ボスの攻撃はミスしない
     const baseHitRate = customHitRate !== undefined ? customHitRate : 1.0;
-    const hitRate = isTargetKnockedOut ? 1.0 : baseHitRate;
+    // 状態異常による命中率修正を適用
+    const adjustedHitRate = isTargetKnockedOut ? 1.0 : baseHitRate * accuracyModifier;
+    const hitRate = Math.max(0, Math.min(1, adjustedHitRate)); // 0-1の範囲に制限
     
     if (!isTargetKnockedOut && Math.random() >= hitRate) {
         // ミス

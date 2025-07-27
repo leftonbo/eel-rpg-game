@@ -468,13 +468,15 @@ export class Boss extends Actor {
     private executeAttackAction(action: BossAction, player: Player): string[] {
         const messages: string[] = [];
         const baseDamage = this.calculateActionDamage(action) || this.attackPower;
+        const accuracyModifier = this.statusEffects.getAccuracyModifier();
         const attackResult = calculateAttackResult(
             baseDamage, 
             player.isKnockedOut(), 
             action.hitRate, 
             action.criticalRate,
             action.damageVarianceMin,
-            action.damageVarianceMax
+            action.damageVarianceMax,
+            accuracyModifier
         );
         
         if (attackResult.message) {
@@ -505,13 +507,15 @@ export class Boss extends Actor {
         
         const baseDamage = this.calculateActionDamage(action);
         if (baseDamage && baseDamage > 0) {
+            const accuracyModifier = this.statusEffects.getAccuracyModifier();
             const attackResult = calculateAttackResult(
                 baseDamage, 
                 player.isKnockedOut(), 
                 action.hitRate, 
                 action.criticalRate,
                 action.damageVarianceMin,
-                action.damageVarianceMax
+                action.damageVarianceMax,
+                accuracyModifier
             );
 
             if (attackResult.isMiss) {
@@ -614,13 +618,15 @@ export class Boss extends Actor {
         
         // Apply variance to absorption amount
         const baseAbsorption = this.calculateActionDamage(action) || Math.floor(player.maxHp * DEFAULT_MAX_HP_ABSORPTION_RATIO);
+        const accuracyModifier = this.statusEffects.getAccuracyModifier();
         const statusAttackResult = calculateAttackResult(
             baseAbsorption, 
             player.isKnockedOut(), 
             action.hitRate, 
             action.criticalRate,
             action.damageVarianceMin,
-            action.damageVarianceMax
+            action.damageVarianceMax,
+            accuracyModifier
         );
         const hpAbsorbed = statusAttackResult.damage;
         
@@ -638,7 +644,8 @@ export class Boss extends Actor {
             1.0, 
             0.0,
             action.damageVarianceMin,
-            action.damageVarianceMax
+            action.damageVarianceMax,
+            accuracyModifier
         );
         const mpDrainAmount = statusMpDrainResult.damage;
         
