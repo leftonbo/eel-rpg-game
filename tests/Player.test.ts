@@ -1,7 +1,7 @@
-import { Player } from './Player';
-import { AbilityType } from '../systems/AbilitySystem';
-import { StatusEffectType } from '../systems/StatusEffect';
-import * as PlayerConstants from './PlayerConstants';
+import { Player } from '../src/game/entities/Player';
+import { AbilityType } from '../src/game/systems/AbilitySystem';
+import { StatusEffectType } from '../src/game/systems/StatusEffect';
+import * as PlayerConstants from '../src/game/entities/PlayerConstants';
 
 describe('Player', () => {
     let player: Player;
@@ -228,8 +228,6 @@ describe('Player', () => {
 
     describe('ステータス再計算', () => {
         test('ステータスを再計算できる', () => {
-            const initialMaxHp = player.maxHp;
-            
             expect(() => {
                 player.recalculateStats();
             }).not.toThrow();
