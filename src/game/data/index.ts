@@ -14,7 +14,8 @@ export const registeredBossIds: string[] = [
     'aqua-serpent',
     'clean-master',
     'underground-worm',
-    'bat-vampire'
+    'bat-vampire',
+    'seraph-mascot'
 ];
 
 /**
@@ -78,6 +79,9 @@ async function loadBossData(id: string): Promise<BossData> {
             break;
         case 'bat-vampire':
             bossData = (await import('./bosses/bat-vampire')).batVampireData;
+            break;
+        case 'seraph-mascot':
+            bossData = (await import('./bosses/seraph-mascot')).seraphMascotData;
             break;
         default:
             throw new Error(`Unknown boss ID: ${id}`);

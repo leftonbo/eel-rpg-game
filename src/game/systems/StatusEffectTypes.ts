@@ -93,7 +93,12 @@ export enum StatusEffectType {
     Petrified = 'petrified',
     
     // Bat Vampire effects
-    Darkness = 'darkness'
+    Darkness = 'darkness',
+    
+    // Seraph Mascot effects
+    Blessed = 'blessed',
+    Overwhelmed = 'overwhelmed',
+    SalvationState = 'salvation-state'
 }
 
 export interface StatusEffect {
