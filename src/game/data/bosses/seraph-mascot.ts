@@ -205,7 +205,7 @@ const seraphMascotEternalActions: BossAction[] = [
         description: '永遠に世話をし続ける',
         messages: [
             '「ずっとお世話してあげるからね〜♪」',
-            '<USER>は<TARGET>を永続的にお世話し続けている...',
+            '<USER>は体内の<TARGET>を永続的にお世話し続けている...',
             'でも、お世話が丁寧すぎて疲れてしまう...'
         ],
         weight: 30,
@@ -218,7 +218,7 @@ const seraphMascotEternalActions: BossAction[] = [
         description: '過度に保護しようとする',
         messages: [
             '「危ないものから守ってあげなきゃ〜！」',
-            '<USER>は<TARGET>を過度に保護しようとする！',
+            '<USER>は体内の<TARGET>を聖なる力で過度に保護しようとする！',
             '何もかもから守ろうとして、自由を奪ってしまう...'
         ],
         statusEffect: StatusEffectType.SalvationState,
@@ -233,7 +233,7 @@ const seraphMascotEternalActions: BossAction[] = [
         description: '救済への強迫観念が発動する',
         messages: [
             '「まだ救済が足りない！もっと、もっと〜！」',
-            '<USER>の救済への強迫観念が暴走する！',
+            '<USER>の救済への強迫観念が暴走し、体内の<TARGET>を締め付ける！',
             '<TARGET>は完璧な救済を求められ続ける...'
         ],
         weight: 20,
@@ -246,7 +246,7 @@ const seraphMascotEternalActions: BossAction[] = [
         description: '愛情が深すぎて息ができなくなる',
         messages: [
             '「だいすき〜♪ ずっと一緒にいようね〜♪」',
-            '<USER>の愛情が深すぎて<TARGET>が息苦しくなる！',
+            '<USER>の深すぎる愛情で<TARGET>を体内できつく抱きしめ、息苦しくさせる！',
             '善意の愛情が逆に苦しみとなってしまう...'
         ],
         statusEffect: StatusEffectType.Overwhelmed,
@@ -509,9 +509,9 @@ seraphMascotData.finishingMove = function(): string[] {
     return [
         'セラフィマスコットは<TARGET>を完全に救済した！',
         '「もう何も心配いらないよ〜♪ ずっとお姉さんが守ってあげるからね〜♪」',
-        '<TARGET>はセラフィマスコットの体内で永遠の保護を受けることになった！',
+        '<TARGET>はセラフィマスコットの体内でずっと保護を受けることになった！',
         'セラフィマスコットは毎日<TARGET>をお世話し続け、「今日も元気かな〜？」と優しく語りかけている...',
-        'しかし、その愛情は深すぎて、<TARGET>はもう二度と外の世界を見ることはないのだった...'
+        'しかし、その愛情は深すぎて、セラフィマスコットが飽きるまで<TARGET>は外の世界を見ることはない...'
     ];
 };
 
