@@ -174,7 +174,8 @@ export class BossSelectScene {
         const modalGuestInfo = document.getElementById('modal-boss-guest-info');
         if (modalGuestInfo) {
             if (bossData.guestCharacterInfo) {
-                modalGuestInfo.innerHTML = `<small class="text-muted">Guest Character by ${bossData.guestCharacterInfo.creator}</small>`;
+                const characterName = bossData.guestCharacterInfo.characterName || 'Guest Character';
+                modalGuestInfo.innerHTML = `<small class="text-muted">${characterName} created by ${bossData.guestCharacterInfo.creator}</small>`;
                 modalGuestInfo.classList.remove('d-none');
             } else {
                 modalGuestInfo.classList.add('d-none');

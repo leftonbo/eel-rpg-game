@@ -692,7 +692,8 @@ export const dreamDemonData: BossData = {
         description: '夢の淫魔の心の奥から滲み出る甘美な夢のエッセンス。至福の夢を呼び起こす。'
     },
     guestCharacterInfo: {
-        creator: 'crazybudgie'
+        creator: 'crazybudgie',
+        characterName: '夢魔ちゃん'
     },
     personality: [
         'あっ、可愛い獲物が来たンメェ〜！',

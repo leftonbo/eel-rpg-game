@@ -80,10 +80,7 @@ export interface BossData {
     finishingMove?: () => string[];
     suppressAutoFinishingMove?: boolean; // 自動とどめ攻撃を抑制し、AI戦略でカスタムとどめ攻撃を処理
     icon?: string;
-    guestCharacterInfo?: {
-        creator: string;
-        source?: string;
-    };
+    guestCharacterInfo?: BossGuestCharacterInfo; // ゲストキャラクター情報（制作者名、元キャラ名など）
     /** 戦闘開始時のメッセージ進行 */
     battleStartMessages?: MessageData[];
     /** 戦闘勝利時のメッセージ進行 */
@@ -117,6 +114,16 @@ export interface BossData {
     defeatTrophy?: TrophyData;
 }
 
+/**
+ * ゲストキャラクター情報
+ */
+export interface BossGuestCharacterInfo {
+    /** 制作者名 */
+    creator: string;
+    /** 元となったキャラクター名 */
+    characterName?: string;
+}
+
 // Constants for Boss class
 const BOSS_UNLIMITED_MP = 999999;
 const DEFAULT_MAX_HP_ABSORPTION_RATIO = 0.1;
@@ -138,10 +145,7 @@ export class Boss extends Actor {
     public victoryMessages?: MessageData[];
     public suppressAutoFinishingMove: boolean;
     public icon: string;
-    public guestCharacterInfo?: {
-        creator: string;
-        source?: string;
-    };
+    public guestCharacterInfo?: BossGuestCharacterInfo;
     
     /**
      * 一度でも使用したスキル名
