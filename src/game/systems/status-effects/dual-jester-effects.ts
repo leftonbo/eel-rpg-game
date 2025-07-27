@@ -5,8 +5,8 @@ export const dualJesterEffectsConfigs = new Map<StatusEffectType, StatusEffectCo
     [StatusEffectType.FalseSecurity, {
         type: StatusEffectType.FalseSecurity,
         name: '偽りの安心',
-        description: '危険察知能力が大幅に低下し、敵の攻撃予告が見えなくなる',
-        duration: 3,
+        description: '道化師の演技に騙され、危険察知能力が大幅に低下。命中率-30%、被ダメージ+25%',
+        duration: 2,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
@@ -23,7 +23,7 @@ export const dualJesterEffectsConfigs = new Map<StatusEffectType, StatusEffectCo
     [StatusEffectType.Manic, {
         type: StatusEffectType.Manic,
         name: '躁状態',
-        description: '攻撃力が上昇するが防御力と命中率が低下し、行動が予測不能になる',
+        description: '躁状態により攻撃力+50%だが、防御力-30%・命中率-20%。時々自傷や状態変化が発生',
         duration: 4,
         category: 'debuff',
         isDebuff: true,
@@ -33,19 +33,15 @@ export const dualJesterEffectsConfigs = new Map<StatusEffectType, StatusEffectCo
             accuracy: 0.8 // 命中率低下
         },
         onTick: (target: Actor) => {
-            // 20%の確率でBipolarに変化
-            if (Math.random() < 0.20) {
+            // 15%の確率でBipolarに変化（確率調整）
+            if (Math.random() < 0.15) {
                 target.statusEffects.removeEffect(StatusEffectType.Manic);
-                target.statusEffects.addEffect({
-                    type: StatusEffectType.Bipolar,
-                    duration: 3,
-                    name: '双極効果',
-                    description: '全ての状態異常の効果がランダムで正反対になる'
-                });
+                // 正しい呼び出し方法を使用
+                target.statusEffects.addEffect(StatusEffectType.Bipolar, 3);
             }
-            // 10%の確率で自分を攻撃
-            if (Math.random() < 0.10) {
-                const selfDamage = Math.floor(target.maxHp * 0.05);
+            // 8%の確率で自分を攻撃（確率調整）
+            if (Math.random() < 0.08) {
+                const selfDamage = Math.floor(target.maxHp * 0.03); // ダメージ軽減
                 target.takeDamage(selfDamage, null);
             }
         },
@@ -59,8 +55,8 @@ export const dualJesterEffectsConfigs = new Map<StatusEffectType, StatusEffectCo
     [StatusEffectType.Bipolar, {
         type: StatusEffectType.Bipolar,
         name: '双極効果',
-        description: '全ての状態異常の効果がランダムで正反対に変化する混乱状態',
-        duration: 5,
+        description: '双面の狂気により感覚が混乱。毒や火だるまが回復効果に変化することがある（命中率-25%）',
+        duration: 3,
         category: 'debuff',
         isDebuff: true,
         onTick: (target: Actor) => {

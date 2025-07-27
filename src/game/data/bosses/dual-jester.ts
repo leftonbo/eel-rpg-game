@@ -149,7 +149,7 @@ const dualJesterDevourActions: BossAction[] = [
             '狂気の人格：「君はとても美味しいよ...もう離さない」',
             '<TARGET>は二重人格の狂気に翻弄され続ける！'
         ],
-        damageFormula: (user: Boss) => user.attackPower * 2.0,
+        damageFormula: (user: Boss) => user.attackPower * 1.8,
         statusEffect: StatusEffectType.Bipolar,
         statusChance: 0.70,
         weight: 35,
@@ -165,7 +165,7 @@ const dualJesterDevourActions: BossAction[] = [
             '<USER>の二つの人格が同時に<TARGET>を消化しようとする！',
             '<TARGET>の最大HPが二重の力で削られていく...'
         ],
-        damageFormula: (user: Boss) => user.attackPower * 2.5,
+        damageFormula: (user: Boss) => user.attackPower * 2.0,
         weight: 30,
         playerStateCondition: 'eaten'
     },
@@ -244,7 +244,22 @@ const dualJesterAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
     const hasTransformed = boss.getCustomVariable<boolean>('hasTransformed', false);
     if (isPhase2 && !hasTransformed) {
         boss.setCustomVariable('hasTransformed', true);
-        // 変身メッセージは戦闘システムで自動表示される
+        // 専用の変身メッセージを追加
+        return {
+            id: 'phase-transform',
+            type: ActionType.Attack,
+            name: '本性覚醒',
+            description: '双面の道化師の真の姿が露わになる',
+            messages: [
+                '「...あれ？まだ遊びたいの？」（声が低く変化）',
+                'デュアルの顔が反転し、その瞳が狂気に染まった！',
+                '可愛らしい道化師の仮面が剥がれ落ち、真の恐怖が姿を現す！',
+                '「なら...本気で遊ぼうか」（完全に別人格）'
+            ],
+            damageFormula: (user: Boss) => user.attackPower * 1.2,
+            weight: 1,
+            playerStateCondition: 'normal'
+        };
     }
     
     boss.setCustomVariable('currentPhase', isPhase2 ? 2 : 1);
@@ -288,7 +303,7 @@ const dualJesterAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
     if (player.isKnockedOut()) {
         if (player.isRestrained() && isPhase2) {
             // 第2フェーズで拘束+戦闘不能時は80%で捕食
-            if (Math.random() < 0.8) {
+            if (Math.random() < 0.65) {
                 return {
                     id: 'final-swallow',
                     type: ActionType.EatAttack,
