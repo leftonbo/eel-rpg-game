@@ -1,19 +1,45 @@
 import { StatusEffectManager, StatusEffectType } from '../systems/StatusEffect';
 
+/**
+ * プレイヤーとボスの共通基底クラス
+ * HP/MP管理、状態異常管理、戦闘システムの基本機能を提供
+ */
 export abstract class Actor {
+    //#region プロパティ定義
+
+    /** キャラクター表示名 */
     public displayName: string;
+    /** 現在のHP */
     public hp: number;
+    /** 最大HP */
     public maxHp: number;
+    /** 現在のMP */
     public mp: number;
+    /** 最大MP */
     public maxMp: number;
+    /** 攻撃力 */
     public attackPower: number;
+    /** 防御力 */
     public defense: number = 0;
+    /** 状態異常管理システム */
     public statusEffects: StatusEffectManager = new StatusEffectManager();
     
-    // Initial stats at battle start (for UI bar display)
+    /** 戦闘開始時の最大HP（UIのバー表示用） */
     public initialMaxHp: number = 0;
+    /** 戦闘開始時の最大MP（UIのバー表示用） */
     public initialMaxMp: number = 0;
 
+    //#endregion
+
+    //#region コンストラクタと抽象メソッド
+
+    /**
+     * Actorクラスのコンストラクタ
+     * @param displayName キャラクター表示名
+     * @param maxHp 最大HP
+     * @param attackPower 攻撃力
+     * @param maxMp 最大MP（デフォルト: 0）
+     */
     constructor(displayName: string, maxHp: number, attackPower: number, maxMp: number = 0) {
         this.displayName = displayName;
         this.maxHp = maxHp;
@@ -24,14 +50,20 @@ export abstract class Actor {
     }
 
     /**
-     * Abstract method to recalculate stats based on abilities/equipment
-     * Player: Uses abilities and equipment
-     * Boss: Uses boss data
+     * アビリティや装備に基づいてステータスを再計算する抽象メソッド
+     * Player: アビリティと装備を使用
+     * Boss: ボスデータを使用
      */
     abstract recalculateStats(): void;
 
+    //#endregion
+
+    //#region HP/MP管理メソッド
+
     /**
-     * Take damage and handle knocked out status
+     * ダメージを受けて戦闘不能状態を処理する
+     * @param amount ダメージ量
+     * @returns 実際に受けたダメージ量
      */
     takeDamage(amount: number): number {
         if (amount <= 0) return 0;
@@ -41,8 +73,8 @@ export abstract class Actor {
         
         this.hp = Math.max(0, this.hp - actualDamage);
         
-        // If health reaches 0, apply knocked out status
-        // ignores if doomed status is already applied
+        // HPが0になった場合、戦闘不能状態を適用
+        // 死亡状態が既に適用されている場合は無視
         if (this.hp <= 0
             && !this.statusEffects.hasEffect(StatusEffectType.KnockedOut)
             && !this.statusEffects.hasEffect(StatusEffectType.Doomed)) {
@@ -53,18 +85,20 @@ export abstract class Actor {
     }
 
     /**
-     * Heal HP
+     * HPを回復する
+     * @param amount 回復量
+     * @returns 実際に回復したHP量
      */
     heal(amount: number): number {
         if (amount <= 0) return 0;
         
-        // Only heal if hp is below max
+        // HPが最大値以上の場合は回復しない
         if (this.hp >= this.maxHp) return 0;
         
         const oldHp = this.hp;
         this.hp = Math.min(this.maxHp, this.hp + amount);
         
-        // If healed from 0, remove knocked out status
+        // HPが0から回復した場合、戦闘不能状態を解除
         if (oldHp === 0 && this.hp > 0) {
             this.statusEffects.removeEffect(StatusEffectType.KnockedOut);
         }
@@ -73,7 +107,9 @@ export abstract class Actor {
     }
 
     /**
-     * Recover MP
+     * MPを回復する
+     * @param amount 回復量
+     * @returns 実際に回復したMP量
      */
     recoverMp(amount: number): number {
         if (amount <= 0) return 0;
@@ -84,22 +120,25 @@ export abstract class Actor {
     }
 
     /**
-     * Consume MP
+     * MPを消費する
+     * @param amount 消費量
+     * @returns 消費に成功した場合true、不足した場合false
      */
     consumeMp(amount: number): boolean {
         if (this.mp >= amount) {
             this.mp -= amount;
             return true;
         }
-        // If MP is insufficient, mp becomes 0 and returns false
+        // MPが不足している場合、MPを0にして疲労状態を適用
         this.mp = 0;
-        // Apply exhausted status effect
         this.statusEffects.addEffect(StatusEffectType.Exhausted);
         return false;
     }
 
     /**
-     * Lose MP
+     * MPを失う（強制的に減少）
+     * @param amount 減少量
+     * @returns 実際に失ったMP量
      */
     loseMp(amount: number): number {
         if (amount <= 0) return 0;
@@ -109,18 +148,23 @@ export abstract class Actor {
         return oldMp - this.mp;
     }
 
+    //#endregion
+
+    //#region 戦闘制御メソッド
+
     /**
-     * Check if actor can act
+     * アクションを行えるかどうかをチェック
+     * @returns 行動可能な場合true
      */
     canAct(): boolean {
         return this.statusEffects.canAct() && this.hp > 0;
     }
 
     /**
-     * Start turn processing
+     * ターン開始時の処理
      */
     startTurn(): void {
-        // Recover MP (1/10 of max MP) at start of turn, unless eaten
+        // 食べられ状態でない場合、ターン開始時にMP回復（最大MPの1/10）
         if (!this.statusEffects.isEaten() && this.maxMp > 0) {
             const mpRecovery = Math.floor(this.maxMp / 10);
             this.recoverMp(mpRecovery);
@@ -128,104 +172,120 @@ export abstract class Actor {
     }
 
     /**
-     * Process all status effects at round end
+     * ラウンド終了時に全状態異常を処理
+     * @returns 状態異常の効果や終了に関するメッセージ配列
      */
     processRoundEnd(): string[] {
         const messages: string[] = [];
         
-        // Apply status effect damages/effects
+        // 状態異常のダメージ・効果を適用
         const effectMessages = this.statusEffects.applyEffects(this);
         messages.push(...effectMessages);
         
-        // Decrease durations and remove expired effects
+        // 持続時間を減少させ、期限切れの効果を除去
         const durationMessages = this.statusEffects.decreaseDurations(this);
         messages.push(...durationMessages);
         
         return messages;
     }
 
+    //#endregion
+
+    //#region UI表示用メソッド
+
     /**
-     * Get HP percentage
+     * HP割合を取得（パーセンテージ）
+     * @returns HP割合（0-100）
      */
     getHpPercentage(): number {
         return this.maxHp > 0 ? (this.hp / this.maxHp) * 100 : 0;
     }
 
     /**
-     * Get MP percentage
+     * MP割合を取得（パーセンテージ）
+     * @returns MP割合（0-100）
      */
     getMpPercentage(): number {
         return this.maxMp > 0 ? (this.mp / this.maxMp) * 100 : 0;
     }
 
     /**
-     * Get HP bar percentage based on max HP (for bar width display)
+     * HPバーの表示幅割合を取得
+     * @returns HPバーの幅（0-100%）
      */
     getHpBarPercentage(): number {
         return this.getHpPercentage();
     }
 
     /**
-     * Get MP bar percentage based on max MP (for bar width display)
+     * MPバーの表示幅割合を取得
+     * @returns MPバーの幅（0-100%）
      */
     getMpBarPercentage(): number {
         return this.getMpPercentage();
     }
 
     /**
-     * Get HP progress container width percentage (for container resize)
+     * HPプログレスコンテナの幅割合を取得（コンテナリサイズ用）
+     * @returns コンテナ幅の割合（0-100%）
      */
     getHpContainerPercentage(): number {
         if (this.initialMaxHp <= 0) return 100;
         
-        // If current max HP is higher than initial, keep container at 100%
+        // 現在の最大HPが初期値より高い場合、コンテナは100%のまま
         if (this.maxHp > this.initialMaxHp) {
             return 100;
         }
         
-        // If current max HP is lower, shrink container proportionally
+        // 現在の最大HPが低い場合、比例してコンテナを縮小
         return (this.maxHp / this.initialMaxHp) * 100;
     }
 
     /**
-     * Get MP progress container width percentage (for container resize)
+     * MPプログレスコンテナの幅割合を取得（コンテナリサイズ用）
+     * @returns コンテナ幅の割合（0-100%）
      */
     getMpContainerPercentage(): number {
         if (this.initialMaxMp <= 0) return 100;
         
-        // If current max MP is higher than initial, keep container at 100%
+        // 現在の最大MPが初期値より高い場合、コンテナは100%のまま
         if (this.maxMp > this.initialMaxMp) {
             return 100;
         }
         
-        // If current max MP is lower, shrink container proportionally
+        // 現在の最大MPが低い場合、比例してコンテナを縮小
         return (this.maxMp / this.initialMaxMp) * 100;
     }
 
+    //#endregion
+
+    //#region 戦闘状態管理メソッド
+
     /**
-     * Check if actor is defeated
+     * アクターが敗北しているかチェック
+     * @returns 敗北状態の場合true
      */
     isDefeated(): boolean {
         return this.statusEffects.isKnockedOut();
     }
 
     /**
-     * Reset battle-specific state while preserving progression
+     * 戦闘固有の状態をリセット（進行状況は保持）
      */
     resetBattleState(): void {
-        // Clear all status effects
+        // 全ての状態異常をクリア
         this.statusEffects.clearAllEffects();
         
-        // Recalculate stats based on current abilities and equipment
+        // 現在のアビリティと装備に基づいてステータスを再計算
         this.recalculateStats();
         
-        // Reset HP and MP to maximum
+        // HP/MPを最大値にリセット
         this.hp = this.maxHp;
         this.mp = this.maxMp;
     }
 
     /**
-     * Save initial stats at battle start for UI bar calculation
+     * 戦闘開始時の初期ステータスを保存（UIのバー計算用）
      */
     saveInitialStats(): void {
         this.initialMaxHp = this.maxHp;
@@ -233,82 +293,116 @@ export abstract class Actor {
     }
 
     /**
-     * Lose max HP
+     * 最大HPを失う
+     * @param amount 減少量
      */
     loseMaxHp(amount: number): void {
         this.maxHp = Math.max(0, this.maxHp - amount);
         
-        // If current health exceeds new max health, reduce it
+        // 現在のHPが新しい最大HPを超える場合、減少させる
         if (this.hp > this.maxHp) {
             this.hp = this.maxHp;
         }
         
-        // If max HP reaches 0 or below, apply doomed status
+        // 最大HPが0以下になった場合、死亡状態を適用
         if (this.maxHp <= 0 && !this.statusEffects.hasEffect(StatusEffectType.Doomed)) {
             this.statusEffects.addEffect(StatusEffectType.Doomed);
-            // Remove knocked out status
+            // 戦闘不能状態を除去
             this.statusEffects.removeEffect(StatusEffectType.KnockedOut);
         }
     }
 
     /**
-     * Gain max HP (for boss devour mechanics)
+     * 最大HPを増加（ボスの捕食メカニズム用）
+     * @param amount 増加量
+     * @returns 実際に増加した最大HP量
      */
     gainMaxHp(amount: number): number {
         if (amount <= 0) return 0;
         
         const oldMaxHp = this.maxHp;
         this.maxHp += amount;
-        this.hp += amount; // Increase current HP by the same amount
+        this.hp += amount; // 現在のHPも同じ量だけ増加
         
         return this.maxHp - oldMaxHp;
     }
 
     /**
-     * Fully restore HP and MP to maximum values
+     * HP/MPを最大値まで完全回復
      */
     fullRestore(): void {
         this.hp = this.maxHp;
         this.mp = this.maxMp;
     }
+
+    //#endregion
     
+    //#region 状態異常チェックメソッド
+
     /**
-     * Check if actor is restrained by any status effect
-     * This includes being eaten, cocooned, or any other restraining effect
-     * @returns 
+     * 何らかの拘束状態にあるかチェック
+     * 食べられ、繭状態、通常の拘束状態を含む
+     * @returns 拘束状態の場合true
      */
     isAnyRestrained(): boolean {
         return this.isRestrained() || this.isEaten() || this.isCocoon();
     }
 
     /**
-     * Check if actor is (normal) restrained
+     * （通常の）拘束状態にあるかチェック
+     * @returns 拘束状態の場合true
      */
     isRestrained(): boolean {
         return this.statusEffects.isRestrained();
     }
 
+    /**
+     * 食べられ状態にあるかチェック
+     * @returns 食べられ状態の場合true
+     */
     isEaten(): boolean {
         return this.statusEffects.isEaten();
     }
 
+    /**
+     * 繭状態にあるかチェック
+     * @returns 繭状態の場合true
+     */
     isCocoon(): boolean {
         return this.statusEffects.isCocoon();
     }
 
+    /**
+     * 戦闘不能状態にあるかチェック
+     * @returns 戦闘不能状態の場合true
+     */
     isKnockedOut(): boolean {
         return this.statusEffects.isKnockedOut();
     }
 
+    /**
+     * 死亡状態にあるかチェック
+     * @returns 死亡状態の場合true
+     */
     isDoomed(): boolean {
         return this.statusEffects.isDoomed();
     }
 
+    /**
+     * 気絶状態にあるかチェック
+     * @returns 気絶状態の場合true
+     */
     isStunned(): boolean {
         return this.statusEffects.hasEffect(StatusEffectType.Stunned);
     }
 
+    /**
+     * 睡眠状態にあるかチェック
+     * @returns 睡眠状態の場合true
+     */
     isSleeping(): boolean {
         return this.statusEffects.isSleeping();
     }
+
+    //#endregion
 }
