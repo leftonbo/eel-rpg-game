@@ -152,7 +152,7 @@ export class Boss extends Actor {
      * 一度でも使用したスキル名
      * プレイヤーのエクスプローラー経験値計算で使用する
      */
-    public usedSkillNames: string[] = [];
+    public usedSkillNames: Set<string> = new Set();
     
     /**
      * ボス固有のカスタム変数
@@ -291,23 +291,21 @@ export class Boss extends Actor {
      * 使用したスキル名を記録
      */
     addUsedSkill(skillName: string): void {
-        if (!this.usedSkillNames.includes(skillName)) {
-            this.usedSkillNames.push(skillName);
-        }
+        this.usedSkillNames.add(skillName);
     }
     
     /**
      * 使用したスキル名一覧を取得
      */
     getUsedSkillNames(): string[] {
-        return [...this.usedSkillNames];
+        return Array.from(this.usedSkillNames);
     }
     
     /**
      * 使用したスキル名をリセット
      */
     resetUsedSkillNames(): void {
-        this.usedSkillNames = [];
+        this.usedSkillNames.clear();
     }
     
     
@@ -448,7 +446,8 @@ export class Boss extends Actor {
             case ActionType.Skip:
                 return this.executeSkipAction(action);
             default:
-                return [];
+                console.warn(`Unknown action type: ${action.type}`);
+                return [`${this.displayName}の行動が理解できない...`];
         }
     }
     
@@ -663,7 +662,7 @@ export class Boss extends Actor {
         // Custom finishing move logic
         if (action.statusEffect) {
             player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
-            messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
+            messages.push(`${player.name}が${StatusEffectManager.getEffectName(action.statusEffect)}状態になった！`);
         }
         
         return messages;
@@ -675,7 +674,7 @@ export class Boss extends Actor {
         // Post-defeat actions (status effects only, no HP/MP changes)
         if (action.statusEffect) {
             player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
-            messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
+            messages.push(`${player.name}が${StatusEffectManager.getEffectName(action.statusEffect)}状態になった！`);
         }
         
         return messages;
@@ -709,19 +708,16 @@ export class Boss extends Actor {
         const statusChance = action.statusChance !== undefined ? action.statusChance : DEFAULT_STATUS_CHANCE;
         if (Math.random() < statusChance) {
             player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
-            messages.push(`${player.name}が${this.getStatusEffectName(action.statusEffect)}状態になった！`);
+            messages.push(`${player.name}が${StatusEffectManager.getEffectName(action.statusEffect)}状態になった！`);
         } else if (!action.damage) {
             // If it's a status-only attack and the status didn't apply
             // we still want to show a message
-            messages.push(`${player.name}は${this.getStatusEffectName(action.statusEffect)}状態にならなかった。`);
+            messages.push(`${player.name}は${StatusEffectManager.getEffectName(action.statusEffect)}状態にならなかった。`);
         }
         
         return messages;
     }
     
-    private getStatusEffectName(type: StatusEffectType): string {
-        return StatusEffectManager.getEffectName(type);
-    }
     
     onRestraintBroken(): void {
         // Boss gets stunned for 3 turns when restraint is broken (including the turn it was broken)
