@@ -51,6 +51,9 @@ export class Player extends Actor {
         this.equipmentManager = new PlayerEquipmentManager(this.abilitySystem);
         this.battleActions = new PlayerBattleActions(this);
         this.progressionManager = new PlayerProgressionManager(this.abilitySystem);
+
+        // Safety stats recalculation
+        this.resetBattleState();
     }
 
     /**

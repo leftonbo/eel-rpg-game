@@ -180,7 +180,6 @@ export class Boss extends Actor {
         this.customVariables = data.customVariables ? { ...data.customVariables } : {};
         
         // Safety stats recalculation
-        this.recalculateStats();
         this.resetBattleState();
     }
 
@@ -565,7 +564,7 @@ export class Boss extends Actor {
         }
         
         const actionDamage = this.calculateActionDamage(action);
-        const maxHpReduction = Math.floor(actionDamage || player.maxHp * DEFAULT_MAX_HP_ABSORPTION_RATIO);
+        const maxHpReduction = actionDamage ? Math.floor(actionDamage) : Math.floor(player.maxHp * DEFAULT_MAX_HP_ABSORPTION_RATIO);
         
         if (maxHpReduction > 0) {
             player.loseMaxHp(maxHpReduction);

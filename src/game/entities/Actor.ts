@@ -34,8 +34,8 @@ export abstract class Actor {
 
     /**
      * Actorクラスのコンストラクタ
-     * 子クラスでrecalculateStats()を呼び出して実際の値を設定する前提のため、
-     * ここではゼロ除算防止用の仮の値を設定する
+     * 子クラスはinitializeActor()を呼び出してステータスを初期化する必要があります。
+     * ここではゼロ除算防止用の仮の値を設定します。
      * @param displayName キャラクター表示名
      */
     constructor(displayName: string) {
