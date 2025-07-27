@@ -3,11 +3,18 @@ import { ViteEjsPlugin } from 'vite-plugin-ejs';
 import { visualizer } from 'rollup-plugin-visualizer';
 import path from 'path';
 
+/// <reference types="vitest" />
+
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production';
   const analyze = mode === 'analyze';
 
   return {
+    // Test configuration
+    test: {
+      globals: true,
+      environment: 'node',
+    },
     plugins: [
       ViteEjsPlugin({
         title: 'ElnalFTB - Turn-based RPG'
