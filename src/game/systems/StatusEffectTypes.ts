@@ -152,7 +152,9 @@ export interface StatusEffectConfig {
         canAct?: boolean; // Whether the entity can act (default: true)
         canUseSkills?: boolean; // Whether skills can be used (default: true)
         actionPriority?: ActionPriority; // Action priority level
-        mpRecoveryRate?: number; // Multiplier for MP recovery rate (default: 1.0)
+        debuffChanceModifier?: number; // Modifier for debuff chance (default: 1.0)
+        hpRecoveryRate?: number; // Multiplier for HP recovery rate at each round (default: 1.0)
+        mpRecoveryRate?: number; // Multiplier for MP recovery rate at each round (default: 1.0)
     };
     
     // Custom messages for different actor types

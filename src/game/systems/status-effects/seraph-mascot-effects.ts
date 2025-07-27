@@ -7,11 +7,12 @@ export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfi
         name: '祝福',
         description: 'ダメージが2倍になるが、状態異常に対する耐性が向上する',
         duration: 15,
-        category: 'buff',
+        category: 'debuff',
         isDebuff: false,
         modifiers: {
-            damageReceived: 2.0,  // ダメージ2倍
-            struggleRate: 1.3     // もがく成功率向上
+            damageReceived: 2.0,       // ダメージ2倍
+            struggleRate: 1.3,         // もがく成功率向上
+            debuffChanceModifier: 0.5  // 状態異常発生率半減
         },
         messages: {
             onApplyPlayer: '神聖な光に包まれ、祝福を受けた！',
@@ -44,12 +45,13 @@ export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfi
         name: '救済状態',
         description: '救済の準備が整った状態。行動が制限されるが、完全な救済を受ける準備ができている',
         duration: 8,
-        category: 'neutral',
+        category: 'debuff',
         isDebuff: true,
         modifiers: {
             canAct: false,        // 行動不能
             canUseSkills: false,  // スキル使用不可
-            struggleRate: 0.2     // もがく成功率大幅低下
+            struggleRate: 0.2,     // もがく成功率大幅低下
+            hpRecoveryRate: 0.0,   // 毎ターンHP回復効果無効化
         },
         onApply: (_target: Actor) => {
             // 救済状態では、HP回復効果が無効化される
