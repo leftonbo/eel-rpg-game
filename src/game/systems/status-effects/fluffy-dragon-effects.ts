@@ -1,6 +1,4 @@
 import { StatusEffectType, StatusEffectConfig } from '../StatusEffectTypes';
-import { Actor } from '../../entities/Actor';
-import { Player } from '../../entities/Player';
 
 export const fluffyDragonEffectsConfigs = new Map<StatusEffectType, StatusEffectConfig>([
     [StatusEffectType.Sleepy, {
@@ -12,22 +10,7 @@ export const fluffyDragonEffectsConfigs = new Map<StatusEffectType, StatusEffect
         isDebuff: true,
         modifiers: {
             struggleRate: 0.7, // 拘束脱出率30%減少
-        },
-        onApply: (target: Actor) => {
-            // MP回復率減少効果を適用
-            if (target instanceof Player) {
-                // プレイヤーのMP回復を減少させる処理
-                // この効果は Player クラスで実装される想定
-            }
-        },
-        onTick: (_target: Actor, _effect) => {
-            // 毎ターンの効果は特になし（MP回復率減少は passive効果）
-        },
-        onRemove: (target: Actor) => {
-            // 効果解除時の処理
-            if (target instanceof Player) {
-                // MP回復率を元に戻す処理
-            }
+            mpRecoveryRate: 0.7, // MP回復率30%減少
         },
         messages: {
             onApplyPlayer: '{name}は眠気に襲われた...',

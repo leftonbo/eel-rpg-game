@@ -192,6 +192,19 @@ export class StatusEffectManager {
         return modifier;
     }
     
+    getMpRecoveryModifier(): number {
+        let modifier = 1.0;
+        
+        for (const [type, _effect] of this.effects) {
+            const config = StatusEffectManager.configs.get(type);
+            if (config?.modifiers?.mpRecoveryRate !== undefined) {
+                modifier *= config.modifiers.mpRecoveryRate;
+            }
+        }
+        
+        return modifier;
+    }
+    
     canAct(): boolean {
         for (const [type, _effect] of this.effects) {
             const config = StatusEffectManager.configs.get(type);
