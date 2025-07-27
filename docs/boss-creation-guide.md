@@ -15,7 +15,7 @@
 
 - `src/game/data/bosses/{boss-id}.ts` - 新ボスのデータファイル
 - `src/game/data/index.ts` - ボスインデックス（更新）
-- `src/index.html` - ボス選択画面（更新）
+- EJSテンプレートシステムによるHTML自動生成（手動編集不要）
 - `src/styles/main.css` - 新しい状態異常がある場合（更新）
 
 ## ボスデータ構造
@@ -329,6 +329,16 @@ EJSテンプレートシステムが以下を自動で行います：
 
 このシステムにより、新ボスは `registeredBossIds` に追加するだけで自動的にゲームに組み込まれます。
 
+### 4. テストの実行
+
+ボスを追加した後、必ず以下のテストを実行してください：
+
+```bash
+npm run typecheck  # TypeScript型チェック
+npm run test       # Vitest単体テスト
+npm run build      # ビルドテスト
+```
+
 ### 4. 新しい状態異常の追加（必要な場合）
 
 #### StatusEffectTypeに追加
@@ -639,10 +649,11 @@ defeatTrophy: {
 - 既存ボスとの難易度バランスを考慮
 - 記念品名は「{ボス名}のたてがみ」（勝利）、「{ボス名}の粘液」（敗北）で自動生成も可能ですが、ボス固有の特徴を反映した独自の記念品設定を推奨
 
-## ## テスト項目
+## テスト項目
 
 ### 特に重要なテスト
 - [ ] **TypeScript型チェック**: `npm run typecheck` でエラーがないこと
+- [ ] **単体テスト**: `npm run test` でテストが成功すること
 - [ ] **ビルドテスト**: `npm run build` でビルドが成功すること
 - [ ] **エクスプローラーレベル制御**: 適切なレベルでボスが解禁されること
 
@@ -660,8 +671,9 @@ defeatTrophy: {
 実装の参考として以下のファイルを確認してください：
 
 ### コアシステムファイル
-- `templates/` - EJSテンプレートシステム（HTML自動生成）
-- `webpack.config.js` - ビルド設定、EJSテンプレート統合
+- `src/templates/` - EJSテンプレートシステム（HTML自動生成）
+- `vite.config.ts` - Viteビルド設定、EJSプラグイン統合
+- `vitest.config.ts` - Vitestテスト設定
 
 ### 古い実装（参考用）
 - `src/game/data/bosses/swamp-dragon.ts` - 複雑なAI戦略の例
@@ -675,6 +687,7 @@ defeatTrophy: {
 - `src/game/data/bosses/dream-demon.ts` - 多様な状態異常と複雑な行動パターンの例
 - `src/game/data/bosses/bat-vampire.ts` - FinishingMoveアクション、給餌システム、詳細なAI戦略の例
 - `src/game/data/bosses/underground-worm.ts` - 最新のEJSテンプレート対応、記念品システムの例
+- `src/game/data/bosses/mikan-dragon.ts` - 新しい状態異常とシンプルなAI戦略の例
 
 ### システムファイル
 - `src/game/entities/Boss.ts` - ボスクラスの実装
@@ -702,6 +715,7 @@ defeatTrophy: {
 - `statusChance` の設定確認（0.0-1.0の範囲で設定）
 
 ### コード品質関連エラー
-- **EJSテンプレート関連**: webpackビルドエラーが出る場合はテンプレート構文を確認
+- **EJSテンプレート関連**: Viteビルドエラーが出る場合はテンプレート構文を確認
 - **registeredBossIdsの不一致**: ボスIDが配列とswitch文で一致しているか確認
 - **TypeScriptエラー**: ボスデータのBossDataインターフェース適合性を確認
+- **テストエラー**: Vitestテストケースの実行結果を確認

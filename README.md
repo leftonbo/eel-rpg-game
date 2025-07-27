@@ -109,23 +109,27 @@
 - `npm run build`: プロダクション用にビルド
 - `npm run build:analyze`: バンドル分析付きプロダクションビルド
 - `npm run typecheck`: TypeScriptの型チェック
+- `npm run test`: Vitest単体テスト実行
+- `npm run test:watch`: Vitest監視モード
 - `npm run lint`: ESLintでコードチェック
 - `npm run clean`: distディレクトリをクリーンアップ
 
 ## 技術スタック
 
 - **言語**: TypeScript 5.0+
-- **バンドラー**: Webpack 5.88
-- **UI**: Bootstrap 5（CDN）+ カスタムCSS
+- **ビルドツール**: Vite 6.0+
+- **テスト**: Vitest 3.2+
+- **UI**: Bootstrap 5.3 + カスタムCSS
+- **テンプレート**: EJS (ビルド時自動生成)
 - **開発ツール**: ESLint 9.31, TypeScript Compiler
-- **ビルドツール**: ts-loader, css-loader, html-webpack-plugin
+- **パッケージマネージャー**: npm
 
 ## プロジェクト構造
 
 ```text
 eel-rpg-game/
+├── index.html          # メインHTML
 ├── src/
-│   ├── index.html          # メインHTML
 │   ├── main.ts             # エントリーポイント
 │   ├── robots.txt          # ロボット対応ファイル
 │   ├── game/               # ゲームロジック
@@ -173,20 +177,22 @@ eel-rpg-game/
 │   │           ├── PlayerEquipmentManager.ts
 │   │           ├── PlayerItemManager.ts
 │   │           └── PlayerBattleActions.ts
-│   └── styles/             # スタイルシート
-│       └── main.css
+│   ├── templates/          # EJSテンプレート（HTML自動生成）
+│   ├── styles/             # スタイルシート
+│   │   └── main.css
+│   └── tests/              # Vitestテストファイル
 ├── docs/                   # ドキュメント
 │   ├── boss-creation-guide.md       # ボス作成ガイド
 │   ├── bosses/                      # ボス資料集
 │   │   └── README.md
 │   └── drafts/                      # プロンプト履歴・アイデア草案
 ├── dist/                   # ビルド出力
-├── templates/              # EJSテンプレート
 ├── uploads/                # アップロードファイル
 ├── CLAUDE.md               # AI開発支援ドキュメント
 ├── package.json            # プロジェクト設定
 ├── tsconfig.json           # TypeScript設定
-├── webpack.config.js       # Webpack設定
+├── vite.config.ts          # Vite設定
+├── vitest.config.ts        # Vitest設定
 ├── eslint.config.js        # ESLint設定
 └── README.md               # このファイル
 ```
@@ -220,10 +226,11 @@ eel-rpg-game/
 - 戦闘記録・統計システム
 
 ### UI/UXシステム
-- Bootstrap 5ベースのレスポンシブデザイン
-- EJSテンプレートによるコンポーネント化
+- Bootstrap 5.3ベースのレスポンシブデザイン
+- EJSテンプレートによるコンポーネント化（Viteプラグイン統合）
 - モーダル・タブインターフェース
 - プログレスバー・バッジ表示
+- 自動HTML生成（手動編集不要）
 
 ## ライセンス
 

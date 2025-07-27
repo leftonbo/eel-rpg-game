@@ -14,13 +14,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run typecheck` - TypeScript型チェック実行
 - `npm run lint` - ESLint実行（src/**/*.ts対象）
 - `npm run clean` - distディレクトリクリーンアップ
+- `npm run test` - Vitest単体テスト実行
+- `npm run test:watch` - Vitest監視モード実行
 
 ### 開発フロー
 
 1. 依存関係インストール: `npm install`
 2. 開発サーバー起動: `npm run dev`
 3. 変更前に型チェック: `npm run typecheck`
-4. ビルド確認: `npm run build`
+4. テスト実行: `npm run test`
+5. ビルド確認: `npm run build`
 
 ## アーキテクチャ概要
 
@@ -44,6 +47,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `src/game/data/bosses/`: 各ボス個別ファイル
 - **BossData interface**: HP、攻撃力、行動パターン、AI戦略を定義
 - **AIStrategy function**: ボス固有の戦術（沼のドラゴン＝高火力、闇のおばけ＝状態異常、機械のクモ＝拘束特化）
+- **EJSテンプレートシステム**: 自動HTML生成、手動編集不要
 
 ### 特殊システム
 
@@ -66,6 +70,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 3. EJSテンプレートシステムでHTML自動生成（手動HTML編集は不要）
 4. 必要に応じて新しい状態異常をStatusEffectTypesに追加
 5. エクスプローラーレベル設定（explorerLevelRequired）でボス解禁制御
+6. 記念品システム（victoryTrophy/defeatTrophy）の設定
+7. テスト実行で動作確認
 
 ### 状態異常追加
 
@@ -109,6 +115,14 @@ interface PlayerSaveData {
 - **PlayerItemManager**: アイテム管理（使用、効果適用、個数管理）
 - **PlayerBattleActions**: 戦闘行動管理（攻撃、防御、スキル使用）
 - **PlayerProgressionManager**: 成長管理（アビリティ経験値、レベルアップ処理）
+
+#### テンプレートシステム（EJS）
+
+- **src/templates/**: EJSテンプレートファイル（HTML自動生成）
+- **ability-card.ejs**: アビリティカードコンポーネント
+- **action-buttons.ejs**: アクションボタンの統一コンポーネント
+- **modal-base.ejs**: モーダルの基本構造
+- **vite.config.ts**: Vite設定、EJSプラグイン統合
 
 ### ゲームバランス調整
 
@@ -159,11 +173,24 @@ interface PlayerSaveData {
 - **バッジ**: ステータス効果の表示（実装は `StatusEffectManager` が担当）
 - **アビリティカード**: ability-card.ejsによるコンポーネント化、レベル・経験値・効果表示
 
-## TypeScript設定
+## 技術スタック
 
-- `moduleResolution: "node"` - webpackとの互換性
+### ビルドツール・開発環境
+
+- **TypeScript 5.0+**: 厳密型チェック、モダンES構文
+- **Vite 6.0+**: 高速開発サーバー、HMR、ESM対応
+- **Vitest 3.2+**: 単体テスト、Node.js環境
+- **ESLint 9.31**: コード品質チェック
+- **Bootstrap 5.3**: UI フレームワーク
+- **EJS**: テンプレートエンジン（Viteプラグイン統合）
+
+### TypeScript設定
+
+- `moduleResolution: "bundler"` - Viteとの互換性
+- `ES Next` ターゲット、ESM出力
 - import文では拡張子なし（.jsではなく相対パス）
 - 厳密型チェック有効、未使用変数エラー有効
+- パスエイリアス: `@/`, `@/game/`, `@/ui/`, `@/data/`
 
 ## 開発方針（最重要）
 
@@ -171,7 +198,10 @@ interface PlayerSaveData {
 
 Claude Codeは以下の方針に従ってgitコミットを行うこと
 
-- Claude Code の編集であることが分かるように、コミット文に `Co-Authored-By: Claude <noreply@anthropic.com>` を追記すること
+- 実行許可プロンプトが出るのを避けるため、以下を守ること
+  - 全体で 200 文字以内に収めること
+  - 複数のコマンドを結合しないこと (NG: `git add . && git commit ...`)
+- Claude Code の編集であることが分かるように、コミット文の最後に `Co-Authored-By: Claude <noreply@anthropic.com>` を追記すること
 - 指示された作業1単位が終わるごとにコミットする
 - .gitignore に含まれるファイルはコミットしない
 - コミットメッセージは日本語で記述すること
@@ -202,6 +232,7 @@ Claude Codeは以下の方針に従ってgitコミットを行うこと
 ### コード品質管理
 
 - **型チェック**: `npm run typecheck` で TypeScript 型エラーを確認
+- **テスト**: `npm run test` で Vitest 単体テスト実行
 - **リント**: `npm run lint` で ESLint によるコード品質チェック
 - **ビルド**: `npm run build` でプロダクション用ビルド実行
 - Claude Code による編集後は必ずこれらのコマンドを実行してエラーがないことを確認すること
@@ -223,8 +254,9 @@ NEVER proactively create documentation files (*.md) or README files. Only create
 
 ## プロジェクト固有の重要な注意事項
 
-- **EJSテンプレート**: HTMLの生成は templates/ ディレクトリのEJSファイルで行う。手動でHTMLを編集してはいけない
+- **EJSテンプレート**: HTMLの各種パーツを src/templates/ ディレクトリのEJSファイルに記載
 - **ボス追加**: 新ボス追加時は必ず registeredBossIds 配列と loadBossData 関数の両方を更新
 - **状態異常**: 新しい状態異常追加時は StatusEffectTypes.ts の enum とCSSクラスの両方を追加
 - **コミット**: 必ず gitmoji + 日本語メッセージ + Co-Authored-By を含める
-- **品質チェック**: 編集後は npm run typecheck && npm run build を実行して確認
+- **品質チェック**: 編集後は npm run typecheck && npm run test && npm run build を実行して確認
+- **スキルシステム**: CraftWork、Explorerスキルは data/skills/ に実装要（未完了）

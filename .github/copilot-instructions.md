@@ -11,10 +11,13 @@ TypeScriptで開発されたブラウザベースのRPGゲーム。プレイヤ�
 
 ## 技術スタック
 
-- **言語**: TypeScript
-- **ビルドツール**: Webpack
+- **言語**: TypeScript 5.0+
+- **ビルドツール**: Vite 6.0+
+- **テスト**: Vitest 3.2+
 - **DOM操作**: Vanilla JavaScript
-- **スタイル**: CSS
+- **UIフレームワーク**: Bootstrap 5.3
+- **テンプレート**: EJS (ビルド時自動生成)
+- **スタイル**: CSS + Bootstrap
 - **パッケージマネージャー**: npm
 
 ## アーキテクチャパターン
@@ -56,13 +59,15 @@ TypeScriptで開発されたブラウザベースのRPGゲーム。プレイヤ�
 ```
 src/
 ├── game/
-│   ├── core/        # ゲームコアシステム
-│   ├── data/        # ゲームデータ定義
 │   ├── entities/    # プレイヤー、ボスクラス
 │   ├── scenes/      # シーンクラス
-│   └── systems/     # 状態異常、戦闘システム
+│   ├── systems/     # 状態異常、セーブデータ、アビリティシステム
+│   ├── data/        # ゲームデータ定義（ボス、スキル、アイテム）
+│   └── utils/       # ユーティリティ関数
+├── templates/       # EJSテンプレート（HTML自動生成）
 ├── styles/          # CSSファイル
-└── index.html       # HTMLテンプレート
+├── tests/           # Vitestテストファイル
+└── index.html       # メインHTMLテンプレート
 ```
 
 ## 実装パターン
@@ -72,8 +77,10 @@ src/
 1. `src/game/data/bosses/new-boss.ts` 作成
 2. BossDataインターフェースに従い設定
 3. aiStrategy関数でボス固有の戦術実装
-4. `src/game/data/index.ts` にエクスポート追加
-5. `src/index.html` にボス選択カード追加
+4. `src/game/data/index.ts` の `registeredBossIds` 配列と `loadBossData` 関数に追加
+5. EJSテンプレートシステムがHTMLを自動生成（手動編集不要）
+6. explorerLevelRequired で解禁レベル設定
+7. 記念品システム（victoryTrophy/defeatTrophy）設定
 
 ### 状態異常追加時
 
@@ -102,13 +109,26 @@ src/
 - プレイヤーHP: 100、基本攻撃力: 5
 - アイテム使用はターン消費なし
 - 戦闘不能時は5ターン後50%回復
+- 96種類の状態異常システム
+- エクスプローラーレベルによるボス解禁システム
+- 記念品システム（勝利時/敗北時のアイテム獲得）
+
+### EJSテンプレートシステム
+
+- HTMLの手動編集は禁止、EJSテンプレートで自動生成
+- コンポーネント化されたUI要素（ability-card.ejs, modal-base.ejs など）
+- Viteプラグインでビルド時に処理
 
 ## 開発コマンド
 
 - `npm run dev` - 開発サーバー起動
 - `npm run build` - プロダクション用ビルド
+- `npm run build:analyze` - バンドル分析付きビルド
 - `npm run typecheck` - TypeScript型チェック
+- `npm run test` - Vitest単体テスト実行
+- `npm run test:watch` - Vitest監視モード
 - `npm run lint` - ESLint実行
+- `npm run clean` - distディレクトリクリーンアップ
 
 ## コミット規約
 
