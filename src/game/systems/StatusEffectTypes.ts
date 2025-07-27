@@ -96,7 +96,12 @@ export enum StatusEffectType {
     Darkness = 'darkness',
     
     // Fluffy Dragon effects
-    Sleepy = 'sleepy'
+    Sleepy = 'sleepy',
+  
+    // Seraph Mascot effects
+    Blessed = 'blessed',
+    Overwhelmed = 'overwhelmed',
+    SalvationState = 'salvation-state'
 }
 
 export interface StatusEffect {
