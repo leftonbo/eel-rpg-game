@@ -33,7 +33,7 @@ export class PlayerBattleActions {
         let baseSuccessRate = PlayerConstants.STRUGGLE_BASE_SUCCESS_RATE
             + (this.player.struggleAttempts - 1) * PlayerConstants.STRUGGLE_SUCCESS_INCREASE_PER_ATTEMPT;
         
-        // Apply agility Bonus
+        // Apply agility bonus
         const agilityBonus = this.player.abilitySystem.getAgilityEscapeBonus();
         baseSuccessRate *= 1 + agilityBonus;
         
