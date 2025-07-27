@@ -47,10 +47,13 @@ export class Player extends Actor {
     public progressionManager: PlayerProgressionManager;
     
     constructor() {
-        super(DEFAULT_PLAYER_NAME, PlayerConstants.BASE_MAX_HP, PlayerConstants.BASE_ATTACK_POWER, PlayerConstants.BASE_MAX_MP);
+        super(DEFAULT_PLAYER_NAME);
         this.equipmentManager = new PlayerEquipmentManager(this.abilitySystem);
         this.battleActions = new PlayerBattleActions(this);
         this.progressionManager = new PlayerProgressionManager(this.abilitySystem);
+
+        // Safety stats recalculation
+        this.resetBattleState();
     }
 
     /**
@@ -379,8 +382,20 @@ export class Player extends Actor {
         // Call battle actions start turn
         this.battleActions.startTurn();
         
-        // Call parent startTurn for MP recovery
-        super.startTurn();
+        // 食べられ状態でない場合、ターン開始時にマナ回復
+        if (!this.statusEffects.isEaten() && this.maxMp > 0) {
+            const mpRecovery = this.getMpRecoveryAmount();
+            this.recoverMp(mpRecovery);
+        }
+    }
+
+    /**
+     * ターン開始時のマナ回復量を取得
+     * 子クラスでオーバーライド可能
+     * @returns マナ回復量
+     */
+    getMpRecoveryAmount(): number {
+        return Math.floor(this.maxMp / 10);
     }
     
     // Process all status effects at round end

@@ -2,51 +2,44 @@ import { StatusEffectManager, StatusEffectType } from '../systems/StatusEffect';
 
 /**
  * プレイヤーとボスの共通基底クラス
- * HP/MP管理、状態異常管理、戦闘システムの基本機能を提供
+ * ヘルス/マナ管理、状態異常管理、戦闘システムの基本機能を提供
  */
 export abstract class Actor {
     //#region プロパティ定義
 
     /** キャラクター表示名 */
     public displayName: string;
-    /** 現在のHP */
-    public hp: number;
-    /** 最大HP */
-    public maxHp: number;
-    /** 現在のMP */
-    public mp: number;
-    /** 最大MP */
-    public maxMp: number;
+    /** 現在のヘルス */
+    public hp: number = 1;
+    /** 最大ヘルス */
+    public maxHp: number = 1;
+    /** 戦闘開始時の最大ヘルス（UIのバー表示用） */
+    public initialMaxHp: number = 1;
+    /** 現在のマナ */
+    public mp: number = 1;
+    /** 最大マナ */
+    public maxMp: number = 1;
+    /** 戦闘開始時の最大マナ（UIのバー表示用） */
+    public initialMaxMp: number = 1;
     /** 攻撃力 */
-    public attackPower: number;
+    public attackPower: number = 1;
     /** 防御力 */
     public defense: number = 0;
     /** 状態異常管理システム */
     public statusEffects: StatusEffectManager = new StatusEffectManager();
     
-    /** 戦闘開始時の最大HP（UIのバー表示用） */
-    public initialMaxHp: number = 0;
-    /** 戦闘開始時の最大MP（UIのバー表示用） */
-    public initialMaxMp: number = 0;
-
     //#endregion
 
     //#region コンストラクタと抽象メソッド
 
     /**
      * Actorクラスのコンストラクタ
+     * 子クラスはinitializeActor()を呼び出してステータスを初期化する必要があります。
+     * ここではゼロ除算防止用の仮の値を設定します。
      * @param displayName キャラクター表示名
-     * @param maxHp 最大HP
-     * @param attackPower 攻撃力
-     * @param maxMp 最大MP（デフォルト: 0）
      */
-    constructor(displayName: string, maxHp: number, attackPower: number, maxMp: number = 0) {
+    constructor(displayName: string) {
         this.displayName = displayName;
-        this.maxHp = maxHp;
-        this.hp = maxHp;
-        this.maxMp = maxMp;
-        this.mp = maxMp;
-        this.attackPower = attackPower;
     }
 
     /**
@@ -58,7 +51,7 @@ export abstract class Actor {
 
     //#endregion
 
-    //#region HP/MP管理メソッド
+    //#region ヘルス管理メソッド
 
     /**
      * ダメージを受けて戦闘不能状態を処理する
@@ -73,7 +66,7 @@ export abstract class Actor {
         
         this.hp = Math.max(0, this.hp - actualDamage);
         
-        // HPが0になった場合、戦闘不能状態を適用
+        // ヘルスが 0 になった場合、戦闘不能状態を適用
         // 死亡状態が既に適用されている場合は無視
         if (this.hp <= 0
             && !this.statusEffects.hasEffect(StatusEffectType.KnockedOut)
@@ -85,20 +78,20 @@ export abstract class Actor {
     }
 
     /**
-     * HPを回復する
+     * ヘルスを回復する
      * @param amount 回復量
-     * @returns 実際に回復したHP量
+     * @returns 実際に回復したヘルス量
      */
     heal(amount: number): number {
         if (amount <= 0) return 0;
         
-        // HPが最大値以上の場合は回復しない
+        // ヘルスが既に最大値以上の場合は回復しない
         if (this.hp >= this.maxHp) return 0;
         
         const oldHp = this.hp;
         this.hp = Math.min(this.maxHp, this.hp + amount);
         
-        // HPが0から回復した場合、戦闘不能状態を解除
+        // ヘルスが 0 から回復した場合、戦闘不能状態を解除
         if (oldHp === 0 && this.hp > 0) {
             this.statusEffects.removeEffect(StatusEffectType.KnockedOut);
         }
@@ -106,13 +99,59 @@ export abstract class Actor {
         return this.hp - oldHp;
     }
 
+    //#endregion
+
+    //#region 最大ヘルス管理メソッド
+
     /**
-     * MPを回復する
+     * 最大ヘルスを失う
+     * @param amount 減少量
+     */
+    loseMaxHp(amount: number): void {
+        this.maxHp = Math.max(0, this.maxHp - amount);
+
+        // 現在のヘルスが新しい最大ヘルスを超える場合、減少させる
+        if (this.hp > this.maxHp) {
+            this.hp = this.maxHp;
+        }
+
+        // 最大ヘルスが0以下になった場合、死亡状態を適用
+        if (this.maxHp <= 0 && !this.statusEffects.hasEffect(StatusEffectType.Doomed)) {
+            this.statusEffects.addEffect(StatusEffectType.Doomed);
+            // 戦闘不能状態を除去
+            this.statusEffects.removeEffect(StatusEffectType.KnockedOut);
+        }
+    }
+
+    /**
+     * 最大ヘルスを増加（ボスの捕食メカニズム用）
+     * @param amount 増加量
+     * @returns 実際に増加した最大ヘルス量
+     */
+    gainMaxHp(amount: number): number {
+        if (amount <= 0) return 0;
+
+        const oldMaxHp = this.maxHp;
+        this.maxHp += amount;
+        this.hp += amount; // 現在のヘルスも同じ量だけ増加
+
+        return this.maxHp - oldMaxHp;
+    }
+    
+    //#endregion
+    
+    //#region マナ管理メソッド
+    
+    /**
+     * マナを回復する
      * @param amount 回復量
-     * @returns 実際に回復したMP量
+     * @returns 実際に回復したマナ量
      */
     recoverMp(amount: number): number {
         if (amount <= 0) return 0;
+        
+        // マナが既に最大値以上の場合は回復しない
+        if (this.mp >= this.maxMp) return 0;
         
         const oldMp = this.mp;
         this.mp = Math.min(this.maxMp, this.mp + amount);
@@ -120,7 +159,8 @@ export abstract class Actor {
     }
 
     /**
-     * MPを消費する
+     * マナを消費する
+     * スキルによる消費を想定
      * @param amount 消費量
      * @returns 消費に成功した場合true、不足した場合false
      */
@@ -129,16 +169,17 @@ export abstract class Actor {
             this.mp -= amount;
             return true;
         }
-        // MPが不足している場合、MPを0にして疲労状態を適用
+        // マナが不足している場合、マナを 0 にして『疲労』状態を適用
         this.mp = 0;
         this.statusEffects.addEffect(StatusEffectType.Exhausted);
         return false;
     }
 
     /**
-     * MPを失う（強制的に減少）
+     * マナを失う (強制的に減少)
+     * マナに対するダメージ処理を想定 (スキルによる消費は consumeMp を使用)
      * @param amount 減少量
-     * @returns 実際に失ったMP量
+     * @returns 実際に失ったマナ量
      */
     loseMp(amount: number): number {
         if (amount <= 0) return 0;
@@ -146,6 +187,18 @@ export abstract class Actor {
         const oldMp = this.mp;
         this.mp = Math.max(0, this.mp - amount);
         return oldMp - this.mp;
+    }
+
+    //#endregion
+
+    //#region その他ステータス管理メソッド
+
+    /**
+     * ヘルスとマナを最大値まで完全回復
+     */
+    fullRestore(): void {
+        this.hp = this.maxHp;
+        this.mp = this.maxMp;
     }
 
     //#endregion
@@ -164,11 +217,7 @@ export abstract class Actor {
      * ターン開始時の処理
      */
     startTurn(): void {
-        // 食べられ状態でない場合、ターン開始時にMP回復（最大MPの1/10）
-        if (!this.statusEffects.isEaten() && this.maxMp > 0) {
-            const mpRecovery = Math.floor(this.maxMp / 10);
-            this.recoverMp(mpRecovery);
-        }
+        // 子クラスに実装を委ねる
     }
 
     /**
@@ -194,8 +243,8 @@ export abstract class Actor {
     //#region UI表示用メソッド
 
     /**
-     * HP割合を取得（パーセンテージ）
-     * @returns HP割合（0-100）
+     * ヘルス割合を取得（パーセンテージ）
+     * @returns ヘルス割合（0-100）
      */
     getHpPercentage(): number {
         return this.maxHp > 0 ? (this.hp / this.maxHp) * 100 : 0;
@@ -209,51 +258,36 @@ export abstract class Actor {
         return this.maxMp > 0 ? (this.mp / this.maxMp) * 100 : 0;
     }
 
-    /**
-     * HPバーの表示幅割合を取得
-     * @returns HPバーの幅（0-100%）
-     */
-    getHpBarPercentage(): number {
-        return this.getHpPercentage();
-    }
 
     /**
-     * MPバーの表示幅割合を取得
-     * @returns MPバーの幅（0-100%）
-     */
-    getMpBarPercentage(): number {
-        return this.getMpPercentage();
-    }
-
-    /**
-     * HPプログレスコンテナの幅割合を取得（コンテナリサイズ用）
+     * ヘルスプログレスコンテナの幅割合を取得（コンテナリサイズ用）
      * @returns コンテナ幅の割合（0-100%）
      */
     getHpContainerPercentage(): number {
         if (this.initialMaxHp <= 0) return 100;
         
-        // 現在の最大HPが初期値より高い場合、コンテナは100%のまま
+        // 現在の最大ヘルスが初期値より高い場合、コンテナは100%のまま
         if (this.maxHp > this.initialMaxHp) {
             return 100;
         }
         
-        // 現在の最大HPが低い場合、比例してコンテナを縮小
+        // 現在の最大ヘルスが低い場合、比例してコンテナを縮小
         return (this.maxHp / this.initialMaxHp) * 100;
     }
 
     /**
-     * MPプログレスコンテナの幅割合を取得（コンテナリサイズ用）
+     * マナプログレスコンテナの幅割合を取得（コンテナリサイズ用）
      * @returns コンテナ幅の割合（0-100%）
      */
     getMpContainerPercentage(): number {
         if (this.initialMaxMp <= 0) return 100;
         
-        // 現在の最大MPが初期値より高い場合、コンテナは100%のまま
+        // 現在の最大マナが初期値より高い場合、コンテナは100%のまま
         if (this.maxMp > this.initialMaxMp) {
             return 100;
         }
         
-        // 現在の最大MPが低い場合、比例してコンテナを縮小
+        // 現在の最大マナが低い場合、比例してコンテナを縮小
         return (this.maxMp / this.initialMaxMp) * 100;
     }
 
@@ -278,61 +312,20 @@ export abstract class Actor {
         
         // 現在のアビリティと装備に基づいてステータスを再計算
         this.recalculateStats();
+
+        // 戦闘開始時の最大ステータスを保存
+        this.saveInitialStats();
         
-        // HP/MPを最大値にリセット
-        this.hp = this.maxHp;
-        this.mp = this.maxMp;
+        // ヘルスとマナを最大値まで回復
+        this.fullRestore();
     }
 
     /**
-     * 戦闘開始時の初期ステータスを保存（UIのバー計算用）
+     * 戦闘開始時のステータスを保存（UIのバー計算用）
      */
-    saveInitialStats(): void {
+    private saveInitialStats(): void {
         this.initialMaxHp = this.maxHp;
         this.initialMaxMp = this.maxMp;
-    }
-
-    /**
-     * 最大HPを失う
-     * @param amount 減少量
-     */
-    loseMaxHp(amount: number): void {
-        this.maxHp = Math.max(0, this.maxHp - amount);
-        
-        // 現在のHPが新しい最大HPを超える場合、減少させる
-        if (this.hp > this.maxHp) {
-            this.hp = this.maxHp;
-        }
-        
-        // 最大HPが0以下になった場合、死亡状態を適用
-        if (this.maxHp <= 0 && !this.statusEffects.hasEffect(StatusEffectType.Doomed)) {
-            this.statusEffects.addEffect(StatusEffectType.Doomed);
-            // 戦闘不能状態を除去
-            this.statusEffects.removeEffect(StatusEffectType.KnockedOut);
-        }
-    }
-
-    /**
-     * 最大HPを増加（ボスの捕食メカニズム用）
-     * @param amount 増加量
-     * @returns 実際に増加した最大HP量
-     */
-    gainMaxHp(amount: number): number {
-        if (amount <= 0) return 0;
-        
-        const oldMaxHp = this.maxHp;
-        this.maxHp += amount;
-        this.hp += amount; // 現在のHPも同じ量だけ増加
-        
-        return this.maxHp - oldMaxHp;
-    }
-
-    /**
-     * HP/MPを最大値まで完全回復
-     */
-    fullRestore(): void {
-        this.hp = this.maxHp;
-        this.mp = this.maxMp;
     }
 
     //#endregion
