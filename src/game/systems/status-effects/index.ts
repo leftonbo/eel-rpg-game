@@ -3,6 +3,7 @@ import { coreStatesConfigs } from './core-states';
 import { battleEffectsConfigs } from './battle-effects';
 import { dreamDemonEffectsConfigs } from './dream-demon-effects';
 import { batVampireEffectsConfigs } from './bat-vampire-effects';
+import { fluffyDragonEffectsConfigs } from './fluffy-dragon-effects';
 import { seraphMascotEffectsConfigs } from './seraph-mascot-effects';
 
 // Aggregate all status effect configurations
@@ -29,6 +30,11 @@ export const createStatusEffectConfigs = (): Map<StatusEffectType, StatusEffectC
         allConfigs.set(key, config);
     }
 
+    // Add fluffy dragon effects
+    for (const [key, config] of fluffyDragonEffectsConfigs) {
+        allConfigs.set(key, config);
+    }
+
     // Add seraph mascot effects
     for (const [key, config] of seraphMascotEffectsConfigs) {
         allConfigs.set(key, config);
@@ -38,4 +44,4 @@ export const createStatusEffectConfigs = (): Map<StatusEffectType, StatusEffectC
 };
 
 // Export the individual config groups for potential future use
-export { coreStatesConfigs, battleEffectsConfigs, dreamDemonEffectsConfigs, batVampireEffectsConfigs, seraphMascotEffectsConfigs };
+export { coreStatesConfigs, battleEffectsConfigs, dreamDemonEffectsConfigs, batVampireEffectsConfigs, fluffyDragonEffectsConfigs, seraphMascotEffectsConfigs };

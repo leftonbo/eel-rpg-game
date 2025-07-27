@@ -95,6 +95,9 @@ export enum StatusEffectType {
     // Bat Vampire effects
     Darkness = 'darkness',
     
+    // Fluffy Dragon effects
+    Sleepy = 'sleepy',
+  
     // Seraph Mascot effects
     Blessed = 'blessed',
     Overwhelmed = 'overwhelmed',
@@ -149,6 +152,7 @@ export interface StatusEffectConfig {
         canAct?: boolean; // Whether the entity can act (default: true)
         canUseSkills?: boolean; // Whether skills can be used (default: true)
         actionPriority?: ActionPriority; // Action priority level
+        mpRecoveryRate?: number; // Multiplier for MP recovery rate (default: 1.0)
     };
     
     // Custom messages for different actor types
