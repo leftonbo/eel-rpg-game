@@ -101,7 +101,12 @@ export enum StatusEffectType {
     // Seraph Mascot effects
     Blessed = 'blessed',
     Overwhelmed = 'overwhelmed',
-    SalvationState = 'salvation-state'
+    SalvationState = 'salvation-state',
+    
+    // Dual Jester effects
+    FalseSecurity = 'false-security',
+    Manic = 'manic',
+    Bipolar = 'bipolar'
 }
 
 export interface StatusEffect {
