@@ -730,11 +730,15 @@ export class BattleScene {
         if (!this.player || !this.boss || !this.playerTurn) return;
         
         const baseDamage = this.player.getAttackPower();
+        const accuracyModifier = this.player.statusEffects.getAccuracyModifier();
         const attackResult = calculateAttackResult(
             baseDamage,
             false,
             1.0,
-            0.05
+            0.05,
+            undefined,
+            undefined,
+            accuracyModifier
         ); // Player attacks are never guaranteed hits
         
         this.addBattleLogMessage(`${this.player.name}の攻撃！`, 'system', 'player');
@@ -827,6 +831,7 @@ export class BattleScene {
                 const skill = skills.find(s => s.id === skillId);
                 
                 let finalDamage = result.damage;
+                const accuracyModifier = this.player.statusEffects.getAccuracyModifier();
                 if (skill && skill.damageVarianceMin !== undefined && skill.damageVarianceMax !== undefined) {
                     // Apply parameters for skills
                     const attackResult = calculateAttackResult(
@@ -835,7 +840,8 @@ export class BattleScene {
                         skill.hitRate, // Use skill's custom hit rate if available
                         skill.criticalRate, // Use skill's custom critical rate if
                         skill.damageVarianceMin,
-                        skill.damageVarianceMax
+                        skill.damageVarianceMax,
+                        accuracyModifier
                     );
                     finalDamage = attackResult.damage;
                     
@@ -844,7 +850,7 @@ export class BattleScene {
                     }
                 } else {
                     // Use default variance for skills without custom settings
-                    const attackResult = calculateAttackResult(result.damage, false);
+                    const attackResult = calculateAttackResult(result.damage, false, undefined, undefined, undefined, undefined, accuracyModifier);
                     finalDamage = attackResult.damage;
                     
                     if (attackResult.isCritical) {
