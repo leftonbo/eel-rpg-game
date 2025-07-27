@@ -64,6 +64,16 @@ export class Player extends Actor {
     }
     
     /**
+     * リブート時に呼び出される
+     */
+    public onReboot(): void {
+        this.loadFromSave();
+        this.initializeDefaultUnlocks();
+        this.initializeItems();
+        this.recalculateStats();
+    }
+    
+    /**
      * ローカルストレージからプレイヤーデータを読み込む
      */
     private loadFromSave(): void {

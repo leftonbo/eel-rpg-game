@@ -134,6 +134,9 @@ export class Game {
     }
 
     reboot(): void {
+        // Reset player state and current boss
+        this.player.onReboot();
+        
         this.setState(GameState.Title);
     }
     
