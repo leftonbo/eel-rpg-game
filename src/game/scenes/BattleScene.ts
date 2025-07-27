@@ -275,12 +275,10 @@ export class BattleScene {
         
         // Reset battle-specific state for safety
         this.player.resetBattleState();
+        this.boss.resetBattleState();
         
         // Reset boss skill tracking for Explorer experience calculation
         this.boss.resetUsedSkillNames();
-        
-        // Fully restore player HP and MP at battle start
-        this.player.fullRestore();
         
         this.initializeBattle();
         
@@ -305,14 +303,6 @@ export class BattleScene {
         // Set boss name
         if (this.bossNameElement) {
             this.bossNameElement.textContent = this.boss.displayName;
-        }
-        
-        // Save initial stats for HP/MP bar calculation
-        if (this.player) {
-            this.player.saveInitialStats();
-        }
-        if (this.boss) {
-            this.boss.saveInitialStats();
         }
     }
     
@@ -362,7 +352,7 @@ export class BattleScene {
         
         // HP Bar
         if (this.playerHpBar) {
-            const barPercentage = this.player.getHpBarPercentage();
+            const barPercentage = this.player.getHpPercentage();
             const colorPercentage = this.player.getHpPercentage();
             this.playerHpBar.style.width = `${barPercentage}%`;
             
@@ -389,7 +379,7 @@ export class BattleScene {
         
         // MP Bar
         if (this.playerMpBar) {
-            const mpBarPercentage = this.player.getMpBarPercentage();
+            const mpBarPercentage = this.player.getMpPercentage();
             this.playerMpBar.style.width = `${mpBarPercentage}%`;
         }
         
@@ -412,7 +402,7 @@ export class BattleScene {
         
         // HP Bar
         if (this.bossHpBar) {
-            const barPercentage = this.boss.getHpBarPercentage();
+            const barPercentage = this.boss.getHpPercentage();
             this.bossHpBar.style.width = `${barPercentage}%`;
         }
         

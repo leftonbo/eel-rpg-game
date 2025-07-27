@@ -132,6 +132,7 @@ const DEFAULT_STATUS_CHANCE = 1.0;
 const RESTRAINT_STUN_DURATION = 3;
 
 export class Boss extends Actor {
+    public data: BossData;
     public id: string;
     public name: string;
     public description: string;
@@ -161,8 +162,8 @@ export class Boss extends Actor {
     private customVariables: Record<string, any> = {};
     
     constructor(data: BossData) {
-        // Boss has unlimited MP (無尽蔵) - set to a high value
-        super(data.displayName, data.maxHp, data.attackPower, BOSS_UNLIMITED_MP);
+        super(data.displayName);
+        this.data = data;
         this.id = data.id;
         this.name = data.name;
         this.description = data.description;
@@ -177,15 +178,19 @@ export class Boss extends Actor {
         this.icon = data.icon || '👹';
         this.guestCharacterInfo = data.guestCharacterInfo;
         this.customVariables = data.customVariables ? { ...data.customVariables } : {};
+        
+        // Safety stats recalculation
+        this.recalculateStats();
+        this.resetBattleState();
     }
 
     /**
      * Recalculate stats based on boss data
      */
     recalculateStats(): void {
-        // Boss stats are fixed by BossData, no additional calculations needed
-        // MP remains unlimited
-        this.mp = this.maxMp;
+        this.maxHp = this.data.maxHp;
+        this.maxMp = BOSS_UNLIMITED_MP; // Unlimited MP
+        this.attackPower = this.data.attackPower;
     }
 
     /**
@@ -560,7 +565,7 @@ export class Boss extends Actor {
         }
         
         const actionDamage = this.calculateActionDamage(action);
-        const maxHpReduction = actionDamage || Math.floor(player.maxHp * DEFAULT_MAX_HP_ABSORPTION_RATIO);
+        const maxHpReduction = Math.floor(actionDamage || player.maxHp * DEFAULT_MAX_HP_ABSORPTION_RATIO);
         
         if (maxHpReduction > 0) {
             player.loseMaxHp(maxHpReduction);
