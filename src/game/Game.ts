@@ -154,6 +154,17 @@ export class Game {
         document.getElementById('out-game-library-screen')?.classList.add('d-none');
         document.getElementById('out-game-option-screen')?.classList.add('d-none');
         
+        // Hide/Show out-game navigation based on scene type
+        const outGameNavigation = document.getElementById('out-game-navigation-container');
+        const isOutGameScene = this.isOutGameState(newState);
+        if (outGameNavigation) {
+            if (isOutGameScene) {
+                outGameNavigation.classList.remove('d-none');
+            } else {
+                outGameNavigation.classList.add('d-none');
+            }
+        }
+        
         this.currentState = newState;
         
         // Show appropriate scene
@@ -259,5 +270,16 @@ export class Game {
      */
     isDebugMode(): boolean {
         return this.debugMode;
+    }
+    
+    /**
+     * Check if the given state is an out-game state
+     */
+    private isOutGameState(state: GameState): boolean {
+        return state === GameState.OutGameBossSelect ||
+               state === GameState.OutGamePlayerDetail ||
+               state === GameState.OutGameExplorationRecord ||
+               state === GameState.OutGameLibrary ||
+               state === GameState.OutGameOption;
     }
 }

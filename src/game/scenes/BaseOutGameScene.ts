@@ -7,7 +7,6 @@ import { Game, GameState } from '../Game';
 export abstract class BaseOutGameScene {
     protected game: Game;
     protected sceneId: string;
-    private static navigationListenersSetup: boolean = false;
     
     constructor(game: Game, sceneId: string) {
         this.game = game;
@@ -31,52 +30,51 @@ export abstract class BaseOutGameScene {
      * ナビゲーションバーのイベントリスナー設定
      */
     private setupNavigationListeners(): void {
-        // 重複登録を防ぐため、既にリスナーが設定されているかチェック
-        if (BaseOutGameScene.navigationListenersSetup) {
-            return;
-        }
-        
+        // 共通ナビゲーションに一度だけイベントリスナーを設定
         // ボス選択
         const bossSelectNavBtn = document.getElementById('nav-boss-select');
-        if (bossSelectNavBtn) {
+        if (bossSelectNavBtn && !bossSelectNavBtn.dataset.listenerAdded) {
             bossSelectNavBtn.addEventListener('click', () => {
                 this.game.setState(GameState.OutGameBossSelect);
             });
+            bossSelectNavBtn.dataset.listenerAdded = 'true';
         }
         
         // プレイヤー詳細
         const playerDetailNavBtn = document.getElementById('nav-player-detail');
-        if (playerDetailNavBtn) {
+        if (playerDetailNavBtn && !playerDetailNavBtn.dataset.listenerAdded) {
             playerDetailNavBtn.addEventListener('click', () => {
                 this.game.setState(GameState.OutGamePlayerDetail);
             });
+            playerDetailNavBtn.dataset.listenerAdded = 'true';
         }
         
         // 探検記録
         const explorationRecordNavBtn = document.getElementById('nav-exploration-record');
-        if (explorationRecordNavBtn) {
+        if (explorationRecordNavBtn && !explorationRecordNavBtn.dataset.listenerAdded) {
             explorationRecordNavBtn.addEventListener('click', () => {
                 this.game.setState(GameState.OutGameExplorationRecord);
             });
+            explorationRecordNavBtn.dataset.listenerAdded = 'true';
         }
         
         // 資料庫
         const libraryNavBtn = document.getElementById('nav-library');
-        if (libraryNavBtn) {
+        if (libraryNavBtn && !libraryNavBtn.dataset.listenerAdded) {
             libraryNavBtn.addEventListener('click', () => {
                 this.game.setState(GameState.OutGameLibrary);
             });
+            libraryNavBtn.dataset.listenerAdded = 'true';
         }
         
         // オプション
         const optionNavBtn = document.getElementById('nav-option');
-        if (optionNavBtn) {
+        if (optionNavBtn && !optionNavBtn.dataset.listenerAdded) {
             optionNavBtn.addEventListener('click', () => {
                 this.game.setState(GameState.OutGameOption);
             });
+            optionNavBtn.dataset.listenerAdded = 'true';
         }
-        
-        BaseOutGameScene.navigationListenersSetup = true;
     }
     
     /**
