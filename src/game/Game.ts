@@ -2,7 +2,6 @@ import { Player } from './entities/Player';
 import { Boss } from './entities/Boss';
 import { getBossData, loadAllBossData } from './data/index';
 import { TitleScene } from './scenes/TitleScene';
-import { BossSelectScene } from './scenes/BossSelectScene';
 import { BattleScene } from './scenes/BattleScene';
 import { BattleResultScene, BattleResult } from './scenes/BattleResultScene';
 import { OutGameBossSelectScene } from './scenes/OutGameBossSelectScene';
@@ -27,10 +26,6 @@ export enum GameState {
      * タイトル画面。プレイヤーがゲームを開始できる状態
      */
     Title = 'title',
-    /**
-     * ボス選択画面。プレイヤーが挑戦するボスを選ぶ状態
-     */
-    BossSelect = 'boss-select',
     /**
      * 戦闘画面。プレイヤーがボスと戦う状態
      */
@@ -71,7 +66,6 @@ export class Game {
     private debugMode: boolean = false;
     
     private titleScene: TitleScene;
-    private bossSelectScene: BossSelectScene;
     private battleScene: BattleScene;
     private battleResultScene: BattleResultScene;
     
@@ -94,7 +88,6 @@ export class Game {
         
         // シーンの初期化
         this.titleScene = new TitleScene(this);
-        this.bossSelectScene = new BossSelectScene(this);
         this.battleScene = new BattleScene(this);
         this.battleResultScene = new BattleResultScene(this);
         
@@ -125,7 +118,6 @@ export class Game {
             console.log('[Game][initAsync] Player initialized');
             
             // 各シーンの遅延初期化
-            this.bossSelectScene.lateInitialize();
             this.outGameBossSelectScene.lateInitialize();
             
             console.log('[Game][initAsync] Game initialized successfully');
@@ -172,11 +164,6 @@ export class Game {
             case GameState.Title:
                 document.getElementById('title-screen')?.classList.remove('d-none');
                 this.titleScene.enter();
-                break;
-                
-            case GameState.BossSelect:
-                document.getElementById('boss-select-screen')?.classList.remove('d-none');
-                this.bossSelectScene.enter();
                 break;
                 
             case GameState.Battle:
