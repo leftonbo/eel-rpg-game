@@ -10,6 +10,8 @@ export default defineConfig(({ mode }) => {
   const analyze = mode === 'analyze';
 
   return {
+    // Base URL for GitHub Pages deployment
+    base: isProduction ? '/eel-rpg-game/' : '/',
     // Test configuration
     test: {
       globals: true,
