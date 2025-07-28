@@ -44,7 +44,7 @@ export class OutGameOptionScene extends BaseOutGameScene {
         }
         
         // セーブデータクリア
-        const clearButton = document.getElementById('clear-save-data-btn');
+        const clearButton = document.getElementById('delete-save-data-btn');
         if (clearButton) {
             clearButton.addEventListener('click', () => {
                 this.handleClearSaveData();
