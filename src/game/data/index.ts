@@ -16,7 +16,8 @@ export const registeredBossIds: string[] = [
     'underground-worm',
     'bat-vampire',
     'fluffy-dragon',
-    'seraph-mascot'
+    'seraph-mascot',
+    'dual-jester'
 ];
 
 /**
@@ -86,6 +87,9 @@ async function loadBossData(id: string): Promise<BossData> {
             break;
         case 'seraph-mascot':
             bossData = (await import('./bosses/seraph-mascot')).seraphMascotData;
+            break;
+        case 'dual-jester':
+            bossData = (await import('./bosses/dual-jester')).dualJesterData;
             break;
         default:
             throw new Error(`Unknown boss ID: ${id}`);
