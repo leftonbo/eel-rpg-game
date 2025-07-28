@@ -192,13 +192,26 @@ export class StatusEffectManager {
         return modifier;
     }
     
-    getMpRecoveryModifier(): number {
+    getHpRegenerateModifier(): number {
         let modifier = 1.0;
         
         for (const [type, _effect] of this.effects) {
             const config = StatusEffectManager.configs.get(type);
-            if (config?.modifiers?.mpRecoveryRate !== undefined) {
-                modifier *= config.modifiers.mpRecoveryRate;
+            if (config?.modifiers?.hpRegenerateRate !== undefined) {
+                modifier *= config.modifiers.hpRegenerateRate;
+            }
+        }
+        
+        return modifier;
+    }
+    
+    getMpRegenerateModifier(): number {
+        let modifier = 1.0;
+        
+        for (const [type, _effect] of this.effects) {
+            const config = StatusEffectManager.configs.get(type);
+            if (config?.modifiers?.mpRegenerateRate !== undefined) {
+                modifier *= config.modifiers.mpRegenerateRate;
             }
         }
         
