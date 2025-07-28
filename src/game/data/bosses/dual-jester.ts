@@ -16,7 +16,7 @@ const dualJesterPhase1Actions: BossAction[] = [
         ],
         damageFormula: (user: Boss) => Math.max(1, user.attackPower * 0.15), // 非常に軽いダメージ
         hitRate: 0.98,
-        weight: 35,
+        weight: 20,
         playerStateCondition: 'normal'
     },
     {
@@ -31,7 +31,7 @@ const dualJesterPhase1Actions: BossAction[] = [
         ],
         statusEffect: StatusEffectType.FalseSecurity,
         statusChance: 0.60,
-        weight: 25,
+        weight: 18,
         canUse: (_boss, player, _turn) => {
             return !player.isRestrained() && !player.isEaten() && Math.random() < 0.40;
         }
@@ -49,7 +49,7 @@ const dualJesterPhase1Actions: BossAction[] = [
         damageFormula: (user: Boss) => Math.max(1, user.attackPower * 0.20),
         statusEffect: StatusEffectType.Charm,
         statusChance: 0.50,
-        weight: 30,
+        weight: 22,
         playerStateCondition: 'normal'
     },
     {
@@ -63,15 +63,140 @@ const dualJesterPhase1Actions: BossAction[] = [
             'でも実際は演技のようで、本気ではないようだ...'
         ],
         hitRate: 0.0,
-        weight: 20,
+        weight: 15,
         canUse: (_boss, player, _turn) => {
             return player.isRestrained() && Math.random() < 0.25;
         }
+    },
+    {
+        id: 'hand-holding-shock',
+        type: ActionType.Attack,
+        name: 'お手々つなぎ',
+        description: '手を繋ぐ振りで軽い電撃攻撃',
+        messages: [
+            '「お手々つなごうよ〜♪」',
+            '<USER>は<TARGET>の手を取って可愛く手を繋ごうとする！',
+            'しかし手から軽い電撃がビリッと流れた！',
+            '「あれ？静電気かな〜？ えへへ♪」'
+        ],
+        damageFormula: (user: Boss) => Math.max(2, user.attackPower * 0.25),
+        statusEffect: StatusEffectType.Paralysis,
+        statusChance: 0.25,
+        hitRate: 0.95,
+        weight: 20,
+        playerStateCondition: 'normal'
+    },
+    {
+        id: 'spinning-play',
+        type: ActionType.StatusAttack,
+        name: '回転あそび',
+        description: 'くるくる回って相手を混乱させる',
+        messages: [
+            '「くるくる〜♪ 一緒に回ろうよ〜♪」',
+            '<USER>が高速でくるくる回転しながら<TARGET>の周りを飛び回る！',
+            '目が回るような動きに<TARGET>は混乱してしまった...',
+            '「どっちが前でどっちが後ろかな〜♪」'
+        ],
+        damageFormula: (user: Boss) => Math.max(1, user.attackPower * 0.20),
+        statusEffect: StatusEffectType.Confusion,
+        statusChance: 0.60,
+        hitRate: 0.90,
+        weight: 24,
+        playerStateCondition: 'normal'
+    },
+    {
+        id: 'hide-and-seek-attack',
+        type: ActionType.Attack,
+        name: 'かくれんぼ攻撃',
+        description: '瞬間移動して不意打ち攻撃',
+        messages: [
+            '「かくれんぼしよう〜♪」',
+            '<USER>がぱっと姿を消した！',
+            '「もーいいかい？」',
+            '後ろから現れた<USER>が<TARGET>を軽くぽんと叩く！'
+        ],
+        damageFormula: (user: Boss) => Math.max(3, user.attackPower * 0.30),
+        hitRate: 0.85,
+        weight: 20,
+        playerStateCondition: 'normal'
     }
 ];
 
 // 第2フェーズ: 裏の顔（本気フェーズ）- HP50%以下で豹変
 const dualJesterPhase2Actions: BossAction[] = [
+    {
+        id: 'madness-gaze',
+        type: ActionType.StatusAttack,
+        name: '狂気の瞳光',
+        description: '不気味な瞳で威嚇攻撃',
+        messages: [
+            '「...フフフ、怖がってるね」（瞳が狂気に光る）',
+            '<USER>の瞳が異様な光を放ち、<TARGET>を見据える！',
+            '<TARGET>は恐怖で体が震えてしまった...',
+            '「その表情...とても美しいよ」'
+        ],
+        damageFormula: (user: Boss) => user.attackPower * 1.2,
+        statusEffect: StatusEffectType.Fear,
+        statusChance: 0.65,
+        hitRate: 0.90,
+        weight: 25,
+        playerStateCondition: 'normal'
+    },
+    {
+        id: 'nightmare-whisper',
+        type: ActionType.StatusAttack,
+        name: '悪夢の囁き',
+        description: '心理攻撃で恐怖を植え付ける',
+        messages: [
+            '「聞こえるかい？君の心の奥の悲鳴が...」',
+            '<USER>が<TARGET>の耳元で何か囁いている...',
+            '<TARGET>は得体の知れない恐怖に包まれた！',
+            '「これはまだ始まりに過ぎない...」'
+        ],
+        damageFormula: (user: Boss) => user.attackPower * 0.8,
+        statusEffect: StatusEffectType.Bipolar,
+        statusChance: 0.55,
+        hitRate: 0.95,
+        weight: 27,
+        playerStateCondition: 'normal'
+    },
+    {
+        id: 'dual-personality-rush',
+        type: ActionType.Attack,
+        name: '二重人格突進',
+        description: '表裏が入れ替わりながらの体当たり',
+        messages: [
+            '「一緒に遊ぼう♪」',
+            '「死ね」',
+            '「楽しいね〜♪」',
+            '「苦しめ」',
+            '<USER>が表情を高速で切り替えながら突進してくる！',
+            '<TARGET>は人格の急変に混乱しながら攻撃を受けた！',
+            '「どっちが本当？...両方とも本当さ」'
+        ],
+        damageFormula: (user: Boss) => user.attackPower * 1.5,
+        statusEffect: StatusEffectType.Confusion,
+        statusChance: 0.50,
+        hitRate: 0.85,
+        weight: 23,
+        playerStateCondition: 'normal'
+    },
+    {
+        id: 'toy-box-explosion',
+        type: ActionType.Attack,
+        name: '玩具箱爆発',
+        description: '周囲の玩具を操って攻撃',
+        messages: [
+            '「僕の大切な玩具たちよ...遊んでおやり」',
+            '<USER>が手を振ると周囲の壊れた玩具が一斉に浮き上がる！',
+            '玩具たちが<TARGET>に向かって飛んできた！',
+            '「みんな君と遊びたがってるよ...永遠にね」'
+        ],
+        damageFormula: (user: Boss) => user.attackPower * 1.4,
+        hitRate: 0.80,
+        weight: 22,
+        playerStateCondition: 'normal'
+    },
     {
         id: 'true-restraint',
         type: ActionType.RestraintAttack,
@@ -84,7 +209,7 @@ const dualJesterPhase2Actions: BossAction[] = [
         ],
         statusEffect: StatusEffectType.Manic,
         statusChance: 0.70,
-        weight: 35,
+        weight: 30,
         canUse: (_boss, player, _turn) => {
             return !player.isRestrained() && !player.isEaten();
         }
@@ -111,7 +236,8 @@ const dualJesterPhase2Actions: BossAction[] = [
         name: '二重人格なめまわし',
         description: '表裏の人格が交互に現れる攻撃',
         messages: [
-            '「大丈夫、痛くないよ〜」→「痛がってる顔、とても美しいね」',
+            '「大丈夫、痛くないよ〜」',
+            '「痛がってる顔、とても美しいね」',
             '<USER>の人格が急激に変化しながら<TARGET>を舐め回す！',
             '<TARGET>は混乱と恐怖に包まれた！'
         ],
@@ -146,8 +272,8 @@ const dualJesterDevourActions: BossAction[] = [
         name: '狂気の遊び場',
         description: '体内の歪んだ空間でプレイヤーを翻弄する',
         messages: [
-            '優しい人格：「ずっと一緒にいようね♪」',
-            '狂気の人格：「君はとても美味しいよ...もう離さない」',
+            '「ずっと一緒にいようね♪」',
+            '「君はとても美味しいよ...もう離さない」',
             '<TARGET>は二重人格の狂気に翻弄され続ける！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.8,
@@ -162,7 +288,8 @@ const dualJesterDevourActions: BossAction[] = [
         name: '二重消化',
         description: '表裏の人格が同時に消化を進める',
         messages: [
-            '「一緒に遊ぼうよ〜♪」「永遠に我が物にしてやる...」',
+            '「一緒に遊ぼうよ〜♪」',
+            '「永遠に我が物にしてやる...」',
             '<USER>の二つの人格が同時に<TARGET>を消化しようとする！',
             '<TARGET>の最大HPが二重の力で削られていく...'
         ],
@@ -176,7 +303,8 @@ const dualJesterDevourActions: BossAction[] = [
         name: '悪夢の抱擁',
         description: '甘い夢と恐ろしい悪夢を同時に見せる',
         messages: [
-            '「楽しい夢を見せてあげる♪」「...それとも悪夢がお好み？」',
+            '「楽しい夢を見せてあげる♪」',
+            '「...それとも悪夢がお好み？」',
             '<USER>は<TARGET>に甘美な夢と恐ろしい悪夢を同時に体験させる！',
             '<TARGET>は現実と幻想の境界を見失った！'
         ],
@@ -302,8 +430,8 @@ const dualJesterAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
     // プレイヤーが戦闘不能状態
     if (player.isKnockedOut()) {
         if (player.isRestrained() && isPhase2) {
-            // 第2フェーズで拘束+戦闘不能時は80%で捕食
-            if (Math.random() < 0.65) {
+            // 第2フェーズで拘束+戦闘不能時は90%で捕食
+            if (Math.random() < 0.90) {
                 return {
                     id: 'final-swallow',
                     type: ActionType.EatAttack,
@@ -431,11 +559,11 @@ export const dualJesterData: BossData = {
     // 記念品設定
     victoryTrophy: {
         name: '二面鏡',
-        description: '双面の道化師が持っていた特殊な鏡。時々敵の次の行動が見える不思議な力を秘めている。表と裏、どちらが真実なのかは見る者次第。'
+        description: '双面の道化師が持っていた特殊な鏡。写した者の裏の姿が見える不思議な力を秘めている。表と裏、どちらが真実なのかは見る者次第。'
     },
     defeatTrophy: {
         name: '道化師の鈴',
-        description: '双面の道化師の帽子についていた金色の鈴。可愛い音色に隠された狂気により、聞いた者は現実と幻想の境界を見失う。時に相手を混乱させる力を持つ。'
+        description: '双面の道化師の帽子についていた金色の鈴。可愛い音色に隠された狂気により、聞いた者は現実と幻想の境界を見失う。'
     },
     
     personality: [
@@ -463,8 +591,8 @@ export const dualJesterData: BossData = {
 dualJesterData.finishingMove = function(): string[] {
     return [
         '双面の道化師デュアルは<TARGET>を完全に支配した！',
-        '表の人格：「だいすき〜♪ ずっと一緒にいようね〜♪」',
-        '裏の人格：「...ついに完璧な玩具を手に入れた」',
+        '「だいすき〜♪ ずっと一緒にいようね〜♪」',
+        '「...ついに完璧な玩具を手に入れた」',
         '<TARGET>は道化師の精神世界に取り込まれ、表裏の人格が延々と入れ替わる空間で永遠に遊ばれ続けることになった！',
         '可愛い笑い声と不気味な笑い声が交互に響く中、<TARGET>は現実と幻想の境界を完全に見失ってしまった...'
     ];
