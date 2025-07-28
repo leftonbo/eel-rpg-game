@@ -42,7 +42,7 @@ export const dualJesterEffectsConfigs = new Map<StatusEffectType, StatusEffectCo
             // 8%の確率で自分を攻撃（確率調整）
             if (Math.random() < 0.08) {
                 const selfDamage = Math.floor(target.maxHp * 0.03); // ダメージ軽減
-                target.takeDamage(selfDamage, null);
+                target.takeDamage(selfDamage);
             }
         },
         messages: {

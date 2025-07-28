@@ -1,120 +1,56 @@
 import { Game } from '../Game';
+import { BaseOutGameScene } from './BaseOutGameScene';
 import { getBossData } from '../data';
 import { ModalUtils } from '../utils/ModalUtils';
 import type { BootstrapModal } from '../types/bootstrap';
 import { BossCardManager } from './managers/BossCardManager';
-import { PlayerModalManager } from './managers/PlayerModalManager';
-import { PlayerInfoEditManager } from './managers/PlayerInfoEditManager';
-import { SaveDataManager } from './managers/SaveDataManager';
 import { DOMUpdater } from './utils/DOMUpdater';
 
-export class BossSelectScene {
-    private game: Game;
+export class OutGameBossSelectScene extends BaseOutGameScene {
     private bossModal: BootstrapModal | null = null;
     private selectedBossId: string = '';
-    
-    // Manager instances
     private bossCardManager: BossCardManager;
-    private playerModalManager: PlayerModalManager;
-    private playerInfoEditManager: PlayerInfoEditManager; // Used in custom events
-    private saveDataManager: SaveDataManager; // Used in modal buttons
     
     constructor(game: Game) {
-        this.game = game;
-        
-        // Initialize managers
+        super(game, 'out-game-boss-select-screen');
         this.bossCardManager = new BossCardManager(game);
-        this.playerModalManager = new PlayerModalManager(game);
-        this.playerInfoEditManager = new PlayerInfoEditManager(game);
-        this.saveDataManager = new SaveDataManager(game);
-        
-        // Suppress unused variable warnings - managers are initialized and handle their own events
-        void this.playerInfoEditManager;
-        void this.saveDataManager;
-        
-        this.init();
-    }
-    
-    /**
-     * Initialize the scene
-     * Sets up event listeners and initializes modals
-     */
-    private init(): void {
-        // Player details button
-        const playerDetailsButton = document.getElementById('player-details-btn');
-        if (playerDetailsButton) {
-            playerDetailsButton.addEventListener('click', () => {
-                this.playerModalManager.showPlayerDetails();
-            });
-        }
-
-        // Initialize boss modal
         this.initializeBossModal();
-        
-        // Setup custom event listeners
-        this.setupCustomEventListeners();
-        
-        // Setup boss card manager callback
-        this.bossCardManager.setOnBossSelectCallback((bossId: string) => {
-            this.onBossSelect(bossId);
-        });
+        this.setupBossCardManager();
     }
     
     /**
-     * Late initialization to ensure all data is loaded before generating boss cards
+     * シーン初期化後の遅延処理
      */
     public lateInitialize(): void {
-        // Generate boss cards
         this.bossCardManager.generateBossCards();
     }
-
+    
     /**
-     * Called when the scene is entered
-     * Updates boss cards and player status display
+     * シーンに入った時の処理
      */
     enter(): void {
-        console.log('Entered boss select scene');
+        console.log('Entered OutGameBossSelectScene');
         
-        // Update boss card information
+        // ナビゲーションバーのアクティブ状態更新
+        this.updateNavigationActiveState();
+        
+        // ボスカード情報更新
         this.bossCardManager.updateBossCards();
         
-        // Update player status display
+        // プレイヤー情報表示更新
         this.updatePlayerSummary();
     }
     
-    //#region Custom Event Listeners
-    
     /**
-     * Setup custom event listeners for inter-manager communication
+     * ボスモーダルの初期化
      */
-    private setupCustomEventListeners(): void {
-        // Listen for player summary update requests
-        document.addEventListener('updatePlayerSummary', () => {
-            this.updatePlayerSummary();
-        });
-        
-        // Listen for player modal update requests
-        document.addEventListener('updatePlayerModal', () => {
-            this.playerModalManager.showPlayerDetails();
-        });
-        
-        // Listen for player modal refresh requests
-        document.addEventListener('refreshPlayerModal', () => {
-            this.playerModalManager.showPlayerDetails();
-        });
-    }
-    
-    //#endregion
-    
-    //#region Modal - Boss Selection
-    
-    private initializeBossModal() {
+    private initializeBossModal(): void {
         const bossModalElement = document.getElementById('boss-modal');
         if (bossModalElement && window.bootstrap) {
             this.bossModal = new window.bootstrap.Modal(bossModalElement);
         }
         
-        // Confirm boss button
+        // ボス確定ボタン
         const confirmButton = document.getElementById('confirm-boss-btn');
         if (confirmButton) {
             confirmButton.addEventListener('click', () => {
@@ -123,28 +59,43 @@ export class BossSelectScene {
         }
     }
     
+    /**
+     * ボスカードマネージャーのセットアップ
+     */
+    private setupBossCardManager(): void {
+        this.bossCardManager.setOnBossSelectCallback((bossId: string) => {
+            this.onBossSelect(bossId);
+        });
+    }
+    
+    /**
+     * ボス選択時の処理
+     */
     private onBossSelect(bossId: string): void {
         this.selectedBossId = bossId;
         
-        // Update modal with boss information
+        // モーダルにボス情報を表示
         this.updateModal(bossId);
         
-        // Show modal
+        // モーダル表示
         if (this.bossModal) {
             this.bossModal.show();
         }
     }
     
+    /**
+     * ボスモーダルの内容更新
+     */
     private updateModal(bossId: string): void {
         const bossData = getBossData(bossId);
         
-        // Update modal title
+        // モーダルタイトル
         const modalTitle = document.getElementById('modal-boss-name');
         if (modalTitle) {
             modalTitle.textContent = bossData.displayName;
         }
         
-        // Update modal description
+        // モーダル説明
         const modalDescription = document.getElementById('modal-boss-description');
         if (modalDescription) {
             modalDescription.textContent = bossData.description;
@@ -155,22 +106,22 @@ export class BossSelectScene {
             modalQuestNote.textContent = bossData.questNote;
         }
         
-        // Update modal stats
+        // モーダル統計情報
         const modalStats = document.getElementById('modal-boss-stats');
         if (modalStats) {
             modalStats.innerHTML = `
-                <div class=\"row\">
-                    <div class=\"col-6\">
+                <div class="row">
+                    <div class="col-6">
                         <strong>HP:</strong> ${bossData.maxHp}
                     </div>
-                    <div class=\"col-6\">
+                    <div class="col-6">
                         <strong>攻撃力:</strong> ${bossData.attackPower}
                     </div>
                 </div>
             `;
         }
         
-        // Add guest character attribution if available
+        // ゲストキャラクター情報
         const modalGuestInfo = document.getElementById('modal-boss-guest-info');
         if (modalGuestInfo) {
             if (bossData.guestCharacterInfo) {
@@ -183,27 +134,30 @@ export class BossSelectScene {
         }
     }
     
+    /**
+     * ボス確定ボタン押下時の処理
+     */
     private onConfirmBoss(): void {
         if (this.selectedBossId) {
-            // Hide modal
+            // モーダルを隠す
             if (this.bossModal) {
                 this.bossModal.hide();
             }
             
             try {
-                // Start battle with selected boss
+                // 選択されたボスとの戦闘開始
                 this.game.selectBoss(this.selectedBossId);
             } catch (error) {
                 console.error('Failed to load boss:', error);
                 
-                // Show user-friendly error message using existing toast utility
+                // エラーメッセージ表示
                 const errorMessage = error instanceof Error ? error.message : '不明なエラーが発生しました';
                 ModalUtils.showToast(
                     `ボスデータの読み込みに失敗しました: ${errorMessage}`,
                     'error'
                 );
                 
-                // Re-show modal so user can try again
+                // モーダルを再表示
                 if (this.bossModal) {
                     this.bossModal.show();
                 }
@@ -211,22 +165,18 @@ export class BossSelectScene {
         }
     }
     
-    //#endregion
-    
-    //#region Panel - Player Summary
-    
     /**
-     * Update player status display in boss select screen
+     * プレイヤー情報表示の更新
      */
     private updatePlayerSummary(): void {
         const player = this.game.getPlayer();
         const equipment = player.getEquipmentInfo();
         
-        // Update player header (name and icon)
+        // プレイヤーヘッダー（名前とアイコン）
         DOMUpdater.updateElement('player-header-name', player.name);
         DOMUpdater.updateElement('player-header-icon', player.icon);
         
-        // Update summary display using DOMUpdater
+        // サマリー表示の更新
         DOMUpdater.updateElements({
             'player-summary-max-hp': player.maxHp.toString(),
             'player-summary-max-mp': player.maxMp.toString(),
@@ -235,6 +185,4 @@ export class BossSelectScene {
             'player-summary-armor': equipment.armor?.name || 'はだか'
         });
     }
-    
-    //#endregion Panel - Player Summary
 }

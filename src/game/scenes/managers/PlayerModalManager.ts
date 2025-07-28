@@ -25,11 +25,6 @@ export class PlayerModalManager {
      * Initialize player modal
      */
     private initializePlayerModal(): void {
-        const playerModalElement = document.getElementById('player-details-modal');
-        if (playerModalElement && window.bootstrap) {
-            this.playerModal = new window.bootstrap.Modal(playerModalElement);
-        }
-
         // Player info edit button
         const editPlayerInfoButton = document.getElementById('edit-player-info-btn');
         if (editPlayerInfoButton) {

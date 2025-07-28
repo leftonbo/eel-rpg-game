@@ -86,7 +86,6 @@ export default defineConfig(({ mode }) => {
             // Large scenes
             'chunk-scenes': [
               './src/game/scenes/BattleScene.ts',
-              './src/game/scenes/BossSelectScene.ts',
             ],
             // Common utilities
             'chunk-utils': [

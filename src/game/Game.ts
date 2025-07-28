@@ -2,9 +2,13 @@ import { Player } from './entities/Player';
 import { Boss } from './entities/Boss';
 import { getBossData, loadAllBossData } from './data/index';
 import { TitleScene } from './scenes/TitleScene';
-import { BossSelectScene } from './scenes/BossSelectScene';
 import { BattleScene } from './scenes/BattleScene';
 import { BattleResultScene, BattleResult } from './scenes/BattleResultScene';
+import { OutGameBossSelectScene } from './scenes/OutGameBossSelectScene';
+import { OutGamePlayerDetailScene } from './scenes/OutGamePlayerDetailScene';
+import { OutGameExplorationRecordScene } from './scenes/OutGameExplorationRecordScene';
+import { OutGameLibraryScene } from './scenes/OutGameLibraryScene';
+import { OutGameOptionScene } from './scenes/OutGameOptionScene';
 
 /**
  * ゲームの状態を管理する列挙型
@@ -23,17 +27,33 @@ export enum GameState {
      */
     Title = 'title',
     /**
-     * ボス選択画面。プレイヤーが挑戦するボスを選ぶ状態
-     */
-    BossSelect = 'boss-select',
-    /**
      * 戦闘画面。プレイヤーがボスと戦う状態
      */
     Battle = 'battle',
     /**
      * 戦闘結果画面。戦闘の結果が表示される状態
      */
-    BattleResult = 'battle-result'
+    BattleResult = 'battle-result',
+    /**
+     * アウトゲーム - ボス選択画面
+     */
+    OutGameBossSelect = 'out-game-boss-select',
+    /**
+     * アウトゲーム - プレイヤー詳細画面
+     */
+    OutGamePlayerDetail = 'out-game-player-detail',
+    /**
+     * アウトゲーム - 探検記録画面
+     */
+    OutGameExplorationRecord = 'out-game-exploration-record',
+    /**
+     * アウトゲーム - 資料庫画面
+     */
+    OutGameLibrary = 'out-game-library',
+    /**
+     * アウトゲーム - オプション画面
+     */
+    OutGameOption = 'out-game-option'
 }
 
 /**
@@ -46,9 +66,15 @@ export class Game {
     private debugMode: boolean = false;
     
     private titleScene: TitleScene;
-    private bossSelectScene: BossSelectScene;
     private battleScene: BattleScene;
     private battleResultScene: BattleResultScene;
+    
+    // Out Game Scenes
+    private outGameBossSelectScene: OutGameBossSelectScene;
+    private outGamePlayerDetailScene: OutGamePlayerDetailScene;
+    private outGameExplorationRecordScene: OutGameExplorationRecordScene;
+    private outGameLibraryScene: OutGameLibraryScene;
+    private outGameOptionScene: OutGameOptionScene;
     
     constructor() {
         // デバッグモード判定 (webpack environment, URL parameters, or localStorage)
@@ -62,9 +88,15 @@ export class Game {
         
         // シーンの初期化
         this.titleScene = new TitleScene(this);
-        this.bossSelectScene = new BossSelectScene(this);
         this.battleScene = new BattleScene(this);
         this.battleResultScene = new BattleResultScene(this);
+        
+        // Out Game シーンの初期化
+        this.outGameBossSelectScene = new OutGameBossSelectScene(this);
+        this.outGamePlayerDetailScene = new OutGamePlayerDetailScene(this);
+        this.outGameExplorationRecordScene = new OutGameExplorationRecordScene(this);
+        this.outGameLibraryScene = new OutGameLibraryScene(this);
+        this.outGameOptionScene = new OutGameOptionScene(this);
         
         // 非同期読み込みを開始
         this.initAsync();
@@ -86,7 +118,7 @@ export class Game {
             console.log('[Game][initAsync] Player initialized');
             
             // 各シーンの遅延初期化
-            this.bossSelectScene.lateInitialize();
+            this.outGameBossSelectScene.lateInitialize();
             
             console.log('[Game][initAsync] Game initialized successfully');
             
@@ -107,6 +139,34 @@ export class Game {
         document.getElementById('battle-screen')?.classList.add('d-none');
         document.getElementById('battle-result-screen')?.classList.add('d-none');
         
+        // Hide Out Game scenes
+        document.getElementById('out-game-boss-select-screen')?.classList.add('d-none');
+        document.getElementById('out-game-player-detail-screen')?.classList.add('d-none');
+        document.getElementById('out-game-exploration-record-screen')?.classList.add('d-none');
+        document.getElementById('out-game-library-screen')?.classList.add('d-none');
+        document.getElementById('out-game-option-screen')?.classList.add('d-none');
+        
+        // Hide/Show out-game navigation based on scene type
+        const outGameNavigation = document.getElementById('out-game-navigation-container');
+        const isOutGameScene = this.isOutGameState(newState);
+        if (outGameNavigation) {
+            if (isOutGameScene) {
+                outGameNavigation.classList.remove('d-none');
+            } else {
+                outGameNavigation.classList.add('d-none');
+            }
+        }
+        
+        // Hide/Show out-game footer based on scene type
+        const outGameFooter = document.getElementById('out-game-footer-container');
+        if (outGameFooter) {
+            if (isOutGameScene) {
+                outGameFooter.classList.remove('d-none');
+            } else {
+                outGameFooter.classList.add('d-none');
+            }
+        }
+        
         this.currentState = newState;
         
         // Show appropriate scene
@@ -114,11 +174,6 @@ export class Game {
             case GameState.Title:
                 document.getElementById('title-screen')?.classList.remove('d-none');
                 this.titleScene.enter();
-                break;
-                
-            case GameState.BossSelect:
-                document.getElementById('boss-select-screen')?.classList.remove('d-none');
-                this.bossSelectScene.enter();
                 break;
                 
             case GameState.Battle:
@@ -129,6 +184,32 @@ export class Game {
             case GameState.BattleResult:
                 document.getElementById('battle-result-screen')?.classList.remove('d-none');
                 // BattleResultScene.enter() will be called separately with result data
+                break;
+                
+            // Out Game Scenes
+            case GameState.OutGameBossSelect:
+                document.getElementById('out-game-boss-select-screen')?.classList.remove('d-none');
+                this.outGameBossSelectScene.enter();
+                break;
+                
+            case GameState.OutGamePlayerDetail:
+                document.getElementById('out-game-player-detail-screen')?.classList.remove('d-none');
+                this.outGamePlayerDetailScene.enter();
+                break;
+                
+            case GameState.OutGameExplorationRecord:
+                document.getElementById('out-game-exploration-record-screen')?.classList.remove('d-none');
+                this.outGameExplorationRecordScene.enter();
+                break;
+                
+            case GameState.OutGameLibrary:
+                document.getElementById('out-game-library-screen')?.classList.remove('d-none');
+                this.outGameLibraryScene.enter();
+                break;
+                
+            case GameState.OutGameOption:
+                document.getElementById('out-game-option-screen')?.classList.remove('d-none');
+                this.outGameOptionScene.enter();
                 break;
         }
     }
@@ -141,7 +222,7 @@ export class Game {
     }
     
     startGame(): void {
-        this.setState(GameState.BossSelect);
+        this.setState(GameState.OutGameBossSelect);
     }
     
     selectBoss(bossId: string): void {
@@ -158,7 +239,7 @@ export class Game {
         // Reset battle-specific state while keeping progress
         this.player.resetBattleState();
         this.currentBoss = null;
-        this.setState(GameState.BossSelect);
+        this.setState(GameState.OutGameBossSelect);
     }
     
     /**
@@ -186,5 +267,16 @@ export class Game {
      */
     isDebugMode(): boolean {
         return this.debugMode;
+    }
+    
+    /**
+     * Check if the given state is an out-game state
+     */
+    private isOutGameState(state: GameState): boolean {
+        return state === GameState.OutGameBossSelect ||
+               state === GameState.OutGamePlayerDetail ||
+               state === GameState.OutGameExplorationRecord ||
+               state === GameState.OutGameLibrary ||
+               state === GameState.OutGameOption;
     }
 }

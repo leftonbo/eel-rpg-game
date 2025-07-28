@@ -1,0 +1,130 @@
+<!-- Out Game Option Screen -->
+<div id="out-game-option-screen" class="scene d-none">
+    
+    <div class="container flex-grow-1 d-flex flex-column">
+        <!-- Option Content -->
+        <div class="row mt-4 mb-4 flex-grow-1">
+            <div class="col-12">
+                <div class="card bg-dark">
+                    <div class="card-header">
+                        <h5 class="mb-0">⚙️ オプション</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Message Container -->
+                        <div id="option-message-container" class="mb-3"></div>
+                        
+                        <!-- Player Information -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6>プレイヤー情報</h6>
+                                <div class="card bg-secondary">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <strong>名前:</strong>
+                                                <span id="player-name-display">エルナル</span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>エクスプローラーLv:</strong>
+                                                <span id="player-explorer-level-display">1</span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>撃破済みボス数:</strong>
+                                                <span id="defeated-boss-count-display">0</span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>セーブデータ:</strong>
+                                                <span id="save-data-status">存在</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Data Management -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6>データ管理</h6>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="card bg-secondary mb-3">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title">📤 データエクスポート</h6>
+                                                <p class="card-text">
+                                                    セーブデータをファイルとして保存します
+                                                </p>
+                                                <button
+                                                    id="export-save-data-btn"
+                                                    class="btn btn-outline-info w-100"
+                                                >
+                                                    エクスポート
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card bg-secondary mb-3">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title">📥 データインポート</h6>
+                                                <p class="card-text">
+                                                    セーブデータをファイルから読み込みます
+                                                </p>
+                                                <button
+                                                    id="import-save-data-btn"
+                                                    class="btn btn-outline-success w-100"
+                                                >
+                                                    インポート
+                                                </button>
+                                                <input
+                                                    type="file"
+                                                    id="import-file-input-modal"
+                                                    accept=".json"
+                                                    class="d-none"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card bg-secondary mb-3">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title">🗑️ データ削除</h6>
+                                                <p class="card-text">全てのセーブデータを削除します</p>
+                                                <button
+                                                    id="delete-save-data-btn"
+                                                    class="btn btn-outline-danger w-100"
+                                                >
+                                                    削除
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Game Settings -->
+                        <div class="row">
+                            <div class="col-12">
+                                <h6>ゲーム設定</h6>
+                                <div class="card bg-secondary">
+                                    <div class="card-body">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="debug-mode-toggle">
+                                            <label class="form-check-label" for="debug-mode-toggle">
+                                                デバッグモード
+                                            </label>
+                                            <div class="form-text">
+                                                デバッグ機能を有効にします（開発者向け）
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

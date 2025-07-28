@@ -28,17 +28,36 @@
 </head>
 <body class="bg-dark text-light" data-bs-theme="dark">
     <!-- Game Container -->
-    <div id="game-container" class="container-fluid vh-100 d-flex flex-column">
+    <div id="game-container" class="container-fluid min-vh-100 d-flex flex-column">
+        <!-- Navigation Bar -->
+        <!-- Out Game Navigation (共通) -->
+        <div id="out-game-navigation-container" class="row d-none">
+            <%- include('out-game-navigation') %>
+        </div>
         
-        <!-- Scenes -->
-        <%- include('title-scene') %>
-        <%- include('boss-select-scene') %>
-        <%- include('battle-scene') %>
-        <%- include('battle-result-scene') %>
+        <!-- Main Content -->
+        <main class="flex-grow-1">
+            <!-- Scenes -->
+            <%- include('title-scene') %>
+            <%- include('battle-scene') %>
+            <%- include('battle-result-scene') %>
+            
+            <!-- Out Game Scenes -->
+            <%- include('out-game-boss-select-scene') %>
+            <%- include('out-game-player-detail-scene') %>
+            <%- include('out-game-exploration-record-scene') %>
+            <%- include('out-game-library-scene') %>
+            <%- include('out-game-option-scene') %>
+        </main>
+    
+        <!-- Footer Bar -->
+        <!-- Out Game Footer (共通) -->
+        <div id="out-game-footer-container" class="row d-none mt-auto">
+            <%- include('out-game-footer') %>
+        </div>
         
         <!-- Modals -->
         <%- include('boss-modal') %>
-        <%- include('player-details-modal') %>
         <%- include('debug-modal') %>
         <%- include('utility-modals') %>
         <%- include('player-info-edit-modal') %>
