@@ -71,6 +71,124 @@ explorerLevelRequired: 10
 - `WillDomination`（意志支配）: ランダムで行動が変更される
 - `EternalServitude`（永遠の隷属）: 敗北後専用、復活不可
 
+#### コアシステム行動詳細
+
+##### 拘束技: 「冥界の鎖」
+```typescript
+{
+    id: 'netherworld-chains',
+    type: ActionType.RestraintAttack,
+    name: '冥界の鎖',
+    description: '魂を直接拘束する冥界の鎖でプレイヤーを束縛する',
+    messages: [
+        '「逃げることは許さない...魂ごと縛り上げてやろう」',
+        '<USER>が冥界の黒い鎖を召喚し、<TARGET>の魂を直接拘束した！',
+        '<TARGET>は魂レベルで拘束され、身動きが取れなくなった！'
+    ],
+    statusEffect: StatusEffectType.SoulChain,
+    statusChance: 0.90,
+    weight: 25,
+    canUse: (_boss, player, _turn) => {
+        return !player.isRestrained() && !player.isEaten() && Math.random() < 0.45;
+    }
+}
+```
+
+##### 捕食技: 「魂の収納」
+```typescript
+{
+    id: 'soul-containment',
+    type: ActionType.EatAttack,
+    name: '魂の収納',
+    description: '支配下に置いた魂を冥界の体内に収納する',
+    messages: [
+        '「お前の魂は我が冥界の一部となる...」',
+        '<USER>は<TARGET>の魂を冥界の深淵へと引きずり込む！',
+        '<TARGET>は冥界の支配者の体内に収納され、永遠の隷属が始まった！'
+    ],
+    weight: 30,
+    canUse: (_boss, player, _turn) => {
+        return player.isRestrained() && player.getHpPercentage() < 0.25;
+    }
+}
+```
+
+##### 体内行動1: 「魂の抽出」
+```typescript
+{
+    id: 'soul-extraction',
+    type: ActionType.DevourAttack,
+    name: '魂の抽出',
+    description: '体内で魂のエネルギーを直接抽出する',
+    messages: [
+        '「お前の魂の力...すべて我がものに」',
+        '<USER>は体内の<TARGET>から魂のエネルギーを抽出している！',
+        '<TARGET>の生命力と意志力が冥界の支配者に吸収されていく...'
+    ],
+    damageFormula: (user: Boss) => user.attackPower * 2.2,
+    statusEffect: StatusEffectType.SoulDrain,
+    statusChance: 0.80,
+    weight: 35,
+    playerStateCondition: 'eaten'
+}
+```
+
+##### 体内行動2: 「支配の刻印」
+```typescript
+{
+    id: 'domination-brand',
+    type: ActionType.DevourAttack,
+    name: '支配の刻印',
+    description: '魂に永続的な支配の刻印を刻み込む',
+    messages: [
+        '「この刻印により、お前は永遠に我の僕となる...」',
+        '<USER>は<TARGET>の魂に冥界の支配者の刻印を刻み込む！',
+        '<TARGET>の魂に永続的な服従の印が刻まれていく...'
+    ],
+    damageFormula: (user: Boss) => user.attackPower * 2.5,
+    statusEffect: StatusEffectType.WillDomination,
+    statusChance: 0.90,
+    weight: 25,
+    playerStateCondition: 'eaten'
+}
+```
+
+##### 敗北後行動1: 「永遠の隷属」
+```typescript
+{
+    id: 'eternal-servitude',
+    type: ActionType.PostDefeatedAttack,
+    name: '永遠の隷属',
+    description: '敗北したプレイヤーを永遠の僕として冥界に留める',
+    messages: [
+        '「もう二度と外の世界を見ることはない...」',
+        '<USER>は<TARGET>を永遠の隷属状態に置く！',
+        '<TARGET>は冥界の支配者の忠実な僕として、永遠に仕え続けることになった...'
+    ],
+    statusEffect: StatusEffectType.EternalServitude,
+    statusChance: 1.0,
+    weight: 30,
+    playerStateCondition: 'defeated'
+}
+```
+
+##### 敗北後行動2: 「魂の完全支配」
+```typescript
+{
+    id: 'complete-soul-domination',
+    type: ActionType.PostDefeatedAttack,
+    name: '魂の完全支配',
+    description: 'プレイヤーの魂を完全に支配し、意志を消去する',
+    messages: [
+        '「お前の意志など、もはや不要だ...」',
+        '<USER>は<TARGET>の魂を完全に支配下に置く！',
+        '<TARGET>は自分の意志を失い、ただ冥界の支配者の命令に従うだけの存在となった...'
+    ],
+    weight: 25,
+    playerStateCondition: 'defeated'
+}
+```
+
 ---
 
 ### 候補2: ☠️ 死神の化身リーパー
@@ -99,6 +217,124 @@ explorerLevelRequired: 10
 - `ReaperGaze`（死神の視線）: 行動不能・恐怖状態
 - `AfterlifeBinding`（死後拘束）: 敗北後専用状態
 
+#### コアシステム行動詳細
+
+##### 拘束技: 「死神の鎖鎌」
+```typescript
+{
+    id: 'reaper-chain-scythe',
+    type: ActionType.RestraintAttack,
+    name: '死神の鎖鎌',
+    description: '鎖で繋がった死神の鎌でプレイヤーを拘束する',
+    messages: [
+        '「死から逃れることはできない...」',
+        '<USER>が鎖鎌を振り回し、<TARGET>を死の鎖で拘束した！',
+        '<TARGET>は死神の鎖に絡め取られ、死の冷気に包まれた！'
+    ],
+    statusEffect: StatusEffectType.DeathMark,
+    statusChance: 0.85,
+    weight: 30,
+    canUse: (_boss, player, _turn) => {
+        return !player.isRestrained() && !player.isEaten() && Math.random() < 0.50;
+    }
+}
+```
+
+##### 捕食技: 「死後の世界への誘い」
+```typescript
+{
+    id: 'afterlife-invitation',
+    type: ActionType.EatAttack,
+    name: '死後の世界への誘い',
+    description: '死にかけのプレイヤーを死後の世界へと連れ去る',
+    messages: [
+        '「もう苦しまなくて良い...永遠の安息を与えてやろう」',
+        '<USER>は<TARGET>を死神のローブで包み込む！',
+        '<TARGET>は死後の世界へと引きずり込まれていく！'
+    ],
+    weight: 35,
+    canUse: (_boss, player, _turn) => {
+        return player.isRestrained() && player.getHpPercentage() < 0.20;
+    }
+}
+```
+
+##### 体内行動1: 「魂の審判」
+```typescript
+{
+    id: 'soul-judgment',
+    type: ActionType.DevourAttack,
+    name: '魂の審判',
+    description: '死後の世界でプレイヤーの魂を審判する',
+    messages: [
+        '「汝の罪を数え上げよう...」',
+        '<USER>は死後の世界で<TARGET>の魂を厳しく審判している！',
+        '<TARGET>の魂が死神の裁きを受け、罪の重さに苦しんでいる...'
+    ],
+    damageFormula: (user: Boss) => user.attackPower * 2.3,
+    statusEffect: StatusEffectType.ReaperGaze,
+    statusChance: 0.75,
+    weight: 35,
+    playerStateCondition: 'eaten'
+}
+```
+
+##### 体内行動2: 「死刑執行」
+```typescript
+{
+    id: 'death-execution',
+    type: ActionType.DevourAttack,
+    name: '死刑執行',
+    description: '審判の結果、死刑を執行する',
+    messages: [
+        '「判決：死刑。即刻執行する」',
+        '<USER>は死神の鎌で<TARGET>の魂に死刑を執行する！',
+        '<TARGET>の魂が死神の裁きにより段階的に削られていく...'
+    ],
+    damageFormula: (user: Boss) => user.attackPower * 2.8,
+    statusEffect: StatusEffectType.DeathSentence,
+    statusChance: 0.85,
+    weight: 25,
+    playerStateCondition: 'eaten'
+}
+```
+
+##### 敗北後行動1: 「死後の管理」
+```typescript
+{
+    id: 'afterlife-management',
+    type: ActionType.PostDefeatedAttack,
+    name: '死後の管理',
+    description: '死んだプレイヤーを死後の世界で管理する',
+    messages: [
+        '「死者の管理は我が職務...永遠に監視してやろう」',
+        '<USER>は<TARGET>を死後の世界の住人として登録する！',
+        '<TARGET>は死神の管理下で、永遠に死後の世界で過ごすことになった...'
+    ],
+    statusEffect: StatusEffectType.AfterlifeBinding,
+    statusChance: 1.0,
+    weight: 30,
+    playerStateCondition: 'defeated'
+}
+```
+
+##### 敗北後行動2: 「魂の永続収穫」
+```typescript
+{
+    id: 'eternal-soul-harvest',
+    type: ActionType.PostDefeatedAttack,
+    name: '魂の永続収穫',
+    description: 'プレイヤーの魂を永続的に収穫し続ける',
+    messages: [
+        '「良質な魂だ...定期的に収穫させてもらおう」',
+        '<USER>は<TARGET>の魂を永続的な収穫対象として登録する！',
+        '<TARGET>は定期的に魂を刈り取られながら、死後の世界で永遠に生かされ続ける...'
+    ],
+    weight: 25,
+    playerStateCondition: 'defeated'
+}
+```
+
 ---
 
 ### 候補3: 🌀 虚無の王ヴォイド
@@ -126,6 +362,124 @@ explorerLevelRequired: 10
 - `ConceptSeal`（概念封印）: スキル使用不可
 - `ExistenceFade`（存在消失）: 攻撃が当たらなくなる
 - `NonExistence`（非存在）: 敗北後、記録からも消去
+
+#### コアシステム行動詳細
+
+##### 拘束技: 「虚無の触手」
+```typescript
+{
+    id: 'void-tentacles',
+    type: ActionType.RestraintAttack,
+    name: '虚無の触手',
+    description: '虚無から生み出した触手でプレイヤーの存在を拘束する',
+    messages: [
+        '「存在するということが、そもそも間違いなのだ...」',
+        '<USER>が虚無の触手を伸ばし、<TARGET>の存在そのものを拘束した！',
+        '<TARGET>は虚無の力に捕らわれ、存在が曖昧になっていく！'
+    ],
+    statusEffect: StatusEffectType.VoidErosion,
+    statusChance: 0.80,
+    weight: 25,
+    canUse: (_boss, player, _turn) => {
+        return !player.isRestrained() && !player.isEaten() && Math.random() < 0.40;
+    }
+}
+```
+
+##### 捕食技: 「虚無への帰還」
+```typescript
+{
+    id: 'return-to-void',
+    type: ActionType.EatAttack,
+    name: '虚無への帰還',
+    description: '存在が薄くなったプレイヤーを虚無へと帰還させる',
+    messages: [
+        '「すべては虚無に帰る...それが真理だ」',
+        '<USER>は<TARGET>の存在を虚無の世界へと引きずり込む！',
+        '<TARGET>は虚無の王の体内で、非存在の状態へと導かれていく！'
+    ],
+    weight: 30,
+    canUse: (_boss, player, _turn) => {
+        return player.isRestrained() && player.getHpPercentage() < 0.30;
+    }
+}
+```
+
+##### 体内行動1: 「概念の消去」
+```typescript
+{
+    id: 'concept-erasure',
+    type: ActionType.DevourAttack,
+    name: '概念の消去',
+    description: 'プレイヤーの概念を段階的に消去する',
+    messages: [
+        '「『プレイヤー』という概念から消去してやろう...」',
+        '<USER>は虚無の力で<TARGET>の概念を消去している！',
+        '<TARGET>の存在概念が虚無に侵食され、アイデンティティが失われていく...'
+    ],
+    damageFormula: (user: Boss) => user.attackPower * 2.0,
+    statusEffect: StatusEffectType.ConceptSeal,
+    statusChance: 0.90,
+    weight: 35,
+    playerStateCondition: 'eaten'
+}
+```
+
+##### 体内行動2: 「存在の否定」
+```typescript
+{
+    id: 'existence-denial',
+    type: ActionType.DevourAttack,
+    name: '存在の否定',
+    description: 'プレイヤーの存在そのものを否定する',
+    messages: [
+        '「お前など、最初から存在しなかった...」',
+        '<USER>は<TARGET>の存在そのものを虚無の力で否定する！',
+        '<TARGET>の存在が徐々に薄れ、現実から消失していく...'
+    ],
+    damageFormula: (user: Boss) => user.attackPower * 2.4,
+    statusEffect: StatusEffectType.ExistenceFade,
+    statusChance: 0.85,
+    weight: 25,
+    playerStateCondition: 'eaten'
+}
+```
+
+##### 敗北後行動1: 「非存在への変換」
+```typescript
+{
+    id: 'non-existence-conversion',
+    type: ActionType.PostDefeatedAttack,
+    name: '非存在への変換',
+    description: '敗北したプレイヤーを非存在状態に変換する',
+    messages: [
+        '「これで完全だ...お前は存在しなかったことになる」',
+        '<USER>は<TARGET>を非存在状態に変換する！',
+        '<TARGET>は虚無の王により非存在へと変換され、すべての記録から消去された...'
+    ],
+    statusEffect: StatusEffectType.NonExistence,
+    statusChance: 1.0,
+    weight: 30,
+    playerStateCondition: 'defeated'
+}
+```
+
+##### 敗北後行動2: 「虚無の一部化」
+```typescript
+{
+    id: 'void-assimilation',
+    type: ActionType.PostDefeatedAttack,
+    name: '虚無の一部化',
+    description: 'プレイヤーを虚無の一部として同化させる',
+    messages: [
+        '「虚無の一部となれ...それがお前の新たな『非存在』だ」',
+        '<USER>は<TARGET>を虚無の一部として完全に同化させる！',
+        '<TARGET>は個の概念を失い、虚無の王と一体化した非存在となった...'
+    ],
+    weight: 25,
+    playerStateCondition: 'defeated'
+}
+```
 
 ## 🔧 技術実装詳細
 
