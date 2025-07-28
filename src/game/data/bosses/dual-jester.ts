@@ -234,7 +234,6 @@ const dualJesterEternalActions: BossAction[] = [
 
 // AI戦略: 二面性とフェーズ管理
 const dualJesterAIStrategy = (boss: Boss, player: Player, turn: number): BossAction => {
-    const playerHpPercentage = player.getHpPercentage();
     const bossHpPercentage = boss.getHpPercentage();
     
     // フェーズ判定: HP50%以下で第2フェーズ（裏の顔）に切り替え
