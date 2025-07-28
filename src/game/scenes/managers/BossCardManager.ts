@@ -23,12 +23,15 @@ export class BossCardManager {
      */
     generateBossCards(): void {
         const container = document.getElementById('boss-cards-container');
-        if (!container) return;
+        if (!container) {
+            console.error('[BossCardManager] boss-cards-container not found');
+            return;
+        }
         
         // Get all boss data and sort by explorerLevelRequired first, then by id
         const allBossData = getAllBossData();
         if (!allBossData || allBossData.length === 0) {
-            console.error('No boss data found');
+            console.error('[BossCardManager] No boss data found');
             return;
         }
         

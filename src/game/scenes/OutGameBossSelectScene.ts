@@ -34,6 +34,9 @@ export class OutGameBossSelectScene extends BaseOutGameScene {
         // ナビゲーションバーのアクティブ状態更新
         this.updateNavigationActiveState();
         
+        // ボスカードが生成されているかチェック、なければ生成
+        this.ensureBossCardsGenerated();
+        
         // ボスカード情報更新
         this.bossCardManager.updateBossCards();
         
@@ -184,5 +187,22 @@ export class OutGameBossSelectScene extends BaseOutGameScene {
             'player-summary-weapon': equipment.weapon?.name || '素手',
             'player-summary-armor': equipment.armor?.name || 'はだか'
         });
+    }
+    
+    /**
+     * ボスカードが生成されているかチェックし、なければ生成
+     */
+    private ensureBossCardsGenerated(): void {
+        const container = document.getElementById('boss-cards-container');
+        if (!container) {
+            console.error('boss-cards-container not found');
+            return;
+        }
+        
+        // コンテナが空（カードが生成されていない）場合は生成
+        if (container.children.length === 0) {
+            console.log('[OutGameBossSelectScene] Boss cards not found, generating...');
+            this.bossCardManager.generateBossCards();
+        }
     }
 }
