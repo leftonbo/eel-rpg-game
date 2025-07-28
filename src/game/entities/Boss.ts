@@ -712,7 +712,16 @@ export class Boss extends Actor {
             return messages;
         }
         
-        const statusChance = action.statusChance !== undefined ? action.statusChance : DEFAULT_STATUS_CHANCE;
+        let statusChance = action.statusChance !== undefined ? action.statusChance : DEFAULT_STATUS_CHANCE;
+        
+        // Apply debuff chance modifier only if the status chance is not guaranteed (1.0)
+        if (statusChance < 1.0) {
+            const debuffModifier = player.statusEffects.getDebuffChanceModifier();
+            statusChance = statusChance * debuffModifier;
+            // Clamp the final chance to valid range [0.0, 1.0]
+            statusChance = Math.max(0.0, Math.min(1.0, statusChance));
+        }
+        
         if (Math.random() < statusChance) {
             player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
             messages.push(`${player.name}が${StatusEffectManager.getEffectName(action.statusEffect)}状態になった！`);
