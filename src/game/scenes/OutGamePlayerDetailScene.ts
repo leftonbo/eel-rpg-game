@@ -1,9 +1,14 @@
 import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
-import { AbilitySystem } from '../systems/AbilitySystem';
+import { AbilitySystem, AbilityData } from '../systems/AbilitySystem';
 import { EquipmentSelectorComponent } from './components/EquipmentSelectorComponent';
 import { SkillDisplayComponent } from './components/SkillDisplayComponent';
 import { Player } from '@/game/entities/Player';
+
+// 拡張されたアビリティデータ型（experienceToNextを含む）
+interface ExtendedAbilityData extends AbilityData {
+    experienceToNext: number;
+}
 
 export class OutGamePlayerDetailScene extends BaseOutGameScene {
     
@@ -71,7 +76,7 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
     /**
      * プレイヤー統計タブの更新
      */
-    private updatePlayerStatsTab(player: any, abilityLevels: any): void {
+    private updatePlayerStatsTab(player: Player, abilityLevels: { [key: string]: ExtendedAbilityData }): void {
         this.updateElement('detail-max-hp', player.maxHp.toString());
         this.updateElement('detail-max-mp', player.maxMp.toString());
         this.updateElement('detail-attack', player.getAttackPower().toString());
@@ -79,7 +84,7 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
         this.updateElement('detail-armor-bonus', player.equipmentManager.getArmorHpBonus().toString());
         
         // アビリティレベル
-        Object.entries(abilityLevels).forEach(([abilityType, data]: [string, any]) => {
+        Object.entries(abilityLevels).forEach(([abilityType, data]: [string, ExtendedAbilityData]) => {
             const prefix = abilityType.toLowerCase();
             this.updateElement(`${prefix}-level`, data.level.toString());
             this.updateElement(`${prefix}-exp`, data.experience.toString());
@@ -106,7 +111,7 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
     /**
      * アビリティのプログレスバー更新
      */
-    private updateProgressBar(prefix: string, data: any, abilitySystem: AbilitySystem): void {
+    private updateProgressBar(prefix: string, data: ExtendedAbilityData, abilitySystem: AbilitySystem): void {
         const progressElement = document.getElementById(`${prefix}-progress`);
         if (!progressElement) return;
         
@@ -126,7 +131,7 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
     /**
      * エクスプローラー統計セクション更新
      */
-    private updateExplorerStatsSection(data: any, abilitySystem: AbilitySystem): void {
+    private updateExplorerStatsSection(data: ExtendedAbilityData, abilitySystem: AbilitySystem): void {
         this.updateElement('explorer-level-stats', data.level.toString());
         this.updateElement('explorer-exp-stats', data.experience.toString());
         
@@ -241,7 +246,7 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
     /**
      * プログレスバー用の経験値データ計算
      */
-    private calculateExperienceData(data: any, abilitySystem: AbilitySystem): { currentLevelExp: number; levelRangeExp: number; percentage: number } {
+    private calculateExperienceData(data: ExtendedAbilityData, abilitySystem: AbilitySystem): { currentLevelExp: number; levelRangeExp: number; percentage: number } {
         const currentLevelRequirement = abilitySystem.getRequiredExperienceForLevel(data.level);
         const nextLevelRequirement = abilitySystem.getRequiredExperienceForLevel(data.level + 1);
         const currentLevelExp = data.experience - currentLevelRequirement;

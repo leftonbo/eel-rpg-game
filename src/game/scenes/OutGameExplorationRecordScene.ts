@@ -1,9 +1,14 @@
 import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
-import { AbilityType, AbilitySystem } from '../systems/AbilitySystem';
+import { AbilityType, AbilitySystem, AbilityData } from '../systems/AbilitySystem';
 import { getAllBossData } from '../data';
 import { Trophy } from '../systems/MemorialSystem';
 import { TrophyDisplayComponent } from './components/TrophyDisplayComponent';
+
+// 拡張されたアビリティデータ型（experienceToNextを含む）
+interface ExtendedAbilityData extends AbilityData {
+    experienceToNext: number;
+}
 
 export class OutGameExplorationRecordScene extends BaseOutGameScene {
     
@@ -77,7 +82,7 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
     /**
      * プログレスバーの更新
      */
-    private updateProgressBar(prefix: string, data: any, abilitySystem: AbilitySystem): void {
+    private updateProgressBar(prefix: string, data: ExtendedAbilityData, abilitySystem: AbilitySystem): void {
         const progressElement = document.getElementById(`${prefix}-progress`);
         if (!progressElement) return;
         
@@ -143,7 +148,7 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
     /**
      * プログレスバー用の経験値データ計算
      */
-    private calculateExperienceData(data: any, abilitySystem: AbilitySystem): { currentLevelExp: number; levelRangeExp: number; percentage: number } {
+    private calculateExperienceData(data: ExtendedAbilityData, abilitySystem: AbilitySystem): { currentLevelExp: number; levelRangeExp: number; percentage: number } {
         const currentLevelRequirement = abilitySystem.getRequiredExperienceForLevel(data.level);
         const nextLevelRequirement = abilitySystem.getRequiredExperienceForLevel(data.level + 1);
         const currentLevelExp = data.experience - currentLevelRequirement;
