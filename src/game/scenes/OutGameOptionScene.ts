@@ -47,7 +47,7 @@ export class OutGameOptionScene extends BaseOutGameScene {
         const clearButton = document.getElementById('delete-save-data-btn');
         if (clearButton) {
             clearButton.addEventListener('click', () => {
-                this.handleClearSaveData();
+                this.handleDeleteSaveData();
             });
         }
         
@@ -150,10 +150,11 @@ export class OutGameOptionScene extends BaseOutGameScene {
     }
     
     /**
-     * セーブデータクリア処理
+     * セーブデータ削除処理
      */
-    private handleClearSaveData(): void {
-        if (confirm('本当にセーブデータを削除しますか？この操作は取り返しがつきません。')) {
+    private async handleDeleteSaveData(): Promise<void> {
+        const confirmed = await ModalUtils.showConfirm('全てのセーブデータを削除しますか？この操作は取り消せません。');
+        if (confirmed) {
             try {
                 PlayerSaveManager.clearSaveData();
                 ModalUtils.showToast('セーブデータを削除しました', 'success');
