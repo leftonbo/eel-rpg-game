@@ -192,6 +192,19 @@ export class StatusEffectManager {
         return modifier;
     }
     
+    getDebuffChanceModifier(): number {
+        let modifier = 1.0;
+        
+        for (const [type, _effect] of this.effects) {
+            const config = StatusEffectManager.configs.get(type);
+            if (config?.modifiers?.debuffChanceModifier !== undefined) {
+                modifier *= config.modifiers.debuffChanceModifier;
+            }
+        }
+        
+        return modifier;
+    }
+    
     getHpRegenerateModifier(): number {
         let modifier = 1.0;
         
