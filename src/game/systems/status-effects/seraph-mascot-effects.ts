@@ -8,7 +8,7 @@ export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfi
         description: 'ダメージが2倍になるが、状態異常に対する耐性が向上する',
         duration: 15,
         category: 'debuff',
-        isDebuff: false,
+        isDebuff: true,
         modifiers: {
             damageReceived: 2.0,       // ダメージ2倍
             struggleRate: 1.3,         // もがく成功率向上
