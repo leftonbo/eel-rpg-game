@@ -272,9 +272,11 @@ const dualJesterDevourActions: BossAction[] = [
         name: '狂気の遊び場',
         description: '体内の歪んだ空間でプレイヤーを翻弄する',
         messages: [
-            '「ずっと一緒にいようね♪」',
-            '「君はとても美味しいよ...もう離さない」',
-            '<TARGET>は二重人格の狂気に翻弄され続ける！'
+            '体内は歪んだ遊び場と化している...壁は脈打つ肉でできており、不気味なおもちゃが宙に浮いている',
+            '「ここは僕の特別な遊び場だよ〜♪」（表の人格）',
+            '「君はもう永遠にここから出られない...」（裏の人格が低く囁く）',
+            '歪んだメリーゴーラウンドが<TARGET>の周りを回転し、錆びた鉄の音が響く！',
+            '<TARGET>は狂気の遊び場で二重人格の支配下に置かれ続ける！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.8,
         statusEffect: StatusEffectType.Bipolar,
@@ -288,10 +290,11 @@ const dualJesterDevourActions: BossAction[] = [
         name: '二重消化',
         description: '表裏の人格が同時に消化を進める',
         messages: [
-            '「一緒に遊ぼうよ〜♪」',
-            '「永遠に我が物にしてやる...」',
-            '<USER>の二つの人格が同時に<TARGET>を消化しようとする！',
-            '<TARGET>の最大HPが二重の力で削られていく...'
+            '体内の肉壁がゆっくりと蠕動し、<TARGET>を包み込んでいく...',
+            '「一緒に遊ぼうよ〜♪　お腹の中であったか〜い♪」（表の無邪気な声）',
+            '「貴様の全てを我が物にしてやる...肉も、骨も、魂も...」（裏の冷酷な声）',
+            'ピンクと紫の消化液が<TARGET>を包み、二つの異なる人格が同時に消化を進める！',
+            '<TARGET>の生命力が表裏の人格によって二重に削り取られていく...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 2.0,
         weight: 30,
@@ -303,15 +306,89 @@ const dualJesterDevourActions: BossAction[] = [
         name: '悪夢の抱擁',
         description: '甘い夢と恐ろしい悪夢を同時に見せる',
         messages: [
-            '「楽しい夢を見せてあげる♪」',
-            '「...それとも悪夢がお好み？」',
-            '<USER>は<TARGET>に甘美な夢と恐ろしい悪夢を同時に体験させる！',
-            '<TARGET>は現実と幻想の境界を見失った！'
+            '体内の空間が突然変化し、まるで子供部屋のような温かい光に包まれる...',
+            '「楽しい夢を見せてあげる♪　ママのお腹の中みたいに安心でしょ〜？」（優しい表の声）',
+            '突然光が消え、壁に無数の目玉が浮かび上がる！',
+            '「...それとも永遠の悪夢がお好み？フフフ...」（背筋が凍る裏の声）',
+            '<TARGET>は体内で甘美な安らぎと恐ろしい悪夢を同時に体験させられる！',
+            '現実と幻想、安心と恐怖の境界が完全に崩壊した！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.8,
         statusEffect: StatusEffectType.FalseSecurity,
         statusChance: 0.60,
         weight: 25,
+        playerStateCondition: 'eaten'
+    },
+    {
+        id: 'toy-room-assault',
+        type: ActionType.DevourAttack,
+        name: 'おもちゃ部屋襲撃',
+        description: '体内の歪んだおもちゃ部屋から攻撃を仕掛ける',
+        messages: [
+            '体内の空間が突然おもちゃ部屋に変化し、床には無数の割れた人形の破片が散らばっている...',
+            '「僕のお友達も一緒に遊びたがってるよ〜♪」（表の人格が無邪気に笑う）',
+            '壊れたテディベアやロボットが一斉に動き出し、錆びた手で<TARGET>を掴もうとする！',
+            '「遊んでくれなかった子たちの恨みを知ってるかい？」（裏の人格が不気味に微笑む）',
+            '<TARGET>は無数のおもちゃの怨念に囲まれ、小さな手に引き裂かれていく！'
+        ],
+        damageFormula: (user: Boss) => user.attackPower * 1.6,
+        statusEffect: StatusEffectType.Fear,
+        statusChance: 0.55,
+        weight: 28,
+        playerStateCondition: 'eaten'
+    },
+    {
+        id: 'internal-carousel',
+        type: ActionType.DevourAttack,
+        name: '体内メリーゴーラウンド',
+        description: '体内に現れたメリーゴーラウンドが回転攻撃を仕掛ける',
+        messages: [
+            '体内に巨大なメリーゴーラウンドが現れ、不協和音のオルゴールメロディが響き始める...',
+            '「回って〜回って〜楽しいね〜♪」（表の人格が手を叩いて喜ぶ）',
+            '木馬に乗った骸骨や腐った天使の人形が<TARGET>の周りをぐるぐると回り続ける！',
+            '「目が回るまで回ろう...そして永遠に回り続けるんだ」（裏の人格が低く囁く）',
+            'メリーゴーラウンドの回転速度が異常に速くなり、<TARGET>は激しい遠心力で肉壁に叩きつけられる！'
+        ],
+        damageFormula: (user: Boss) => user.attackPower * 1.9,
+        statusEffect: StatusEffectType.Confusion,
+        statusChance: 0.75,
+        weight: 32,
+        playerStateCondition: 'eaten'
+    },
+    {
+        id: 'broken-puppet-dance',
+        type: ActionType.DevourAttack,
+        name: '壊れた人形の踊り',
+        description: '糸で操られた壊れた人形たちが不気味な踊りを踊る',
+        messages: [
+            '体内の天井から無数の糸が垂れ下がり、壊れた人形たちが宙に浮かび上がる...',
+            '「人形劇の時間だよ〜♪ みんなで踊ろうね〜♪」（表の人格が糸を操る）',
+            '首の取れた人形、腕のない人形、顔の半分が溶けた人形...それらが<TARGET>の周りで踊り狂う！',
+            '「美しい踊りだろう？君もすぐに人形の仲間入りだ...」（裏の人格が糸を強く引く）',
+            '人形たちの壊れた手足が<TARGET>に絡みつき、同じ踊りを強要しようとする！'
+        ],
+        damageFormula: (user: Boss) => user.attackPower * 1.7,
+        statusEffect: StatusEffectType.Paralysis,
+        statusChance: 0.60,
+        weight: 30,
+        playerStateCondition: 'eaten'
+    },
+    {
+        id: 'flesh-playground-torment',
+        type: ActionType.DevourAttack,
+        name: '肉の遊び場拷問',
+        description: '体内の肉で出来た遊具で拷問的な遊びを強要する',
+        messages: [
+            '体内の肉壁が蠢き、ブランコやシーソー、滑り台が肉塊から生成される...',
+            '「遊園地みたいでしょ〜♪ でも全部僕の体の一部なんだよ〜♪」（表の人格が嬉しそうに説明）',
+            '肉で出来たブランコが<TARGET>を掴み、激しく振り回し始める！',
+            '「遊びは楽しいが...時には痛みも必要だ」（裏の人格の声と共に遊具が牙を剥く）',
+            '<TARGET>は肉の遊具に押し潰され、引き裂かれ、二重人格の快楽的な拷問に晒され続ける！'
+        ],
+        damageFormula: (user: Boss) => user.attackPower * 2.1,
+        statusEffect: StatusEffectType.Manic,
+        statusChance: 0.65,
+        weight: 35,
         playerStateCondition: 'eaten'
     }
 ];
@@ -324,9 +401,12 @@ const dualJesterEternalActions: BossAction[] = [
         name: '永遠の遊び相手',
         description: '永遠に遊び続ける相手として保管する',
         messages: [
-            '「今日から君は僕だけのもの」',
-            '<USER>は<TARGET>を永遠の遊び相手として体内に留める！',
-            '目覚めることはないが、それも愛の形だと囁かれる...'
+            '戦闘は終わった...しかし、真の恐怖はここから始まる。',
+            '「やったぁ〜！勝った勝った〜♪　これで君は僕だけのお友達だよ〜♪」（表の人格が純真に喜ぶ）',
+            '「永遠に、永遠に...二度と離さない。二度と逃げさせない。」（裏の人格が冷酷に宣言）',
+            '<TARGET>の意識が徐々に遠のく中、二つの人格が交互に現れ、永遠の支配を宣言する！',
+            '「みんなのお友達になったね〜♪」「私のコレクションに加わったな...」',
+            '目覚めることは二度とない...それが絶対的な愛の証明だと二重の声が囁く...'
         ],
         weight: 35,
         playerStateCondition: 'defeated'
@@ -337,9 +417,12 @@ const dualJesterEternalActions: BossAction[] = [
         name: '完璧な玩具',
         description: '理想的な玩具として永続的に保管する',
         messages: [
-            '「君はとても良い玩具だった...永遠に大切にしよう」',
-            '<USER>は<TARGET>を最高の玩具として認定し、大切に保管する！',
-            '心配しないで、とても楽しい夢を見せてあげると約束される...'
+            '<TARGET>の抵抗する力が完全に失われ、人形のように動かなくなった...',
+            '「やった〜！新しいお人形さんの完成だよ〜♪」（表の人格が手を叩いて喜ぶ）',
+            '「完璧だ...完璧な玩具の完成だ。これで私のコレクションがまた一つ増えた。」（裷の人格が満足げに微笑む）',
+            '「もう痛くはないからね〜！変わりにずっとずっと楽しい夢を見られるよ〜♪」',
+            '「現実はもう必要ない。夢の中で永遠に私と遊んでいればいい...」',
+            '<TARGET>の魂が徐々に道化師の精神世界に吸収され、絶対に逃げられない玩具として永続保管される...'
         ],
         statusEffect: StatusEffectType.Bipolar,
         statusChance: 0.80,
@@ -352,11 +435,72 @@ const dualJesterEternalActions: BossAction[] = [
         name: '終わらない遊び',
         description: '永続的な遊びのサイクルを開始する',
         messages: [
-            '「遊びは終わらないよ...ずっと、ずっと♪」',
-            '<USER>は<TARGET>を永続的な遊びのサイクルに組み込む！',
-            '<TARGET>は表裏の人格に代わる代わる遊ばれ続ける...'
+            '時間の概念が失われ、<TARGET>は終わりのないループに閉じ込められる...',
+            '「遊びは終わらないよ...ずっと、ずっと、永遠に♪」（表の人格が無邪気に笑う）',
+            '「かくれんぼ、おもちゃあそび、人形遊び...ローテーションで永遠に繰り返すのだ。」（裷の人格が冷酷に計画を説明）',
+            '<TARGET>の意識は表の人格と裷の人格の間で永遠に揺れ動かされる！',
+            '「今日はおもちゃあそび〜♪明日はかくれんぼ〜♪」',
+            '「明後日は拷問遊びだな...その次は解体遊びか？」',
+            '終わりのない恐怖のサイクルが始まり、<TARGET>は永遠に異なる二つの人格に遊ばれ続けることになった...'
         ],
         weight: 25,
+        playerStateCondition: 'defeated'
+    },
+    {
+        id: 'memory-rewrite',
+        type: ActionType.PostDefeatedAttack,
+        name: '記憶書換術',
+        description: '記憶を書き換えて永続的な支配を確立する',
+        messages: [
+            '時間が逆行するような感覚が<TARGET>を包み、過去の記憶が歪み始める...',
+            '「痛い記憶は消してあげる〜♪ 楽しい記憶だけ残してあげるね〜♪」（表の人格が優しく微笑む）',
+            '「苦痛も、恐怖も、抵抗も...全て私が都合よく書き換えてやろう」（裏の人格が冷笑する）',
+            '<TARGET>の脳内で記憶が次々と塗り替えられ、道化師と「楽しく遊んだ」偽りの思い出が植え付けられる！',
+            '「ほら、こんなに楽しかったでしょ〜♪ ずっと一緒にいたかったんでしょ〜♪」',
+            '「抵抗など最初からなかった...君は自ら私の元に来たのだ」',
+            '<TARGET>の真の記憶は闇に葬られ、道化師への絶対的な愛だけが残された...'
+        ],
+        statusEffect: StatusEffectType.FalseSecurity,
+        statusChance: 0.90,
+        weight: 32,
+        playerStateCondition: 'defeated'
+    },
+    {
+        id: 'dual-soul-binding',
+        type: ActionType.PostDefeatedAttack,
+        name: '双魂束縛',
+        description: '魂を二重に束縛する暗黒の儀式',
+        messages: [
+            '空間に不気味な魔法陣が浮かび上がり、<TARGET>の魂が二つに引き裂かれようとしている...',
+            '「僕の魂と君の魂を繋げちゃおう〜♪ そうすれば永遠に一緒だよ〜♪」（表の人格が無邪気に提案）',
+            '「一つは私の表の人格に、もう一つは裏の人格に...完全に支配してやる」（裏の人格が邪悪に宣言）',
+            '<TARGET>の魂が無理やり二等分され、それぞれが道化師の異なる人格に鎖で繋がれる！',
+            '「これで君は僕の一部だね〜♪ 僕も君の一部になったよ〜♪」',
+            '「逃げ場はない...君の魂は私の魂の奴隷となった」',
+            '双魂の鎖が<TARGET>の存在を完全に束縛し、独立した意思を永遠に奪い去った！'
+        ],
+        statusEffect: StatusEffectType.Bipolar,
+        statusChance: 0.95,
+        weight: 35,
+        playerStateCondition: 'defeated'
+    },
+    {
+        id: 'infinite-dollhouse',
+        type: ActionType.PostDefeatedAttack,
+        name: '無限人形館',
+        description: '無限に続くドールハウスに閉じ込める',
+        messages: [
+            '周囲の景色が急速に変化し、巨大なドールハウスの内部に変貌していく...',
+            '「わ〜い！新しいドールハウスの完成だよ〜♪ 君専用の特別なお家だよ〜♪」（表の人格が嬉しそうに手を叩く）',
+            '「部屋から部屋へ...階段を上っても下りても...永遠に続く迷宮だ」（裏の人格が冷酷に説明）',
+            '<TARGET>は人形サイズに縮小され、無数の部屋が連なる無限のドールハウスに放り込まれる！',
+            '「どの部屋にも僕がいるよ〜♪ 表の僕と裏の僕が〜♪」',
+            '「出口は存在しない...君はここで永遠に私の人形として生き続けるのだ」',
+            '無限に続く階段、無限に続く廊下、そして無限に続く恐怖...これが<TARGET>の新しい現実となった。'
+        ],
+        statusEffect: StatusEffectType.Confusion,
+        statusChance: 0.85,
+        weight: 28,
         playerStateCondition: 'defeated'
     }
 ];
