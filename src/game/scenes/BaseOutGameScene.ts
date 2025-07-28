@@ -7,6 +7,7 @@ import { Game, GameState } from '../Game';
 export abstract class BaseOutGameScene {
     protected game: Game;
     protected sceneId: string;
+    private static navigationListenersSetup: boolean = false;
     
     constructor(game: Game, sceneId: string) {
         this.game = game;
@@ -30,6 +31,11 @@ export abstract class BaseOutGameScene {
      * ナビゲーションバーのイベントリスナー設定
      */
     private setupNavigationListeners(): void {
+        // 重複登録を防ぐため、既にリスナーが設定されているかチェック
+        if (BaseOutGameScene.navigationListenersSetup) {
+            return;
+        }
+        
         // ボス選択
         const bossSelectNavBtn = document.getElementById('nav-boss-select');
         if (bossSelectNavBtn) {
@@ -69,6 +75,8 @@ export abstract class BaseOutGameScene {
                 this.game.setState(GameState.OutGameOption);
             });
         }
+        
+        BaseOutGameScene.navigationListenersSetup = true;
     }
     
     /**
