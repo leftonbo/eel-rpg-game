@@ -54,7 +54,7 @@ const dualJesterPhase1Actions: BossAction[] = [
     },
     {
         id: 'pretend-swallow',
-        type: ActionType.EatAttack,
+        type: ActionType.Attack,
         name: '捕食ごっこ',
         description: '食べる真似をするが実際は食べない',
         messages: [
@@ -62,6 +62,7 @@ const dualJesterPhase1Actions: BossAction[] = [
             '<USER>は<TARGET>を口に入れるような素振りを見せる！',
             'でも実際は演技のようで、本気ではないようだ...'
         ],
+        hitRate: 0.0,
         weight: 20,
         canUse: (_boss, player, _turn) => {
             return player.isRestrained() && Math.random() < 0.25;
@@ -132,7 +133,7 @@ const dualJesterPhase2Actions: BossAction[] = [
         ],
         weight: 25,
         canUse: (_boss, player, _turn) => {
-            return player.isRestrained() && player.getHpPercentage() < 0.30;
+            return player.isRestrained() && player.getHpPercentage() < 30;
         }
     }
 ];
@@ -237,7 +238,7 @@ const dualJesterAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
     const bossHpPercentage = boss.getHpPercentage();
     
     // フェーズ判定: HP50%以下で第2フェーズ（裏の顔）に切り替え
-    const isPhase2 = bossHpPercentage <= 0.50;
+    const isPhase2 = bossHpPercentage <= 50;
     
     // カスタム変数でフェーズ切り替えを管理
     const hasTransformed = boss.getCustomVariable<boolean>('hasTransformed', false);
