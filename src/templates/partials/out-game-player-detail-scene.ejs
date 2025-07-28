@@ -1,0 +1,54 @@
+<!-- Out Game Player Detail Screen -->
+<div id="out-game-player-detail-screen" class="scene d-none">
+    <%- include('out-game-navigation') %>
+    
+    <div class="container-fluid flex-grow-1 d-flex flex-column">
+        <!-- Player Detail Content -->
+        <div class="row mt-4 flex-grow-1">
+            <div class="col-12">
+                <div class="card bg-dark">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <span id="player-detail-icon">🐍</span>
+                            <span id="player-detail-name">エルナル</span> - 詳細ステータス
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-outline-info ms-2"
+                                id="edit-player-info-btn"
+                            >
+                                ✏️ 編集
+                            </button>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Tabs -->
+                        <ul class="nav nav-tabs mb-3" id="player-details-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="stats-tab" data-bs-toggle="tab" href="#stats-panel">ステータス</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="equipment-tab" data-bs-toggle="tab" href="#equipment-panel">装備</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="skills-tab" data-bs-toggle="tab" href="#skills-panel">スキル</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="items-tab" data-bs-toggle="tab" href="#items-panel">アイテム</a>
+                            </li>
+                        </ul>
+                        
+                        <!-- Tab Contents -->
+                        <div class="tab-content">
+                            <%- include('player-stats-panel') %>
+                            <%- include('player-equipment-panel') %>
+                            <%- include('player-skills-panel') %>
+                            <%- include('player-items-panel') %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <%- include('out-game-footer') %>
+</div>

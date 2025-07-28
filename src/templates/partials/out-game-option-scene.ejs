@@ -1,0 +1,107 @@
+<!-- Out Game Option Screen -->
+<div id="out-game-option-screen" class="scene d-none">
+    <%- include('out-game-navigation') %>
+    
+    <div class="container-fluid flex-grow-1 d-flex flex-column">
+        <!-- Option Content -->
+        <div class="row mt-4 flex-grow-1">
+            <div class="col-12">
+                <div class="card bg-dark">
+                    <div class="card-header">
+                        <h5 class="mb-0">⚙️ オプション</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Message Container -->
+                        <div id="option-message-container" class="mb-3"></div>
+                        
+                        <!-- Player Information -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6>プレイヤー情報</h6>
+                                <div class="card bg-secondary">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <strong>名前:</strong>
+                                                <span id="player-name-display">エルナル</span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>エクスプローラーLv:</strong>
+                                                <span id="player-explorer-level-display">1</span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>撃破済みボス数:</strong>
+                                                <span id="defeated-boss-count-display">0</span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>セーブデータ:</strong>
+                                                <span id="save-data-status">存在</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Data Management -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6>データ管理</h6>
+                                <div class="card bg-secondary">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4 mb-2">
+                                                <button id="export-save-data-btn" class="btn btn-info w-100">
+                                                    📤 セーブデータエクスポート
+                                                </button>
+                                            </div>
+                                            <div class="col-md-4 mb-2">
+                                                <button id="import-save-data-btn" class="btn btn-warning w-100">
+                                                    📥 セーブデータインポート
+                                                </button>
+                                            </div>
+                                            <div class="col-md-4 mb-2">
+                                                <button id="clear-save-data-btn" class="btn btn-danger w-100">
+                                                    🗑️ セーブデータクリア
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3">
+                                            <small class="text-muted">
+                                                エクスポート: セーブデータをJSONファイルとしてダウンロード<br>
+                                                インポート: 以前エクスポートしたJSONファイルを読み込み<br>
+                                                クリア: 全てのセーブデータを削除（復元不可）
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Game Settings -->
+                        <div class="row">
+                            <div class="col-12">
+                                <h6>ゲーム設定</h6>
+                                <div class="card bg-secondary">
+                                    <div class="card-body">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="debug-mode-toggle">
+                                            <label class="form-check-label" for="debug-mode-toggle">
+                                                デバッグモード
+                                            </label>
+                                            <div class="form-text">
+                                                デバッグ機能を有効にします（開発者向け）
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <%- include('out-game-footer') %>
+</div>
