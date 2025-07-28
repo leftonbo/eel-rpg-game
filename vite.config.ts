@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import { ViteEjsPlugin } from 'vite-plugin-ejs';
 import { visualizer } from 'rollup-plugin-visualizer';
+import liveReload from 'vite-plugin-live-reload';
 import path from 'path';
 
 /// <reference types="vitest" />
@@ -29,6 +30,8 @@ export default defineConfig(({ mode }) => {
           beautify: !isProduction
         }
       }),
+      // Live reload for EJS templates (development only)
+      ...(!isProduction ? [liveReload('src/templates/**/*.ejs')] : []),
       // Bundle analyzer (conditional)
       ...(analyze ? [visualizer({
         filename: 'dist/stats.html',
