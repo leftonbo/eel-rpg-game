@@ -307,13 +307,26 @@ const seraphMascotAIStrategy = (boss: Boss, player: Player, turn: number): BossA
             }
         }
         
-        // 重み付きランダム選択
-        const totalWeight = protectionActions.reduce((sum, action) => sum + action.weight, 0);
+        // 重み付きランダム選択（salvation-cycleのクールダウンチェック付き）
+        const availableActions = protectionActions.filter(action => {
+            if (action.id === 'salvation-cycle') {
+                // クールダウンチェック（20ターン）
+                const lastUsed = boss.getCustomVariable<number>('salvationAbilityLastUsed', -1);
+                return lastUsed === -1 || turn - lastUsed >= 20;
+            }
+            return true;
+        });
+        
+        const totalWeight = availableActions.reduce((sum, action) => sum + action.weight, 0);
         let random = Math.random() * totalWeight;
         
-        for (const action of protectionActions) {
+        for (const action of availableActions) {
             random -= action.weight;
             if (random <= 0) {
+                // salvation-cycle使用時はクールダウン記録
+                if (action.id === 'salvation-cycle') {
+                    boss.setCustomVariable('salvationAbilityLastUsed', turn);
+                }
                 return action;
             }
         }
@@ -354,11 +367,16 @@ const seraphMascotAIStrategy = (boss: Boss, player: Player, turn: number): BossA
     if (player.isRestrained()) {
         const careActions = seraphMascotCareActions;
         
-        // 救済状態でない場合は準備を優先
+        // 救済状態でない場合は準備を優先（クールダウンチェック付き）
         if (!isPlayerInSalvation && Math.random() < 0.6) {
             const preparationAction = careActions.find(action => action.id === 'salvation-preparation');
             if (preparationAction) {
-                return preparationAction;
+                // クールダウンチェック（20ターン）
+                const lastUsed = boss.getCustomVariable<number>('salvationAbilityLastUsed', -1);
+                if (lastUsed === -1 || turn - lastUsed >= 20) {
+                    boss.setCustomVariable('salvationAbilityLastUsed', turn);
+                    return preparationAction;
+                }
             }
         }
         
@@ -500,7 +518,8 @@ export const seraphMascotData: BossData = {
         salvationNeeds: 0,           // 救済必要度レベル
         currentTurn: 0,              // 現在ターン数
         postDefeatedTurn: 0,         // 敗北後ターン数
-        hasUsedCompleteProtection: false  // 完全保護使用フラグ
+        hasUsedCompleteProtection: false,  // 完全保護使用フラグ
+        salvationAbilityLastUsed: -1 // 救済能力(preparation/cycle)共通クールダウン
     }
 };
 
