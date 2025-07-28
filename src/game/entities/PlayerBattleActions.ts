@@ -170,7 +170,14 @@ export class PlayerBattleActions {
         passiveSkills.forEach(skill => {
             switch (skill.passiveEffect) {
                 case 'regeneration':
-                    const healAmount = Math.max(1, Math.round(this.player.maxHp / PlayerConstants.REGENERATION_HEAL_DIVISOR));
+                    const healAmount = Math.max(
+                        1,
+                        Math.round(
+                            this.player.maxHp
+                            * this.player.statusEffects.getHpRegenerateModifier()
+                            / PlayerConstants.REGENERATION_HEAL_DIVISOR
+                        )
+                    );
                     if (!this.player.isKnockedOut() && !this.player.isAnyRestrained() && this.player.hp < this.player.maxHp) {
                         this.player.heal(healAmount);
                     }

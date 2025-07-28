@@ -384,7 +384,7 @@ export class Player extends Actor {
         
         // 食べられ状態でない場合、ターン開始時にマナ回復
         if (!this.statusEffects.isEaten() && this.maxMp > 0) {
-            const mpRecovery = this.getMpRecoveryAmount();
+            const mpRecovery = this.getMpRegenerateAmount();
             this.recoverMp(mpRecovery);
         }
     }
@@ -394,9 +394,9 @@ export class Player extends Actor {
      * 子クラスでオーバーライド可能
      * @returns マナ回復量（状態異常効果を含む）
      */
-    getMpRecoveryAmount(): number {
+    getMpRegenerateAmount(): number {
         const baseRecovery = Math.floor(this.maxMp / 10);
-        const modifier = this.statusEffects.getMpRecoveryModifier();
+        const modifier = this.statusEffects.getMpRegenerateModifier();
         return Math.floor(baseRecovery * modifier);
     }
     

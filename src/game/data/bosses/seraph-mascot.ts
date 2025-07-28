@@ -307,13 +307,26 @@ const seraphMascotAIStrategy = (boss: Boss, player: Player, turn: number): BossA
             }
         }
         
-        // 重み付きランダム選択
-        const totalWeight = protectionActions.reduce((sum, action) => sum + action.weight, 0);
+        // 重み付きランダム選択（salvation-cycleのクールダウンチェック付き）
+        const availableActions = protectionActions.filter(action => {
+            if (action.id === 'salvation-cycle') {
+                // クールダウンチェック（20ターン）
+                const lastUsed = boss.getCustomVariable<number>('salvationAbilityLastUsed', -1);
+                return lastUsed === -1 || turn - lastUsed >= 20;
+            }
+            return true;
+        });
+        
+        const totalWeight = availableActions.reduce((sum, action) => sum + action.weight, 0);
         let random = Math.random() * totalWeight;
         
-        for (const action of protectionActions) {
+        for (const action of availableActions) {
             random -= action.weight;
             if (random <= 0) {
+                // salvation-cycle使用時はクールダウン記録
+                if (action.id === 'salvation-cycle') {
+                    boss.setCustomVariable('salvationAbilityLastUsed', turn);
+                }
                 return action;
             }
         }
@@ -354,11 +367,16 @@ const seraphMascotAIStrategy = (boss: Boss, player: Player, turn: number): BossA
     if (player.isRestrained()) {
         const careActions = seraphMascotCareActions;
         
-        // 救済状態でない場合は準備を優先
+        // 救済状態でない場合は準備を優先（クールダウンチェック付き）
         if (!isPlayerInSalvation && Math.random() < 0.6) {
             const preparationAction = careActions.find(action => action.id === 'salvation-preparation');
             if (preparationAction) {
-                return preparationAction;
+                // クールダウンチェック（20ターン）
+                const lastUsed = boss.getCustomVariable<number>('salvationAbilityLastUsed', -1);
+                if (lastUsed === -1 || turn - lastUsed >= 20) {
+                    boss.setCustomVariable('salvationAbilityLastUsed', turn);
+                    return preparationAction;
+                }
             }
         }
         
@@ -421,7 +439,7 @@ const seraphMascotAIStrategy = (boss: Boss, player: Player, turn: number): BossA
 export const seraphMascotData: BossData = {
     id: 'seraph-mascot',
     name: 'SeraphMascot',
-    displayName: '☁️ セラフィマスコット',
+    displayName: '☁️ セラフィムマスコット',
     description: '善意溢れる巨大天使マスコット',
     questNote: '天空の彼方から、巨大な天使のような存在が降りてきた。それは無垢な笑顔で「みんなを救済してあげる〜♪」と言いながら、その圧倒的な大きさで街を踏み荒らしている。善意に満ちた瞳は、あなたを「救済が必要な存在」として認識したようだ...',
     maxHp: 520,
@@ -447,7 +465,7 @@ export const seraphMascotData: BossData = {
         {
             speaker: 'boss',
             style: 'default',
-            text: 'セラフィマスコットがあなたを見下ろしている。その善意に満ちた瞳が、あなたを「救済対象」として認識した！'
+            text: 'セラフィムマスコットがあなたを見下ろしている。その善意に満ちた瞳が、あなたを「救済対象」として認識した！'
         },
         {
             speaker: 'boss',
@@ -470,18 +488,18 @@ export const seraphMascotData: BossData = {
         {
             speaker: 'boss',
             style: 'default',
-            text: 'セラフィマスコットは少し寂しそうに天空へと帰っていった...'
+            text: 'セラフィムマスコットは少し寂しそうに天空へと帰っていった...'
         }
     ],
     
     // 記念品設定
     victoryTrophy: {
         name: '天使の羽根',
-        description: 'セラフィマスコットの純白の羽根。神聖な力と無垢な愛情が込められている。触れると心が温かくなる不思議な逸品。'
+        description: 'セラフィムマスコットの純白の羽根。神聖な力と無垢な愛情が込められている。触れると心が温かくなる不思議な逸品。'
     },
     defeatTrophy: {
         name: '救済の雫',
-        description: 'セラフィマスコットの体内で生成された神秘的な体液。救済への純粋な想いが結晶化したもので、永遠の愛と保護を象徴している。'
+        description: 'セラフィムマスコットの体内で生成された神秘的な体液。救済への純粋な想いが結晶化したもので、永遠の愛と保護を象徴している。'
     },
     
     personality: [
@@ -500,18 +518,19 @@ export const seraphMascotData: BossData = {
         salvationNeeds: 0,           // 救済必要度レベル
         currentTurn: 0,              // 現在ターン数
         postDefeatedTurn: 0,         // 敗北後ターン数
-        hasUsedCompleteProtection: false  // 完全保護使用フラグ
+        hasUsedCompleteProtection: false,  // 完全保護使用フラグ
+        salvationAbilityLastUsed: -1 // 救済能力(preparation/cycle)共通クールダウン
     }
 };
 
 // フィニッシュムーブの実装
 seraphMascotData.finishingMove = function(): string[] {
     return [
-        'セラフィマスコットは<TARGET>を完全に救済した！',
+        'セラフィムマスコットは<TARGET>を完全に救済した！',
         '「もう何も心配いらないよ〜♪ ずっとお姉さんが守ってあげるからね〜♪」',
-        '<TARGET>はセラフィマスコットの体内でずっと保護を受けることになった！',
-        'セラフィマスコットは毎日<TARGET>をお世話し続け、「今日も元気かな〜？」と優しく語りかけている...',
-        'しかし、その愛情は深すぎて、セラフィマスコットが飽きるまで<TARGET>は外の世界を見ることはない...'
+        '<TARGET>はセラフィムマスコットの体内でずっと保護を受けることになった！',
+        'セラフィムマスコットは毎日<TARGET>をお世話し続け、「今日も元気かな〜？」と優しく語りかけている...',
+        'しかし、その愛情は深すぎて、セラフィムマスコットが飽きるまで<TARGET>は外の世界を見ることはない...'
     ];
 };
 
