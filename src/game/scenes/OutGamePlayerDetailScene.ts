@@ -4,6 +4,7 @@ import { AbilitySystem, AbilityData } from '../systems/AbilitySystem';
 import { EquipmentSelectorComponent } from './components/EquipmentSelectorComponent';
 import { SkillDisplayComponent } from './components/SkillDisplayComponent';
 import { Player } from '@/game/entities/Player';
+import { PlayerInfoEditManager } from './managers/PlayerInfoEditManager';
 
 // 拡張されたアビリティデータ型（experienceToNextを含む）
 interface ExtendedAbilityData extends AbilityData {
@@ -16,9 +17,16 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
     private static readonly PROGRESS_BAR_WARNING = 'progress-bar bg-warning progress-bar-striped progress-bar-animated';
     private static readonly PROGRESS_BAR_INFO = 'progress-bar bg-info';
     
+    private playerInfoEditManager: PlayerInfoEditManager; // Used in custom events
+    
     constructor(game: Game) {
         super(game, 'out-game-player-detail-screen');
+        this.playerInfoEditManager = new PlayerInfoEditManager(game);
+        
         this.initPlayerDetail();
+        
+        // Suppress unused variable warnings - managers are initialized and handle their own events
+        void this.playerInfoEditManager;
     }
     
     /**

@@ -1,11 +1,12 @@
 import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
 import { PlayerSaveManager } from '../systems/PlayerSaveData';
+import { ModalUtils } from '../utils/ModalUtils';
 
 export class OutGameOptionScene extends BaseOutGameScene {
-    
     constructor(game: Game) {
         super(game, 'out-game-option-screen');
+        
         this.setupEventListeners();
     }
     
@@ -105,14 +106,16 @@ export class OutGameOptionScene extends BaseOutGameScene {
                         PlayerSaveManager.importSaveData(saveData);
                         
                         // 成功メッセージ
-                        this.showMessage('セーブデータのインポートが完了しました', 'success');
+                        ModalUtils.showToast('セーブデータのインポートが完了しました', 'success');
                         
                         // 画面更新
                         this.updateOptionScreen();
                         
+                        // ゲームを再起動して反映
+                        this.game.reboot();
                     } catch (error) {
                         console.error('Save data import failed:', error);
-                        this.showMessage('セーブデータのインポートに失敗しました', 'error');
+                        ModalUtils.showToast('セーブデータのインポートに失敗しました', 'error');
                     }
                 };
                 reader.readAsText(file);
@@ -138,11 +141,11 @@ export class OutGameOptionScene extends BaseOutGameScene {
             a.click();
             URL.revokeObjectURL(url);
             
-            this.showMessage('セーブデータをエクスポートしました', 'success');
+            ModalUtils.showToast('セーブデータをエクスポートしました', 'success');
             
         } catch (error) {
             console.error('Save data export failed:', error);
-            this.showMessage('セーブデータのエクスポートに失敗しました', 'error');
+            ModalUtils.showToast('セーブデータのエクスポートに失敗しました', 'error');
         }
     }
     
@@ -153,7 +156,7 @@ export class OutGameOptionScene extends BaseOutGameScene {
         if (confirm('本当にセーブデータを削除しますか？この操作は取り返しがつきません。')) {
             try {
                 PlayerSaveManager.clearSaveData();
-                this.showMessage('セーブデータを削除しました', 'success');
+                ModalUtils.showToast('セーブデータを削除しました', 'success');
                 
                 // 画面更新
                 this.updateOptionScreen();
@@ -161,9 +164,11 @@ export class OutGameOptionScene extends BaseOutGameScene {
                 // プレイヤーの再初期化
                 this.game.getPlayer().lateInitialize();
                 
+                // ゲームを再起動して反映
+                this.game.reboot();
             } catch (error) {
                 console.error('Save data clear failed:', error);
-                this.showMessage('セーブデータの削除に失敗しました', 'error');
+                ModalUtils.showToast('セーブデータの削除に失敗しました', 'error');
             }
         }
     }
@@ -173,38 +178,11 @@ export class OutGameOptionScene extends BaseOutGameScene {
      */
     private handleDebugModeToggle(enabled: boolean): void {
         localStorage.setItem('debug_mode', enabled.toString());
-        this.showMessage(`デバッグモードを${enabled ? '有効' : '無効'}にしました`, 'info');
+        ModalUtils.showToast(`デバッグモードを${enabled ? '有効' : '無効'}にしました`, 'info');
         
         // 設定反映のためページリロードを提示
         if (confirm('設定を反映するためにページをリロードしますか？')) {
             location.reload();
-        }
-    }
-    
-    /**
-     * メッセージ表示
-     */
-    private showMessage(message: string, type: 'success' | 'error' | 'info'): void {
-        // Bootstrap toast または alert で表示（実装簡略化）
-        const alertClass = type === 'success' ? 'alert-success' : 
-                          type === 'error' ? 'alert-danger' : 'alert-info';
-        
-        const messageContainer = document.getElementById('option-message-container');
-        if (messageContainer) {
-            messageContainer.innerHTML = `
-                <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            `;
-            
-            // 3秒後に自動で消す
-            setTimeout(() => {
-                const alert = messageContainer.querySelector('.alert');
-                if (alert) {
-                    alert.remove();
-                }
-            }, 3000);
         }
     }
     
