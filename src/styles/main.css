@@ -58,12 +58,7 @@ body {
 
 /* Scene Management */
 .scene {
-    height: 100vh;
     transition: opacity 0.3s ease-in-out;
-}
-
-.scene.d-none {
-    display: none !important;
 }
 
 /* Boss Cards */

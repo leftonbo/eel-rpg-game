@@ -157,6 +157,16 @@ export class Game {
             }
         }
         
+        // Hide/Show out-game footer based on scene type
+        const outGameFooter = document.getElementById('out-game-footer-container');
+        if (outGameFooter) {
+            if (isOutGameScene) {
+                outGameFooter.classList.remove('d-none');
+            } else {
+                outGameFooter.classList.add('d-none');
+            }
+        }
+        
         this.currentState = newState;
         
         // Show appropriate scene
