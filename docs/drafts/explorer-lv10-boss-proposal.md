@@ -45,6 +45,15 @@
 
 ## 🔥 ボス候補案
 
+### 敗北イベント2段階構造について
+
+ElnalFTBの敗北システムは以下の2段階で構成されています：
+
+1. **とどめ技（finishingMove）**: プレイヤーの最大HPが0になった瞬間に発動する特別な演出
+2. **永続行動（PostDefeatedAttack）**: とどめ技後、ボスが体内のプレイヤーに対して永続的に行う管理・支配行動
+
+この2段階システムにより、敗北の瞬間のドラマチックな演出と、その後の永続的な支配関係を表現します。
+
 ### 候補1: 👑 冥界の支配者アビス
 ```typescript
 id: 'abyss-lord'
@@ -153,37 +162,53 @@ explorerLevelRequired: 10
 }
 ```
 
-##### 敗北後行動1: 「永遠の隷属」
+##### とどめ技: 「冥界への完全支配」
+```typescript
+// finishingMove の実装
+abyssLordData.finishingMove = function(): string[] {
+    return [
+        '冥界の支配者アビスは<TARGET>の魂を完全に手中に収めた！',
+        '「ようやく完璧な僕を手に入れた...」',
+        '<TARGET>の魂が冥界の深淵に引きずり込まれ、アビスの絶対支配下に置かれる！',
+        '冥界の王座の前に跪く<TARGET>...もう二度と自由になることはない',
+        '冥界の支配者の威厳ある笑い声が永遠に響く中、<TARGET>は永遠の隷属が始まったことを悟った...'
+    ];
+};
+```
+
+##### 永続支配行動1: 「魂の定期査察」
 ```typescript
 {
-    id: 'eternal-servitude',
+    id: 'soul-inspection',
     type: ActionType.PostDefeatedAttack,
-    name: '永遠の隷属',
-    description: '敗北したプレイヤーを永遠の僕として冥界に留める',
+    name: '魂の定期査察',
+    description: '支配下の魂を定期的に査察し、忠誠心を確認する',
     messages: [
-        '「もう二度と外の世界を見ることはない...」',
-        '<USER>は<TARGET>を永遠の隷属状態に置く！',
-        '<TARGET>は冥界の支配者の忠実な僕として、永遠に仕え続けることになった...'
+        '「忠誠に変わりはないか...確認してやろう」',
+        '<USER>は体内の<TARGET>の魂を定期的に査察している...',
+        '<TARGET>は冥界の支配者による厳格な査察を受け続けている'
     ],
     statusEffect: StatusEffectType.EternalServitude,
     statusChance: 1.0,
-    weight: 30,
+    weight: 35,
     playerStateCondition: 'defeated'
 }
 ```
 
-##### 敗北後行動2: 「魂の完全支配」
+##### 永続支配行動2: 「魂の再教育」
 ```typescript
 {
-    id: 'complete-soul-domination',
+    id: 'soul-reeducation',
     type: ActionType.PostDefeatedAttack,
-    name: '魂の完全支配',
-    description: 'プレイヤーの魂を完全に支配し、意志を消去する',
+    name: '魂の再教育',
+    description: '不完全な忠誠心を持つ魂に再教育を施す',
     messages: [
-        '「お前の意志など、もはや不要だ...」',
-        '<USER>は<TARGET>の魂を完全に支配下に置く！',
-        '<TARGET>は自分の意志を失い、ただ冥界の支配者の命令に従うだけの存在となった...'
+        '「まだ不完全だ...もっと教育が必要のようだな」',
+        '<USER>は<TARGET>の魂に冥界の掟を再教育している！',
+        '<TARGET>は冥界の支配者による厳しい再教育を受けて、より完璧な僕へと矯正されていく...'
     ],
+    statusEffect: StatusEffectType.WillDomination,
+    statusChance: 0.90,
     weight: 25,
     playerStateCondition: 'defeated'
 }
@@ -299,37 +324,53 @@ explorerLevelRequired: 10
 }
 ```
 
-##### 敗北後行動1: 「死後の管理」
+##### とどめ技: 「死神の最終審判」
+```typescript
+// finishingMove の実装
+deathReaperData.finishingMove = function(): string[] {
+    return [
+        '死神の化身リーパーは<TARGET>に最終審判を下した！',
+        '「汝の生涯...すべてを見届けた。判決は既に決まっている」',
+        '<TARGET>の魂が死神の大鎌により刈り取られ、死後の世界への移送が開始される！',
+        '死の法廷で永遠の判決を言い渡される<TARGET>...生者の世界に戻る道は完全に断たれた',
+        '死神の厳粛な宣告が響く中、<TARGET>は永遠に死後の世界の住人となったことを悟った...'
+    ];
+};
+```
+
+##### 永続管理行動1: 「死者台帳への記録」
 ```typescript
 {
-    id: 'afterlife-management',
+    id: 'death-registry',
     type: ActionType.PostDefeatedAttack,
-    name: '死後の管理',
-    description: '死んだプレイヤーを死後の世界で管理する',
+    name: '死者台帳への記録',
+    description: '死者として永続的に台帳に記録し続ける',
     messages: [
-        '「死者の管理は我が職務...永遠に監視してやろう」',
-        '<USER>は<TARGET>を死後の世界の住人として登録する！',
-        '<TARGET>は死神の管理下で、永遠に死後の世界で過ごすことになった...'
+        '「死者台帳に永久記録...これで完了だ」',
+        '<USER>は<TARGET>を死者台帳に永続記録として刻み込んでいる...',
+        '<TARGET>は死神の台帳に記録され、永遠に死者として管理され続ける'
     ],
     statusEffect: StatusEffectType.AfterlifeBinding,
     statusChance: 1.0,
-    weight: 30,
+    weight: 35,
     playerStateCondition: 'defeated'
 }
 ```
 
-##### 敗北後行動2: 「魂の永続収穫」
+##### 永続管理行動2: 「魂の品質査定」
 ```typescript
 {
-    id: 'eternal-soul-harvest',
+    id: 'soul-quality-assessment',
     type: ActionType.PostDefeatedAttack,
-    name: '魂の永続収穫',
-    description: 'プレイヤーの魂を永続的に収穫し続ける',
+    name: '魂の品質査定',
+    description: '管理下の魂の品質を定期的に査定する',
     messages: [
-        '「良質な魂だ...定期的に収穫させてもらおう」',
-        '<USER>は<TARGET>の魂を永続的な収穫対象として登録する！',
-        '<TARGET>は定期的に魂を刈り取られながら、死後の世界で永遠に生かされ続ける...'
+        '「定期査定の時間だ...魂の劣化具合を確認しよう」',
+        '<USER>は<TARGET>の魂の品質を厳格に査定している！',
+        '<TARGET>は死神による定期的な魂の査定を受け、品質管理の対象として扱われ続けている...'
     ],
+    statusEffect: StatusEffectType.ReaperGaze,
+    statusChance: 0.85,
     weight: 25,
     playerStateCondition: 'defeated'
 }
@@ -445,37 +486,53 @@ explorerLevelRequired: 10
 }
 ```
 
-##### 敗北後行動1: 「非存在への変換」
+##### とどめ技: 「完全虚無化」
+```typescript
+// finishingMove の実装
+voidSovereignData.finishingMove = function(): string[] {
+    return [
+        '虚無の王ヴォイドは<TARGET>の存在を完全に虚無化した！',
+        '「すべては虚無に帰る...これが真理だ」',
+        '<TARGET>の存在概念が段階的に消去され、虚無の一部として同化されていく！',
+        '非存在の領域で永遠に漂う<TARGET>...存在していたという記録さえも消え去った',
+        '虚無の静寂が支配する中、<TARGET>は『存在しなかった』という新たな状態を受け入れることになった...'
+    ];
+};
+```
+
+##### 永続同化行動1: 「存在記録の消去」
 ```typescript
 {
-    id: 'non-existence-conversion',
+    id: 'existence-record-erasure',
     type: ActionType.PostDefeatedAttack,
-    name: '非存在への変換',
-    description: '敗北したプレイヤーを非存在状態に変換する',
+    name: '存在記録の消去',
+    description: '同化した存在の記録を段階的に消去し続ける',
     messages: [
-        '「これで完全だ...お前は存在しなかったことになる」',
-        '<USER>は<TARGET>を非存在状態に変換する！',
-        '<TARGET>は虚無の王により非存在へと変換され、すべての記録から消去された...'
+        '「記録の消去を継続...完全な非存在まであと少しだ」',
+        '<USER>は<TARGET>の存在記録を継続的に消去している...',
+        '<TARGET>は虚無の王により段階的に存在記録を消され続けている'
     ],
     statusEffect: StatusEffectType.NonExistence,
     statusChance: 1.0,
-    weight: 30,
+    weight: 35,
     playerStateCondition: 'defeated'
 }
 ```
 
-##### 敗北後行動2: 「虚無の一部化」
+##### 永続同化行動2: 「虚無濃度の調整」
 ```typescript
 {
-    id: 'void-assimilation',
+    id: 'void-density-adjustment',
     type: ActionType.PostDefeatedAttack,
-    name: '虚無の一部化',
-    description: 'プレイヤーを虚無の一部として同化させる',
+    name: '虚無濃度の調整',
+    description: '同化対象の虚無濃度を最適化し続ける',
     messages: [
-        '「虚無の一部となれ...それがお前の新たな『非存在』だ」',
-        '<USER>は<TARGET>を虚無の一部として完全に同化させる！',
-        '<TARGET>は個の概念を失い、虚無の王と一体化した非存在となった...'
+        '「虚無濃度を調整中...より完璧な非存在へと導こう」',
+        '<USER>は<TARGET>の虚無濃度を細かく調整している！',
+        '<TARGET>は虚無の王による精密な濃度調整により、より純粋な非存在状態へと変化し続けている...'
     ],
+    statusEffect: StatusEffectType.VoidErosion,
+    statusChance: 0.90,
     weight: 25,
     playerStateCondition: 'defeated'
 }
