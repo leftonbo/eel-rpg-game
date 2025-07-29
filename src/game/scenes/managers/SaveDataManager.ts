@@ -3,6 +3,7 @@ import { PlayerSaveManager } from '../../systems/PlayerSaveData';
 import { AbilityData, AbilityType } from '../../systems/AbilitySystem';
 import { ModalUtils } from '../../utils/ModalUtils';
 import { AbilityNameResolver } from '../utils/AbilityNameResolver';
+import { Player } from '@/game/entities/Player';
 
 export class SaveDataManager {
     private game: Game;
@@ -229,7 +230,7 @@ export class SaveDataManager {
     /**
      * Update player stats and UI
      */
-    private updatePlayerAndUI(player: any): void {
+    private updatePlayerAndUI(player: Player): void {
         player.recalculateStats();
         player.saveToStorage();
         

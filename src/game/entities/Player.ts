@@ -80,29 +80,19 @@ export class Player extends Actor {
      * ローカルストレージからプレイヤーデータを読み込む
      */
     private loadFromSave(): void {
-        console.log('[Player][loadFromSave] Loading player data from localStorage...');
         const saveData = PlayerSaveManager.loadPlayerData();
-        
-        if (saveData) {
-            this.loadSaveDataComponents(saveData);
-        } else {
-            this.initializeDefaultData();
-        }
+        this.loadSaveDataComponents(saveData);
     }
     
     /**
      * セーブデータから全コンポーネントを読み込む
      * @param saveData セーブデータオブジェクト
      */
-    private loadSaveDataComponents(saveData: any): void {
-        console.log('[Player][loadFromSave] Save data found:', saveData);
-        
+    private loadSaveDataComponents(saveData: PlayerSaveData): void {
         this.loadAbilities(saveData.abilities);
         this.loadEquipment(saveData.equipment);
         this.loadMemorials(saveData.memorials);
         this.loadPlayerInfo(saveData.playerInfo);
-        
-        console.log('[Player][loadFromSave] Player data loaded successfully');
     }
     
     /**
@@ -110,7 +100,6 @@ export class Player extends Actor {
      * @param abilitiesData アビリティデータ
      */
     private loadAbilities(abilitiesData: any): void {
-        console.log('[Player][loadFromSave] Loading abilities:', abilitiesData);
         this.abilitySystem.loadFromSaveData(abilitiesData);
     }
     
@@ -119,7 +108,6 @@ export class Player extends Actor {
      * @param equipmentData 装備データ
      */
     private loadEquipment(equipmentData: any): void {
-        console.log('[Player][loadFromSave] Loading equipment:', equipmentData);
         this.equipmentManager.loadEquipment(equipmentData.weapon, equipmentData.armor);
     }
     
@@ -128,7 +116,6 @@ export class Player extends Actor {
      * @param memorialsData 記念品データ
      */
     private loadMemorials(memorialsData: any): void {
-        console.log('[Player][loadFromSave] Loading memorials:', memorialsData);
         this.memorialSystem.importData(memorialsData || {});
     }
     
@@ -138,19 +125,10 @@ export class Player extends Actor {
      */
     private loadPlayerInfo(playerInfoData: any): void {
         if (playerInfoData) {
-            console.log('[Player][loadFromSave] Loading player info:', playerInfoData);
             this.name = playerInfoData.name;
             this.icon = playerInfoData.icon;
             this.displayName = playerInfoData.name;
         }
-    }
-    
-    /**
-     * セーブデータが存在しない場合のデフォルトデータを初期化
-     */
-    private initializeDefaultData(): void {
-        console.log('[Player][loadFromSave] No save data found, initializing with defaults');
-        this.memorialSystem.initializeData();
     }
     
     /**

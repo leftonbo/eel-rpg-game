@@ -1,5 +1,5 @@
 import { Game } from '../../Game';
-import { getIconsByCategory } from '../../data/PlayerIcons';
+import { getIconsByCategory, PlayerIcon } from '../../data/PlayerIcons';
 import { DEFAULT_PLAYER_NAME, DEFAULT_PLAYER_ICON } from '../../entities/Player';
 import { ModalUtils } from '../../utils/ModalUtils';
 import type { BootstrapModal } from '../../types/bootstrap';
@@ -128,7 +128,7 @@ export class PlayerInfoEditManager {
     /**
      * Create icon button element
      */
-    private createIconButton(icon: any, iconsGrid: HTMLElement): HTMLButtonElement {
+    private createIconButton(icon: PlayerIcon, iconsGrid: HTMLElement): HTMLButtonElement {
         const iconButton = document.createElement('button');
         iconButton.type = 'button';
         iconButton.className = `btn btn-outline-secondary m-1 ${this.selectedIcon === icon.emoji ? 'active' : ''}`;

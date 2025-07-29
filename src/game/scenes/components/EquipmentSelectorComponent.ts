@@ -1,3 +1,5 @@
+import { Equipment } from "@/game/systems/AbilitySystem";
+
 /**
  * 装備選択の共通コンポーネント
  * 武器・防具選択UIの生成とイベントハンドリングを統一化
@@ -12,7 +14,7 @@ export class EquipmentSelectorComponent {
      * @returns 作成された装備選択要素
      */
     static createEquipmentOption(
-        equipment: any,
+        equipment: Equipment,
         isEquipped: boolean,
         equipmentType: 'weapon' | 'armor',
         onEquipmentChange: (equipmentId: string) => void
@@ -55,7 +57,7 @@ export class EquipmentSelectorComponent {
      */
     static updateEquipmentSelection(
         containerId: string,
-        equipments: any[],
+        equipments: Equipment[],
         currentEquipmentId: string | null,
         equipmentType: 'weapon' | 'armor',
         onEquipmentChange: (equipmentId: string) => void
@@ -100,7 +102,7 @@ export class EquipmentSelectorComponent {
      */
     static updateWeaponSelection(
         containerId: string,
-        weapons: any[],
+        weapons: Equipment[],
         currentWeaponId: string | null,
         onWeaponChange: (weaponId: string) => void
     ): void {
@@ -116,7 +118,7 @@ export class EquipmentSelectorComponent {
      */
     static updateArmorSelection(
         containerId: string,
-        armors: any[],
+        armors: Equipment[],
         currentArmorId: string | null,
         onArmorChange: (armorId: string) => void
     ): void {
@@ -129,7 +131,7 @@ export class EquipmentSelectorComponent {
      * @param equipmentType 装備タイプ
      * @returns ボーナステキスト
      */
-    private static getEquipmentBonusText(equipment: any, equipmentType: 'weapon' | 'armor'): string {
+    private static getEquipmentBonusText(equipment: Equipment, equipmentType: 'weapon' | 'armor'): string {
         if (equipmentType === 'weapon') {
             return `(+${equipment.attackPowerBonus || 0} 攻撃力)`;
         } else if (equipmentType === 'armor') {
@@ -157,7 +159,7 @@ export class EquipmentSelectorComponent {
      * @param equipmentType 装備タイプ
      * @returns 装備情報のテキスト
      */
-    static getEquipmentInfoText(equipment: any, equipmentType: 'weapon' | 'armor'): string {
+    static getEquipmentInfoText(equipment: Equipment, equipmentType: 'weapon' | 'armor'): string {
         const parts = [
             `名前: ${equipment.name}`,
             `説明: ${equipment.description}`,
@@ -184,7 +186,7 @@ export class EquipmentSelectorComponent {
      * @returns HTML文字列
      */
     static generateEquipmentSelectionHTML(
-        equipments: any[],
+        equipments: Equipment[],
         currentEquipmentId: string | null,
         equipmentType: 'weapon' | 'armor',
         formName: string = equipmentType
@@ -219,11 +221,11 @@ export class EquipmentSelectorComponent {
      * @param equipmentType 装備タイプ
      * @returns 統計情報オブジェクト
      */
-    static getEquipmentStatistics(equipments: any[], equipmentType: 'weapon' | 'armor'): {
+    static getEquipmentStatistics(equipments: Equipment[], equipmentType: 'weapon' | 'armor'): {
         total: number;
         totalBonus: number;
         averageBonus: number;
-        strongestEquipment?: any;
+        strongestEquipment?: Equipment;
     } {
         if (equipments.length === 0) {
             return {
@@ -262,10 +264,10 @@ export class EquipmentSelectorComponent {
      * @returns ソートされた装備配列
      */
     static sortEquipmentsByBonus(
-        equipments: any[], 
+        equipments: Equipment[], 
         equipmentType: 'weapon' | 'armor', 
         ascending: boolean = false
-    ): any[] {
+    ): Equipment[] {
         const bonusProperty = equipmentType === 'weapon' ? 'attackPowerBonus' : 'hpBonus';
         
         return [...equipments].sort((a, b) => {
@@ -273,15 +275,5 @@ export class EquipmentSelectorComponent {
             const bonusB = b[bonusProperty] || 0;
             return ascending ? bonusA - bonusB : bonusB - bonusA;
         });
-    }
-
-    /**
-     * 装備をレアリティでフィルタリングする
-     * @param equipments 装備データの配列
-     * @param rarity レアリティ
-     * @returns フィルタリングされた装備配列
-     */
-    static filterEquipmentsByRarity(equipments: any[], rarity: string): any[] {
-        return equipments.filter(equipment => equipment.rarity === rarity);
     }
 }

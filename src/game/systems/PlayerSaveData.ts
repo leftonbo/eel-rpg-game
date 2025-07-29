@@ -38,12 +38,12 @@ export class PlayerSaveManager {
     /**
      * Load player data from localStorage
      */
-    static loadPlayerData(): PlayerSaveData | null {
+    static loadPlayerData(): PlayerSaveData {
         try {
             const savedData = localStorage.getItem(this.SAVE_KEY);
             if (!savedData) {
                 console.log('[PlayerSaveManager][loadPlayerData] No saved player data found');
-                return null;
+                return this.createDefaultSaveData();
             }
             
             const parsedData = JSON.parse(savedData);

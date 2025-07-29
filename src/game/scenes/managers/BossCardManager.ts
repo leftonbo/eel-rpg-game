@@ -1,3 +1,4 @@
+import { BossData } from '@/game/entities/Boss';
 import { Game } from '../../Game';
 import { getAllBossData } from '../../data';
 import { MemorialSaveData } from '../../systems/MemorialSystem';
@@ -127,7 +128,7 @@ export class BossCardManager {
     /**
      * Update boss card content based on unlock status
      */
-    private updateBossCardContent(card: HTMLElement, bossData: any, playerExplorerLevel: number): void {
+    private updateBossCardContent(card: HTMLElement, bossData: BossData, playerExplorerLevel: number): void {
         const textElement = card.querySelector('.card-text');
         const requiredLevel = bossData.explorerLevelRequired || 0;
         const isUnlocked = playerExplorerLevel >= requiredLevel;
@@ -144,7 +145,7 @@ export class BossCardManager {
     /**
      * Update boss card visibility based on unlock status
      */
-    private updateBossCardVisibility(card: HTMLElement, bossData: any, playerExplorerLevel: number): void {
+    private updateBossCardVisibility(card: HTMLElement, bossData: BossData, playerExplorerLevel: number): void {
         const requiredLevel = bossData.explorerLevelRequired || 0;
         const isUnlocked = playerExplorerLevel >= requiredLevel;
         
