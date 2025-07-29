@@ -283,11 +283,62 @@ NEVER create files unless they're absolutely necessary for achieving your goal.
 ALWAYS prefer editing an existing file to creating a new one.
 NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
 
+### ドキュメントシステム（src/game/data/documents/）
+
+ゲーム内で表示されるストーリー文書やフレーバーテキストを管理するシステム。
+
+#### ドキュメントファイル形式
+
+```markdown
+---
+id: document-unique-id
+title: 📝 ドキュメントタイトル
+type: diary | reflection | guide | lore
+requiredExplorerLevel: 1
+requiredBossDefeats: ["boss-id1", "boss-id2"]
+requiredBossLosses: ["boss-id3"]
+---
+
+# マークダウン形式のコンテンツ
+
+ここに実際のドキュメント内容を記述します。
+```
+
+#### フロントマター項目
+
+- **id**: ドキュメントの一意識別子（ファイル名と一致させる）
+- **title**: ゲーム内表示タイトル（絵文字推奨）
+- **type**: ドキュメント分類（`diary`=日記、`reflection`=振り返り、`guide`=攻略、`lore`=世界観）
+- **requiredExplorerLevel**: 表示に必要なエクスプローラーレベル
+- **requiredBossDefeats**: 表示に必要なボス撃破条件（配列）
+- **requiredBossLosses**: 表示に必要なボス敗北条件（配列）
+
+#### 実装されているドキュメント
+
+- **welcome-document.md**: エルナルの冒険日記第1章（初期ボス紹介）
+- **defeat-reflection.md**: 敗北から学ぶこと（初敗北時の気持ち）
+
+#### 新ドキュメント追加手順
+
+1. `src/game/data/documents/{id}.md` にマークダウンファイル作成
+2. フロントマターで表示条件を設定
+3. DocumentLoader.ts が自動的に読み込み・解析
+4. 条件を満たしたプレイヤーにゲーム内で表示
+
+#### 文体・スタイルガイド
+
+- 主人公エルナル（うなぎ）の一人称視点で記述
+- 親しみやすい関西弁風の口調
+- 絵文字を効果的に使用してキャラクター性を演出
+- ボス戦の体験や感情を具体的に描写
+- プレイヤーの成長過程と同調する内容を心がける
+
 ## プロジェクト固有の重要な注意事項
 
 - **EJSテンプレート**: HTMLの各種パーツを src/templates/ ディレクトリのEJSファイルに記載
 - **ボス追加**: 新ボス追加時は必ず registeredBossIds 配列と loadBossData 関数の両方を更新
 - **状態異常**: 新しい状態異常追加時は StatusEffectTypes.ts の enum とCSSクラスの両方を追加
+- **ドキュメント**: 新ストーリードキュメント追加時は src/game/data/documents/ にマークダウン形式で作成し、フロントマターで表示条件を設定
 - **コミット**: 必ず gitmoji + 日本語メッセージ + Co-Authored-By を含める
 - **品質チェック**: 編集後は npm run typecheck && npm run test && npm run build を実行して確認
 - **スキルシステム**: CraftWork、Explorerスキルは data/skills/ に実装要（未完了）
