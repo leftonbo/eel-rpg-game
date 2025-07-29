@@ -36,7 +36,9 @@ export class PlayerSaveManager {
     }
     
     /**
-     * Load player data from localStorage
+     * Load player data from localStorage.
+     * If no data exists, returns default save data.
+     * If data is in an old format, migrates it to the current version.
      */
     static loadPlayerData(): PlayerSaveData {
         try {
