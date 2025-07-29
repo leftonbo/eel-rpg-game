@@ -194,16 +194,13 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
      * 文書内容の表示
      */
     private showDocument(documentId: string): void {
-        console.log('showDocument called with ID:', documentId);
         const doc = this.documents.find(d => d.id === documentId);
         if (!doc || !doc.unlocked) {
-            console.log('Document not found or not unlocked:', doc);
             return;
         }
         
         const contentContainer = document.getElementById('library-document-content');
         if (!contentContainer) {
-            console.log('Content container not found');
             return;
         }
         
