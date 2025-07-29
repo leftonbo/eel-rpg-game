@@ -231,6 +231,26 @@ export class MemorialSystem {
     }
     
     /**
+     * 敗北したボスのIDリストを取得
+     * @return 敗北したボスのIDの配列
+     */
+    public getDefeatedBossIds(): string[] {
+        return this.getAllTrophies()
+            .filter(trophy => trophy.type === TrophyType.Defeat)
+            .map(trophy => trophy.id.replace(`${TrophyType.Defeat}-`, ''));
+    }
+    
+    /**
+     * 勝利したボスのIDリストを取得
+     * @return 勝利したボスのIDの配列
+     */
+    public getVictoriousBossIds(): string[] {
+        return this.getAllTrophies()
+            .filter(trophy => trophy.type === TrophyType.Victory)
+            .map(trophy => trophy.id.replace(`${TrophyType.Victory}-`, ''));
+    }
+    
+    /**
      * 全てのバトル記録を取得
      * @return バトル記録の配列
      */

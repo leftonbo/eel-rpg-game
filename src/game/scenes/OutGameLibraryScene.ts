@@ -1,5 +1,6 @@
 import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
+import { getBossData } from '../data';
 
 /**
  * 資料庫システムの文書インターフェース
@@ -10,6 +11,7 @@ interface LibraryDocument {
     content: string;
     requiredExplorerLevel: number;
     requiredBossDefeats?: string[];
+    requiredBossLosses?: string[];
     unlocked: boolean;
 }
 
@@ -39,7 +41,7 @@ export class OutGameLibraryScene extends BaseOutGameScene {
      * 文書データの初期化（簡易実装）
      */
     private initializeDocuments(): void {
-        // 今回は1つのサンプル資料のみ実装
+        // 基本文書とテスト用文書を実装
         this.documents = [
             {
                 id: 'welcome-document',
@@ -92,6 +94,39 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
                 requiredExplorerLevel: 1,
                 requiredBossDefeats: [],
                 unlocked: false
+            },
+            {
+                id: 'defeat-reflection',
+                title: '💭 敗北から学ぶこと',
+                content: `# 敗北から学ぶこと
+
+## 最初の挫折
+
+沼のドラゴンに最初に挑戦した時、あっけなく負けちゃった...
+でも、その敗北があったからこそ今の私があるのよね。
+
+## 敗北の意味
+
+負けるって悲しいけれど、それは新しい発見の始まり。
+相手の攻撃パターンを身をもって知ることができるし、
+自分の弱点も見えてくる。
+
+## 成長への第一歩
+
+この敗北の経験が、私をより強い冒険者に変えてくれた。
+準備の大切さ、装備の重要性、戦略の必要性...
+全てを学ぶことができたの。
+
+次に同じボスと戦う時は、きっと違う結果になるはず！
+
+---
+
+*敗北は終わりじゃない。新しい始まりなのよ。*
+
+**- エルナル**`,
+                requiredExplorerLevel: 1,
+                requiredBossLosses: ['swamp-dragon'],
+                unlocked: false
             }
         ];
     }
@@ -129,9 +164,8 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
     private updateDocumentAvailability(): void {
         const player = this.game.getPlayer();
         const explorerLevel = player.getExplorerLevel();
-        const defeatedBosses = player.memorialSystem.getAllTrophies()
-            .filter(trophy => trophy.type === 'victory')
-            .map(trophy => trophy.id.replace('victory-', ''));
+        const defeatedBosses = player.memorialSystem.getVictoriousBossIds();
+        const lostToBosses = player.memorialSystem.getDefeatedBossIds();
         
         this.documents.forEach(doc => {
             // エクスプローラーレベル要求チェック
@@ -145,8 +179,34 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
                 );
             }
             
-            doc.unlocked = levelOk && bossDefeatsOk;
+            // 必要ボス敗北チェック
+            let bossLossesOk = true;
+            if (doc.requiredBossLosses && doc.requiredBossLosses.length > 0) {
+                bossLossesOk = doc.requiredBossLosses.every(bossId => 
+                    lostToBosses.includes(bossId)
+                );
+            }
+            
+            doc.unlocked = levelOk && bossDefeatsOk && bossLossesOk;
         });
+    }
+    
+    /**
+     * ボス要求条件を表示用文字列に変換
+     * @param bossIds ボスIDの配列
+     * @param type 条件の種類（defeat: 敗北, victory: 撃破）
+     * @returns 表示用文字列
+     */
+    private renderBossRequirements(bossIds: string[], type: 'defeat' | 'victory'): string {
+        return bossIds.map(bossId => {
+            try {
+                const bossData = getBossData(bossId);
+                return `${bossData.name}${type === 'defeat' ? '敗北' : '撃破'}`;
+            } catch (error) {
+                console.error(`Error fetching boss data for ID "${bossId}":`, error);
+                return `${bossId}${type === 'defeat' ? '敗北' : '撃破'}(データ不明)`;
+            }
+        }).join(', ');
     }
     
     /**
@@ -181,7 +241,8 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
                     </div>
                     <small class="text-muted d-block mt-1">
                         必要条件: エクスプローラーLv.${doc.requiredExplorerLevel}
-                        ${doc.requiredBossDefeats ? `, ${doc.requiredBossDefeats.join(', ')}撃破` : ''}
+                        ${doc.requiredBossDefeats ? `, ${this.renderBossRequirements(doc.requiredBossDefeats, 'victory')}` : ''}
+                        ${doc.requiredBossLosses ? `, ${this.renderBossRequirements(doc.requiredBossLosses, 'defeat')}` : ''}
                     </small>
                 `;
             }
