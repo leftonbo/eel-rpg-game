@@ -90,7 +90,7 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
 
 **- エルナル**`,
                 requiredExplorerLevel: 1,
-                requiredBossDefeats: ['swamp-dragon'],
+                requiredBossDefeats: [],
                 unlocked: false
             }
         ];
@@ -103,8 +103,10 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
         // 文書選択イベント（動的に追加される要素用）
         document.addEventListener('click', (event) => {
             const target = event.target as HTMLElement;
-            if (target.classList.contains('library-document-btn')) {
-                const documentId = target.dataset.documentId;
+            // クリックされた要素から最も近い .library-document-btn を探す
+            const button = target.closest('.library-document-btn') as HTMLElement;
+            if (button) {
+                const documentId = button.dataset.documentId;
                 if (documentId) {
                     this.showDocument(documentId);
                 }
@@ -162,6 +164,7 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
             button.dataset.documentId = doc.id;
             
             if (doc.unlocked) {
+                button.classList.remove('btn-outline-secondary');
                 button.classList.add('btn-outline-info');
                 button.innerHTML = `
                     <div class="d-flex justify-content-between align-items-center">
@@ -192,10 +195,14 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
      */
     private showDocument(documentId: string): void {
         const doc = this.documents.find(d => d.id === documentId);
-        if (!doc || !doc.unlocked) return;
+        if (!doc || !doc.unlocked) {
+            return;
+        }
         
         const contentContainer = document.getElementById('library-document-content');
-        if (!contentContainer) return;
+        if (!contentContainer) {
+            return;
+        }
         
         // Markdownの簡易変換（実際のMarkdownパーサーは今後実装）
         const htmlContent = this.convertMarkdownToHtml(doc.content);
