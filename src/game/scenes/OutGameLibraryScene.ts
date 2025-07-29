@@ -10,6 +10,7 @@ interface LibraryDocument {
     content: string;
     requiredExplorerLevel: number;
     requiredBossDefeats?: string[];
+    requiredBossLosses?: string[];
     unlocked: boolean;
 }
 
