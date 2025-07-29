@@ -40,7 +40,7 @@
     "ejs": "^3.1.10",
     "eslint": "^9.31.0",
     "gray-matter": "^4.0.3",
-    "rimraf": "^5.0.0",
+    "rimraf": "^6.0.0",
     "rollup-plugin-visualizer": "^5.12.0",
     "typescript": "^5.0.0",
     "vite": "^6.0.1",
