@@ -23,7 +23,7 @@ export interface LibraryDocument extends LibraryDocumentMetadata {
 /**
  * 登録済みの文書の生データ
  */
-const modules = import.meta.glob('./documents/*.md', { eager: true });
+const modules = import.meta.glob('./documents/*.md');
 
 /**
  * 文書データのキャッシュ
@@ -36,8 +36,9 @@ const documentCache: Map<string, LibraryDocument> = new Map();
 export async function loadAllDocuments(): Promise<void> {
     // 各文書モジュールを読み込み、メタデータとコンテンツを抽出
     const documents = await Promise.all(
-        Object.entries(modules).map(async ([_path, mod]) => {
-            const module = mod as MarkdownModule;
+        Object.entries(modules).map(async ([_path, loader]) => {
+            const imported = await (loader as () => Promise<unknown>)();
+            const module = imported as MarkdownModule;
             const docData: LibraryDocument = {
                 ...(module.attributes as LibraryDocumentMetadata),
                 content: module.markdown,
