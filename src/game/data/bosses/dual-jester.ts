@@ -130,7 +130,7 @@ const dualJesterPhase2Actions: BossAction[] = [
         name: '狂気の瞳光',
         description: '不気味な瞳で威嚇攻撃',
         messages: [
-            '「...フフフ、怖がってるね」（瞳が狂気に光る）',
+            '「...フフフ、怖がってるね」',
             '<USER>の瞳が異様な光を放ち、<TARGET>を見据える！',
             '<TARGET>は恐怖で体が震えてしまった...',
             '「その表情...とても美しいよ」'
@@ -203,7 +203,7 @@ const dualJesterPhase2Actions: BossAction[] = [
         name: '真の拘束',
         description: '本気の拘束技を繰り出す',
         messages: [
-            '「...さっきは手加減していただけだ」（声が低く変化）',
+            '「...さっきは手加減していただけだ」',
             '<USER>の顔が反転し、色調が暗く変化する！',
             '<TARGET>が強力な拘束に捕らわれた！'
         ],
@@ -220,9 +220,8 @@ const dualJesterPhase2Actions: BossAction[] = [
         name: '狂気締め付け',
         description: '狂気の笑いと共に強く締め付ける',
         messages: [
-            '「もっと...もっと一緒にいよう...♪」（狂気の笑い）',
-            '<USER>は<TARGET>を狂気的な力で締め付ける！',
-            '<TARGET>は強力な圧迫感に苦しんだ！'
+            '「もっと...もっと一緒にいよう...♪」',
+            '<USER>は<TARGET>を狂気的な力で締め付ける！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.8,
         statusEffect: StatusEffectType.Bipolar,
@@ -238,8 +237,7 @@ const dualJesterPhase2Actions: BossAction[] = [
         messages: [
             '「大丈夫、痛くないよ〜」',
             '「痛がってる顔、とても美しいね」',
-            '<USER>の人格が急激に変化しながら<TARGET>を舐め回す！',
-            '<TARGET>は混乱と恐怖に包まれた！'
+            '<USER>の人格が急激に変化しながら<TARGET>を舐め回す！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.5,
         statusEffect: StatusEffectType.Confusion,
@@ -272,7 +270,7 @@ const dualJesterDevourActions: BossAction[] = [
         name: '狂気の遊び場',
         description: '体内の歪んだ空間でプレイヤーを翻弄する',
         messages: [
-            '「ここは僕の特別な遊び場だよ〜♪　一緒に回ろう〜♪」',
+            '「ここは僕の特別な遊び場だよ〜♪一緒に回ろう〜♪」',
             '「永遠に回り続けろ...目が回るまで、意識が混濁するまで...」',
             '<TARGET>は脈動する肉壁に巻き込まれ、メリーゴーラウンドのようにぐるぐると回され続ける！',
         ],
