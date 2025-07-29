@@ -194,6 +194,7 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
                     <small class="text-muted d-block mt-1">
                         必要条件: エクスプローラーLv.${doc.requiredExplorerLevel}
                         ${doc.requiredBossDefeats ? `, ${doc.requiredBossDefeats.join(', ')}撃破` : ''}
+                        ${doc.requiredBossLosses ? `, ${doc.requiredBossLosses.join(', ')}敗北` : ''}
                     </small>
                 `;
             }
