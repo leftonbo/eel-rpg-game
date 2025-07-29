@@ -103,8 +103,10 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
         // 文書選択イベント（動的に追加される要素用）
         document.addEventListener('click', (event) => {
             const target = event.target as HTMLElement;
-            if (target.classList.contains('library-document-btn')) {
-                const documentId = target.dataset.documentId;
+            // クリックされた要素から最も近い .library-document-btn を探す
+            const button = target.closest('.library-document-btn') as HTMLElement;
+            if (button) {
+                const documentId = button.dataset.documentId;
                 if (documentId) {
                     this.showDocument(documentId);
                 }
