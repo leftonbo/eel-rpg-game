@@ -214,7 +214,7 @@ export class BattleResultScene {
             unlockDiv.className = 'mb-3 p-3 border border-warning rounded bg-warning bg-opacity-10';
             unlockDiv.innerHTML = `
                 <div class="text-center">
-                    <div class="h6 text-warning">🌟 ${bossName} が解禁されました！</div>
+                    <div class="h6 mb-0 text-warning">🌟 ${bossName} が解禁されました！</div>
                 </div>
             `;
             bossUnlockContainer.appendChild(unlockDiv);
