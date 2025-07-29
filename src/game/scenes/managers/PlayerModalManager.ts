@@ -77,7 +77,7 @@ export class PlayerModalManager {
     /**
      * Update player stats tab
      */
-    private updatePlayerStatsTab(player: any, abilityLevels: any): void {
+    private updatePlayerStatsTab(player: Player, abilityLevels: any): void {
         this.updateElement('detail-max-hp', player.maxHp.toString());
         this.updateElement('detail-max-mp', player.maxMp.toString());
         this.updateElement('detail-attack', player.getAttackPower().toString());
