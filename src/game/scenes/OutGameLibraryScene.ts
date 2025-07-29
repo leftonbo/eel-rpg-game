@@ -2,27 +2,17 @@ import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
 import { getBossData } from '../data';
 import { BootstrapMarkdownRenderer } from '../utils/BootstrapMarkdownRenderer';
+import { LibraryDocument, loadAllDocuments, getAllDocuments } from '../data/documents';
 
-/**
- * 資料庫システムの文書インターフェース
- */
-interface LibraryDocument {
-    id: string;
-    title: string;
-    content: string;
-    requiredExplorerLevel: number;
-    requiredBossDefeats?: string[];
-    requiredBossLosses?: string[];
-    unlocked: boolean;
-}
 
 export class OutGameLibraryScene extends BaseOutGameScene {
     private documents: LibraryDocument[] = [];
     
     constructor(game: Game) {
         super(game, 'out-game-library-screen');
-        this.initializeDocuments();
-        this.setupEventListeners();
+        this.initializeDocuments().then(() => {
+            this.setupEventListeners();
+        });
     }
     
     /**
@@ -39,97 +29,16 @@ export class OutGameLibraryScene extends BaseOutGameScene {
     }
     
     /**
-     * 文書データの初期化（簡易実装）
+     * 文書データの初期化（Markdownファイルからの動的読み込み）
      */
-    private initializeDocuments(): void {
-        // 基本文書とテスト用文書を実装
-        this.documents = [
-            {
-                id: 'welcome-document',
-                title: '🐍 エルナルの冒険日記 - 第1章',
-                content: `# エルナルの冒険日記 - 第1章
-
-## はじめに
-
-私の名前はエルナル。見た目はうなぎだけど、心は勇敢な冒険者よ！
-
-この日記は、私がこの不思議な世界で出会った様々なボスたちとの戦いの記録。
-それぞれのボスには個性があって、戦い方も全然違うの。
-
-## 沼のドラゴンとの出会い
-
-最初に出会ったのは沼のドラゴン。
-見た目は恐ろしいけれど、実は古い沼の守り神だったの。
-高い攻撃力で圧倒してくるけれど、耐久力を鍛えればなんとかなるわ。
-
-攻撃パターンは：
-- 通常攻撃（ダメージ大）
-- 火だるま状態にしてくる炎攻撃
-- たまに強力な必殺技
-
-火だるまになったら回復薬を使うのが基本ね。
-
-## 闇のおばけの謎
-
-次に出会ったのは闇のおばけ。
-この子は状態異常の専門家で、毒や魅了を使ってくるの。
-HPは低めだけど、状態異常でじわじわと削ってくる戦術。
-
-特に魅了は厄介で、行動が制限されるから要注意！
-アドレナリン注射で無敵状態になれば安全に戦えるわ。
-
-## これからの冒険
-
-まだまだ世界には未知のボスがたくさんいるみたい。
-砂漠や海、ジャングルや遺跡...
-エクスプローラーレベルを上げて、新しい場所を探検していくのが楽しみ！
-
-戦いを通じて成長していく感覚が気持ちいいの。
-アビリティも少しずつ向上しているし、新しい装備も手に入れたわ。
-
----
-
-*この日記は私の冒険の記録。まだまだ続くから、お楽しみに！*
-
-**- エルナル**`,
-                requiredExplorerLevel: 1,
-                requiredBossDefeats: [],
-                unlocked: false
-            },
-            {
-                id: 'defeat-reflection',
-                title: '💭 敗北から学ぶこと',
-                content: `# 敗北から学ぶこと
-
-## 最初の挫折
-
-沼のドラゴンに最初に挑戦した時、あっけなく負けちゃった...
-でも、その敗北があったからこそ今の私があるのよね。
-
-## 敗北の意味
-
-負けるって悲しいけれど、それは新しい発見の始まり。
-相手の攻撃パターンを身をもって知ることができるし、
-自分の弱点も見えてくる。
-
-## 成長への第一歩
-
-この敗北の経験が、私をより強い冒険者に変えてくれた。
-準備の大切さ、装備の重要性、戦略の必要性...
-全てを学ぶことができたの。
-
-次に同じボスと戦う時は、きっと違う結果になるはず！
-
----
-
-*敗北は終わりじゃない。新しい始まりなのよ。*
-
-**- エルナル**`,
-                requiredExplorerLevel: 1,
-                requiredBossLosses: ['swamp-dragon'],
-                unlocked: false
-            }
-        ];
+    private async initializeDocuments(): Promise<void> {
+        try {
+            await loadAllDocuments();
+            this.documents = getAllDocuments();
+        } catch (error) {
+            console.error('Failed to load documents:', error);
+            this.documents = [];
+        }
     }
     
     /**
@@ -216,14 +125,8 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
      * @returns 文書タイプ
      */
     private getDocumentType(documentId: string): string {
-        if (documentId.includes('diary') || documentId.includes('welcome')) {
-            return 'diary';
-        } else if (documentId.includes('strategy') || documentId.includes('guide')) {
-            return 'strategy';
-        } else if (documentId.includes('reflection') || documentId.includes('defeat')) {
-            return 'reflection';
-        }
-        return 'default';
+        const doc = this.documents.find(d => d.id === documentId);
+        return doc?.type || 'default';
     }
     
     /**

@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import { ViteEjsPlugin } from 'vite-plugin-ejs';
 import { visualizer } from 'rollup-plugin-visualizer';
 import liveReload from 'vite-plugin-live-reload';
+import { plugin as markdown } from 'vite-plugin-markdown';
 import path from 'path';
 
 /// <reference types="vitest" />
@@ -30,8 +31,15 @@ export default defineConfig(({ mode }) => {
           beautify: !isProduction
         }
       }),
-      // Live reload for EJS templates (development only)
-      ...(!isProduction ? [liveReload('src/templates/**/*.ejs')] : []),
+      // Markdown plugin for document management
+      markdown({
+        mode: ['markdown'] as any
+      }),
+      // Live reload for EJS templates and Markdown documents (development only)
+      ...(!isProduction ? [
+        liveReload('src/templates/**/*.ejs'),
+        liveReload('src/game/data/documents/**/*.md')
+      ] : []),
       // Bundle analyzer (conditional)
       ...(analyze ? [visualizer({
         filename: 'dist/stats.html',

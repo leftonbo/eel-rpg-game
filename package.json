@@ -36,12 +36,14 @@
     "@typescript-eslint/parser": "^8.36.0",
     "ejs": "^3.1.10",
     "eslint": "^9.31.0",
+    "gray-matter": "^4.0.3",
     "rimraf": "^5.0.0",
     "rollup-plugin-visualizer": "^5.12.0",
     "typescript": "^5.0.0",
     "vite": "^6.0.1",
     "vite-plugin-ejs": "^1.7.0",
     "vite-plugin-live-reload": "^3.0.5",
+    "vite-plugin-markdown": "^2.2.0",
     "vitest": "^3.2.4"
   },
   "dependencies": {
