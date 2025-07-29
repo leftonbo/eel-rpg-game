@@ -2,7 +2,7 @@ import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
 import { getBossData } from '../data';
 import { BootstrapMarkdownRenderer } from '../utils/BootstrapMarkdownRenderer';
-import { LibraryDocument, loadAllDocuments, getAllDocuments } from '../data/documents';
+import { LibraryDocument, loadAllDocuments, getAllDocuments } from '../data/DocumentLoader';
 
 
 export class OutGameLibraryScene extends BaseOutGameScene {
@@ -79,7 +79,7 @@ export class OutGameLibraryScene extends BaseOutGameScene {
         
         this.documents.forEach(doc => {
             // エクスプローラーレベル要求チェック
-            const levelOk = explorerLevel >= doc.requiredExplorerLevel;
+            const levelOk = !doc.requiredExplorerLevel || explorerLevel >= doc.requiredExplorerLevel;
             
             // 必要ボス撃破チェック
             let bossDefeatsOk = true;
