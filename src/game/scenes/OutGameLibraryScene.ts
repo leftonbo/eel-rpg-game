@@ -1,6 +1,7 @@
 import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
 import { getBossData } from '../data';
+import { BootstrapMarkdownRenderer } from '../utils/BootstrapMarkdownRenderer';
 
 /**
  * 資料庫システムの文書インターフェース
@@ -210,6 +211,22 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
     }
     
     /**
+     * 文書IDから文書タイプを判定
+     * @param documentId 文書ID
+     * @returns 文書タイプ
+     */
+    private getDocumentType(documentId: string): string {
+        if (documentId.includes('diary') || documentId.includes('welcome')) {
+            return 'diary';
+        } else if (documentId.includes('strategy') || documentId.includes('guide')) {
+            return 'strategy';
+        } else if (documentId.includes('reflection') || documentId.includes('defeat')) {
+            return 'reflection';
+        }
+        return 'default';
+    }
+    
+    /**
      * 文書リストの描画
      */
     private renderDocumentList(): void {
@@ -265,15 +282,16 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
             return;
         }
         
-        // Markdownの簡易変換（実際のMarkdownパーサーは今後実装）
-        const htmlContent = this.convertMarkdownToHtml(doc.content);
+        // Bootstrap 5対応MarkdownレンダラーでHTML変換
+        const documentType = this.getDocumentType(doc.id);
+        const htmlContent = BootstrapMarkdownRenderer.convertWithType(doc.content, documentType);
         
         contentContainer.innerHTML = `
-            <div class="card">
-                <div class="card-header">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">${doc.title}</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body overflow-auto" style="max-height: 70vh;">
                     ${htmlContent}
                 </div>
             </div>
@@ -292,25 +310,5 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
                 </div>
             `;
         }
-    }
-    
-    /**
-     * 簡易Markdown→HTML変換（基本的なもののみ）
-     */
-    private convertMarkdownToHtml(markdown: string): string {
-        return markdown
-            .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-            .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-            .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-            .replace(/^\* (.+)$/gm, '<li>$1</li>')
-            .replace(/^- (.+)$/gm, '<li>$1</li>')
-            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.+?)\*/g, '<em>$1</em>')
-            .replace(/^---$/gm, '<hr>')
-            .replace(/\n\n/g, '</p><p>')
-            .replace(/^(.+)$/gm, '<p>$1</p>')
-            .replace(/<li>/g, '<ul><li>')
-            .replace(/<\/li>(?![\s\S]*<li>)/g, '</li></ul>')
-            .replace(/<\/ul>\s*<ul>/g, '');
     }
 }
