@@ -90,7 +90,7 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
 
 **- エルナル**`,
                 requiredExplorerLevel: 1,
-                requiredBossDefeats: ['swamp-dragon'],
+                requiredBossDefeats: [],
                 unlocked: false
             }
         ];
@@ -162,6 +162,7 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
             button.dataset.documentId = doc.id;
             
             if (doc.unlocked) {
+                button.classList.remove('btn-outline-secondary');
                 button.classList.add('btn-outline-info');
                 button.innerHTML = `
                     <div class="d-flex justify-content-between align-items-center">
@@ -191,11 +192,18 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
      * 文書内容の表示
      */
     private showDocument(documentId: string): void {
+        console.log('showDocument called with ID:', documentId);
         const doc = this.documents.find(d => d.id === documentId);
-        if (!doc || !doc.unlocked) return;
+        if (!doc || !doc.unlocked) {
+            console.log('Document not found or not unlocked:', doc);
+            return;
+        }
         
         const contentContainer = document.getElementById('library-document-content');
-        if (!contentContainer) return;
+        if (!contentContainer) {
+            console.log('Content container not found');
+            return;
+        }
         
         // Markdownの簡易変換（実際のMarkdownパーサーは今後実装）
         const htmlContent = this.convertMarkdownToHtml(doc.content);
