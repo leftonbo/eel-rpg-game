@@ -1,5 +1,6 @@
 import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
+import { getBossData } from '../data';
 
 /**
  * 資料庫システムの文書インターフェース
@@ -163,12 +164,8 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
     private updateDocumentAvailability(): void {
         const player = this.game.getPlayer();
         const explorerLevel = player.getExplorerLevel();
-        const defeatedBosses = player.memorialSystem.getAllTrophies()
-            .filter(trophy => trophy.type === 'victory')
-            .map(trophy => trophy.id.replace('victory-', ''));
-        const lostToBosses = player.memorialSystem.getAllTrophies()
-            .filter(trophy => trophy.type === 'defeat')
-            .map(trophy => trophy.id.replace('defeat-', ''));
+        const defeatedBosses = player.memorialSystem.getVictoriousBossIds();
+        const lostToBosses = player.memorialSystem.getDefeatedBossIds();
         
         this.documents.forEach(doc => {
             // エクスプローラーレベル要求チェック
@@ -192,6 +189,23 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
             
             doc.unlocked = levelOk && bossDefeatsOk && bossLossesOk;
         });
+    }
+    
+    /**
+     * ボス要求条件を表示用文字列に変換
+     * @param bossIds ボスIDの配列
+     * @param type 条件の種類（defeat: 敗北, victory: 撃破）
+     * @returns 表示用文字列
+     */
+    private renderBossRequirements(bossIds: string[], type: 'defeat' | 'victory'): string {
+        return bossIds.map(bossId => {
+            try {
+                const bossData = getBossData(bossId);
+                return `${bossData.name}${type === 'defeat' ? '敗北' : '撃破'}`;
+            } catch {
+                return `${bossId}${type === 'defeat' ? '敗北' : '撃破'}(データ不明)`;
+            }
+        }).join(', ');
     }
     
     /**
@@ -226,8 +240,8 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
                     </div>
                     <small class="text-muted d-block mt-1">
                         必要条件: エクスプローラーLv.${doc.requiredExplorerLevel}
-                        ${doc.requiredBossDefeats ? `, ${doc.requiredBossDefeats.join(', ')}撃破` : ''}
-                        ${doc.requiredBossLosses ? `, ${doc.requiredBossLosses.join(', ')}敗北` : ''}
+                        ${doc.requiredBossDefeats ? `, ${this.renderBossRequirements(doc.requiredBossDefeats, 'victory')}` : ''}
+                        ${doc.requiredBossLosses ? `, ${this.renderBossRequirements(doc.requiredBossLosses, 'defeat')}` : ''}
                     </small>
                 `;
             }
