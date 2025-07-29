@@ -133,6 +133,9 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
         const defeatedBosses = player.memorialSystem.getAllTrophies()
             .filter(trophy => trophy.type === 'victory')
             .map(trophy => trophy.id.replace('victory-', ''));
+        const lostToBosses = player.memorialSystem.getAllTrophies()
+            .filter(trophy => trophy.type === 'defeat')
+            .map(trophy => trophy.id.replace('defeat-', ''));
         
         this.documents.forEach(doc => {
             // エクスプローラーレベル要求チェック
@@ -146,7 +149,15 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
                 );
             }
             
-            doc.unlocked = levelOk && bossDefeatsOk;
+            // 必要ボス敗北チェック
+            let bossLossesOk = true;
+            if (doc.requiredBossLosses && doc.requiredBossLosses.length > 0) {
+                bossLossesOk = doc.requiredBossLosses.every(bossId => 
+                    lostToBosses.includes(bossId)
+                );
+            }
+            
+            doc.unlocked = levelOk && bossDefeatsOk && bossLossesOk;
         });
     }
     
