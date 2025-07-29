@@ -173,10 +173,15 @@ export class BattleResultScene {
      */
     private displayTrophies(): void {
         const trophyContainer = document.getElementById('trophies-earned');
-        if (!trophyContainer || !this.battleResult || this.battleResult.trophies.length === 0) {
+        if (!trophyContainer) return;
+        
+        if (!this.battleResult || this.battleResult.trophies.length === 0) {
+            // Clear container if no trophies to display
+            trophyContainer.innerHTML = '';
             return;
         }
         
+        // Clear previous content and set header in one operation
         trophyContainer.innerHTML = '<h5>🏆 獲得記念品</h5>';
         
         this.battleResult.trophies.forEach(trophy => {
@@ -203,10 +208,15 @@ export class BattleResultScene {
      */
     private displayNewBossUnlocks(): void {
         const bossUnlockContainer = document.getElementById('new-boss-unlocks');
-        if (!bossUnlockContainer || !this.battleResult || this.battleResult.newBossUnlocks.length === 0) {
+        if (!bossUnlockContainer) return;
+        
+        if (!this.battleResult || this.battleResult.newBossUnlocks.length === 0) {
+            // Clear container if no boss unlocks to display
+            bossUnlockContainer.innerHTML = '';
             return;
         }
         
+        // Clear previous content and set header in one operation
         bossUnlockContainer.innerHTML = '<h5>🔓 新ボス解禁</h5>';
         
         this.battleResult.newBossUnlocks.forEach(bossName => {
