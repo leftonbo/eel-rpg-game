@@ -221,15 +221,15 @@ export class PlayerSaveManager {
         try {
             const importedData = JSON.parse(jsonString);
             
-            // Validate the imported data structure
-            if (!this.validateSaveDataStructure(importedData)) {
-                throw new Error('Invalid save data structure');
-            }
-            
-            // Migrate if needed
+            // Migrate the imported data if necessary
             const migratedData = importedData.version !== this.CURRENT_VERSION
                 ? this.migrateSaveData(importedData)
                 : importedData;
+
+            // Validate the structure of the migrated data
+            if (!this.validateSaveDataStructure(migratedData)) {
+                throw new Error('Invalid save data structure');
+            }
             
             // Save the imported data
             this.savePlayerData(migratedData);
