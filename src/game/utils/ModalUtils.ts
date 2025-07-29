@@ -46,34 +46,100 @@ export class ModalUtils {
     } as const;
 
     /**
+     * トーストのタイプか判定するtype guard関数
+     * 
+     * @private
+     * @static
+     * @param {any} value - 判定する値
+     * @returns {boolean} トーストタイプの場合true
+     */
+    private static isToastType(value: any): value is 'success' | 'error' | 'info' | 'warning' {
+        const toastTypes = new Set(['success', 'error', 'info', 'warning']);
+        return typeof value === 'string' && toastTypes.has(value);
+    }
+
+    /**
+     * トースト通知を表示する（従来の使用方法：message + type）
+     * 
+     * @static
+     * @param {string} message - 表示するメッセージ
+     * @param {'success' | 'error' | 'info' | 'warning'} type - トーストのタイプ
+     * @returns {void}
+     */
+    static showToast(message: string, type: 'success' | 'error' | 'info' | 'warning'): void;
+
+    /**
+     * トースト通知を表示する（新しい使用方法：message + title + type）
+     * 
+     * @static
+     * @param {string} message - 表示するメッセージ
+     * @param {string} title - トーストのカスタムタイトル
+     * @param {'success' | 'error' | 'info' | 'warning'} type - トーストのタイプ
+     * @returns {void}
+     */
+    static showToast(message: string, title: string, type: 'success' | 'error' | 'info' | 'warning'): void;
+
+    /**
+     * トースト通知を表示する（デフォルト：message のみ）
+     * 
+     * @static
+     * @param {string} message - 表示するメッセージ
+     * @returns {void}
+     */
+    static showToast(message: string): void;
+
+    /**
      * トースト通知を表示する（Bootstrap 5公式API使用）
      * 
      * @static
      * @param {string} message - 表示するメッセージ
-     * @param {'success' | 'error' | 'info' | 'warning'} [type='info'] - トーストのタイプ
+     * @param {string | 'success' | 'error' | 'info' | 'warning'} [arg2] - タイトルまたはタイプ
+     * @param {'success' | 'error' | 'info' | 'warning'} [arg3] - タイプ（arg2がタイトルの場合）
      * @returns {void}
      * 
      * @description Bootstrap 5の公式Toast APIを使用してスムーズなアニメーションを実現
+     *              複数のオーバーロードにより明確な型定義を提供
      * 
      * @example
      * ```typescript
-     * // 成功メッセージ
-     * ModalUtils.showToast('保存しました！', 'success');
+     * // 基本的な情報メッセージ
+     * ModalUtils.showToast('処理を開始しました');
      * 
-     * // エラーメッセージ
+     * // 従来の使用方法（message + type）
+     * ModalUtils.showToast('保存しました！', 'success');
      * ModalUtils.showToast('エラーが発生しました', 'error');
      * 
-     * // 情報メッセージ（デフォルト）
-     * ModalUtils.showToast('処理を開始しました');
+     * // 新しい使用方法（message + title + type）
+     * ModalUtils.showToast('データを更新しました', 'データベース', 'success');
+     * ModalUtils.showToast('接続に失敗しました', 'ネットワーク', 'error');
      * ```
      */
-    static showToast(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info'): void {
+    static showToast(message: string, arg2?: string | 'success' | 'error' | 'info' | 'warning', arg3?: 'success' | 'error' | 'info' | 'warning'): void {
+        // 引数の解析：明確で保守しやすいロジック
+        let actualTitle: string | undefined;
+        let actualType: 'success' | 'error' | 'info' | 'warning';
+
+        if (arg3) {
+            // 新しい使用方法: showToast(message, title, type)
+            actualTitle = arg2 as string;
+            actualType = arg3;
+        } else if (this.isToastType(arg2)) {
+            // 従来の使用方法: showToast(message, type)
+            actualTitle = undefined;
+            actualType = arg2;
+        } else {
+            // デフォルト: showToast(message) または showToast(message, title)
+            actualTitle = arg2 as string | undefined;
+            actualType = 'info';
+        }
+
         const toastContainer = document.getElementById('toast-container');
         if (!toastContainer) return;
 
         const toastId = `toast-${Date.now()}`;
-        const bgClass = this.getToastBgClass(type);
-        const iconClass = this.getToastIcon(type);
+        const bgClass = this.getToastBgClass(actualType);
+        const iconClass = this.getToastIcon(actualType);
+        const displayTitle = actualTitle || this.getToastTitle(actualType);
 
         // Bootstrap 5公式のToast構造（右下からのスライドイン用）
         const toastHtml = `
@@ -87,7 +153,7 @@ export class ModalUtils {
                  data-bs-autohide="true">
                 <div class="toast-header ${bgClass} text-white">
                     <span class="me-2">${iconClass}</span>
-                    <strong class="me-auto">${this.getToastTitle(type)}</strong>
+                    <strong class="me-auto">${displayTitle}</strong>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="閉じる"></button>
                 </div>
                 <div class="toast-body">
