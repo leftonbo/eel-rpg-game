@@ -40,7 +40,7 @@ export class OutGameLibraryScene extends BaseOutGameScene {
      * 文書データの初期化（簡易実装）
      */
     private initializeDocuments(): void {
-        // 今回は1つのサンプル資料のみ実装
+        // 基本文書とテスト用文書を実装
         this.documents = [
             {
                 id: 'welcome-document',
@@ -92,6 +92,39 @@ HPは低めだけど、状態異常でじわじわと削ってくる戦術。
 **- エルナル**`,
                 requiredExplorerLevel: 1,
                 requiredBossDefeats: [],
+                unlocked: false
+            },
+            {
+                id: 'defeat-reflection',
+                title: '💭 敗北から学ぶこと',
+                content: `# 敗北から学ぶこと
+
+## 最初の挫折
+
+沼のドラゴンに最初に挑戦した時、あっけなく負けちゃった...
+でも、その敗北があったからこそ今の私があるのよね。
+
+## 敗北の意味
+
+負けるって悲しいけれど、それは新しい発見の始まり。
+相手の攻撃パターンを身をもって知ることができるし、
+自分の弱点も見えてくる。
+
+## 成長への第一歩
+
+この敗北の経験が、私をより強い冒険者に変えてくれた。
+準備の大切さ、装備の重要性、戦略の必要性...
+全てを学ぶことができたの。
+
+次に同じボスと戦う時は、きっと違う結果になるはず！
+
+---
+
+*敗北は終わりじゃない。新しい始まりなのよ。*
+
+**- エルナル**`,
+                requiredExplorerLevel: 1,
+                requiredBossLosses: ['swamp-dragon'],
                 unlocked: false
             }
         ];
