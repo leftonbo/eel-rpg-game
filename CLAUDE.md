@@ -194,6 +194,35 @@ interface PlayerSaveData {
 
 ## 開発方針（最重要）
 
+### ModalUtils の使用方針
+
+ブラウザ標準のダイアログ（`alert()`, `confirm()`, `prompt()`）は使用せず、必ずModalUtilsクラスのメソッドを使用すること。
+
+- **`alert()` の代替**: `ModalUtils.showAlert(message, title?)` を使用
+- **`confirm()` の代替**: `ModalUtils.showConfirm(message, title?)` を使用  
+- **`prompt()` の代替**: `ModalUtils.showPrompt(message, defaultValue?, title?, inputType?)` を使用
+- **通知表示**: `ModalUtils.showToast(message, title?, type?)` を使用
+
+**理由**:
+- Bootstrap 5のモーダルシステムとの統一感
+- ユーザー体験の向上（アニメーション、スタイリング）
+- モバイル環境での一貫した表示
+- カスタマイズ可能性とアクセシビリティの向上
+
+**例**:
+```typescript
+// ❌ 使用しない
+alert('保存しました');
+const result = confirm('削除しますか？');
+const name = prompt('名前を入力してください');
+
+// ✅ 推奨
+await ModalUtils.showAlert('保存しました');
+const result = await ModalUtils.showConfirm('削除しますか？');
+const name = await ModalUtils.showPrompt('名前を入力してください');
+ModalUtils.showToast('データを更新しました', 'データベース', 'success');
+```
+
 ### git コミット方針
 
 Claude Codeは以下の方針に従ってgitコミットを行うこと
