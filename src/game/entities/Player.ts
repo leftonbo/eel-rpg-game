@@ -89,6 +89,10 @@ export class Player extends Actor {
      * @param saveData セーブデータオブジェクト
      */
     private loadSaveDataComponents(saveData: PlayerSaveData): void {
+        if (!saveData) {
+            throw new Error('No player save data found');
+        }
+        
         this.loadAbilities(saveData.abilities);
         this.loadEquipment(saveData.equipment);
         this.loadMemorials(saveData.memorials);
