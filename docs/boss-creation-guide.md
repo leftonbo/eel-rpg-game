@@ -299,6 +299,9 @@ export const registeredBossIds: string[] = [
     'clean-master',
     'underground-worm',
     'bat-vampire',
+    'fluffy-dragon',
+    'seraph-mascot',
+    'dual-jester',
     'new-boss'  // 追加
 ];
 
@@ -527,7 +530,7 @@ aiStrategy: (boss, player, turn) => {
 
 ### 既存ボスとの比較
 
-**現在実装済みのボス11体**
+**現在実装済みのボス14体**
 
 #### 基本エリア (explorerLevelRequired: 0)
 - 沼のドラゴン: HP 400, 攻撃力 18 (高火力タイプ)
