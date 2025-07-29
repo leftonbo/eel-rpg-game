@@ -467,61 +467,23 @@ export class Boss extends Actor {
     
     private executeAttackAction(action: BossAction, player: Player): string[] {
         const messages: string[] = [];
-        const baseDamage = this.calculateActionDamage(action) || this.attackPower;
+
+        const baseDamage = this.calculateActionDamage(action);
         const accuracyModifier = this.statusEffects.getAccuracyModifier();
         const attackResult = calculateAttackResult(
-            baseDamage, 
-            player.isKnockedOut(), 
-            action.hitRate, 
+            baseDamage ?? 0,
+            player.isKnockedOut(),
+            action.hitRate,
             action.criticalRate,
             action.damageVarianceMin,
             action.damageVarianceMax,
             accuracyModifier
         );
-        
-        if (attackResult.message) {
-            messages.push(attackResult.message);
-        }
-        
+
         if (attackResult.isMiss) {
             messages.push(`しかし、攻撃は外れた！`);
         } else {
-            const actualDamage = player.takeDamage(attackResult.damage);
-            if (attackResult.isCritical) {
-                messages.push(`痛恨の一撃！ ${player.name}に${actualDamage}のダメージ！`);
-            } else {
-                messages.push(`${player.name}に${actualDamage}のダメージ！`);
-            }
-            
-            // Check for HP absorption
-            const healMessages = this.processHpAbsorption(action, actualDamage);
-            messages.push(...healMessages);
-        }
-        
-        return messages;
-    }
-    
-    private executeStatusAttackAction(action: BossAction, player: Player): string[] {
-        const messages: string[] = [];
-        let isMiss = false;
-        
-        const baseDamage = this.calculateActionDamage(action);
-        if (baseDamage && baseDamage > 0) {
-            const accuracyModifier = this.statusEffects.getAccuracyModifier();
-            const attackResult = calculateAttackResult(
-                baseDamage, 
-                player.isKnockedOut(), 
-                action.hitRate, 
-                action.criticalRate,
-                action.damageVarianceMin,
-                action.damageVarianceMax,
-                accuracyModifier
-            );
-
-            if (attackResult.isMiss) {
-                isMiss = true;
-                messages.push(`しかし、攻撃は外れた！`);
-            } else {
+            if (baseDamage) {
                 const actualDamage = player.takeDamage(attackResult.damage);
                 if (attackResult.isCritical) {
                     messages.push(`痛恨の一撃！ ${player.name}に${actualDamage}のダメージ！`);
@@ -533,20 +495,101 @@ export class Boss extends Actor {
                 const healMessages = this.processHpAbsorption(action, actualDamage);
                 messages.push(...healMessages);
             }
+
+            if (action.statusEffect) {
+                const statusMessages = this.processStatusEffect(action, player);
+                messages.push(...statusMessages);
+            }
         }
-        
-        if (!isMiss && action.statusEffect) {
-            const statusMessages = this.processStatusEffect(action, player);
-            messages.push(...statusMessages);
-        }
-        
+
         return messages;
     }
     
-    private executeRestraintAttackAction(_action: BossAction, player: Player): string[] {
-        player.statusEffects.addEffect(StatusEffectType.Restrained);
-        player.struggleAttempts = 0; // Reset struggle attempts
-        return [`${player.name}が拘束された！`];
+    private executeStatusAttackAction(action: BossAction, player: Player): string[] {
+        const messages: string[] = [];
+
+        const baseDamage = this.calculateActionDamage(action);
+        const accuracyModifier = this.statusEffects.getAccuracyModifier();
+        const attackResult = calculateAttackResult(
+            baseDamage ?? 0,
+            player.isKnockedOut(),
+            action.hitRate,
+            action.criticalRate,
+            action.damageVarianceMin,
+            action.damageVarianceMax,
+            accuracyModifier
+        );
+
+        if (attackResult.isMiss) {
+            messages.push(`しかし、攻撃は外れた！`);
+        } else {
+            if (baseDamage) {
+                const actualDamage = player.takeDamage(attackResult.damage);
+                if (attackResult.isCritical) {
+                    messages.push(`痛恨の一撃！ ${player.name}に${actualDamage}のダメージ！`);
+                } else {
+                    messages.push(`${player.name}に${actualDamage}のダメージ！`);
+                }
+
+                // Check for HP absorption
+                const healMessages = this.processHpAbsorption(action, actualDamage);
+                messages.push(...healMessages);
+            }
+
+            if (action.statusEffect) {
+                const statusMessages = this.processStatusEffect(action, player);
+                messages.push(...statusMessages);
+            }
+        }
+
+        return messages;
+    }
+    
+    private executeRestraintAttackAction(action: BossAction, player: Player): string[] {
+        const messages: string[] = [];
+
+        const baseDamage = this.calculateActionDamage(action);
+        const accuracyModifier = this.statusEffects.getAccuracyModifier();
+        const attackResult = calculateAttackResult(
+            baseDamage ?? 0,
+            player.isKnockedOut(),
+            action.hitRate,
+            action.criticalRate,
+            action.damageVarianceMin,
+            action.damageVarianceMax,
+            accuracyModifier
+        );
+
+        if (attackResult.isMiss) {
+            messages.push(`しかし、攻撃は外れた！`);
+        } else {
+            if (baseDamage) {
+                const actualDamage = player.takeDamage(attackResult.damage);
+                if (attackResult.isCritical) {
+                    messages.push(`痛恨の一撃！ ${player.name}に${actualDamage}のダメージ！`);
+                } else {
+                    messages.push(`${player.name}に${actualDamage}のダメージ！`);
+                }
+
+                // Check for HP absorption
+                const healMessages = this.processHpAbsorption(action, actualDamage);
+                messages.push(...healMessages);
+            }
+
+            if (action.statusEffect) {
+                const statusMessages = this.processStatusEffect(action, player);
+                messages.push(...statusMessages);
+            }
+
+            if (!player.isRestrained()) {
+                // Apply restraint effect
+                player.statusEffects.addEffect(StatusEffectType.Restrained);
+                player.struggleAttempts = 0; // Reset struggle attempts
+                messages.push(`${player.name}は拘束された！`);
+            }
+        }
+
+        return messages;
     }
     
     private executeCocoonAttackAction(_action: BossAction, player: Player): string[] {

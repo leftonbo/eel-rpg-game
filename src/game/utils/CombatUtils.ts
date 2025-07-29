@@ -67,15 +67,6 @@ export function calculateAttackResult(
     damageVarianceMax?: number,
     accuracyModifier: number = 1.0
 ): AttackResult {
-    if (baseDamage <= 0) {
-        return {
-            damage: 0,
-            isMiss: false,
-            isCritical: false,
-            message: ''
-        };
-    }
-    
     // プレイヤーが行動不能の場合、ボスの攻撃はミスしない
     const baseHitRate = customHitRate !== undefined ? customHitRate : 1.0;
     // 状態異常による命中率修正を適用
