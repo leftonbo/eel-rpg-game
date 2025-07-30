@@ -237,7 +237,7 @@ const dualJesterPhase2Actions: BossAction[] = [
         messages: [
             '「大丈夫、痛くないよ〜」',
             '「痛がってる顔、とても美しいね」',
-            '<USER>の人格が急激に変化しながら<TARGET>を舐め回す！'
+            '<USER>人格が変化しながら、リボンのような長い舌が<TARGET>を舐め回す！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.5,
         statusEffect: StatusEffectType.Confusion,
@@ -252,8 +252,8 @@ const dualJesterPhase2Actions: BossAction[] = [
         description: '今度は本当に食べてしまう',
         messages: [
             '「今度は本当に食べてあげる...永遠に一緒にいられるよ」',
-            '<USER>の狂気の笑みが<TARGET>を恐怖に陥れる！',
-            '<TARGET>は真の恐怖の中で飲み込まれていく！'
+            '<USER>のリボンのような長い舌が<TARGET>を巻き上げ、そのまま飲み込んでいく！',
+            'まるでエアドームのような胃袋が<USER>を包み込む...'
         ],
         weight: 25,
         canUse: (_boss, player, _turn) => {
@@ -265,32 +265,32 @@ const dualJesterPhase2Actions: BossAction[] = [
 // 第3フェーズ: 体内環境（狂気の遊び場）
 const dualJesterDevourActions: BossAction[] = [
     {
-        id: 'madness-playground',
+        id: 'madness-embrace',
         type: ActionType.DevourAttack,
-        name: '狂気の遊び場',
-        description: '体内の歪んだ空間でプレイヤーを翻弄する',
+        name: '狂気の抱擁',
+        description: '体内の「遊び場」を圧迫して、生命力をしぼり取る',
         messages: [
-            '「ここは僕の特別な遊び場だよ〜♪一緒に回ろう〜♪」',
-            '「永遠に回り続けろ...目が回るまで、意識が混濁するまで...」',
-            '<TARGET>は脈動する肉壁に巻き込まれ、メリーゴーラウンドのようにぐるぐると回され続ける！',
+            '「ママのお腹の中みたいにぎゅ～ってしてあげる♪」',
+            '「我が抱擁に包まれて、安心して眠るがいい...」',
+            '体内の空間が急激に縮まり、胃壁が<TARGET>を圧迫する！',
         ],
-        damageFormula: (user: Boss) => user.attackPower * 1.8,
-        statusEffect: StatusEffectType.Bipolar,
-        statusChance: 0.70,
+        damageFormula: (user: Boss) => user.attackPower * 2.0,
         weight: 35,
         playerStateCondition: 'eaten'
     },
     {
         id: 'dual-digestion',
         type: ActionType.DevourAttack,
-        name: '二重消化',
-        description: '表裏の人格が同時に消化を進める',
+        name: '二重胃液',
+        description: '表裏の人格がそれぞれの胃液を出し、獲物をねばねばにする',
         messages: [
-            '「一緒に遊ぼうよ〜♪お腹の中であったか〜い♪」',
-            '「貴様の全てを我が物にしてやる...肉も、骨も、魂も...」',
-            'ピンクと紫の胃液が<TARGET>を包み、二つの異なる人格が同時に<TARGET>の生命力を吸い取っていく！',
+            '「水遊びしようよ〜♪お腹の中であったか〜い♪」',
+            '「そのまま我がプールで溺れてしまうがよい...」',
+            'ピンクと紫の胃液が<TARGET>を包みこみ、生命力を溶かしていく！',
         ],
-        damageFormula: (user: Boss) => user.attackPower * 2.0,
+        statusEffect: StatusEffectType.Slimed,
+        statusChance: 1.0,
+        damageFormula: (user: Boss) => user.attackPower * 1.8,
         weight: 30,
         playerStateCondition: 'eaten'
     },
@@ -300,109 +300,37 @@ const dualJesterDevourActions: BossAction[] = [
         name: '悪夢の抱擁',
         description: '甘い夢と恐ろしい悪夢を同時に見せる',
         messages: [
-            '体内の空間が突然変化し、まるで子供部屋のような温かい光に包まれる...',
             '「楽しい夢を見せてあげる♪ママのお腹の中みたいに安心でしょ〜？」',
-            '突然光が消え、壁に無数の目玉が浮かび上がる！',
             '「...それとも永遠の悪夢がお好み？フフフ...」',
-            '<TARGET>は体内で甘美な安らぎと恐ろしい悪夢を同時に体験させられる！'
+            '<USER>の胃袋が<TARGET>をやさしくゆさぶり、甘美な安らぎと恐ろしい悪夢を同時に体験させる！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.8,
         statusEffect: StatusEffectType.FalseSecurity,
         statusChance: 0.60,
         weight: 25,
         playerStateCondition: 'eaten'
-    },
-    {
-        id: 'toy-room-assault',
-        type: ActionType.DevourAttack,
-        name: 'おもちゃ部屋襲撃',
-        description: '体内の歪んだおもちゃ部屋から攻撃を仕掛ける',
-        messages: [
-            '体内の空間が突然おもちゃ部屋に変化し、床には無数の割れた人形の破片が散らばっている...',
-            '「僕のお友達も一緒に遊びたがってるよ〜♪　みんなでお出迎えしようね〜♪」（表の人格が無邪気に笑う）',
-            '壊れたテディベアやロボットが一斉に動き出し、<TARGET>の周りを取り囲んで甘える様に舐め回し始める！',
-            '「遊んでくれなかった子たちの寂しさを知ってるかい？」（裏の人格が不気味に微笑む）',
-            '無数のおもちゃたちが<TARGET>に甘えるようにすり寄り、冷たい手で愛情深く舐め回し続ける！'
-        ],
-        damageFormula: (user: Boss) => user.attackPower * 1.6,
-        statusEffect: StatusEffectType.Fear,
-        statusChance: 0.55,
-        weight: 28,
-        playerStateCondition: 'eaten'
-    },
-    {
-        id: 'internal-carousel',
-        type: ActionType.DevourAttack,
-        name: '体内メリーゴーラウンド',
-        description: '体内に現れたメリーゴーラウンドが回転攻撃を仕掛ける',
-        messages: [
-            '体内に巨大なメリーゴーラウンドが現れ、不協和音のオルゴールメロディが響き始める...',
-            '「回って〜回って〜楽しいね〜♪」（表の人格が手を叩いて喜ぶ）',
-            '木馬に乗った骸骨や腐った天使の人形が<TARGET>の周りをぐるぐると回り続ける！',
-            '「目が回るまで回ろう...そして永遠に回り続けるんだ」（裏の人格が低く囁く）',
-            'メリーゴーラウンドの回転速度が異常に速くなり、<TARGET>は激しい遠心力で肉壁に叩きつけられる！'
-        ],
-        damageFormula: (user: Boss) => user.attackPower * 1.9,
-        statusEffect: StatusEffectType.Confusion,
-        statusChance: 0.75,
-        weight: 32,
-        playerStateCondition: 'eaten'
-    },
-    {
-        id: 'broken-puppet-dance',
-        type: ActionType.DevourAttack,
-        name: '壊れた人形の踊り',
-        description: '糸で操られた壊れた人形たちが不気味な踊りを踊る',
-        messages: [
-            '体内の天井から無数の糸が垂れ下がり、壊れた人形たちが宙に浮かび上がる...',
-            '「人形劇の時間だよ〜♪ みんなで踊ろうね〜♪」（表の人格が糸を操る）',
-            '首の取れた人形、腕のない人形、顔の半分が溶けた人形...それらが<TARGET>の周りで踊り狂う！',
-            '「美しい踊りだろう？君もすぐに人形の仲間入りだ...」（裏の人格が糸を強く引く）',
-            '人形たちの壊れた手足が<TARGET>に絡みつき、同じ踊りを強要しようとする！'
-        ],
-        damageFormula: (user: Boss) => user.attackPower * 1.7,
-        statusEffect: StatusEffectType.Paralysis,
-        statusChance: 0.60,
-        weight: 30,
-        playerStateCondition: 'eaten'
-    },
-    {
-        id: 'flesh-playground-torment',
-        type: ActionType.DevourAttack,
-        name: '肉の遊び場拷問',
-        description: '体内の肉で出来た遊具で拷問的な遊びを強要する',
-        messages: [
-            '体内の肉壁が蠢き、ブランコやシーソー、滑り台が肉塊から生成される...',
-            '「遊園地みたいでしょ〜♪ でも全部僕の体の一部なんだよ〜♪」（表の人格が嬉しそうに説明）',
-            '肉で出来たブランコが<TARGET>を掴み、激しく振り回し始める！',
-            '「遊びは楽しいが...時には痛みも必要だ」（裏の人格の声と共に遊具が牙を剥く）',
-            '<TARGET>は肉の遊具に押し潰され、引き裂かれ、二重人格の快楽的な拷問に晒され続ける！'
-        ],
-        damageFormula: (user: Boss) => user.attackPower * 2.1,
-        statusEffect: StatusEffectType.Manic,
-        statusChance: 0.65,
-        weight: 35,
-        playerStateCondition: 'eaten'
     }
 ];
 
-// 第4フェーズ: 敗北後の永続支配
+// 第4フェーズ: 敗北後、体内おもちゃ箱で裏の人格が永遠の遊び相手になる
 const dualJesterEternalActions: BossAction[] = [
     {
+        // 最初のターンだけ
         id: 'eternal-playmate',
         type: ActionType.PostDefeatedAttack,
         name: '永遠の遊び相手',
-        description: '永遠に遊び続ける相手として保管する',
+        description: '裏の人格がおもちゃ箱に出現し、永遠に遊び続ける相手になる',
         messages: [
-            '戦闘は終わった...しかし、真の恐怖はここから始まる。',
-            '「やったぁ〜！勝った勝った〜♪　これで君は僕だけのお友達だよ〜♪」（表の人格が純真に喜ぶ）',
-            '「永遠に、永遠に...二度と離さない。二度と逃げさせない。」（裏の人格が冷酷に宣言）',
-            '<TARGET>の意識が徐々に遠のく中、二つの人格が交互に現れ、永遠の支配を宣言する！',
-            '「みんなのお友達になったね〜♪」「私のコレクションに加わったな...」',
-            '目覚めることは二度とない...それが絶対的な愛の証明だと二重の声が囁く...'
+            '「君一人では淋しいだろう？私が遊び相手になろう」',
+            'おもちゃ箱の中に、<USER>より人一倍大きい裏の人格の姿が現れる！',
+            '「さあ、何をして遊ぼうか？」',
+            'ぬいぐるみにされてしまった<USER>は、動くことも返事をすることもできない...'
         ],
         weight: 35,
-        playerStateCondition: 'defeated'
+        playerStateCondition: 'defeated',
+        canUse: (boss: Boss, player: Player, _turn: number) => {
+            return player.isDefeated() && boss.getCustomVariable<number>('postDefeatedTurn', 0) <= 1;
+        },
     },
     {
         id: 'perfect-toy',
@@ -516,12 +444,11 @@ const dualJesterAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
             name: '本性覚醒',
             description: '双面の道化師の真の姿が露わになる',
             messages: [
-                '「...あれ？まだ遊びたいの？」（声が低く変化）',
-                'デュアルの顔が反転し、その瞳が狂気に染まった！',
+                '「...あれ？まだ遊びたいの？」',
                 '可愛らしい道化師の仮面が剥がれ落ち、真の恐怖が姿を現す！',
-                '「なら...本気で遊ぼうか」（完全に別人格）'
+                '「なら...本気で遊ぼうか」',
+                '狂気に染まった目が<TARGET>を見据え、表情が一変する！',
             ],
-            damageFormula: (user: Boss) => user.attackPower * 1.2,
             weight: 1,
             playerStateCondition: 'normal'
         };
@@ -537,6 +464,15 @@ const dualJesterAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
         boss.setCustomVariable('postDefeatedTurn', postDefeatedTurn);
         
         const eternalActions = dualJesterEternalActions;
+        
+        // 最初のターンのみ特別な行動を選択
+        if (postDefeatedTurn === 1) {
+            const firstAction = eternalActions.find(action => action.id === 'eternal-playmate');
+            if (firstAction) {
+                return firstAction;
+            }
+        }
+        
         const totalWeight = eternalActions.reduce((sum, action) => sum + action.weight, 0);
         let random = Math.random() * totalWeight;
         
@@ -640,9 +576,9 @@ const dualJesterAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
 export const dualJesterData: BossData = {
     id: 'dual-jester',
     name: 'DualJester',
-    displayName: '🎭 双面の道化師デュアル',
-    description: '二面性を持つ不気味で可愛い道化師',
-    questNote: '廃遊園地の奥から、可愛らしい道化師が現れた。子供のような無邪気な笑顔で「一緒に遊ぼうよ〜♪」と誘いかけてくるが、その瞳の奥に何か別の意図が見え隠れしている。時折見せる表情の変化が、この存在の真の危険性を物語っている...',
+    displayName: '🎭 双面の道化師',  // TODO: 個体名は『ニコレム』 (資料に表示する予定)
+    description: '二面性を持つ球体マスコット道化師',
+    questNote: 'とある廃遊園地に「ニコレム」という、かつてマスコットキャラクターとして活躍していた道化師が現れた。その道化師が現れて以来、付近の旅人が行方不明になっては、その者とそっくりのぬいぐるみが発見されるようになった。以来、その奇妙な道化師は討伐対象として指定されている。あなたの任務はその道化師を討伐し、この現象に終止符を打つことだ。道化師の姿は球体状で、縦に分かれたパステルピンクとライトブルーの体色をもつ。金色の小さな鈴がついた帽子と赤色のマント、そして笑顔を表す仮面を身に着けている。非常に特徴的な姿なので、その道化師はすぐに見つかるだろう。だがその仮面の裏には何が隠されているかはわからない。討伐の際は十分に注意すること。',
     maxHp: 280,
     attackPower: 20,
     actions: dualJesterPhase1Actions
@@ -666,7 +602,7 @@ export const dualJesterData: BossData = {
         {
             speaker: 'boss',
             style: 'default',
-            text: '双面の道化師デュアルがくるくる回りながらあなたに近づいてくる。その無邪気な笑顔の裏に、何か別の感情が見え隠れしている...'
+            text: '双面の道化師がくるくる回りながらあなたに近づいてくる。その無邪気な笑顔の裏に、何か別の感情が見え隠れしている...'
         },
         {
             speaker: 'boss',
@@ -689,7 +625,7 @@ export const dualJesterData: BossData = {
         {
             speaker: 'boss',
             style: 'default',
-            text: '双面の道化師デュアルは満足そうに微笑んで、くるくる回りながら廃遊園地の奥へと消えていった...'
+            text: '双面の道化師は満足そうに微笑んで、くるくる回りながら廃遊園地の奥へと消えていった...'
         }
     ],
     
@@ -699,8 +635,8 @@ export const dualJesterData: BossData = {
         description: '双面の道化師が持っていた特殊な鏡。写した者の裏の姿が見える不思議な力を秘めている。表と裏、どちらが真実なのかは見る者次第。'
     },
     defeatTrophy: {
-        name: '道化師の鈴',
-        description: '双面の道化師の帽子についていた金色の鈴。可愛い音色に隠された狂気により、聞いた者は現実と幻想の境界を見失う。'
+        name: '鏡写しのぬいぐるみ',
+        description: '自分の姿にそっくりだが、左右が逆の小さなぬいぐるみ。双面の道化師が玩具としてずっと遊んでいたためか、今もまだ温かみを感じる。持っているとどこか懐かしい気持ちになる。'
     },
     
     personality: [
@@ -727,11 +663,13 @@ export const dualJesterData: BossData = {
 // フィニッシュムーブの実装
 dualJesterData.finishingMove = function(): string[] {
     return [
-        '双面の道化師デュアルは<TARGET>を完全に支配した！',
+        '胃液に包まれ、生命力を奪われた<TARGET>はぬいぐるみの姿に変えられてしまった！',
         '「だいすき〜♪ ずっと一緒にいようね〜♪」',
         '「...ついに完璧な玩具を手に入れた」',
-        '<TARGET>は道化師の精神世界に取り込まれ、表裏の人格が延々と入れ替わる空間で永遠に遊ばれ続けることになった！',
-        '可愛い笑い声と不気味な笑い声が交互に響く中、<TARGET>は現実と幻想の境界を完全に見失ってしまった...'
+        '<TARGET>は体内の奥に運ばれ、まるでおもちゃ箱のような空間に閉じ込められる...',
+        '「そこが<USER>の新しいお家だよ～♪」',
+        '「私が遊び相手になってあげよう...飽きるまでずっと一緒だ」',
+        '体内のおもちゃ箱に閉じ込められた<USER>は、双面の道化師の玩具として遊ばれ続けることになった...'
     ];
 };
 
