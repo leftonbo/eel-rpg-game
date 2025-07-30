@@ -18,7 +18,7 @@ export interface PlayerSaveData {
 
 export class PlayerSaveManager {
     private static readonly SAVE_KEY = 'eelfood_player_data';
-    private static readonly CURRENT_VERSION = 5;
+    private static readonly CURRENT_VERSION = 6;
     
     /**
      * Save player data to localStorage
@@ -139,20 +139,24 @@ export class PlayerSaveManager {
             };
         }
 
-        // Migration from version 4 to 5: add readDocuments field
+        // Migration from version 4 to 5: Ensure playerInfo exists
         if (migratedData.version === 4) {
             migratedData = {
                 ...migratedData,
-                readDocuments: [], // Initialize empty read documents array
+                playerInfo: {
+                    name: 'エルナル',
+                    icon: '🐍'
+                },
                 version: 5
             };
         }
 
-        // Ensure playerInfo exists (add if missing in any version)
-        if (!migratedData.playerInfo) {
-            migratedData.playerInfo = {
-                name: 'エルナル',
-                icon: '🐍'
+        // Migration from version 5 to 6: add readDocuments field
+        if (migratedData.version === 5) {
+            migratedData = {
+                ...migratedData,
+                readDocuments: [], // Initialize empty read documents array
+                version: 6
             };
         }
         
@@ -224,6 +228,9 @@ export class PlayerSaveManager {
      */
     static markDocumentAsRead(documentId: string): void {
         const currentData = this.loadPlayerData() || this.createDefaultSaveData();
+        if (!currentData.readDocuments) {
+            currentData.readDocuments = []; // Initialize if not present
+        }
         
         // Add to readDocuments if not already present
         if (!currentData.readDocuments.includes(documentId)) {
@@ -237,6 +244,9 @@ export class PlayerSaveManager {
      */
     static isDocumentRead(documentId: string): boolean {
         const currentData = this.loadPlayerData() || this.createDefaultSaveData();
+        if (!currentData.readDocuments) {
+            return false; // If readDocuments is not initialized, treat as unread
+        }
         return currentData.readDocuments.includes(documentId);
     }
 
@@ -251,7 +261,7 @@ export class PlayerSaveManager {
     /**
      * Export save data as JSON string
      */
-    static exportSaveData(): string {
+    static exportSaveDataJson(): string {
         const saveData = this.loadPlayerData() || this.createDefaultSaveData();
         return JSON.stringify(saveData, null, 2);
     }
@@ -259,7 +269,7 @@ export class PlayerSaveManager {
     /**
      * Import save data from JSON string
      */
-    static importSaveData(jsonString: string): boolean {
+    static importSaveDataJson(jsonString: string): boolean {
         try {
             const importedData = JSON.parse(jsonString);
             

@@ -47,6 +47,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `src/game/data/bosses/`: 各ボス個別ファイル
 - **BossData interface**: HP、攻撃力、行動パターン、AI戦略を定義
 - **AIStrategy function**: ボス固有の戦術（沼のドラゴン＝高火力、闇のおばけ＝状態異常、機械のクモ＝拘束特化）
+- **Vite glob import**: `import.meta.glob('./bosses/*.ts')`による自動ボス検出（手動登録不要）
 - **EJSテンプレートシステム**: 自動HTML生成、手動編集不要
 
 ### 特殊システム
@@ -66,12 +67,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 概要：
 1. `src/game/data/bosses/{boss-id}.ts` でボスデータ作成
-2. `src/game/data/index.ts` の `registeredBossIds` 配列とloadBossData関数に追加
+2. **🚀 設定更新不要！** Vite glob importにより自動認識される
 3. EJSテンプレートシステムでHTML自動生成（手動HTML編集は不要）
 4. 必要に応じて新しい状態異常をStatusEffectTypesに追加
 5. エクスプローラーレベル設定（explorerLevelRequired）でボス解禁制御
 6. 記念品システム（victoryTrophy/defeatTrophy）の設定
 7. テスト実行で動作確認
+
+**重要な変更点（2024年7月更新）**: 
+- ❌ `registeredBossIds` 配列への手動追加は不要
+- ❌ `loadBossData` 関数のswitch文への追加は不要
+- ✅ ボスファイル作成だけで自動的にゲームに反映される
 
 ### 状態異常追加
 

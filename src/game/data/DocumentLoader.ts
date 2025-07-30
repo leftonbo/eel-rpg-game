@@ -24,9 +24,14 @@ export interface LibraryDocument extends LibraryDocumentMetadata {
 }
 
 /**
+ * ドキュメントモジュールloaderの型定義
+ */
+type DocumentModuleLoader = () => Promise<MarkdownModule>;
+
+/**
  * 登録済みの文書の生データ
  */
-const modules = import.meta.glob('./documents/*.md');
+const modules = import.meta.glob('./documents/*.md') as Record<string, DocumentModuleLoader>;
 
 /**
  * 文書データのキャッシュ
@@ -34,31 +39,80 @@ const modules = import.meta.glob('./documents/*.md');
 const documentCache: Map<string, LibraryDocument> = new Map();
 
 /**
+ * LibraryDocumentMetadata型チェック関数
+ * @param obj チェック対象のオブジェクト
+ * @returns LibraryDocumentMetadataかどうか
+ */
+function isLibraryDocumentMetadata(obj: unknown): obj is LibraryDocumentMetadata {
+    if (typeof obj !== 'object' || obj === null) {
+        return false;
+    }
+    
+    const candidate = obj as Record<string, unknown>;
+    
+    return (
+        typeof candidate.id === 'string' &&
+        typeof candidate.title === 'string' &&
+        typeof candidate.type === 'string'
+    );
+}
+
+/**
+ * MarkdownModule型チェック関数
+ * @param obj チェック対象のオブジェクト
+ * @returns MarkdownModuleかどうか
+ */
+function isMarkdownModule(obj: unknown): obj is MarkdownModule {
+    if (typeof obj !== 'object' || obj === null) {
+        return false;
+    }
+    
+    const candidate = obj as Record<string, unknown>;
+    
+    return (
+        typeof candidate.markdown === 'string' &&
+        typeof candidate.attributes === 'object' &&
+        candidate.attributes !== null &&
+        isLibraryDocumentMetadata(candidate.attributes)
+    );
+}
+
+/**
  * 全ての文書データを読み込む
  */
 export async function loadAllDocuments(): Promise<void> {
     // 各文書モジュールを読み込み、メタデータとコンテンツを抽出
     const documents = await Promise.all(
-        Object.entries(modules).map(async ([_path, loader]) => {
-            const imported = await (loader as () => Promise<unknown>)();
-            const module = imported as MarkdownModule;
-            const docData: LibraryDocument = {
-                ...(module.attributes as LibraryDocumentMetadata),
-                content: module.markdown,
-                unlocked: false,
-                isRead: false
-            };
-            return docData;
+        Object.entries(modules).map(async ([filePath, loader]) => {
+            try {
+                const imported = await loader();
+                
+                if (!isMarkdownModule(imported)) {
+                    throw new Error(`Invalid markdown module in ${filePath}: does not match MarkdownModule interface`);
+                }
+                
+                const docData: LibraryDocument = {
+                    ...imported.attributes,
+                    content: imported.markdown,
+                    unlocked: false,
+                    isRead: false
+                };
+                
+                if (!docData.id) {
+                    throw new Error(`Document without ID found in ${filePath}`);
+                }
+                
+                return docData;
+            } catch (error) {
+                console.error(`Failed to load document from ${filePath}:`, error);
+                throw error;
+            }
         })
     );
 
     // 文書IDをキーにしてMapに格納
     documents.forEach(doc => {
-        if (doc.id) {
-            documentCache.set(doc.id, doc);
-        } else {
-            console.warn(`Document without ID found:`, doc);
-        }
+        documentCache.set(doc.id, doc);
     });
 }
 

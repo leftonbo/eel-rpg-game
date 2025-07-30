@@ -80,20 +80,7 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            // Boss data chunks
-            'chunk-bosses': [
-              './src/game/data/bosses/swamp-dragon.ts',
-              './src/game/data/bosses/dark-ghost.ts',
-              './src/game/data/bosses/mech-spider.ts',
-              './src/game/data/bosses/scorpion-carrier.ts',
-              './src/game/data/bosses/sea-kraken.ts',
-              './src/game/data/bosses/aqua-serpent.ts',
-              './src/game/data/bosses/dream-demon.ts',
-              './src/game/data/bosses/mikan-dragon.ts',
-              './src/game/data/bosses/clean-master.ts',
-              './src/game/data/bosses/bat-vampire.ts',
-              './src/game/data/bosses/underground-worm.ts',
-            ],
+            // Boss data chunks - now handled automatically by glob import
             // Large scenes
             'chunk-scenes': [
               './src/game/scenes/BattleScene.ts',

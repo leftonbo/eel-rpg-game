@@ -100,10 +100,9 @@ export class OutGameOptionScene extends BaseOutGameScene {
                 reader.onload = (e) => {
                     try {
                         const jsonData = e.target?.result as string;
-                        const saveData = JSON.parse(jsonData);
                         
                         // インポート実行
-                        PlayerSaveManager.importSaveData(saveData);
+                        PlayerSaveManager.importSaveDataJson(jsonData);
                         
                         // 成功メッセージ
                         ModalUtils.showToast('セーブデータのインポートが完了しました', 'success');
@@ -129,8 +128,7 @@ export class OutGameOptionScene extends BaseOutGameScene {
      */
     private handleExportSaveData(): void {
         try {
-            const saveData = PlayerSaveManager.exportSaveData();
-            const jsonData = JSON.stringify(saveData, null, 2);
+            const jsonData = PlayerSaveManager.exportSaveDataJson();
             
             // ファイルダウンロード
             const blob = new Blob([jsonData], { type: 'application/json' });
