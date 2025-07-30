@@ -162,7 +162,7 @@ eel-rpg-game/
 │   │   │   ├── PlayerProgressionManager.ts  # 成長管理
 │   │   │   └── SkillStrategy.ts             # スキル戦略
 │   │   ├── data/           # ゲームデータ
-│   │   │   ├── bosses/              # ボスデータ（14体）
+│   │   │   ├── bosses/              # ボスデータ（14体・glob import対応）
 │   │   │   ├── documents/           # ストーリードキュメント
 │   │   │   │   └── about-elnal.md
 │   │   │   ├── skills/              # スキルシステム
@@ -172,10 +172,10 @@ eel-rpg-game/
 │   │   │   │   ├── toughness.ts
 │   │   │   │   ├── types.ts
 │   │   │   │   └── index.ts
-│   │   │   ├── DocumentLoader.ts    # ドキュメント読み込み
+│   │   │   ├── DocumentLoader.ts    # ドキュメント読み込み（glob import使用）
 │   │   │   ├── ExtendedItems.ts     # 拡張アイテム
 │   │   │   ├── PlayerIcons.ts       # プレイヤーアイコン
-│   │   │   └── index.ts             # データエクスポート
+│   │   │   └── index.ts             # ボスデータローダー（glob import使用）
 │   │   ├── types/          # 型定義
 │   │   │   └── bootstrap.ts         # Bootstrap型定義
 │   │   └── utils/          # ユーティリティ
@@ -241,6 +241,7 @@ eel-rpg-game/
 - `BossData` インターフェースによる統一された定義
 - AI戦略関数によるボス固有の戦術
 - 重み付きアクション選択システム
+- **Vite glob import**による自動ボス検出システム（手動設定不要）
 - 動的インポートによるCode splitting対応
 
 ### プレイヤー進行システム

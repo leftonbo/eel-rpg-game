@@ -2,21 +2,29 @@
 
 このドキュメントは、ElnalFTB に新しいボスを追加するための包括的なガイドです。
 
+> **🚀 重要な更新情報（2024年7月）**  
+> **Vite glob import**システムにより、ボス追加が大幅に簡素化されました！  
+> 従来必要だった手動設定がほぼ不要になり、ボスファイルを作成するだけで自動的にゲームに反映されます。
+
 ## 概要
+
+**🚀 大幅簡素化！（2024年7月更新）**
 
 新しいボスを追加するには、以下のステップが必要です：
 
-1. ボスデータファイルの作成
-2. インデックスファイルの更新
-3. HTMLファイルの更新（ボス選択画面）
+1. **ボスデータファイルの作成**（メイン作業）
+2. ~~インデックスファイルの更新~~（❌ **不要！** 自動検出）
+3. ~~HTMLファイルの更新~~（❌ **不要！** 自動生成）
 4. 必要に応じて新しい状態異常の追加
+
+**Vite glob import**により、ボスファイルを作成するだけで自動的にゲームに反映されます。
 
 ## 必要なファイル
 
-- `src/game/data/bosses/{boss-id}.ts` - 新ボスのデータファイル
-- `src/game/data/index.ts` - ボスインデックス（更新）
+- `src/game/data/bosses/{boss-id}.ts` - 新ボスのデータファイル **（これだけ！）**
+- ~~`src/game/data/index.ts`~~ - ❌ **更新不要**（自動検出）
 - EJSテンプレートシステムによるHTML自動生成（手動編集不要）
-- `src/styles/main.css` - 新しい状態異常がある場合（更新）
+- `src/styles/main.css` - 新しい状態異常がある場合のみ（更新）
 
 ## ボスデータ構造
 
@@ -281,45 +289,31 @@ newBossData.getDialogue = function(situation: 'battle-start' | 'player-restraine
 };
 ```
 
-### 2. インデックスファイルの更新
+### 2. ~~インデックスファイルの更新~~ ❌ **不要！**
 
-`src/game/data/index.ts` を更新：
+**🚀 2024年7月更新**: **Vite glob import**により、この手順は完全に不要になりました！
 
+~~以前の手動設定（現在は不要）~~:
 ```typescript
-// registeredBossIds配列に新しいボスIDを追加
-export const registeredBossIds: string[] = [
-    'swamp-dragon',
-    'dark-ghost',
-    'mech-spider',
-    'dream-demon',
-    'scorpion-carrier',
-    'mikan-dragon',
-    'sea-kraken',
-    'aqua-serpent',
-    'clean-master',
-    'underground-worm',
-    'bat-vampire',
-    'fluffy-dragon',
-    'seraph-mascot',
-    'dual-jester',
-    'new-boss'  // 追加
-];
+// ❌ 以下は不要になりました！
+// export const registeredBossIds: string[] = [
+//     'new-boss'  // 手動追加不要
+// ];
 
-// loadBossData関数のswitch文にケースを追加
-// （既存のloadBossData関数内に以下のケースを追加）
-case 'new-boss':
-    bossData = (await import('./bosses/new-boss')).newBossData;
-    break;
+// ❌ 以下は不要になりました！
+// case 'new-boss':
+//     bossData = (await import('./bosses/new-boss')).newBossData;
+//     break;
 ```
 
-**重要**: 現在のシステムでは動的インポートを使用しているため、新しいボスを追加する際は：
-1. `registeredBossIds`配列に新しいボスIDを追加
-2. `loadBossData`関数のswitch文に対応するケースを追加
-3. 実際のボスファイル（`./bosses/new-boss.ts`）を作成
+**✅ 現在のシステム**: ボスファイルを作成するだけで自動的に以下が実行されます：
+1. **自動検出**: `import.meta.glob('./bosses/*.ts')`がファイルを検出
+2. **自動ロード**: ファイル名からボスIDとexport名を自動生成（`new-boss.ts` → `newBossData`）
+3. **自動追加**: ゲーム起動時にボス選択画面に自動で表示
 
 **EJSテンプレートの恩恵**: HTMLの手動編集は不要で、ボスデータの定義だけでUIに自動反映されます。
 
-### 3. EJSテンプレートシステムによるHTML自動生成
+### 2. EJSテンプレートシステムによるHTML自動生成
 
 **重要**: ボス追加時はHTMLを手動で編集する必要はありません。
 
@@ -330,9 +324,9 @@ EJSテンプレートシステムが以下を自動で行います：
 3. **アイコン表示**: ボスデータの `icon` プロパティを使用
 4. **説明文表示**: ボスデータの `description` プロパティを使用
 
-このシステムにより、新ボスは `registeredBossIds` に追加するだけで自動的にゲームに組み込まれます。
+このシステムにより、新ボスはファイルを作成するだけで自動的にゲームに組み込まれます。
 
-### 4. テストの実行
+### 3. テストの実行
 
 ボスを追加した後、必ず以下のテストを実行してください：
 
@@ -701,9 +695,11 @@ defeatTrophy: {
 
 ### ボスが表示されない
 
-- `src/game/data/index.ts` での `registeredBossIds` 配列と `loadBossData` 関数の更新確認
-- EJSテンプレートシステムのビルド結果確認（HTMLは自動生成）
-- エクスプローラーレベル不足による非表示ではないか確認
+- **ファイル命名規則確認**: ボスファイルが `{boss-id}.ts` 形式で作成されているか
+- **export名確認**: export名が `{camelCaseBossId}Data` 形式になっているか（例: `swamp-dragon.ts` → `swampDragonData`）
+- **BossDataインターフェース適合**: `id` と `displayName` プロパティが定義されているか
+- **EJSテンプレートシステムのビルド結果確認**（HTMLは自動生成）
+- **エクスプローラーレベル不足による非表示ではないか確認**
 
 ### 行動が選択されない
 
@@ -719,6 +715,7 @@ defeatTrophy: {
 
 ### コード品質関連エラー
 - **EJSテンプレート関連**: Viteビルドエラーが出る場合はテンプレート構文を確認
-- **registeredBossIdsの不一致**: ボスIDが配列とswitch文で一致しているか確認
+- ~~**registeredBossIdsの不一致**~~: ❌ **不要！** glob importによる自動検出
+- **glob import エラー**: ファイル名とexport名のパターンマッチング確認
 - **TypeScriptエラー**: ボスデータのBossDataインターフェース適合性を確認
 - **テストエラー**: Vitestテストケースの実行結果を確認
