@@ -224,6 +224,9 @@ export class PlayerSaveManager {
      */
     static markDocumentAsRead(documentId: string): void {
         const currentData = this.loadPlayerData() || this.createDefaultSaveData();
+        if (!currentData.readDocuments) {
+            currentData.readDocuments = []; // Initialize if not present
+        }
         
         // Add to readDocuments if not already present
         if (!currentData.readDocuments.includes(documentId)) {
@@ -237,6 +240,9 @@ export class PlayerSaveManager {
      */
     static isDocumentRead(documentId: string): boolean {
         const currentData = this.loadPlayerData() || this.createDefaultSaveData();
+        if (!currentData.readDocuments) {
+            return false; // If readDocuments is not initialized, treat as unread
+        }
         return currentData.readDocuments.includes(documentId);
     }
 
