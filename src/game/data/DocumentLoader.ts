@@ -1,4 +1,4 @@
-import { PlayerSaveManager } from '../systems/PlayerSaveData';
+import { Player } from '../entities/Player';
 
 export interface LibraryDocumentMetadata {
     id: string;
@@ -19,8 +19,6 @@ interface MarkdownModule {
  */
 export interface LibraryDocument extends LibraryDocumentMetadata {
     content: string;
-    unlocked: boolean;
-    isRead: boolean;
 }
 
 /**
@@ -93,9 +91,7 @@ export async function loadAllDocuments(): Promise<void> {
                 
                 const docData: LibraryDocument = {
                     ...imported.attributes,
-                    content: imported.markdown,
-                    unlocked: false,
-                    isRead: false
+                    content: imported.markdown
                 };
                 
                 if (!docData.id) {
@@ -117,14 +113,11 @@ export async function loadAllDocuments(): Promise<void> {
 }
 
 /**
- * 全ての文書データを取得（最新の既読状態を反映）
+ * 全ての文書データを取得
  * @returns 文書データの配列
  */
 export function getAllDocuments(): LibraryDocument[] {
-    return Array.from(documentCache.values()).map(doc => ({
-        ...doc,
-        isRead: PlayerSaveManager.isDocumentRead(doc.id)
-    }));
+    return Array.from(documentCache.values());
 }
 
 /**
@@ -136,32 +129,13 @@ export function getAllDocuments(): LibraryDocument[] {
 export function getDocument(id: string): LibraryDocument {
     if (documentCache.has(id)) {
         const doc = documentCache.get(id)!;
-        return {
-            ...doc,
-            isRead: PlayerSaveManager.isDocumentRead(doc.id)
-        };
+        if (doc) {
+            return doc;
+        }
+        throw new Error(`Document ${id} is invalid.`);
     }
+    
     throw new Error(`Document ${id} not loaded. Call loadAllDocuments() first.`);
-}
-
-/**
- * 解禁済みで未読の文書数を取得
- * @returns 未読文書数
- */
-export function getUnreadDocumentCount(): number {
-    const allDocuments = getAllDocuments();
-    return allDocuments.filter(doc => doc.unlocked && !doc.isRead).length;
-}
-
-/**
- * 解禁済みで未読の文書IDリストを取得
- * @returns 未読文書IDの配列
- */
-export function getUnreadDocumentIds(): string[] {
-    const allDocuments = getAllDocuments();
-    return allDocuments
-        .filter(doc => doc.unlocked && !doc.isRead)
-        .map(doc => doc.id);
 }
 
 /**
@@ -172,6 +146,7 @@ export function getUnreadDocumentIds(): string[] {
  * @returns 未読文書数
  */
 export function getUnreadCountForPlayer(
+    player: Player,
     explorerLevel: number,
     defeatedBosses: string[],
     lostToBosses: string[]
@@ -196,6 +171,8 @@ export function getUnreadCountForPlayer(
         return levelOk && bossDefeatsOk && bossLossesOk;
     });
 
+    const readDocuments = player.getReadDocuments();
+    
     // 未読文書数を計算
-    return unlockedDocuments.filter(doc => !doc.isRead).length;
+    return unlockedDocuments.filter(doc => !readDocuments.has(doc.id)).length;
 }

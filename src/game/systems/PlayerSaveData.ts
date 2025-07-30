@@ -1,5 +1,5 @@
 import { AbilityData, AbilityType } from './AbilitySystem';
-import { BossMemorial, MemorialSaveData, MemorialSystem } from './MemorialSystem';
+import { MemorialSaveData, MemorialSystem } from './MemorialSystem';
 
 export interface PlayerSaveData {
     abilities: { [key: string]: AbilityData };
@@ -183,79 +183,6 @@ export class PlayerSaveManager {
      */
     static hasSaveData(): boolean {
         return localStorage.getItem(this.SAVE_KEY) !== null;
-    }
-    
-    /**
-     * Quick save just equipment data
-     */
-    static saveEquipment(weapon: string, armor: string): void {
-        const currentData = this.loadPlayerData() || this.createDefaultSaveData();
-        currentData.equipment.weapon = weapon;
-        currentData.equipment.armor = armor;
-        this.savePlayerData(currentData);
-    }
-    
-    /**
-     * Quick save just abilities data
-     */
-    static saveAbilities(abilities: { [key: string]: AbilityData }): void {
-        const currentData = this.loadPlayerData() || this.createDefaultSaveData();
-        currentData.abilities = abilities;
-        this.savePlayerData(currentData);
-    }
-    
-    
-    /**
-     * Quick save just battle memorials
-     */
-    static saveBattleMemorials(battleMemorials: { [bossId: string]: BossMemorial }): void {
-        const currentData = this.loadPlayerData() || this.createDefaultSaveData();
-        currentData.memorials.bossMemorials = Object.values(battleMemorials);
-        this.savePlayerData(currentData);
-    }
-
-    /**
-     * Quick save just player info (name and icon)
-     */
-    static savePlayerInfo(name: string, icon: string): void {
-        const currentData = this.loadPlayerData() || this.createDefaultSaveData();
-        currentData.playerInfo = { name, icon };
-        this.savePlayerData(currentData);
-    }
-
-    /**
-     * Mark a document as read
-     */
-    static markDocumentAsRead(documentId: string): void {
-        const currentData = this.loadPlayerData() || this.createDefaultSaveData();
-        if (!currentData.readDocuments) {
-            currentData.readDocuments = []; // Initialize if not present
-        }
-        
-        // Add to readDocuments if not already present
-        if (!currentData.readDocuments.includes(documentId)) {
-            currentData.readDocuments.push(documentId);
-            this.savePlayerData(currentData);
-        }
-    }
-
-    /**
-     * Check if a document has been read
-     */
-    static isDocumentRead(documentId: string): boolean {
-        const currentData = this.loadPlayerData() || this.createDefaultSaveData();
-        if (!currentData.readDocuments) {
-            return false; // If readDocuments is not initialized, treat as unread
-        }
-        return currentData.readDocuments.includes(documentId);
-    }
-
-    /**
-     * Get list of unread document IDs from a given document list
-     */
-    static getUnreadDocumentIds(allDocumentIds: string[]): string[] {
-        const currentData = this.loadPlayerData() || this.createDefaultSaveData();
-        return allDocumentIds.filter(id => !currentData.readDocuments.includes(id));
     }
     
     /**

@@ -153,8 +153,13 @@ export abstract class BaseOutGameScene {
             const lostToBosses = player.memorialSystem.getDefeatedBossIds();
 
             // 共通化された関数を使用して未読数を計算
-            const unreadCount = getUnreadCountForPlayer(explorerLevel, defeatedBosses, lostToBosses);
-            
+            const unreadCount = getUnreadCountForPlayer(
+                player,
+                explorerLevel,
+                defeatedBosses,
+                lostToBosses
+            );
+
             // 未読文書がある場合はバッジを追加
             if (unreadCount > 0) {
                 const badge = document.createElement('span');

@@ -22,9 +22,9 @@ export class BootstrapMarkdownRenderer {
                 case 1:
                     return `<h1 class="card-title display-6 mb-3">${text}</h1>\n`;
                 case 2:
-                    return `<h2 class="card-subtitle mb-3 text-primary border-bottom pb-2">${text}</h2>\n`;
+                    return `<h2 class="card-subtitle mb-3 border-bottom pb-2">${text}</h2>\n`;
                 case 3:
-                    return `<h3 class="h5 mb-2 text-secondary">${text}</h3>\n`;
+                    return `<h3 class="h5 mb-2">${text}</h3>\n`;
                 case 4:
                     return `<h4 class="h6 mb-2">${text}</h4>\n`;
                 default:
@@ -147,7 +147,7 @@ export class BootstrapMarkdownRenderer {
         // 最後の署名部分（**付き）の検出
         html = html.replace(
             /<p class="card-text mb-3"><strong class="fw-bold">- ([^<]+)<\/strong><\/p>/g,
-            '<p class="card-text text-end fw-bold text-primary mb-0">- $1</p>'
+            '<p class="card-text text-end fw-bold text-secondary mb-0">- $1</p>'
         );
         
         // 注意書きや重要事項（!で始まる段落）の強調
@@ -186,8 +186,8 @@ export class BootstrapMarkdownRenderer {
     private static applyDiaryStyles(html: string): string {
         // 日記らしい親しみやすいスタイリング
         return html.replace(
-            /<h2 class="card-subtitle mb-3 text-primary border-bottom pb-2">/g,
-            '<h2 class="card-subtitle mb-3 text-info border-bottom border-info pb-2">'
+            /<h2 class="card-subtitle mb-3 border-bottom pb-2">/g,
+            '<h2 class="card-subtitle mb-3 border-bottom border-info pb-2">'
         );
     }
     
@@ -211,8 +211,8 @@ export class BootstrapMarkdownRenderer {
     private static applyReflectionStyles(html: string): string {
         // 内省的で落ち着いたスタイリング
         return html.replace(
-            /<h2 class="card-subtitle mb-3 text-primary border-bottom pb-2">/g,
-            '<h2 class="card-subtitle mb-3 text-secondary border-bottom border-secondary pb-2">'
+            /<h2 class="card-subtitle mb-3 border-bottom pb-2">/g,
+            '<h2 class="card-subtitle mb-3 border-bottom border-secondary pb-2">'
         );
     }
 }
