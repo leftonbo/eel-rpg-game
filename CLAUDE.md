@@ -100,6 +100,7 @@ interface PlayerSaveData {
     abilities: { [key: string]: AbilityData };     // アビリティレベル/経験値
     equipment: { weapon: string; armor: string; };  // 装備武器/防具ID
     memorials: MemorialSaveData;                    // ボス撃破記録・統計
+    playerInfo: { name: string; icon: string; };    // プレイヤー名・アイコン
     version: number;                                // データバージョン（マイグレーション用）
 }
 ```
@@ -342,9 +343,9 @@ requiredBossLosses: ["boss-id3"]
 ## プロジェクト固有の重要な注意事項
 
 - **EJSテンプレート**: HTMLの各種パーツを src/templates/ ディレクトリのEJSファイルに記載
-- **ボス追加**: 新ボス追加時は必ず registeredBossIds 配列と loadBossData 関数の両方を更新
+- **ボス追加**: src/game/data/bosses/{boss-id}.ts ファイル作成で自動認識（手動登録不要）
 - **状態異常**: 新しい状態異常追加時は StatusEffectTypes.ts の enum とCSSクラスの両方を追加
 - **ドキュメント**: 新ストーリードキュメント追加時は src/game/data/documents/ にマークダウン形式で作成し、フロントマターで表示条件を設定
 - **コミット**: 必ず gitmoji + 日本語メッセージ + Co-Authored-By を含める
 - **品質チェック**: 編集後は npm run typecheck && npm run test && npm run build を実行して確認
-- **スキルシステム**: CraftWork、Explorerスキルは data/skills/ に実装要（未完了）
+- **スキルシステム**: Combat、Toughness、Endurance、Agilityスキルは data/skills/ に実装済み、CraftWork・Explorerは未実装
