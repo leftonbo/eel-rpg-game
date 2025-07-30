@@ -261,7 +261,7 @@ export class PlayerSaveManager {
     /**
      * Export save data as JSON string
      */
-    static exportSaveData(): string {
+    static exportSaveDataJson(): string {
         const saveData = this.loadPlayerData() || this.createDefaultSaveData();
         return JSON.stringify(saveData, null, 2);
     }
@@ -269,7 +269,7 @@ export class PlayerSaveManager {
     /**
      * Import save data from JSON string
      */
-    static importSaveData(jsonString: string): boolean {
+    static importSaveDataJson(jsonString: string): boolean {
         try {
             const importedData = JSON.parse(jsonString);
             

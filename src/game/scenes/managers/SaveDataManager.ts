@@ -104,7 +104,7 @@ export class SaveDataManager {
      */
     private exportSaveData(): void {
         try {
-            const saveData = PlayerSaveManager.exportSaveData();
+            const saveData = PlayerSaveManager.exportSaveDataJson();
             const blob = new Blob([saveData], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             
@@ -131,7 +131,7 @@ export class SaveDataManager {
         reader.onload = (e) => {
             try {
                 const content = e.target?.result as string;
-                const success = PlayerSaveManager.importSaveData(content);
+                const success = PlayerSaveManager.importSaveDataJson(content);
                 
                 if (success) {
                     ModalUtils.showToast('セーブデータをインポートしました', 'success');
