@@ -2,12 +2,17 @@ import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
 import { getBossData } from '../data';
 import { BootstrapMarkdownRenderer } from '../utils/BootstrapMarkdownRenderer';
-import { LibraryDocument, loadAllDocuments, getAllDocuments } from '../data/DocumentLoader';
-import { PlayerSaveManager } from '../systems/PlayerSaveData';
+import { getAllDocuments, LibraryDocument, loadAllDocuments } from '../data/DocumentLoader';
+import { Player } from '../entities/Player';
 
+
+interface LibraryDocumentStatus extends LibraryDocument {
+    unlocked: boolean; // 文書が解禁されているか
+    isRead: boolean; // 既読状態
+}
 
 export class OutGameLibraryScene extends BaseOutGameScene {
-    private documents: LibraryDocument[] = [];
+    private documents: LibraryDocumentStatus[] = [];
     
     constructor(game: Game) {
         super(game, 'out-game-library-screen');
@@ -38,11 +43,20 @@ export class OutGameLibraryScene extends BaseOutGameScene {
     private async initializeDocuments(): Promise<void> {
         try {
             await loadAllDocuments();
-            this.documents = getAllDocuments();
+            this.documents = this.getAllDocuments();
         } catch (error) {
             console.error('Failed to load documents:', error);
             this.documents = [];
         }
+    }
+    
+    private getAllDocuments(): LibraryDocumentStatus[] {
+        return getAllDocuments().map(doc => ({
+            ...doc,
+            // この時点では Player は初期化されていないため、一旦フラグを全て false に設定
+            unlocked: false,
+            isRead: false,
+        }));
     }
     
     /**
@@ -81,33 +95,59 @@ export class OutGameLibraryScene extends BaseOutGameScene {
         const defeatedBosses = player.memorialSystem.getVictoriousBossIds();
         const lostToBosses = player.memorialSystem.getDefeatedBossIds();
         
-        // 最新の文書データを取得（既読状態も含む）
-        this.documents = getAllDocuments();
-        
         this.documents.forEach(doc => {
-            // エクスプローラーレベル要求チェック
-            const levelOk = !doc.requiredExplorerLevel || explorerLevel >= doc.requiredExplorerLevel;
+            doc.unlocked = this.checkDocumentUnlockConditions(
+                doc, explorerLevel, defeatedBosses, lostToBosses
+            );
             
-            // 必要ボス撃破チェック
-            let bossDefeatsOk = true;
-            if (doc.requiredBossDefeats && doc.requiredBossDefeats.length > 0) {
-                bossDefeatsOk = doc.requiredBossDefeats.every(bossId => 
-                    defeatedBosses.includes(bossId)
-                );
-            }
-            
-            // 必要ボス敗北チェック
-            let bossLossesOk = true;
-            if (doc.requiredBossLosses && doc.requiredBossLosses.length > 0) {
-                bossLossesOk = doc.requiredBossLosses.every(bossId => 
-                    lostToBosses.includes(bossId)
-                );
-            }
-            
-            doc.unlocked = levelOk && bossDefeatsOk && bossLossesOk;
+            doc.isRead = this.checkDocumentReadStatus(doc.id, player);
         });
     }
     
+    /**
+     * 文書のロック解除条件をチェック
+     * @param doc 文書データ
+     * @param explorerLevel エクスプローラーレベル
+     * @param defeatedBosses 敵ボス撃破リスト
+     * @param lostToBosses 敵ボス敗北リスト
+     * @returns ロック解除されているかどうか
+     */
+    private checkDocumentUnlockConditions(
+        doc: LibraryDocumentStatus,
+        explorerLevel: number,
+        defeatedBosses: string[],
+        lostToBosses: string[]
+    ): boolean {
+        // エクスプローラーレベル要求チェック
+        const levelOk = !doc.requiredExplorerLevel || explorerLevel >= doc.requiredExplorerLevel;
+
+        // 必要ボス撃破チェック
+        let bossDefeatsOk = true;
+        if (doc.requiredBossDefeats && doc.requiredBossDefeats.length > 0) {
+            bossDefeatsOk = doc.requiredBossDefeats.every(bossId => defeatedBosses.includes(bossId)
+            );
+        }
+
+        // 必要ボス敗北チェック
+        let bossLossesOk = true;
+        if (doc.requiredBossLosses && doc.requiredBossLosses.length > 0) {
+            bossLossesOk = doc.requiredBossLosses.every(bossId => lostToBosses.includes(bossId)
+            );
+        }
+
+        return levelOk && bossDefeatsOk && bossLossesOk;
+    }
+    
+    /**
+     * 文書の既読状態をチェック
+     * @param documentId 文書ID
+     * @param player プレイヤーインスタンス
+     * @returns 既読かどうか
+     */
+    private checkDocumentReadStatus(documentId: string, player: Player): boolean {
+        return player.getReadDocuments().has(documentId);
+    }
+
     /**
      * ボス要求条件を表示用文字列に変換
      * @param bossIds ボスIDの配列
@@ -200,7 +240,8 @@ export class OutGameLibraryScene extends BaseOutGameScene {
         
         // 文書を既読としてマーク
         if (!doc.isRead) {
-            PlayerSaveManager.markDocumentAsRead(documentId);
+            const player = this.game.getPlayer();
+            player.markDocumentAsRead(documentId);
             
             // 資料庫全体を更新（最新の既読状態を反映）
             this.updateLibrary();

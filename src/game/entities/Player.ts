@@ -46,6 +46,9 @@ export class Player extends Actor {
     public battleActions: PlayerBattleActions;
     public progressionManager: PlayerProgressionManager;
     
+    // Library read flag
+    public readDocuments: Set<string> = new Set(); // Store read document IDs
+
     constructor() {
         super(DEFAULT_PLAYER_NAME);
         this.equipmentManager = new PlayerEquipmentManager(this.abilitySystem);
@@ -97,6 +100,7 @@ export class Player extends Actor {
         this.loadEquipment(saveData.equipment);
         this.loadMemorials(saveData.memorials);
         this.loadPlayerInfo(saveData.playerInfo);
+        this.loadReadDocuments(saveData.readDocuments);
     }
     
     /**
@@ -136,6 +140,18 @@ export class Player extends Actor {
     }
     
     /**
+     * セーブデータから既読文書を読み込む
+     * @param readDocuments 既読文書IDの配列
+     */
+    private loadReadDocuments(readDocuments: string[]): void {
+        if (Array.isArray(readDocuments)) {
+            this.readDocuments = new Set(readDocuments);
+        } else {
+            this.readDocuments = new Set(); // Initialize as empty if not valid
+        }
+    }
+    
+    /**
      * プレイヤーデータをローカルストレージに保存
      */
     public saveToStorage(): void {
@@ -147,6 +163,7 @@ export class Player extends Actor {
                 name: this.name,
                 icon: this.icon
             },
+            readDocuments: Array.from(this.readDocuments),
             version: PlayerConstants.SAVE_DATA_VERSION
         };
         
@@ -548,5 +565,24 @@ export class Player extends Actor {
         
         // Call parent resetBattleState for common processing
         super.resetBattleState();
+    }
+    
+    /**
+     * 文書を既読としてマーク
+     * @param documentId 文書ID
+     */
+    public markDocumentAsRead(documentId: string): void {
+        if (!this.readDocuments.has(documentId)) {
+            this.readDocuments.add(documentId);
+            this.saveToStorage(); // Auto-save on marking document as read
+        }
+    }
+    
+    /**
+     * 既読済み文書IDの Set を取得
+     * @returns 既読文書IDの Set
+     */
+    public getReadDocuments(): Set<string> {
+        return this.readDocuments;
     }
 }
