@@ -1,14 +1,50 @@
 import { BossData } from '../entities/Boss';
 
 /**
+ * ボスモジュールの型定義
+ */
+interface BossModule {
+    [key: string]: BossData;
+}
+
+/**
+ * Glob loaderの型定義
+ */
+type BossModuleLoader = () => Promise<BossModule>;
+
+/**
  * 登録済みのボスモジュール（glob import）
  */
-const modules = import.meta.glob('./bosses/*.ts');
+const modules = import.meta.glob('./bosses/*.ts') as Record<string, BossModuleLoader>;
 
 /**
  * ボスデータのキャッシュ
  */
 const bossDataCache: Map<string, BossData> = new Map();
+
+/**
+ * BossData型チェック関数
+ * @param obj チェック対象のオブジェクト
+ * @returns BossDataかどうか
+ */
+function isBossData(obj: unknown): obj is BossData {
+    if (typeof obj !== 'object' || obj === null) {
+        return false;
+    }
+    
+    const candidate = obj as Record<string, unknown>;
+    
+    return (
+        typeof candidate.id === 'string' &&
+        typeof candidate.displayName === 'string' &&
+        typeof candidate.name === 'string' &&
+        typeof candidate.description === 'string' &&
+        typeof candidate.questNote === 'string' &&
+        typeof candidate.maxHp === 'number' &&
+        typeof candidate.attackPower === 'number' &&
+        Array.isArray(candidate.actions)
+    );
+}
 
 /**
  * ファイルパスからボスIDを抽出する関数
@@ -50,17 +86,16 @@ export async function loadAllBossData(): Promise<void> {
                 const bossId = extractBossIdFromPath(filePath);
                 const exportName = generateExportName(bossId);
                 
-                const imported = await (loader as () => Promise<unknown>)();
-                const module = imported as Record<string, unknown>;
+                const imported = await loader();
                 
-                if (!(exportName in module)) {
+                if (!(exportName in imported)) {
                     throw new Error(`Export '${exportName}' not found in ${filePath}`);
                 }
                 
-                const bossData = module[exportName] as BossData;
+                const bossData = imported[exportName];
                 
-                if (!bossData.id || !bossData.displayName) {
-                    throw new Error(`Invalid boss data in ${filePath}: missing required properties`);
+                if (!isBossData(bossData)) {
+                    throw new Error(`Invalid boss data in ${filePath}: does not match BossData interface`);
                 }
                 
                 return { bossId, bossData };
