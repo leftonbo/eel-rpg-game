@@ -171,7 +171,7 @@ export function getUnreadCountForPlayer(
         return levelOk && bossDefeatsOk && bossLossesOk;
     });
 
-    var readDocuments = player.getReadDocuments();
+    const readDocuments = player.getReadDocuments();
     
     // 未読文書数を計算
     return unlockedDocuments.filter(doc => !readDocuments.has(doc.id)).length;
