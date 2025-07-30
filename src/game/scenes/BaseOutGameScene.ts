@@ -1,6 +1,5 @@
 import { Game, GameState } from '../Game';
-import { getAllDocuments } from '../data/DocumentLoader';
-import { PlayerSaveManager } from '../systems/PlayerSaveData';
+import { getUnreadCountForPlayer } from '../data/DocumentLoader';
 
 /**
  * アウトゲームシーンの基底クラス
@@ -148,37 +147,13 @@ export abstract class BaseOutGameScene {
         }
 
         try {
-            // 全文書を取得
-            const allDocuments = getAllDocuments();
-            if (allDocuments.length === 0) return;
-
             const player = this.game.getPlayer();
             const explorerLevel = player.getExplorerLevel();
             const defeatedBosses = player.memorialSystem.getVictoriousBossIds();
             const lostToBosses = player.memorialSystem.getDefeatedBossIds();
 
-            // 解禁済み文書をフィルタ
-            const unlockedDocuments = allDocuments.filter(doc => {
-                const levelOk = !doc.requiredExplorerLevel || explorerLevel >= doc.requiredExplorerLevel;
-                let bossDefeatsOk = true;
-                if (doc.requiredBossDefeats && doc.requiredBossDefeats.length > 0) {
-                    bossDefeatsOk = doc.requiredBossDefeats.every(bossId => 
-                        defeatedBosses.includes(bossId)
-                    );
-                }
-                let bossLossesOk = true;
-                if (doc.requiredBossLosses && doc.requiredBossLosses.length > 0) {
-                    bossLossesOk = doc.requiredBossLosses.every(bossId => 
-                        lostToBosses.includes(bossId)
-                    );
-                }
-                return levelOk && bossDefeatsOk && bossLossesOk;
-            });
-
-            // 未読文書数を計算
-            const unreadCount = unlockedDocuments.filter(doc => 
-                !PlayerSaveManager.isDocumentRead(doc.id)
-            ).length;
+            // 共通化された関数を使用して未読数を計算
+            const unreadCount = getUnreadCountForPlayer(explorerLevel, defeatedBosses, lostToBosses);
             
             // 未読文書がある場合はバッジを追加
             if (unreadCount > 0) {

@@ -2,7 +2,7 @@ import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
 import { getBossData } from '../data';
 import { BootstrapMarkdownRenderer } from '../utils/BootstrapMarkdownRenderer';
-import { LibraryDocument, loadAllDocuments, getAllDocuments } from '../data/DocumentLoader';
+import { LibraryDocument, loadAllDocuments, getAllDocuments, getUnreadCountForPlayer } from '../data/DocumentLoader';
 import { PlayerSaveManager } from '../systems/PlayerSaveData';
 
 
@@ -81,6 +81,9 @@ export class OutGameLibraryScene extends BaseOutGameScene {
         const defeatedBosses = player.memorialSystem.getVictoriousBossIds();
         const lostToBosses = player.memorialSystem.getDefeatedBossIds();
         
+        // 最新の文書データを取得（既読状態も含む）
+        this.documents = getAllDocuments();
+        
         this.documents.forEach(doc => {
             // エクスプローラーレベル要求チェック
             const levelOk = !doc.requiredExplorerLevel || explorerLevel >= doc.requiredExplorerLevel;
@@ -102,9 +105,6 @@ export class OutGameLibraryScene extends BaseOutGameScene {
             }
             
             doc.unlocked = levelOk && bossDefeatsOk && bossLossesOk;
-            
-            // 既読状態の更新
-            doc.isRead = PlayerSaveManager.isDocumentRead(doc.id);
         });
     }
     
@@ -201,10 +201,9 @@ export class OutGameLibraryScene extends BaseOutGameScene {
         // 文書を既読としてマーク
         if (!doc.isRead) {
             PlayerSaveManager.markDocumentAsRead(documentId);
-            doc.isRead = true;
             
-            // リストの表示も更新（未読バッジを消す）
-            this.renderDocumentList();
+            // 資料庫全体を更新（最新の既読状態を反映）
+            this.updateLibrary();
             
             // 上部メニューの未読カウントも更新
             this.updateNavigationUnreadBadge();
@@ -241,27 +240,9 @@ export class OutGameLibraryScene extends BaseOutGameScene {
     }
 
     /**
-     * 上部メニューの未読バッジを更新
+     * 上部メニューの未読バッジを更新（BaseOutGameSceneの共通メソッドを呼び出し）
      */
     private updateNavigationUnreadBadge(): void {
-        const libraryNavBtn = document.getElementById('nav-library');
-        if (!libraryNavBtn) return;
-
-        // 既存の未読バッジを削除
-        const existingBadge = libraryNavBtn.querySelector('.unread-badge');
-        if (existingBadge) {
-            existingBadge.remove();
-        }
-
-        // 未読文書数を計算
-        const unreadCount = this.documents.filter(doc => doc.unlocked && !doc.isRead).length;
-        
-        // 未読文書がある場合はバッジを追加
-        if (unreadCount > 0) {
-            const badge = document.createElement('span');
-            badge.className = 'badge bg-danger unread-badge ms-1';
-            badge.textContent = unreadCount.toString();
-            libraryNavBtn.appendChild(badge);
-        }
+        this.updateLibraryUnreadBadge();
     }
 }
