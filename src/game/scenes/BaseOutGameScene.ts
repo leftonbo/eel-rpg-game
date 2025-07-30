@@ -1,4 +1,6 @@
 import { Game, GameState } from '../Game';
+import { getAllDocuments } from '../data/DocumentLoader';
+import { PlayerSaveManager } from '../systems/PlayerSaveData';
 
 /**
  * アウトゲームシーンの基底クラス
@@ -105,6 +107,9 @@ export abstract class BaseOutGameScene {
                 activeBtn.classList.add('active');
             }
         }
+        
+        // 資料庫の未読バッジを更新
+        this.updateLibraryUnreadBadge();
     }
     
     /**
@@ -126,6 +131,64 @@ export abstract class BaseOutGameScene {
                 return 'nav-option';
             default:
                 return null;
+        }
+    }
+
+    /**
+     * 資料庫の未読バッジを更新
+     */
+    protected updateLibraryUnreadBadge(): void {
+        const libraryNavBtn = document.getElementById('nav-library');
+        if (!libraryNavBtn) return;
+
+        // 既存の未読バッジを削除
+        const existingBadge = libraryNavBtn.querySelector('.unread-badge');
+        if (existingBadge) {
+            existingBadge.remove();
+        }
+
+        try {
+            // 全文書を取得
+            const allDocuments = getAllDocuments();
+            if (allDocuments.length === 0) return;
+
+            const player = this.game.getPlayer();
+            const explorerLevel = player.getExplorerLevel();
+            const defeatedBosses = player.memorialSystem.getVictoriousBossIds();
+            const lostToBosses = player.memorialSystem.getDefeatedBossIds();
+
+            // 解禁済み文書をフィルタ
+            const unlockedDocuments = allDocuments.filter(doc => {
+                const levelOk = !doc.requiredExplorerLevel || explorerLevel >= doc.requiredExplorerLevel;
+                let bossDefeatsOk = true;
+                if (doc.requiredBossDefeats && doc.requiredBossDefeats.length > 0) {
+                    bossDefeatsOk = doc.requiredBossDefeats.every(bossId => 
+                        defeatedBosses.includes(bossId)
+                    );
+                }
+                let bossLossesOk = true;
+                if (doc.requiredBossLosses && doc.requiredBossLosses.length > 0) {
+                    bossLossesOk = doc.requiredBossLosses.every(bossId => 
+                        lostToBosses.includes(bossId)
+                    );
+                }
+                return levelOk && bossDefeatsOk && bossLossesOk;
+            });
+
+            // 未読文書数を計算
+            const unreadCount = unlockedDocuments.filter(doc => 
+                !PlayerSaveManager.isDocumentRead(doc.id)
+            ).length;
+            
+            // 未読文書がある場合はバッジを追加
+            if (unreadCount > 0) {
+                const badge = document.createElement('span');
+                badge.className = 'badge bg-danger unread-badge ms-1';
+                badge.textContent = unreadCount.toString();
+                libraryNavBtn.appendChild(badge);
+            }
+        } catch (error) {
+            console.error('Failed to update library unread badge:', error);
         }
     }
 }

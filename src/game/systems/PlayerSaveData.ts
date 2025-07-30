@@ -12,12 +12,13 @@ export interface PlayerSaveData {
         name: string;
         icon: string;
     };
+    readDocuments: string[]; // Read document IDs for unread badge system
     version: number; // For future save data migration
 }
 
 export class PlayerSaveManager {
     private static readonly SAVE_KEY = 'eelfood_player_data';
-    private static readonly CURRENT_VERSION = 4;
+    private static readonly CURRENT_VERSION = 5;
     
     /**
      * Save player data to localStorage
@@ -89,6 +90,7 @@ export class PlayerSaveManager {
                 name: 'エルナル',
                 icon: '🐍'
             },
+            readDocuments: [], // Start with no read documents
             version: this.CURRENT_VERSION
         };
     }
@@ -134,6 +136,15 @@ export class PlayerSaveManager {
             migratedData = {
                 ...rest,
                 version: 4
+            };
+        }
+
+        // Migration from version 4 to 5: add readDocuments field
+        if (migratedData.version === 4) {
+            migratedData = {
+                ...migratedData,
+                readDocuments: [], // Initialize empty read documents array
+                version: 5
             };
         }
 
@@ -207,6 +218,35 @@ export class PlayerSaveManager {
         currentData.playerInfo = { name, icon };
         this.savePlayerData(currentData);
     }
+
+    /**
+     * Mark a document as read
+     */
+    static markDocumentAsRead(documentId: string): void {
+        const currentData = this.loadPlayerData() || this.createDefaultSaveData();
+        
+        // Add to readDocuments if not already present
+        if (!currentData.readDocuments.includes(documentId)) {
+            currentData.readDocuments.push(documentId);
+            this.savePlayerData(currentData);
+        }
+    }
+
+    /**
+     * Check if a document has been read
+     */
+    static isDocumentRead(documentId: string): boolean {
+        const currentData = this.loadPlayerData() || this.createDefaultSaveData();
+        return currentData.readDocuments.includes(documentId);
+    }
+
+    /**
+     * Get list of unread document IDs from a given document list
+     */
+    static getUnreadDocumentIds(allDocumentIds: string[]): string[] {
+        const currentData = this.loadPlayerData() || this.createDefaultSaveData();
+        return allDocumentIds.filter(id => !currentData.readDocuments.includes(id));
+    }
     
     /**
      * Export save data as JSON string
@@ -258,6 +298,7 @@ export class PlayerSaveManager {
         if (!data.playerInfo || typeof data.playerInfo !== 'object') return false;
         if (typeof data.playerInfo.name !== 'string') return false;
         if (typeof data.playerInfo.icon !== 'string') return false;
+        if (!Array.isArray(data.readDocuments)) return false;
         
         // Check abilities structure
         for (const [, ability] of Object.entries(data.abilities)) {

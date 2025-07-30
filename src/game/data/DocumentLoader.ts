@@ -18,6 +18,7 @@ interface MarkdownModule {
 export interface LibraryDocument extends LibraryDocumentMetadata {
     content: string;
     unlocked: boolean;
+    isRead: boolean;
 }
 
 /**
@@ -42,7 +43,8 @@ export async function loadAllDocuments(): Promise<void> {
             const docData: LibraryDocument = {
                 ...(module.attributes as LibraryDocumentMetadata),
                 content: module.markdown,
-                unlocked: false
+                unlocked: false,
+                isRead: false
             };
             return docData;
         })
@@ -77,4 +79,24 @@ export function getDocument(id: string): LibraryDocument {
         return documentCache.get(id)!;
     }
     throw new Error(`Document ${id} not loaded. Call loadAllDocuments() first.`);
+}
+
+/**
+ * 解禁済みで未読の文書数を取得
+ * @returns 未読文書数
+ */
+export function getUnreadDocumentCount(): number {
+    const allDocuments = getAllDocuments();
+    return allDocuments.filter(doc => doc.unlocked && !doc.isRead).length;
+}
+
+/**
+ * 解禁済みで未読の文書IDリストを取得
+ * @returns 未読文書IDの配列
+ */
+export function getUnreadDocumentIds(): string[] {
+    const allDocuments = getAllDocuments();
+    return allDocuments
+        .filter(doc => doc.unlocked && !doc.isRead)
+        .map(doc => doc.id);
 }

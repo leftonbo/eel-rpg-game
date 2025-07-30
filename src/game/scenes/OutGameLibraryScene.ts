@@ -3,6 +3,7 @@ import { BaseOutGameScene } from './BaseOutGameScene';
 import { getBossData } from '../data';
 import { BootstrapMarkdownRenderer } from '../utils/BootstrapMarkdownRenderer';
 import { LibraryDocument, loadAllDocuments, getAllDocuments } from '../data/DocumentLoader';
+import { PlayerSaveManager } from '../systems/PlayerSaveData';
 
 
 export class OutGameLibraryScene extends BaseOutGameScene {
@@ -26,6 +27,9 @@ export class OutGameLibraryScene extends BaseOutGameScene {
         
         // 資料庫を更新
         this.updateLibrary();
+        
+        // 上部メニューの未読バッジを更新
+        this.updateNavigationUnreadBadge();
     }
     
     /**
@@ -98,6 +102,9 @@ export class OutGameLibraryScene extends BaseOutGameScene {
             }
             
             doc.unlocked = levelOk && bossDefeatsOk && bossLossesOk;
+            
+            // 既読状態の更新
+            doc.isRead = PlayerSaveManager.isDocumentRead(doc.id);
         });
     }
     
@@ -146,10 +153,16 @@ export class OutGameLibraryScene extends BaseOutGameScene {
             if (doc.unlocked) {
                 button.classList.remove('btn-outline-secondary');
                 button.classList.add('btn-outline-info');
+                
+                // 未読の場合は未読バッジも表示
+                const unreadBadge = doc.isRead ? '' : '<span class="badge bg-warning text-dark me-2">未読</span>';
                 button.innerHTML = `
                     <div class="d-flex justify-content-between align-items-center">
                         <span>${doc.title}</span>
-                        <span class="badge bg-success">解禁済み</span>
+                        <div>
+                            ${unreadBadge}
+                            <span class="badge bg-success">解禁済み</span>
+                        </div>
                     </div>
                 `;
             } else {
@@ -185,6 +198,18 @@ export class OutGameLibraryScene extends BaseOutGameScene {
             return;
         }
         
+        // 文書を既読としてマーク
+        if (!doc.isRead) {
+            PlayerSaveManager.markDocumentAsRead(documentId);
+            doc.isRead = true;
+            
+            // リストの表示も更新（未読バッジを消す）
+            this.renderDocumentList();
+            
+            // 上部メニューの未読カウントも更新
+            this.updateNavigationUnreadBadge();
+        }
+        
         // Bootstrap 5対応MarkdownレンダラーでHTML変換
         const documentType = this.getDocumentType(doc.id);
         const htmlContent = BootstrapMarkdownRenderer.convertWithType(doc.content, documentType);
@@ -212,6 +237,31 @@ export class OutGameLibraryScene extends BaseOutGameScene {
                     <p class="mb-0">左から資料を選択してください</p>
                 </div>
             `;
+        }
+    }
+
+    /**
+     * 上部メニューの未読バッジを更新
+     */
+    private updateNavigationUnreadBadge(): void {
+        const libraryNavBtn = document.getElementById('nav-library');
+        if (!libraryNavBtn) return;
+
+        // 既存の未読バッジを削除
+        const existingBadge = libraryNavBtn.querySelector('.unread-badge');
+        if (existingBadge) {
+            existingBadge.remove();
+        }
+
+        // 未読文書数を計算
+        const unreadCount = this.documents.filter(doc => doc.unlocked && !doc.isRead).length;
+        
+        // 未読文書がある場合はバッジを追加
+        if (unreadCount > 0) {
+            const badge = document.createElement('span');
+            badge.className = 'badge bg-danger unread-badge ms-1';
+            badge.textContent = unreadCount.toString();
+            libraryNavBtn.appendChild(badge);
         }
     }
 }
