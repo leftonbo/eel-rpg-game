@@ -1,4 +1,5 @@
 import { Game, GameState } from '../Game';
+import { getUnreadCountForPlayer } from '../data/DocumentLoader';
 
 /**
  * アウトゲームシーンの基底クラス
@@ -105,6 +106,9 @@ export abstract class BaseOutGameScene {
                 activeBtn.classList.add('active');
             }
         }
+        
+        // 資料庫の未読バッジを更新
+        this.updateLibraryUnreadBadge();
     }
     
     /**
@@ -126,6 +130,40 @@ export abstract class BaseOutGameScene {
                 return 'nav-option';
             default:
                 return null;
+        }
+    }
+
+    /**
+     * 資料庫の未読バッジを更新
+     */
+    protected updateLibraryUnreadBadge(): void {
+        const libraryNavBtn = document.getElementById('nav-library');
+        if (!libraryNavBtn) return;
+
+        // 既存の未読バッジを削除
+        const existingBadge = libraryNavBtn.querySelector('.unread-badge');
+        if (existingBadge) {
+            existingBadge.remove();
+        }
+
+        try {
+            const player = this.game.getPlayer();
+            const explorerLevel = player.getExplorerLevel();
+            const defeatedBosses = player.memorialSystem.getVictoriousBossIds();
+            const lostToBosses = player.memorialSystem.getDefeatedBossIds();
+
+            // 共通化された関数を使用して未読数を計算
+            const unreadCount = getUnreadCountForPlayer(explorerLevel, defeatedBosses, lostToBosses);
+            
+            // 未読文書がある場合はバッジを追加
+            if (unreadCount > 0) {
+                const badge = document.createElement('span');
+                badge.className = 'badge bg-danger unread-badge ms-1';
+                badge.textContent = unreadCount.toString();
+                libraryNavBtn.appendChild(badge);
+            }
+        } catch (error) {
+            console.error('Failed to update library unread badge:', error);
         }
     }
 }

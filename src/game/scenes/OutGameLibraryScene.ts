@@ -3,6 +3,7 @@ import { BaseOutGameScene } from './BaseOutGameScene';
 import { getBossData } from '../data';
 import { BootstrapMarkdownRenderer } from '../utils/BootstrapMarkdownRenderer';
 import { LibraryDocument, loadAllDocuments, getAllDocuments } from '../data/DocumentLoader';
+import { PlayerSaveManager } from '../systems/PlayerSaveData';
 
 
 export class OutGameLibraryScene extends BaseOutGameScene {
@@ -26,6 +27,9 @@ export class OutGameLibraryScene extends BaseOutGameScene {
         
         // 資料庫を更新
         this.updateLibrary();
+        
+        // 上部メニューの未読バッジを更新
+        this.updateNavigationUnreadBadge();
     }
     
     /**
@@ -76,6 +80,9 @@ export class OutGameLibraryScene extends BaseOutGameScene {
         const explorerLevel = player.getExplorerLevel();
         const defeatedBosses = player.memorialSystem.getVictoriousBossIds();
         const lostToBosses = player.memorialSystem.getDefeatedBossIds();
+        
+        // 最新の文書データを取得（既読状態も含む）
+        this.documents = getAllDocuments();
         
         this.documents.forEach(doc => {
             // エクスプローラーレベル要求チェック
@@ -146,10 +153,16 @@ export class OutGameLibraryScene extends BaseOutGameScene {
             if (doc.unlocked) {
                 button.classList.remove('btn-outline-secondary');
                 button.classList.add('btn-outline-info');
+                
+                // 未読の場合は未読バッジも表示
+                const unreadBadge = doc.isRead ? '' : '<span class="badge bg-warning text-dark me-2">未読</span>';
                 button.innerHTML = `
                     <div class="d-flex justify-content-between align-items-center">
                         <span>${doc.title}</span>
-                        <span class="badge bg-success">解禁済み</span>
+                        <div>
+                            ${unreadBadge}
+                            <span class="badge bg-success">解禁済み</span>
+                        </div>
                     </div>
                 `;
             } else {
@@ -185,6 +198,17 @@ export class OutGameLibraryScene extends BaseOutGameScene {
             return;
         }
         
+        // 文書を既読としてマーク
+        if (!doc.isRead) {
+            PlayerSaveManager.markDocumentAsRead(documentId);
+            
+            // 資料庫全体を更新（最新の既読状態を反映）
+            this.updateLibrary();
+            
+            // 上部メニューの未読カウントも更新
+            this.updateNavigationUnreadBadge();
+        }
+        
         // Bootstrap 5対応MarkdownレンダラーでHTML変換
         const documentType = this.getDocumentType(doc.id);
         const htmlContent = BootstrapMarkdownRenderer.convertWithType(doc.content, documentType);
@@ -213,5 +237,12 @@ export class OutGameLibraryScene extends BaseOutGameScene {
                 </div>
             `;
         }
+    }
+
+    /**
+     * 上部メニューの未読バッジを更新（BaseOutGameSceneの共通メソッドを呼び出し）
+     */
+    private updateNavigationUnreadBadge(): void {
+        this.updateLibraryUnreadBadge();
     }
 }
