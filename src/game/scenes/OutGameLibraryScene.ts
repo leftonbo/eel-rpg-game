@@ -2,7 +2,7 @@ import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
 import { getBossData } from '../data';
 import { BootstrapMarkdownRenderer } from '../utils/BootstrapMarkdownRenderer';
-import { LibraryDocument, loadAllDocuments, getAllDocuments, getUnreadCountForPlayer } from '../data/DocumentLoader';
+import { LibraryDocument, loadAllDocuments, getAllDocuments } from '../data/DocumentLoader';
 import { PlayerSaveManager } from '../systems/PlayerSaveData';
 
 
