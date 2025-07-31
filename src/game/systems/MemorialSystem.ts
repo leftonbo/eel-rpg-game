@@ -342,6 +342,18 @@ export class MemorialSystem {
         const currentScore = this.calculateProgressScore(playerAbilities);
         const maxScore = MemorialSystem.getMaximumScore();
         
-        return maxScore > 0 ? Math.round((currentScore / maxScore) * 100) : 0;
+        // 境界値チェック
+        if (maxScore <= 0) {
+            console.warn('Maximum score is invalid:', maxScore);
+            return 0;
+        }
+        
+        if (currentScore < 0) {
+            console.warn('Current score is negative:', currentScore);
+            return 0;
+        }
+        
+        const percentage = Math.round((currentScore / maxScore) * 100);
+        return Math.min(100, Math.max(0, percentage)); // 0-100の範囲に制限
     }
 }

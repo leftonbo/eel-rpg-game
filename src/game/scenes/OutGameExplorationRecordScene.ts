@@ -4,6 +4,8 @@ import { AbilityType, AbilitySystem, AbilityData } from '../systems/AbilitySyste
 import { getAllBossData } from '../data';
 import { Trophy, MemorialSystem } from '../systems/MemorialSystem';
 import { TrophyDisplayComponent } from './components/TrophyDisplayComponent';
+import { Player } from '../entities/Player';
+import { ModalUtils } from '../utils/ModalUtils';
 
 // 拡張されたアビリティデータ型（experienceToNextを含む）
 interface ExtendedAbilityData extends AbilityData {
@@ -55,7 +57,7 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
             }
             
             // プログレスバー更新
-            this.updateProgressBar('explorer', explorerData, player.abilitySystem);
+            this.updateAbilityProgressBar('explorer', explorerData, player.abilitySystem);
             
             // アクセス可能な地形を更新
             this.updateAccessibleTerrains(player.getAccessibleTerrains());
@@ -83,9 +85,9 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
     }
     
     /**
-     * プログレスバーの更新
+     * アビリティプログレスバーの更新
      */
-    private updateProgressBar(prefix: string, data: ExtendedAbilityData, abilitySystem: AbilitySystem): void {
+    private updateAbilityProgressBar(prefix: string, data: ExtendedAbilityData, abilitySystem: AbilitySystem): void {
         const progressElement = document.getElementById(`${prefix}-progress`);
         if (!progressElement) return;
         
@@ -164,35 +166,78 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
     /**
      * 進行度データの更新
      */
-    private updateProgressData(player: any): void {
-        const memorialSystem = player.memorialSystem as MemorialSystem;
-        const abilityData = player.abilitySystem.exportForSave();
-        
-        // スコア計算
+    private updateProgressData(player: Player): void {
+        try {
+            // Playerデータの整合性チェック
+            if (!player?.memorialSystem || !player?.abilitySystem) {
+                console.warn('Player data is incomplete for progress display');
+                return;
+            }
+            
+            const memorialSystem = player.memorialSystem;
+            const abilityData = player.abilitySystem.exportForSave();
+            
+            // 進行度詳細を一度に計算
+            const progressDetails = this.calculateProgressDetails(memorialSystem, abilityData);
+            
+            // UI更新
+            this.updateElement('progress-current-score', progressDetails.currentScore.toString());
+            this.updateElement('progress-max-score', progressDetails.maxScore.toString());
+            this.updateElement('progress-percentage', `${progressDetails.percentage}%`);
+            
+            // プログレスバー更新
+            this.updateProgressBar(progressDetails.percentage);
+            
+            // 詳細スコア内訳
+            this.updateElement('boss-victory-count', progressDetails.victoryCount.toString());
+            this.updateElement('boss-defeat-count', progressDetails.defeatCount.toString());
+            this.updateElement('total-ability-levels', progressDetails.totalAbilityLevels.toString());
+            
+        } catch (error) {
+            console.error('Failed to update progress data:', error);
+            ModalUtils.showToast('進行度表示の更新に失敗しました', 'エラー', 'error');
+        }
+    }
+    
+    /**
+     * 進行度詳細を一度に計算
+     */
+    private calculateProgressDetails(memorialSystem: MemorialSystem, abilityData: { [key: string]: { level: number; experience: number } }): {
+        currentScore: number;
+        maxScore: number;
+        percentage: number;
+        victoryCount: number;
+        defeatCount: number;
+        totalAbilityLevels: number;
+    } {
         const currentScore = memorialSystem.calculateProgressScore(abilityData);
         const maxScore = MemorialSystem.getMaximumScore();
-        const progressPercentage = memorialSystem.calculateProgressPercentage(abilityData);
+        const percentage = memorialSystem.calculateProgressPercentage(abilityData);
+        const victoryCount = memorialSystem.getVictoriousBossIds().length;
+        const defeatCount = memorialSystem.getDefeatedBossIds().length;
+        const totalAbilityLevels = Object.values(abilityData).reduce((total: number, ability: { level: number; experience: number }) => total + ability.level, 0);
         
-        // UI更新
-        this.updateElement('progress-current-score', currentScore.toString());
-        this.updateElement('progress-max-score', maxScore.toString());
-        this.updateElement('progress-percentage', `${progressPercentage}%`);
-        
-        // プログレスバー更新
+        return {
+            currentScore,
+            maxScore,
+            percentage,
+            victoryCount,
+            defeatCount,
+            totalAbilityLevels
+        };
+    }
+    
+    /**
+     * プログレスバーの更新
+     */
+    private updateProgressBar(percentage: number): void {
         const progressBarElement = document.getElementById('progress-bar');
         if (progressBarElement) {
-            progressBarElement.style.width = `${progressPercentage}%`;
-            progressBarElement.setAttribute('aria-valuenow', progressPercentage.toString());
+            progressBarElement.style.width = `${percentage}%`;
+            progressBarElement.setAttribute('aria-valuenow', percentage.toString());
+        } else {
+            console.warn('Progress bar element not found');
         }
-        
-        // 詳細スコア内訳
-        const victoriousBossCount = memorialSystem.getVictoriousBossIds().length;
-        const defeatedBossCount = memorialSystem.getDefeatedBossIds().length;
-        const totalAbilityLevels = Object.values(abilityData).reduce((total: number, ability: any) => total + ability.level, 0);
-        
-        this.updateElement('boss-victory-count', victoriousBossCount.toString());
-        this.updateElement('boss-defeat-count', defeatedBossCount.toString());
-        this.updateElement('total-ability-levels', totalAbilityLevels.toString());
     }
     
     /**
