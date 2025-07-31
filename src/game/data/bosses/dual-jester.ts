@@ -527,18 +527,11 @@ const dualJesterAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
         if (player.isRestrained() && isPhase2) {
             // 第2フェーズで拘束+戦闘不能時は90%で捕食
             if (Math.random() < 0.90) {
-                return {
-                    id: 'final-swallow',
-                    type: ActionType.EatAttack,
-                    name: '最終捕食',
-                    description: '完全に支配下に置くために飲み込む',
-                    messages: [
-                        '「これで君は永遠に僕のものだ...」',
-                        '<USER>は<TARGET>を完全に支配するために飲み込む！',
-                        '<TARGET>は狂気の遊び場へと運ばれていく！'
-                    ],
-                    weight: 1
-                };
+                // use 'true-devour'
+                var eatAction = dualJesterPhase2Actions.find(action => action.id === 'true-devour');
+                if (eatAction) {
+                    return eatAction;
+                }
             }
         }
     }
