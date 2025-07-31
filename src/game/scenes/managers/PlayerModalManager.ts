@@ -15,6 +15,14 @@ export class PlayerModalManager {
     // CSS class constants
     private static readonly PROGRESS_BAR_WARNING = 'progress-bar bg-warning progress-bar-striped progress-bar-animated';
     private static readonly PROGRESS_BAR_INFO = 'progress-bar bg-info';
+    
+    // Event listener reference for cleanup
+    private updatePlayerSummaryListener = () => {
+        const playerModal = document.getElementById('player-detail-modal');
+        if (playerModal && playerModal.classList.contains('show')) {
+            this.updatePlayerModalContent();
+        }
+    };
 
     constructor(game: Game) {
         this.game = game;
@@ -36,13 +44,14 @@ export class PlayerModalManager {
         }
         
         // Listen for player summary update requests
-        document.addEventListener('updatePlayerSummary', () => {
-            // Update player modal if it's currently visible
-            const playerModal = document.getElementById('player-detail-modal');
-            if (playerModal && playerModal.classList.contains('show')) {
-                this.updatePlayerModalContent();
-            }
-        });
+        document.addEventListener('updatePlayerSummary', this.updatePlayerSummaryListener);
+    }
+
+    /**
+     * Cleanup method to remove event listeners
+     */
+    public destroy(): void {
+        document.removeEventListener('updatePlayerSummary', this.updatePlayerSummaryListener);
     }
 
     /**
@@ -76,27 +85,8 @@ export class PlayerModalManager {
      * Show player details modal
      */
     showPlayerDetails(): void {
-        const player = this.game.getPlayer();
-        const abilityLevels = player.getAbilityLevels();
-
-        // Update player modal header
-        this.updateElement('player-modal-name', player.name);
-        this.updateElement('player-modal-icon', player.icon);
-        
-        // Update stats tab
-        this.updatePlayerStatsTab(player, abilityLevels);
-        
-        // Update equipment tab
-        this.updateEquipmentSelections();
-        
-        // Update skills tab
-        this.updateSkillsList();
-        
-        // Update items tab
-        this.updateItemsList();
-        
-        // Update explorer tab
-        this.updateExplorerTab();
+        // Update all modal content
+        this.updatePlayerModalContent();
         
         // Update debug controls visibility in modal
         this.updateDebugControlsVisibilityInModal();
