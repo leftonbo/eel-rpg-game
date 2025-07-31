@@ -1,6 +1,6 @@
 import { getBossData, getAllBossData } from "../data";
 import { BossData } from "../entities/Boss";
-import { AbilitySystem, AbilityType } from "./AbilitySystem";
+import { AbilityData, AbilitySystem, AbilityType } from "./AbilitySystem";
 
 export enum TrophyType {
     Victory = 'victory',
@@ -297,11 +297,9 @@ export class MemorialSystem {
      * 進行度スコアを計算
      * - 倒したボスの種類 × 10点
      * - 負けたボスの種類 × 10点
-     * - 上昇したアビリティレベル × 2点
-     * @param playerAbilities - プレイヤーのアビリティデータ
      * @return 現在の進行度スコア
      */
-    public calculateProgressScore(playerAbilities: { [key: string]: { level: number; experience: number } }): number {
+    public calculateProgressScore(): number {
         let score = 0;
         
         // 勝利したボスの種類数 × 10点
@@ -311,11 +309,6 @@ export class MemorialSystem {
         // 敗北したボスの種類数 × 10点
         const defeatedBossIds = this.getDefeatedBossIds();
         score += defeatedBossIds.length * 10;
-        
-        // アビリティレベル合計 × 2点
-        Object.values(playerAbilities).forEach(ability => {
-            score += ability.level * 2;
-        });
         
         return score;
     }
@@ -328,32 +321,7 @@ export class MemorialSystem {
         const allBosses = getAllBossData();
         const maxBossVictoryScore = allBosses.length * 10; // 全ボス勝利
         const maxBossDefeatScore = allBosses.length * 10;  // 全ボス敗北
-        const maxAbilityScore = Object.keys(AbilityType).length * AbilitySystem.MAX_LEVEL * 2; // 全アビリティ最大レベル
         
-        return maxBossVictoryScore + maxBossDefeatScore + maxAbilityScore;
-    }
-    
-    /**
-     * 進行度パーセンテージを計算
-     * @param playerAbilities - プレイヤーのアビリティデータ
-     * @return 進行度パーセンテージ（0-100）
-     */
-    public calculateProgressPercentage(playerAbilities: { [key: string]: { level: number; experience: number } }): number {
-        const currentScore = this.calculateProgressScore(playerAbilities);
-        const maxScore = MemorialSystem.getMaximumScore();
-        
-        // 境界値チェック
-        if (maxScore <= 0) {
-            console.warn('Maximum score is invalid:', maxScore);
-            return 0;
-        }
-        
-        if (currentScore < 0) {
-            console.warn('Current score is negative:', currentScore);
-            return 0;
-        }
-        
-        const percentage = Math.round((currentScore / maxScore) * 100);
-        return Math.min(100, Math.max(0, percentage)); // 0-100の範囲に制限
+        return maxBossVictoryScore + maxBossDefeatScore;
     }
 }

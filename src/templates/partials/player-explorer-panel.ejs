@@ -1,5 +1,24 @@
 <!-- Explorer Panel -->
 <div id="explorer-panel">
+    <h6>🎯 ゲーム進行度</h6>
+    <div class="row mb-4">
+        <div class="col-md-12 mb-3">
+            <div class="card bg-secondary">
+                <div class="card-body">
+                    <!-- 進行度表示 -->
+                    <div class="d-flex justify-content-center mb-1">
+                        <span class="fs-5 fw-bold" id="progress-percentage">0%</span>
+                    </div>
+                    <div class="mb-2">
+                        <div class="progress" style="height: 30px;">
+                            <div id="progress-game-score" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <h6>🗺️ エクスプローラー</h6>
     <div class="row mb-4">
         <%- include('../components/ability-card', { icon: '🗺️', name: 'エクスプローラー', abilityId: 'explorer', description: '探検できる範囲が広がり、新しいボスをアンロックします。記念品を獲得したり、ボスからスキルを受けたりするたびに経験値が貯まります。' }) %>
@@ -10,30 +29,6 @@
                     <div class="mb-2">アンロック済みボス: <span id="unlocked-bosses-count">3</span> / <span id="unlockable-bosses-count">9</span></div>
                     <div class="mb-2">獲得記念品: <span id="total-trophies-count">0</span></div>
                     <div class="mb-3">探検経験値総計: <span id="total-explorer-exp">0</span></div>
-                    
-                    <!-- 進行度表示 -->
-                    <h6 class="card-title mt-3 mb-2">🎯 探検進行度</h6>
-                    <div class="mb-2">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="small">全体進行度</span>
-                            <span class="small" id="progress-percentage">0%</span>
-                        </div>
-                        <div class="progress mb-2">
-                            <div id="progress-bar" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <div class="small text-muted">
-                            スコア: <span id="progress-current-score">0</span> / <span id="progress-max-score">400</span>
-                        </div>
-                    </div>
-                    
-                    <!-- スコア内訳 -->
-                    <div class="mt-2">
-                        <div class="small text-muted">
-                            <div>勝利ボス: <span id="boss-victory-count">0</span>種類 (×10pt)</div>
-                            <div>敗北ボス: <span id="boss-defeat-count">0</span>種類 (×10pt)</div>
-                            <div>アビリティレベル合計: <span id="total-ability-levels">0</span> (×2pt)</div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
