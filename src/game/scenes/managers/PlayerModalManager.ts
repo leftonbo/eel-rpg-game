@@ -34,6 +34,42 @@ export class PlayerModalManager {
                 document.dispatchEvent(event);
             });
         }
+        
+        // Listen for player summary update requests
+        document.addEventListener('updatePlayerSummary', () => {
+            // Update player modal if it's currently visible
+            const playerModal = document.getElementById('player-detail-modal');
+            if (playerModal && playerModal.classList.contains('show')) {
+                this.updatePlayerModalContent();
+            }
+        });
+    }
+
+    /**
+     * Update player modal content when already visible
+     */
+    private updatePlayerModalContent(): void {
+        const player = this.game.getPlayer();
+        const abilityLevels = player.getAbilityLevels();
+
+        // Update player modal header
+        this.updateElement('player-modal-name', player.name);
+        this.updateElement('player-modal-icon', player.icon);
+        
+        // Update stats tab
+        this.updatePlayerStatsTab(player, abilityLevels);
+        
+        // Update equipment tab
+        this.updateEquipmentSelections();
+        
+        // Update skills tab
+        this.updateSkillsList();
+        
+        // Update items tab
+        this.updateItemsList();
+        
+        // Update explorer tab
+        this.updateExplorerTab();
     }
 
     /**
