@@ -1,6 +1,6 @@
 import { Player } from '../../entities/Player';
 import { Boss } from '../../entities/Boss';
-import { StatusEffect } from '../../systems/StatusEffect';
+import { StatusEffect, StatusEffectType } from '../../systems/StatusEffect';
 
 /**
  * バトル画面のUI更新を管理するクラス
@@ -273,7 +273,7 @@ export class BattleUIManager {
             player.isRestrained() || 
             player.isEaten() || 
             player.isCocoon() || 
-            player.statusEffects.hasEffect('Sleep' as any)
+            player.statusEffects.hasEffect(StatusEffectType.Sleep)
         );
         
         // Clear container
