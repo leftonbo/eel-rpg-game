@@ -1,5 +1,6 @@
-import { getBossData } from "../data";
+import { getBossData, getAllBossData } from "../data";
 import { BossData } from "../entities/Boss";
+import { AbilityData, AbilitySystem, AbilityType } from "./AbilitySystem";
 
 export enum TrophyType {
     Victory = 'victory',
@@ -290,5 +291,37 @@ export class MemorialSystem {
         return {
             bossMemorials: Array.from(this.bossMemorials.values())
         };
+    }
+    
+    /**
+     * 進行度スコアを計算
+     * - 倒したボスの種類 × 10点
+     * - 負けたボスの種類 × 10点
+     * @return 現在の進行度スコア
+     */
+    public calculateProgressScore(): number {
+        let score = 0;
+        
+        // 勝利したボスの種類数 × 10点
+        const victoriousBossIds = this.getVictoriousBossIds();
+        score += victoriousBossIds.length * 10;
+        
+        // 敗北したボスの種類数 × 10点
+        const defeatedBossIds = this.getDefeatedBossIds();
+        score += defeatedBossIds.length * 10;
+        
+        return score;
+    }
+    
+    /**
+     * 最大可能スコアを取得
+     * @return 最大可能進行度スコア
+     */
+    public static getMaximumScore(): number {
+        const allBosses = getAllBossData();
+        const maxBossVictoryScore = allBosses.length * 10; // 全ボス勝利
+        const maxBossDefeatScore = allBosses.length * 10;  // 全ボス敗北
+        
+        return maxBossVictoryScore + maxBossDefeatScore;
     }
 }

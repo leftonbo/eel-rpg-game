@@ -36,6 +36,7 @@ export interface ExtendedItem {
 
 export class AbilitySystem {
     public static readonly MAX_LEVEL = 10;
+    public static readonly SCORE_PER_LEVEL = 2; // 1 level = 2 points in score calculation
     public abilities: Map<AbilityType, AbilityData> = new Map();
     
     constructor() {
@@ -196,6 +197,26 @@ export class AbilitySystem {
             saveData[type] = { ...data };
         });
         return saveData;
+    }
+    
+    /**
+     * Get maximum score for progress calculation
+     */
+    public static getMaximumScore(): number {
+        // Assuming maximum score is based on max level for all abilities
+        return Object.values(AbilityType).length * AbilitySystem.MAX_LEVEL * AbilitySystem.SCORE_PER_LEVEL;
+    }
+    
+    /**
+     * Calculate progress score based on abilities
+     * - Each ability contributes 2 points per level
+     */
+    public calculateProgressScore(): number {
+        let score = 0;
+        this.abilities.forEach(ability => {
+            score += ability.level * AbilitySystem.SCORE_PER_LEVEL; // 2 points per level
+        });
+        return score;
     }
 }
 
