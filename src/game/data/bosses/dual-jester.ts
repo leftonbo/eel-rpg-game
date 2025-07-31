@@ -322,9 +322,9 @@ const dualJesterEternalActions: BossAction[] = [
         description: '裏の人格がおもちゃ箱に出現し、永遠に遊び続ける相手になる',
         messages: [
             '「君一人では淋しいだろう？私が遊び相手になろう」',
-            'おもちゃ箱の中に、<TARGET>より人一倍大きい裏の人格の姿が現れる！',
+            'おもちゃ箱の中に裏の人格の分身が、ぬいぐるみになった<TARGET>よりはるかに大きい姿で現れる！',
             '「さあ、何をして遊ぼうか？」',
-            'ぬいぐるみにされてしまった<TARGET>は、動くことも返事をすることもできない...'
+            'ぬいぐるみにされてしまった<TARGET>は、動くことも答えることもできない...'
         ],
         weight: 35,
         playerStateCondition: 'defeated',
