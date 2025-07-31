@@ -209,10 +209,10 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
         const maxScoreAbilities = AbilitySystem.getMaximumScore();
 
         const currentScoreMemorial = memorialSystem.calculateProgressScore();
-        const maxScoreMeorial = MemorialSystem.getMaximumScore();
+        const maxScoreMemorial = MemorialSystem.getMaximumScore();
         
         const totalScore = currentScoreAbilities + currentScoreMemorial;
-        const totalMaxScore = maxScoreAbilities + maxScoreMeorial;
+        const totalMaxScore = maxScoreAbilities + maxScoreMemorial;
         
         return {
             currentScore: totalScore,
