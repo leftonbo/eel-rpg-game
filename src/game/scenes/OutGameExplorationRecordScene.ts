@@ -12,8 +12,7 @@ interface ExtendedAbilityData extends AbilityData {
     experienceToNext: number;
 }
 
-interface GameProgressionData
-{
+interface GameProgressionData {
     currentScore: number;
     maxScore: number;
     ratio: number;
