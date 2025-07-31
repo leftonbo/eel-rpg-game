@@ -1,5 +1,6 @@
-import { getBossData } from "../data";
+import { getBossData, getAllBossData } from "../data";
 import { BossData } from "../entities/Boss";
+import { AbilitySystem, AbilityType } from "./AbilitySystem";
 
 export enum TrophyType {
     Victory = 'victory',
@@ -290,5 +291,57 @@ export class MemorialSystem {
         return {
             bossMemorials: Array.from(this.bossMemorials.values())
         };
+    }
+    
+    /**
+     * 進行度スコアを計算
+     * - 倒したボスの種類 × 10点
+     * - 負けたボスの種類 × 10点
+     * - 上昇したアビリティレベル × 2点
+     * @param playerAbilities - プレイヤーのアビリティデータ
+     * @return 現在の進行度スコア
+     */
+    public calculateProgressScore(playerAbilities: { [key: string]: { level: number; experience: number } }): number {
+        let score = 0;
+        
+        // 勝利したボスの種類数 × 10点
+        const victoriousBossIds = this.getVictoriousBossIds();
+        score += victoriousBossIds.length * 10;
+        
+        // 敗北したボスの種類数 × 10点
+        const defeatedBossIds = this.getDefeatedBossIds();
+        score += defeatedBossIds.length * 10;
+        
+        // アビリティレベル合計 × 2点
+        Object.values(playerAbilities).forEach(ability => {
+            score += ability.level * 2;
+        });
+        
+        return score;
+    }
+    
+    /**
+     * 最大可能スコアを取得
+     * @return 最大可能進行度スコア
+     */
+    public static getMaximumScore(): number {
+        const allBosses = getAllBossData();
+        const maxBossVictoryScore = allBosses.length * 10; // 全ボス勝利
+        const maxBossDefeatScore = allBosses.length * 10;  // 全ボス敗北
+        const maxAbilityScore = Object.keys(AbilityType).length * AbilitySystem.MAX_LEVEL * 2; // 全アビリティ最大レベル
+        
+        return maxBossVictoryScore + maxBossDefeatScore + maxAbilityScore;
+    }
+    
+    /**
+     * 進行度パーセンテージを計算
+     * @param playerAbilities - プレイヤーのアビリティデータ
+     * @return 進行度パーセンテージ（0-100）
+     */
+    public calculateProgressPercentage(playerAbilities: { [key: string]: { level: number; experience: number } }): number {
+        const currentScore = this.calculateProgressScore(playerAbilities);
+        const maxScore = MemorialSystem.getMaximumScore();
+        
+        return maxScore > 0 ? Math.round((currentScore / maxScore) * 100) : 0;
     }
 }

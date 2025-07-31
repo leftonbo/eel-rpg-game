@@ -2,7 +2,7 @@ import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
 import { AbilityType, AbilitySystem, AbilityData } from '../systems/AbilitySystem';
 import { getAllBossData } from '../data';
-import { Trophy } from '../systems/MemorialSystem';
+import { Trophy, MemorialSystem } from '../systems/MemorialSystem';
 import { TrophyDisplayComponent } from './components/TrophyDisplayComponent';
 
 // 拡張されたアビリティデータ型（experienceToNextを含む）
@@ -74,6 +74,9 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
         
         const totalExplorerExp = explorerData?.experience || 0;
         this.updateElement('total-explorer-exp', totalExplorerExp.toString());
+        
+        // 進行度情報
+        this.updateProgressData(player);
         
         // トロフィーコレクションの更新
         this.updateTrophiesCollection(allTrophies);
@@ -156,6 +159,40 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
         const percentage = (currentLevelExp / levelRangeExp) * 100;
         
         return { currentLevelExp, levelRangeExp, percentage };
+    }
+    
+    /**
+     * 進行度データの更新
+     */
+    private updateProgressData(player: any): void {
+        const memorialSystem = player.memorialSystem as MemorialSystem;
+        const abilityData = player.abilitySystem.exportForSave();
+        
+        // スコア計算
+        const currentScore = memorialSystem.calculateProgressScore(abilityData);
+        const maxScore = MemorialSystem.getMaximumScore();
+        const progressPercentage = memorialSystem.calculateProgressPercentage(abilityData);
+        
+        // UI更新
+        this.updateElement('progress-current-score', currentScore.toString());
+        this.updateElement('progress-max-score', maxScore.toString());
+        this.updateElement('progress-percentage', `${progressPercentage}%`);
+        
+        // プログレスバー更新
+        const progressBarElement = document.getElementById('progress-bar');
+        if (progressBarElement) {
+            progressBarElement.style.width = `${progressPercentage}%`;
+            progressBarElement.setAttribute('aria-valuenow', progressPercentage.toString());
+        }
+        
+        // 詳細スコア内訳
+        const victoriousBossCount = memorialSystem.getVictoriousBossIds().length;
+        const defeatedBossCount = memorialSystem.getDefeatedBossIds().length;
+        const totalAbilityLevels = Object.values(abilityData).reduce((total: number, ability: any) => total + ability.level, 0);
+        
+        this.updateElement('boss-victory-count', victoriousBossCount.toString());
+        this.updateElement('boss-defeat-count', defeatedBossCount.toString());
+        this.updateElement('total-ability-levels', totalAbilityLevels.toString());
     }
     
     /**
