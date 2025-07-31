@@ -2,7 +2,7 @@ import { StatusEffectManager, StatusEffectType } from '../systems/StatusEffect';
 import { Player } from './Player';
 import { calculateAttackResult } from '../utils/CombatUtils';
 import { Actor } from './Actor';
-import { MessageData } from '../scenes/BattleScene';
+import { MessageData } from '../scenes/components/BattleMessageComponent';
 
 // Message formatter utility
 export function formatMessage(template: string, nameUser: string, nameTarget: string): string {

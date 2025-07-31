@@ -528,7 +528,7 @@ const dualJesterAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
             // 第2フェーズで拘束+戦闘不能時は90%で捕食
             if (Math.random() < 0.90) {
                 // use 'true-devour'
-                var eatAction = dualJesterPhase2Actions.find(action => action.id === 'true-devour');
+                const eatAction = dualJesterPhase2Actions.find(action => action.id === 'true-devour');
                 if (eatAction) {
                     return eatAction;
                 }
