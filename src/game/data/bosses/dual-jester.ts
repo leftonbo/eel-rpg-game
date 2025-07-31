@@ -342,7 +342,7 @@ const dualJesterEternalActions: BossAction[] = [
             '「やっと手に入れた大切な玩具だ...絶対に離さない」',
             '巨大な体格で容赦なく抱きしめられ、<TARGET>は身動きが全く取れない！',
             '「この感触...やはり本物の玩具は格別だな」',
-            '強すぎる抱擁で<TARGET>の体がきしむ音が響く...'
+            '強すぎる抱擁で<TARGET>の体はスポンジのように押しつぶされる...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.5,
         statusEffect: StatusEffectType.Paralysis,
