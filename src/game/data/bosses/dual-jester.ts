@@ -322,9 +322,9 @@ const dualJesterEternalActions: BossAction[] = [
         description: '裏の人格がおもちゃ箱に出現し、永遠に遊び続ける相手になる',
         messages: [
             '「君一人では淋しいだろう？私が遊び相手になろう」',
-            'おもちゃ箱の中に、<USER>より人一倍大きい裏の人格の姿が現れる！',
+            'おもちゃ箱の中に、<TARGET>より人一倍大きい裏の人格の姿が現れる！',
             '「さあ、何をして遊ぼうか？」',
-            'ぬいぐるみにされてしまった<USER>は、動くことも返事をすることもできない...'
+            'ぬいぐるみにされてしまった<TARGET>は、動くことも返事をすることもできない...'
         ],
         weight: 35,
         playerStateCondition: 'defeated',
@@ -333,95 +333,117 @@ const dualJesterEternalActions: BossAction[] = [
         },
     },
     {
-        id: 'perfect-toy',
+        id: 'forced-embrace',
         type: ActionType.PostDefeatedAttack,
-        name: '完璧な玩具',
-        description: '理想的な玩具として永続的に保管する',
+        name: '強制抱擁',
+        description: '巨大な体でぬいぐるみを強くきつく抱きしめる',
         messages: [
-            '<TARGET>の抵抗する力が完全に失われ、人形のように動かなくなった...',
-            '「やった〜！新しいお人形さんの完成だよ〜♪」（表の人格が手を叩いて喜ぶ）',
-            '「完璧だ...完璧な玩具の完成だ。これで私のコレクションがまた一つ増えた。」（裷の人格が満足げに微笑む）',
-            '「もう痛くはないからね〜！変わりにずっとずっと楽しい夢を見られるよ〜♪」',
-            '「現実はもう必要ない。夢の中で永遠に私と遊んでいればいい...」',
-            '<TARGET>の魂が徐々に道化師の精神世界に吸収され、絶対に逃げられない玩具として永続保管される...'
+            '裏の人格の巨大な両腕が<TARGET>をぎゅっと抱きしめる！',
+            '「やっと手に入れた大切な玩具だ...絶対に離さない」',
+            '巨大な体格で容赦なく抱きしめられ、<TARGET>は身動きが全く取れない！',
+            '「この感触...やはり本物の玩具は格別だな」',
+            '強すぎる抱擁で<TARGET>の体がきしむ音が響く...'
         ],
-        statusEffect: StatusEffectType.Bipolar,
+        damageFormula: (user: Boss) => user.attackPower * 1.5,
+        statusEffect: StatusEffectType.Paralysis,
         statusChance: 0.80,
         weight: 30,
         playerStateCondition: 'defeated'
     },
     {
-        id: 'endless-game',
+        id: 'ribbon-tongue-assault',
         type: ActionType.PostDefeatedAttack,
-        name: '終わらない遊び',
-        description: '永続的な遊びのサイクルを開始する',
+        name: 'リボン舌攻撃',
+        description: 'リボンのような長い舌で激しく舐め回す',
         messages: [
-            '時間の概念が失われ、<TARGET>は終わりのないループに閉じ込められる...',
-            '「遊びは終わらないよ...ずっと、ずっと、永遠に♪」（表の人格が無邪気に笑う）',
-            '「かくれんぼ、おもちゃあそび、人形遊び...ローテーションで永遠に繰り返すのだ。」（裷の人格が冷酷に計画を説明）',
-            '<TARGET>の意識は表の人格と裷の人格の間で永遠に揺れ動かされる！',
-            '「今日はおもちゃあそび〜♪明日はかくれんぼ〜♪」',
-            '「明後日は拷問遊びだな...その次は解体遊びか？」',
-            '終わりのない恐怖のサイクルが始まり、<TARGET>は永遠に異なる二つの人格に遊ばれ続けることになった...'
+            '巨大な体の口からリボンのような長い舌がにゅるりと現れる！',
+            '「味見をさせてもらおうか...」',
+            '濡れた舌が<TARGET>の全身を執拗に舐め回す！',
+            '「君の味は...実に素晴らしい。もっと、もっと味わわせてもらう」',
+            'ぬいぐるみにされた体でも、妙な感覚が残り続ける...',
+            '「嫌がる表情すら見せられないとは...完璧な玩具だ」'
         ],
-        weight: 25,
+        damageFormula: (user: Boss) => user.attackPower * 1.3,
+        statusEffect: StatusEffectType.Slimed,
+        statusChance: 0.90,
+        weight: 28,
         playerStateCondition: 'defeated'
     },
     {
-        id: 'memory-rewrite',
+        id: 'merciless-tickling',
         type: ActionType.PostDefeatedAttack,
-        name: '記憶書換術',
-        description: '記憶を書き換えて永続的な支配を確立する',
+        name: '無慈悲くすぐり',
+        description: '巨大な指でぬいぐるみをくすぐりまわす',
         messages: [
-            '時間が逆行するような感覚が<TARGET>を包み、過去の記憶が歪み始める...',
-            '「痛い記憶は消してあげる〜♪ 楽しい記憶だけ残してあげるね〜♪」（表の人格が優しく微笑む）',
-            '「苦痛も、恐怖も、抵抗も...全て私が都合よく書き換えてやろう」（裏の人格が冷笑する）',
-            '<TARGET>の脳内で記憶が次々と塗り替えられ、道化師と「楽しく遊んだ」偽りの思い出が植え付けられる！',
-            '「ほら、こんなに楽しかったでしょ〜♪ ずっと一緒にいたかったんでしょ〜♪」',
-            '「抵抗など最初からなかった...君は自ら私の元に来たのだ」',
-            '<TARGET>の真の記憶は闇に葬られ、道化師への絶対的な愛だけが残された...'
+            '裏の人格の巨大な指が<TARGET>に向かって迫る！',
+            '「くすぐりは痛みよりも効果的だ...抵抗すらできないからな」',
+            '大きな指が<TARGET>の体を執拗にくすぐり続ける！',
+            'ぬいぐるみにされても、くすぐられる感覚だけは鮮明に残る...',
+            '「笑い声も出せない...実に素晴らしい反応だ」',
+            '容赦なく続くくすぐりに、<TARGET>の意識は混乱する...'
         ],
-        statusEffect: StatusEffectType.FalseSecurity,
+        damageFormula: (user: Boss) => user.attackPower * 1.2,
+        statusEffect: StatusEffectType.Confusion,
+        statusChance: 0.85,
+        weight: 26,
+        playerStateCondition: 'defeated'
+    },
+    {
+        id: 'toy-swing-around',
+        type: ActionType.PostDefeatedAttack,
+        name: '玩具振り回し',
+        description: '巨大な手でぬいぐるみを激しく振り回す',
+        messages: [
+            '裏の人格が<TARGET>を巨大な手で掴み上げる！',
+            '「玩具は乱暴に扱っても壊れないものでなくては...」',
+            '<TARGET>が激しく空中で振り回される！',
+            '「どれほどの衝撃に耐えられるか試してみよう」',
+            '激しい振り回しで<TARGET>の視界がぐるぐると回る...',
+            '「この程度では壊れないか...流石は丈夫な玩具だ」'
+        ],
+        damageFormula: (user: Boss) => user.attackPower * 1.4,
+        statusEffect: StatusEffectType.Confusion,
+        statusChance: 0.75,
+        weight: 24,
+        playerStateCondition: 'defeated'
+    },
+    {
+        id: 'dominating-play',
+        type: ActionType.PostDefeatedAttack,
+        name: '支配的遊戯',
+        description: '巨大な体格を活かして絶対的な支配を誇示する',
+        messages: [
+            '裏の人格が<TARGET>の真上に巨大な体を覆いかぶせる！',
+            '「私の大きさが分かるか？君はこんなにも小さな存在なのだ」',
+            '圧倒的な体格差で<TARGET>を完全に覆い隠す！',
+            '「抵抗など不可能...君は私の手の平の上の玩具に過ぎない」',
+            '巨大な影に包まれ、<TARGET>は自分の無力さを思い知らされる...',
+            '「この支配関係は永遠に変わることはない」'
+        ],
+        damageFormula: (user: Boss) => user.attackPower * 1.6,
+        statusEffect: StatusEffectType.Fear,
         statusChance: 0.90,
         weight: 32,
         playerStateCondition: 'defeated'
     },
     {
-        id: 'dual-soul-binding',
+        id: 'persistent-caressing',
         type: ActionType.PostDefeatedAttack,
-        name: '双魂束縛',
-        description: '魂を二重に束縛する暗黒の儀式',
+        name: '執拗愛撫',
+        description: '巨大な手で執拗で一方的な愛撫を行う',
         messages: [
-            '空間に不気味な魔法陣が浮かび上がり、<TARGET>の魂が二つに引き裂かれようとしている...',
-            '「僕の魂と君の魂を繋げちゃおう〜♪ そうすれば永遠に一緒だよ〜♪」（表の人格が無邪気に提案）',
-            '「一つは私の表の人格に、もう一つは裏の人格に...完全に支配してやる」（裏の人格が邪悪に宣言）',
-            '<TARGET>の魂が無理やり二等分され、それぞれが道化師の異なる人格に鎖で繋がれる！',
-            '「これで君は僕の一部だね〜♪ 僕も君の一部になったよ〜♪」',
-            '「逃げ場はない...君の魂は私の魂の奴隷となった」',
-            '双魂の鎖が<TARGET>の存在を完全に束縛し、独立した意思を永遠に奪い去った！'
+            '裏の人格の巨大な手が<TARGET>に触れ始める...',
+            '「この感触...何度味わっても飽きることがない」',
+            '大きな手が<TARGET>の体を執拗に、丁寧に撫で回す！',
+            '「君のこの部分は特に...興味深いな」',
+            'ぬいぐるみにされた体でも、奇妙な感覚が伝わり続ける...',
+            '「私だけが君を完全に理解している...私だけが君を愛している」',
+            '一方的で執拗な愛撫が永遠に続く...'
         ],
-        statusEffect: StatusEffectType.Bipolar,
+        damageFormula: (user: Boss) => user.attackPower * 1.1,
+        statusEffect: StatusEffectType.Charm,
         statusChance: 0.95,
-        weight: 35,
-        playerStateCondition: 'defeated'
-    },
-    {
-        id: 'infinite-dollhouse',
-        type: ActionType.PostDefeatedAttack,
-        name: '無限人形館',
-        description: '無限に続くドールハウスに閉じ込める',
-        messages: [
-            '周囲の景色が急速に変化し、巨大なドールハウスの内部に変貌していく...',
-            '「わ〜い！新しいドールハウスの完成だよ〜♪ 君専用の特別なお家だよ〜♪」（表の人格が嬉しそうに手を叩く）',
-            '「部屋から部屋へ...階段を上っても下りても...永遠に続く迷宮だ」（裏の人格が冷酷に説明）',
-            '<TARGET>は人形サイズに縮小され、無数の部屋が連なる無限のドールハウスに放り込まれる！',
-            '「どの部屋にも僕がいるよ〜♪ 表の僕と裏の僕が〜♪」',
-            '「出口は存在しない...君はここで永遠に私の人形として生き続けるのだ」',
-            '無限に続く階段、無限に続く廊下、そして無限に続く恐怖...これが<TARGET>の新しい現実となった。'
-        ],
-        statusEffect: StatusEffectType.Confusion,
-        statusChance: 0.85,
-        weight: 28,
+        weight: 29,
         playerStateCondition: 'defeated'
     }
 ];
