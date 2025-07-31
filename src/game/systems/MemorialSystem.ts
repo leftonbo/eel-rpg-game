@@ -1,6 +1,5 @@
 import { getBossData, getAllBossData } from "../data";
 import { BossData } from "../entities/Boss";
-import { AbilityData, AbilitySystem, AbilityType } from "./AbilitySystem";
 
 export enum TrophyType {
     Victory = 'victory',
