@@ -86,7 +86,7 @@ export class BootstrapMarkdownRenderer {
         this.renderer.link = ({ href, title, tokens }) => {
             const text = this.renderer.parser?.parseInline(tokens) || '';
             const titleAttr = title ? ` title="${title}"` : '';
-            return `<a href="${href}" class="link-primary text-decoration-none"${titleAttr}>${text}</a>`;
+            return `<a href="${href}" target="_blank" class="link-primary text-decoration-none"${titleAttr}>${text}</a>`;
         };
         
         // 画像: Bootstrap風レスポンシブ画像
