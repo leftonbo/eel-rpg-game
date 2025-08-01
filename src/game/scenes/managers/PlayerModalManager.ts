@@ -48,7 +48,8 @@ export class PlayerModalManager {
     }
 
     /**
-     * Cleanup method to remove event listeners
+     * Cleanup method to remove event listeners.
+     * This method should be called during the cleanup phase of the game or scene lifecycle.
      */
     public destroy(): void {
         document.removeEventListener('updatePlayerSummary', this.updatePlayerSummaryListener);
