@@ -34,8 +34,8 @@ const seaKrakenActions: BossAction[] = [
         weight: 25,
         messages: [
             '「グゥゥゥ...」',
-            '<USER>が黒いイカスミを吐き出した！',
-            '<TARGET>の視界が阻害される！'
+            '{boss}が黒いイカスミを吐き出した！',
+            '{player}の視界が阻害される！'
         ]
     },
     {
@@ -45,7 +45,7 @@ const seaKrakenActions: BossAction[] = [
         description: '長い触腕で対象を拘束する',
         messages: [
             '「グルルル...」',
-            '<USER>の触腕が<TARGET>に巻き付いた！',
+            '{boss}の触腕が{player}に巻き付いた！',
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.9,
         weight: 10,
@@ -60,7 +60,7 @@ const seaKrakenActions: BossAction[] = [
         description: '拘束中の獲物を吸盤で吸引し、エネルギーを吸収する',
         messages: [
             '「シュゥゥゥ...」',
-            '<USER>の触腕が<TARGET>を強く吸引する！',
+            '{boss}の触腕が{player}を強く吸引する！',
             'エネルギーが吸収されていく...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.3,
@@ -75,8 +75,8 @@ const seaKrakenActions: BossAction[] = [
         description: '拘束中の獲物にイカスミを注入し、魅了状態にする',
         messages: [
             '「ゴポポポ...」',
-            '<USER>が触腕を<TARGET>の口に入れてイカスミを注入した！',
-            '<TARGET>は催眠効果で魅了されてしまう...'
+            '{boss}が触腕を{player}の口に入れてイカスミを注入した！',
+            '{player}は催眠効果で魅了されてしまう...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.5,
         weight: 30,
@@ -125,8 +125,8 @@ export const seaKrakenData: BossData = {
                     description: '獲物をイカスミ漬けにしながら体力を吸収し続ける',
                     messages: [
                         '「ゴポポポ...」',
-                        '<USER>の体内でイカスミが<TARGET>を包み込んでいる...',
-                        '<TARGET>は催眠状態のまま体力を吸収され続ける...'
+                        '{boss}の体内でイカスミが{player}を包み込んでいる...',
+                        '{player}は催眠状態のまま体力を吸収され続ける...'
                     ],
                     statusEffect: StatusEffectType.Charm,
                     weight: 1
@@ -138,8 +138,8 @@ export const seaKrakenData: BossData = {
                     description: '体内の無数の吸盤で獲物の体力を永遠に吸収し続ける',
                     messages: [
                         '「シュゥゥゥ...」',
-                        '<USER>の胃袋の吸盤が<TARGET>を吸引している...',
-                        '<TARGET>のエネルギーが永遠に吸収されていく...'
+                        '{boss}の胃袋の吸盤が{player}を吸引している...',
+                        '{player}のエネルギーが永遠に吸収されていく...'
                     ],
                     statusEffect: StatusEffectType.Weakness,
                     weight: 1
@@ -158,7 +158,7 @@ export const seaKrakenData: BossData = {
                     description: '体内の獲物のエネルギーを、胃袋にある無数の吸盤で吸収する',
                     messages: [
                         '「シュゥゥゥ...」',
-                        '<USER>の胃袋の吸盤が<TARGET>を強く吸引している！'
+                        '{boss}の胃袋の吸盤が{player}を強く吸引している！'
                     ],
                     damageFormula: (user: Boss) => user.attackPower * 2.0,
                     weight: 1
@@ -170,8 +170,8 @@ export const seaKrakenData: BossData = {
                     description: '体内の獲物をイカスミ漬けにして最大体力を吸収する',
                     messages: [
                         '「ゴポポポ...」',
-                        '<USER>の体内でイカスミが<TARGET>を包み込む！',
-                        '<TARGET>は催眠状態になってしまった...'
+                        '{boss}の体内でイカスミが{player}を包み込む！',
+                        '{player}は催眠状態になってしまった...'
                     ],
                     damageFormula: (user: Boss) => user.attackPower * 1.3,
                     statusEffect: StatusEffectType.Charm,
@@ -193,8 +193,8 @@ export const seaKrakenData: BossData = {
                         description: '拘束した獲物を口に押し込み丸呑みする',
                         messages: [
                             '「グォォォ！」',
-                            '<USER>が<TARGET>を触腕ごと大きな口に押し込んだ！',
-                            '<TARGET>は体内に飲み込まれてしまった！'
+                            '{boss}が{player}を触腕ごと大きな口に押し込んだ！',
+                            '{player}は体内に飲み込まれてしまった！'
                         ],
                         weight: 1
                     };
@@ -210,7 +210,7 @@ export const seaKrakenData: BossData = {
                         description: '対象を触腕で拘束する',
                         messages: [
                             '「グルルル...」',
-                            '<USER>の触腕が<TARGET>に巻き付いた！'
+                            '{boss}の触腕が{player}に巻き付いた！'
                         ],
                         weight: 1
                     };
@@ -222,7 +222,7 @@ export const seaKrakenData: BossData = {
                         description: '獲物を丸呑みする',
                         messages: [
                             '「グォォォ！」',
-                            '<USER>が大きな口を開け、<TARGET>を丸呑みにする！'
+                            '{boss}が大きな口を開け、{player}を丸呑みにする！'
                         ],
                         weight: 1
                     };
@@ -280,8 +280,8 @@ export const seaKrakenData: BossData = {
 seaKrakenData.finishingMove = function() {
     return [
         '「グルルル...」',
-        '<USER>の胃袋吸盤が<TARGET>の腕と脚を吸い込み、体全体を吸盤で拘束する！',
-        '<TARGET>はイカスミを注入されながら吸盤で吸収され続け、<USER>の体内でエネルギーを永遠に吸収されることになった...'
+        '{boss}の胃袋吸盤が{player}の腕と脚を吸い込み、体全体を吸盤で拘束する！',
+        '{player}はイカスミを注入されながら吸盤で吸収され続け、{boss}の体内でエネルギーを永遠に吸収されることになった...'
     ];
 };
 

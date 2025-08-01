@@ -41,7 +41,7 @@ const swampDragonActions: BossAction[] = [
         description: '長い尻尾で対象を拘束する',
         messages: [
             '「グルル...」',
-            '<USER>は尻尾で<TARGET>を巻き付けてきた！',
+            '{boss}は尻尾で{player}を巻き付けてきた！',
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.9,
         weight: 10,
@@ -57,7 +57,7 @@ const swampDragonActions: BossAction[] = [
         description: '拘束中の獲物を尻尾でしめつける',
         messages: [
             '「グオオオ...」',
-            '<USER>は<TARGET>を尻尾で締め付ける！'
+            '{boss}は{player}を尻尾で締め付ける！'
         ],
         damageFormula: (user: Boss) => user.attackPower,
         weight: 40,
@@ -70,7 +70,7 @@ const swampDragonActions: BossAction[] = [
         description: '拘束中の獲物を舌でキスする（与えたダメージ分回復）',
         messages: [
             '「グルル...」',
-            '<USER>は<TARGET>の口に舌を押し付けながら深いキスをする！',
+            '{boss}は{player}の口に舌を押し付けながら深いキスをする！',
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.3,
         weight: 30,
@@ -142,8 +142,8 @@ export const swampDragonData: BossData = {
                     description: '深い体内で消化液を分泌し、獲物の体力を吸収し続ける',
                     messages: [
                         '「グルルル...」',
-                        '<USER>の体内奥深くで消化液がゆっくりと分泌されている...',
-                        '<TARGET>の体が徐々に体力を失っていく...'
+                        '{boss}の体内奥深くで消化液がゆっくりと分泌されている...',
+                        '{player}の体が徐々に体力を失っていく...'
                     ],
                     weight: 1
                 },
@@ -154,8 +154,8 @@ export const swampDragonData: BossData = {
                     description: '体内の壁で獲物を優しく圧迫し続ける',
                     messages: [
                         '「ウォォォ...」',
-                        '<USER>の体内の壁が<TARGET>をゆっくりと圧迫している...',
-                        '<TARGET>は深い体内で身動きが取れない...'
+                        '{boss}の体内の壁が{player}をゆっくりと圧迫している...',
+                        '{player}は深い体内で身動きが取れない...'
                     ],
                     weight: 1
                 },
@@ -166,8 +166,8 @@ export const swampDragonData: BossData = {
                     description: '体内で獲物から栄養を吸収し続ける',
                     messages: [
                         '「グルル...」',
-                        '<USER>が<TARGET>から栄養を吸収している...',
-                        '<TARGET>の体力が徐々に奪われていく...'
+                        '{boss}が{player}から栄養を吸収している...',
+                        '{player}の体力が徐々に奪われていく...'
                     ],
                     statusEffect: StatusEffectType.Weakness,
                     weight: 1
@@ -179,8 +179,8 @@ export const swampDragonData: BossData = {
                     description: '体内の温かさで獲物を包み込み続ける',
                     messages: [
                         '「ウォォォ...」',
-                        '<USER>の体内の温かさが<TARGET>を包み込んでいる...',
-                        '<TARGET>は深い体内で意識が朦朧としている...'
+                        '{boss}の体内の温かさが{player}を包み込んでいる...',
+                        '{player}は深い体内で意識が朦朧としている...'
                     ],
                     statusEffect: StatusEffectType.Sleep,
                     weight: 1
@@ -192,8 +192,8 @@ export const swampDragonData: BossData = {
                     description: '体内の筋肉で獲物を優しくマッサージし続ける',
                     messages: [
                         '「グルル...」',
-                        '<USER>の体内の筋肉が<TARGET>を優しくマッサージしている...',
-                        '<TARGET>は抵抗することができない...'
+                        '{boss}の体内の筋肉が{player}を優しくマッサージしている...',
+                        '{player}は抵抗することができない...'
                     ],
                     statusEffect: StatusEffectType.Charm,
                     weight: 1
@@ -212,7 +212,7 @@ export const swampDragonData: BossData = {
                     description: 'ネバネバな胃液を分泌して獲物を粘液まみれにする',
                     messages: [
                         '「グルルル...」',
-                        '<USER>の胃袋が<TARGET>をネバネバな胃液まみれにする！'
+                        '{boss}の胃袋が{player}をネバネバな胃液まみれにする！'
                     ],
                     damageFormula: (user: Boss) => user.attackPower * 0.9,
                     statusEffect: StatusEffectType.Slimed,
@@ -225,7 +225,7 @@ export const swampDragonData: BossData = {
                     description: '獲物を体内で締め付ける',
                     messages: [
                         '「ウォォォ...」',
-                        '<USER>の胃壁が<TARGET>の体を圧迫する！'
+                        '{boss}の胃壁が{player}の体を圧迫する！'
                     ],
                     damageFormula: (user: Boss) => user.attackPower * 1.4,
                     weight: 1
@@ -237,7 +237,7 @@ export const swampDragonData: BossData = {
                     description: '獲物を体内で優しくマッサージする',
                     messages: [
                         '「グルル...」',
-                        '<USER>の胃壁が<TARGET>を優しくマッサージしている...'
+                        '{boss}の胃壁が{player}を優しくマッサージしている...'
                     ],
                     damageFormula: (user: Boss) => user.attackPower * 1.4,
                     weight: 1
@@ -249,7 +249,7 @@ export const swampDragonData: BossData = {
                     description: '獲物の入ったお腹をゆらゆらと揺らす',
                     messages: [
                         '「ガオー...」',
-                        '<USER>がお腹を揺らして<TARGET>を翻弄している...'
+                        '{boss}がお腹を揺らして{player}を翻弄している...'
                     ],
                     damageFormula: (user: Boss) => user.attackPower * 1.4,
                     weight: 1
@@ -270,7 +270,7 @@ export const swampDragonData: BossData = {
                         description: '拘束した獲物を丸呑みする',
                         messages: [
                             '「ガオー！」',
-                            '<USER>が大きな口を開け、<TARGET>を丸呑みにする！'
+                            '{boss}が大きな口を開け、{player}を丸呑みにする！'
                         ],
                         weight: 1
                     };
@@ -288,7 +288,7 @@ export const swampDragonData: BossData = {
                         description: '対象を尻尾で拘束する',
                         messages: [
                             '「グルル...」',
-                            '<USER>は尻尾で<TARGET>を巻き付けてきた！'
+                            '{boss}は尻尾で{player}を巻き付けてきた！'
                         ],
                         weight: 1
                     };
@@ -300,7 +300,7 @@ export const swampDragonData: BossData = {
                         description: '拘束した獲物を丸呑みする',
                         messages: [
                             '「ガオー！」',
-                            '<USER>が大きな口を開け、<TARGET>を丸呑みにする！'
+                            '{boss}が大きな口を開け、{player}を丸呑みにする！'
                         ],
                         weight: 1
                     };
@@ -366,8 +366,8 @@ export const swampDragonData: BossData = {
 swampDragonData.finishingMove = function() {
     return [
         '「グルル...」',
-        '<USER>は<TARGET>を体内の奥深くに送り込む！',
-        '<TARGET>は体内奥深くに閉じ込められ、<USER>が満足するまで体力を吸収され続けることになった...'
+        '{boss}は{player}を体内の奥深くに送り込む！',
+        '{player}は体内奥深くに閉じ込められ、{boss}が満足するまで体力を吸収され続けることになった...'
     ];
 };
 

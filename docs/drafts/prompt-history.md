@@ -557,7 +557,7 @@ Player と Boss の共通処理部分をまとめた基底クラス Actor を作
   - `target`: 対象 (自分自身か、敵か)
   - `mpCost`: マナ消費量
   - `message`: 行動時のメッセージ (リストで複数行のメッセージを指定可能)
-    - メッセージはフォーマット指定可能 (例: `<USER>は<TARGET>に<ACTION>を使った！`)
+    - メッセージはフォーマット指定可能 (例: `{boss}は{player}にスキルを使った！`)
   - `repeatCount`: 繰り返し回数 (通常は1。2以上で「命中判定→ダメージ→特殊効果」の処理を繰り返す) 省略時は 1
   - `accuracy`: 成功率 (0.0 - 1.0) 。失敗時はダメージや特殊効果は発生しない
   - `accuracyType`: 成功率計算タイプ (`fixed`:固定、 または `evade`: 使用者の命中補正と対象の回避率を参照)
@@ -583,7 +583,7 @@ Player と Boss の共通処理部分をまとめた基底クラス Actor を作
   - description: "通常攻撃"
   - target: 'enemy'
   - mpCost: 0
-  - message: ["<USER>の攻撃！"]
+  - message: ["{boss}の攻撃！"]
   - accuracy: 1.0
   - accuracyType: 'evade'
   - damageParameter: 

@@ -11,7 +11,7 @@ const dualJesterPhase1Actions: BossAction[] = [
         description: '可愛く手をぽんぽんと叩く',
         messages: [
             '「一緒に遊ぼうよ〜♪」',
-            '<USER>は<TARGET>を可愛く軽くぽんぽんと叩く！',
+            '{boss}は{player}を可愛く軽くぽんぽんと叩く！',
             'とても軽いタッチで、まるで遊んでいるようだ'
         ],
         damageFormula: (user: Boss) => Math.max(1, user.attackPower * 0.15), // 非常に軽いダメージ
@@ -26,8 +26,8 @@ const dualJesterPhase1Actions: BossAction[] = [
         description: '遊びのつもりで軽く拘束する',
         messages: [
             '「はーい、おいかけっこの時間だよ〜♪」',
-            '<USER>は<TARGET>を遊びのつもりで軽く捕まえる！',
-            '<TARGET>は拘束されたが、なんとなく脱出しやすそうだ...'
+            '{boss}は{player}を遊びのつもりで軽く捕まえる！',
+            '{player}は拘束されたが、なんとなく脱出しやすそうだ...'
         ],
         statusEffect: StatusEffectType.FalseSecurity,
         statusChance: 0.60,
@@ -43,8 +43,8 @@ const dualJesterPhase1Actions: BossAction[] = [
         description: 'くすぐって笑わせようとする',
         messages: [
             '「くすぐっちゃうぞ〜♪」',
-            '<USER>は<TARGET>をくすぐって笑わせようとする！',
-            '<TARGET>は笑いそうになった...'
+            '{boss}は{player}をくすぐって笑わせようとする！',
+            '{player}は笑いそうになった...'
         ],
         damageFormula: (user: Boss) => Math.max(1, user.attackPower * 0.20),
         statusEffect: StatusEffectType.Charm,
@@ -59,7 +59,7 @@ const dualJesterPhase1Actions: BossAction[] = [
         description: '食べる真似をするが実際は食べない',
         messages: [
             '「食べちゃうぞ〜♪ でも冗談だよ〜」',
-            '<USER>は<TARGET>を口に入れるような素振りを見せる！',
+            '{boss}は{player}を口に入れるような素振りを見せる！',
             'でも実際は演技のようで、本気ではないようだ...'
         ],
         hitRate: 0.0,
@@ -75,7 +75,7 @@ const dualJesterPhase1Actions: BossAction[] = [
         description: '手を繋ぐ振りで軽い電撃攻撃',
         messages: [
             '「お手々つなごうよ〜♪」',
-            '<USER>は<TARGET>の手を取って可愛く手を繋ごうとする！',
+            '{boss}は{player}の手を取って可愛く手を繋ごうとする！',
             'しかし手から軽い電撃がビリッと流れた！',
             '「あれ？静電気かな〜？ えへへ♪」'
         ],
@@ -93,8 +93,8 @@ const dualJesterPhase1Actions: BossAction[] = [
         description: 'くるくる回って相手を混乱させる',
         messages: [
             '「くるくる〜♪ 一緒に回ろうよ〜♪」',
-            '<USER>が高速でくるくる回転しながら<TARGET>の周りを飛び回る！',
-            '目が回るような動きに<TARGET>は混乱してしまった...',
+            '{boss}が高速でくるくる回転しながら{player}の周りを飛び回る！',
+            '目が回るような動きに{player}は混乱してしまった...',
             '「どっちが前でどっちが後ろかな〜♪」'
         ],
         damageFormula: (user: Boss) => Math.max(1, user.attackPower * 0.20),
@@ -111,9 +111,9 @@ const dualJesterPhase1Actions: BossAction[] = [
         description: '瞬間移動して不意打ち攻撃',
         messages: [
             '「かくれんぼしよう〜♪」',
-            '<USER>がぱっと姿を消した！',
+            '{boss}がぱっと姿を消した！',
             '「もーいいかい？」',
-            '後ろから現れた<USER>が<TARGET>を軽くぽんと叩く！'
+            '後ろから現れた{boss}が{player}を軽くぽんと叩く！'
         ],
         damageFormula: (user: Boss) => Math.max(3, user.attackPower * 0.30),
         hitRate: 0.85,
@@ -131,8 +131,8 @@ const dualJesterPhase2Actions: BossAction[] = [
         description: '不気味な瞳で威嚇攻撃',
         messages: [
             '「...フフフ、怖がってるね」',
-            '<USER>の瞳が異様な光を放ち、<TARGET>を見据える！',
-            '<TARGET>は恐怖で体が震えてしまった...',
+            '{boss}の瞳が異様な光を放ち、{player}を見据える！',
+            '{player}は恐怖で体が震えてしまった...',
             '「その表情...とても美しいよ」'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.2,
@@ -149,8 +149,8 @@ const dualJesterPhase2Actions: BossAction[] = [
         description: '心理攻撃で恐怖を植え付ける',
         messages: [
             '「聞こえるかい？君の心の奥の悲鳴が...」',
-            '<USER>が<TARGET>の耳元で何か囁いている...',
-            '<TARGET>は得体の知れない恐怖に包まれた！',
+            '{boss}が{player}の耳元で何か囁いている...',
+            '{player}は得体の知れない恐怖に包まれた！',
             '「これはまだ始まりに過ぎない...」'
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.8,
@@ -170,8 +170,8 @@ const dualJesterPhase2Actions: BossAction[] = [
             '「死ね」',
             '「楽しいね〜♪」',
             '「苦しめ」',
-            '<USER>が表情を高速で切り替えながら突進してくる！',
-            '<TARGET>は人格の急変に混乱しながら攻撃を受けた！',
+            '{boss}が表情を高速で切り替えながら突進してくる！',
+            '{player}は人格の急変に混乱しながら攻撃を受けた！',
             '「どっちが本当？...両方とも本当さ」'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.5,
@@ -188,8 +188,8 @@ const dualJesterPhase2Actions: BossAction[] = [
         description: '周囲の玩具を操って攻撃',
         messages: [
             '「僕の大切な玩具たちよ...遊んでおやり」',
-            '<USER>が手を振ると周囲の壊れた玩具が一斉に浮き上がる！',
-            '玩具たちが<TARGET>に向かって飛んできた！',
+            '{boss}が手を振ると周囲の壊れた玩具が一斉に浮き上がる！',
+            '玩具たちが{player}に向かって飛んできた！',
             '「みんな君と遊びたがってるよ...永遠にね」'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.4,
@@ -204,8 +204,8 @@ const dualJesterPhase2Actions: BossAction[] = [
         description: '本気の拘束技を繰り出す',
         messages: [
             '「...さっきは手加減していただけだ」',
-            '<USER>の顔が反転し、色調が暗く変化する！',
-            '<TARGET>が強力な拘束に捕らわれた！'
+            '{boss}の顔が反転し、色調が暗く変化する！',
+            '{player}が強力な拘束に捕らわれた！'
         ],
         statusEffect: StatusEffectType.Manic,
         statusChance: 0.70,
@@ -221,7 +221,7 @@ const dualJesterPhase2Actions: BossAction[] = [
         description: '狂気の笑いと共に強く締め付ける',
         messages: [
             '「もっと...もっと一緒にいよう...♪」',
-            '<USER>は<TARGET>を狂気的な力で締め付ける！'
+            '{boss}は{player}を狂気的な力で締め付ける！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.8,
         statusEffect: StatusEffectType.Bipolar,
@@ -237,7 +237,7 @@ const dualJesterPhase2Actions: BossAction[] = [
         messages: [
             '「大丈夫、痛くないよ〜」',
             '「痛がってる顔、とても美しいね」',
-            '<USER>人格が変化しながら、リボンのような長い舌が<TARGET>を舐め回す！'
+            '{boss}人格が変化しながら、リボンのような長い舌が{player}を舐め回す！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.5,
         statusEffect: StatusEffectType.Confusion,
@@ -252,8 +252,8 @@ const dualJesterPhase2Actions: BossAction[] = [
         description: '今度は本当に食べてしまう',
         messages: [
             '「今度は本当に食べてあげる...永遠に一緒にいられるよ」',
-            '<USER>のリボンのような長い舌が<TARGET>を巻き上げ、そのまま飲み込んでいく！',
-            'まるでエアドームのような胃袋が<USER>を包み込む...'
+            '{boss}のリボンのような長い舌が{player}を巻き上げ、そのまま飲み込んでいく！',
+            'まるでエアドームのような胃袋が{boss}を包み込む...'
         ],
         weight: 25,
         canUse: (_boss, player, _turn) => {
@@ -272,7 +272,7 @@ const dualJesterDevourActions: BossAction[] = [
         messages: [
             '「ママのお腹の中みたいにぎゅ～ってしてあげる♪」',
             '「我が抱擁に包まれて、安心して眠るがいい...」',
-            '体内の空間が急激に縮まり、胃壁が<TARGET>を圧迫する！',
+            '体内の空間が急激に縮まり、胃壁が{player}を圧迫する！',
         ],
         damageFormula: (user: Boss) => user.attackPower * 2.0,
         weight: 35,
@@ -286,7 +286,7 @@ const dualJesterDevourActions: BossAction[] = [
         messages: [
             '「水遊びしようよ〜♪お腹の中であったか〜い♪」',
             '「そのまま我がプールで溺れてしまうがよい...」',
-            'ピンクと紫の胃液が<TARGET>を包みこみ、生命力を溶かしていく！',
+            'ピンクと紫の胃液が{player}を包みこみ、生命力を溶かしていく！',
         ],
         statusEffect: StatusEffectType.Slimed,
         statusChance: 1.0,
@@ -302,7 +302,7 @@ const dualJesterDevourActions: BossAction[] = [
         messages: [
             '「楽しい夢を見せてあげる♪ママのお腹の中みたいに安心でしょ〜？」',
             '「...それとも永遠の悪夢がお好み？フフフ...」',
-            '<USER>の胃袋が<TARGET>をやさしくゆさぶり、甘美な安らぎと恐ろしい悪夢を同時に体験させる！'
+            '{boss}の胃袋が{player}をやさしくゆさぶり、甘美な安らぎと恐ろしい悪夢を同時に体験させる！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.8,
         statusEffect: StatusEffectType.FalseSecurity,
@@ -322,9 +322,9 @@ const dualJesterEternalActions: BossAction[] = [
         description: '裏の人格がおもちゃ箱に出現し、永遠に遊び続ける相手になる',
         messages: [
             '「君一人では淋しいだろう？私が遊び相手になろう」',
-            'おもちゃ箱の中に裏の人格の分身が、ぬいぐるみになった<TARGET>よりはるかに大きい姿で現れる！',
+            'おもちゃ箱の中に裏の人格の分身が、ぬいぐるみになった{player}よりはるかに大きい姿で現れる！',
             '「さあ、何をして遊ぼうか？」',
-            'ぬいぐるみにされてしまった<TARGET>は、動くことも答えることもできない...'
+            'ぬいぐるみにされてしまった{player}は、動くことも答えることもできない...'
         ],
         weight: 35,
         playerStateCondition: 'defeated',
@@ -338,11 +338,11 @@ const dualJesterEternalActions: BossAction[] = [
         name: '強制抱擁',
         description: '巨大な体でぬいぐるみを強くきつく抱きしめる',
         messages: [
-            '裏の人格の巨大な両腕が<TARGET>をぎゅっと抱きしめる！',
+            '裏の人格の巨大な両腕が{player}をぎゅっと抱きしめる！',
             '「やっと手に入れた大切な玩具だ...絶対に離さない」',
-            '巨大な体格で容赦なく抱きしめられ、<TARGET>は身動きが全く取れない！',
+            '巨大な体格で容赦なく抱きしめられ、{player}は身動きが全く取れない！',
             '「この感触...やはり本物の玩具は格別だな」',
-            '強すぎる抱擁で<TARGET>の体はスポンジのように押しつぶされる...'
+            '強すぎる抱擁で{player}の体はスポンジのように押しつぶされる...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.5,
         statusEffect: StatusEffectType.Paralysis,
@@ -358,7 +358,7 @@ const dualJesterEternalActions: BossAction[] = [
         messages: [
             '巨大な体の口からリボンのような長い舌がにゅるりと現れる！',
             '「味見をさせてもらおうか...」',
-            '濡れた舌が<TARGET>の全身を執拗に舐め回す！',
+            '濡れた舌が{player}の全身を執拗に舐め回す！',
             '「君の味は...実に素晴らしい。もっと、もっと味わわせてもらう」',
             'ぬいぐるみにされた体でも、妙な感覚が残り続ける...',
             '「嫌がる表情すら見せられないとは...完璧な玩具だ」'
@@ -375,12 +375,12 @@ const dualJesterEternalActions: BossAction[] = [
         name: '無慈悲くすぐり',
         description: '巨大な指でぬいぐるみをくすぐりまわす',
         messages: [
-            '裏の人格の巨大な指が<TARGET>に向かって迫る！',
+            '裏の人格の巨大な指が{player}に向かって迫る！',
             '「くすぐりは痛みよりも効果的だ...抵抗すらできないからな」',
-            '大きな指が<TARGET>の体を執拗にくすぐり続ける！',
+            '大きな指が{player}の体を執拗にくすぐり続ける！',
             'ぬいぐるみにされても、くすぐられる感覚だけは鮮明に残る...',
             '「笑い声も出せない...実に素晴らしい反応だ」',
-            '容赦なく続くくすぐりに、<TARGET>の意識は混乱する...'
+            '容赦なく続くくすぐりに、{player}の意識は混乱する...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.2,
         statusEffect: StatusEffectType.Confusion,
@@ -394,11 +394,11 @@ const dualJesterEternalActions: BossAction[] = [
         name: '玩具振り回し',
         description: '巨大な手でぬいぐるみを激しく振り回す',
         messages: [
-            '裏の人格が<TARGET>を巨大な手で掴み上げる！',
+            '裏の人格が{player}を巨大な手で掴み上げる！',
             '「玩具は乱暴に扱っても壊れないものでなくては...」',
-            '<TARGET>が激しく空中で振り回される！',
+            '{player}が激しく空中で振り回される！',
             '「どれほどの衝撃に耐えられるか試してみよう」',
-            '激しい振り回しで<TARGET>の視界がぐるぐると回る...',
+            '激しい振り回しで{player}の視界がぐるぐると回る...',
             '「この程度では壊れないか...流石は丈夫な玩具だ」'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.4,
@@ -413,11 +413,11 @@ const dualJesterEternalActions: BossAction[] = [
         name: '支配的遊戯',
         description: '巨大な体格を活かして絶対的な支配を誇示する',
         messages: [
-            '裏の人格が<TARGET>の真上に巨大な体を覆いかぶせる！',
+            '裏の人格が{player}の真上に巨大な体を覆いかぶせる！',
             '「私の大きさが分かるか？君はこんなにも小さな存在なのだ」',
-            '圧倒的な体格差で<TARGET>を完全に覆い隠す！',
+            '圧倒的な体格差で{player}を完全に覆い隠す！',
             '「抵抗など不可能...君は私の手の平の上の玩具に過ぎない」',
-            '巨大な影に包まれ、<TARGET>は自分の無力さを思い知らされる...',
+            '巨大な影に包まれ、{player}は自分の無力さを思い知らされる...',
             '「この支配関係は永遠に変わることはない」'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.6,
@@ -432,9 +432,9 @@ const dualJesterEternalActions: BossAction[] = [
         name: '執拗愛撫',
         description: '巨大な手で執拗で一方的な愛撫を行う',
         messages: [
-            '裏の人格の巨大な手が<TARGET>に触れ始める...',
+            '裏の人格の巨大な手が{player}に触れ始める...',
             '「この感触...何度味わっても飽きることがない」',
-            '大きな手が<TARGET>の体を執拗に、丁寧に撫で回す！',
+            '大きな手が{player}の体を執拗に、丁寧に撫で回す！',
             '「君のこの部分は特に...興味深いな」',
             'ぬいぐるみにされた体でも、奇妙な感覚が伝わり続ける...',
             '「私だけが君を完全に理解している...私だけが君を愛している」',
@@ -469,7 +469,7 @@ const dualJesterAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
                 '「...あれ？まだ遊びたいの？」',
                 '可愛らしい道化師の仮面が剥がれ落ち、真の恐怖が姿を現す！',
                 '「なら...本気で遊ぼうか」',
-                '狂気に染まった目が<TARGET>を見据え、表情が一変する！',
+                '狂気に染まった目が{player}を見据え、表情が一変する！',
             ],
             weight: 1,
             playerStateCondition: 'normal'
@@ -678,13 +678,13 @@ export const dualJesterData: BossData = {
 // フィニッシュムーブの実装
 dualJesterData.finishingMove = function(): string[] {
     return [
-        '胃液に包まれ、生命力を奪われた<TARGET>はぬいぐるみの姿に変えられてしまった！',
+        '胃液に包まれ、生命力を奪われた{player}はぬいぐるみの姿に変えられてしまった！',
         '「だいすき〜♪ ずっと一緒にいようね〜♪」',
         '「...ついに完璧な玩具を手に入れた」',
-        '<TARGET>は体内の奥に運ばれ、まるでおもちゃ箱のような空間に閉じ込められる...',
-        '「そこが<USER>の新しいお家だよ～♪」',
+        '{player}は体内の奥に運ばれ、まるでおもちゃ箱のような空間に閉じ込められる...',
+        '「そこが{boss}の新しいお家だよ～♪」',
         '「私が遊び相手になってあげよう...飽きるまでずっと一緒だ」',
-        '体内のおもちゃ箱に閉じ込められた<USER>は、双面の道化師の玩具として遊ばれ続けることになった...'
+        '体内のおもちゃ箱に閉じ込められた{boss}は、双面の道化師の玩具として遊ばれ続けることになった...'
     ];
 };
 

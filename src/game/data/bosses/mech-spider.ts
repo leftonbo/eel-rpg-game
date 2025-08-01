@@ -8,7 +8,7 @@ const mechSpiderActions: BossAction[] = [
         type: ActionType.Attack,
         name: 'レーザーショット',
         description: '精密なレーザーで攻撃する',
-        messages: ['<USER>は精密なレーザーで<TARGET>を狙撃する！'],
+        messages: ['{boss}は精密なレーザーで{player}を狙撃する！'],
         damageFormula: (user: Boss) => user.attackPower * 1.0,
         hitRate: 0.9,
         weight: 20
@@ -18,7 +18,7 @@ const mechSpiderActions: BossAction[] = [
         type: ActionType.Attack,
         name: 'クモキック',
         description: '強力だが不正確な蹴り攻撃',
-        messages: ['<USER>は機械の脚で<TARGET>を蹴り飛ばそうとする！'],
+        messages: ['{boss}は機械の脚で{player}を蹴り飛ばそうとする！'],
         damageFormula: (user: Boss) => user.attackPower * 1.5,
         hitRate: 0.6,
         weight: 15,
@@ -30,7 +30,7 @@ const mechSpiderActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: 'ショックバイト',
         description: '噛みついて電気ショックを与える',
-        messages: ['<USER>は<TARGET>に噛みついて電気ショックを流す！'],
+        messages: ['{boss}は{player}に噛みついて電気ショックを流す！'],
         damageFormula: (user: Boss) => user.attackPower * 1.0,
         statusEffect: StatusEffectType.Stunned,
         statusChance: 0.30,
@@ -45,7 +45,7 @@ const mechSpiderActions: BossAction[] = [
         type: ActionType.RestraintAttack,
         name: 'スパイダーグラブ',
         description: '抱きしめるように拘束する',
-        messages: ['<USER>は機械の腕で<TARGET>を抱きしめて拘束しようとする！'],
+        messages: ['{boss}は機械の腕で{player}を抱きしめて拘束しようとする！'],
         damageFormula: (user: Boss) => user.attackPower * 1.5,
         weight: 25,
         canUse: (_boss, player, _turn) => {
@@ -57,7 +57,7 @@ const mechSpiderActions: BossAction[] = [
         type: ActionType.RestraintAttack,
         name: 'スパイダーネット',
         description: '機械の合成糸で作った網で拘束する',
-        messages: ['<USER>は合成糸の網を<TARGET>に投げかける！'],
+        messages: ['{boss}は合成糸の網を{player}に投げかける！'],
         damage: 0,
         weight: 30,
         canUse: (_boss, player, _turn) => {
@@ -73,7 +73,7 @@ const mechSpiderActionsRestrained: BossAction[] = [
         type: ActionType.Attack,
         name: 'クモキック',
         description: '強力だが不正確な蹴り攻撃',
-        messages: ['<USER>は機械の脚で<TARGET>を蹴りつける！'],
+        messages: ['{boss}は機械の脚で{player}を蹴りつける！'],
         damageFormula: (user: Boss) => user.attackPower * 1.5,
         weight: 20
     },
@@ -83,7 +83,7 @@ const mechSpiderActionsRestrained: BossAction[] = [
         type: ActionType.StatusAttack,
         name: 'ショックバイト',
         description: '噛みついて電気ショックを与える',
-        messages: ['<USER>は<TARGET>に噛みついて電気ショックを流す！'],
+        messages: ['{boss}は{player}に噛みついて電気ショックを流す！'],
         damageFormula: (user: Boss) => user.attackPower * 1.0,
         statusEffect: StatusEffectType.Stunned,
         statusChance: 0.50,
@@ -95,7 +95,7 @@ const mechSpiderActionsRestrained: BossAction[] = [
         type: ActionType.Attack,
         name: 'スパイダーハグ',
         description: '抱きしめるように締め付ける',
-        messages: ['<USER>は機械の腕で<TARGET>を締め付ける！'],
+        messages: ['{boss}は機械の腕で{player}を締め付ける！'],
         damageFormula: (user: Boss) => user.attackPower * 1.8,
         weight: 25
     }
@@ -109,8 +109,8 @@ const mechSpiderActionsKnockoutRestrained: BossAction[] = [
         name: '縮小プロセス',
         description: '捕まえた対象を繭にして縮小液で満たす',
         messages: [
-            '<USER>は<TARGET>を合成糸でぐるぐる巻きにし始める！',
-            '<TARGET>が繭の中に閉じ込められ、内部が縮小液で満たされる！'
+            '{boss}は{player}を合成糸でぐるぐる巻きにし始める！',
+            '{player}が繭の中に閉じ込められ、内部が縮小液で満たされる！'
         ],
         weight: 1,
         canUse: (_boss, player, _turn) => {
@@ -127,7 +127,7 @@ const mechSpiderActionsCocoon: BossAction[] = [
         type: ActionType.CocoonAction,
         name: '繭の抱擁',
         description: '繭状態の対象をゆらゆら揺らして縮小させる',
-        messages: ['<USER>は繭を優しく抱擁し、ゆらゆらと揺らしている...'],
+        messages: ['{boss}は繭を優しく抱擁し、ゆらゆらと揺らしている...'],
         damageFormula: (user: Boss) => user.attackPower * 1.0, // Max HP reduction amount
         weight: 30,
         playerStateCondition: 'cocoon',
@@ -140,7 +140,7 @@ const mechSpiderActionsCocoon: BossAction[] = [
         type: ActionType.CocoonAction,
         name: '繭の圧縮',
         description: '繭を抱きしめて縮小液を馴染ませる',
-        messages: ['<USER>は繭を強く抱きしめ、縮小液を<TARGET>に馴染ませる！'],
+        messages: ['{boss}は繭を強く抱きしめ、縮小液を{player}に馴染ませる！'],
         damageFormula: (user: Boss) => user.attackPower * 1.8, // Max HP reduction amount
         weight: 25,
         playerStateCondition: 'cocoon',
@@ -153,7 +153,7 @@ const mechSpiderActionsCocoon: BossAction[] = [
         type: ActionType.CocoonAction,
         name: '縮小液循環',
         description: '繭内部の縮小液を循環させてエネルギーを得る',
-        messages: ['<USER>は繭内部の縮小液を循環させ、<TARGET>のエネルギーを吸収する！'],
+        messages: ['{boss}は繭内部の縮小液を循環させ、{player}のエネルギーを吸収する！'],
         damageFormula: (user: Boss) => user.attackPower * 1.5, // Max HP reduction amount
         healRatio: 2.0, // Heal 2x the amount reduced + gain max HP
         weight: 20,
@@ -204,8 +204,8 @@ export const mechSpiderData: BossData = {
                     description: '体内の修理装置で生命体に栄養剤を注入する',
                     messages: [
                         'REPAIR SYSTEM ACTIVE...',
-                        '<USER>の体内修理装置が<TARGET>に栄養剤を注入している...',
-                        '修理装置に拘束されて動けない<TARGET>は、栄養剤を飲まされ続ける...'
+                        '{boss}の体内修理装置が{player}に栄養剤を注入している...',
+                        '修理装置に拘束されて動けない{player}は、栄養剤を飲まされ続ける...'
                     ],
                     weight: 1
                 },
@@ -216,8 +216,8 @@ export const mechSpiderData: BossData = {
                     description: '体内の機械腕で生命体をマッサージする',
                     messages: [
                         'MASSAGE PROTOCOL INITIATED...',
-                        '<USER>の体内マッサージ機が<TARGET>の体を挟み込む...',
-                        '<TARGET>は機械的なマッサージを受けている...'
+                        '{boss}の体内マッサージ機が{player}の体を挟み込む...',
+                        '{player}は機械的なマッサージを受けている...'
                     ],
                     weight: 1
                 },
@@ -228,7 +228,7 @@ export const mechSpiderData: BossData = {
                     description: '意味のない修理作業を生命体に施し続ける',
                     messages: [
                         'PROCESSING REPAIR SEQUENCE...',
-                        '<USER>が<TARGET>にがらくたのようなパーツを接着しようとする...',
+                        '{boss}が{player}にがらくたのようなパーツを接着しようとする...',
                         'しかし、糊でくっつけられたパーツはすぐに外れてしまう...'
                     ],
                     weight: 1
@@ -240,8 +240,8 @@ export const mechSpiderData: BossData = {
                     description: '体内の拘束システムで生命体を固定し続ける',
                     messages: [
                         'RESTRAINT SYSTEM ACTIVE...',
-                        '<USER>の体内拘束システムが<TARGET>を固定している...',
-                        '<TARGET>は機械的な拘束から逃れられない...'
+                        '{boss}の体内拘束システムが{player}を固定している...',
+                        '{player}は機械的な拘束から逃れられない...'
                     ],
                     weight: 1
                 },
@@ -252,8 +252,8 @@ export const mechSpiderData: BossData = {
                     description: '修理が完了したか生命体を検査し続ける',
                     messages: [
                         'REPAIR INSPECTION PROTOCOL...',
-                        '<USER>が<TARGET>の修理完了を検査している...',
-                        '不整合を検知した<USER>は<TARGET>の修理を続ける...'
+                        '{boss}が{player}の修理完了を検査している...',
+                        '不整合を検知した{boss}は{player}の修理を続ける...'
                     ],
                     weight: 1
                 }
@@ -406,10 +406,10 @@ mechSpiderData.getDialogue = function(situation: 'battle-start' | 'player-restra
 // Special finishing move sequence for cocoon doomed state
 mechSpiderData.finishingMove = function(): string[] {
     return [
-        '<TARGET>は繭の中で完全に小さくなってしまった...',
-        '機械のクモは繭に噛みつき、中身を<TARGET>ごと吸い上げる！',
-        '<TARGET>が機械のクモの体内に取り込まれた！',
-        '機械のクモは体内の<TARGET>を合成糸で拘束し、体内修理装置に縛りつける！',
-        '修理装置に縛り付けられた<TARGET>は、機械のクモが満足するまで意味のない修理をされ続ける...',
+        '{player}は繭の中で完全に小さくなってしまった...',
+        '機械のクモは繭に噛みつき、中身を{player}ごと吸い上げる！',
+        '{player}が機械のクモの体内に取り込まれた！',
+        '機械のクモは体内の{player}を合成糸で拘束し、体内修理装置に縛りつける！',
+        '修理装置に縛り付けられた{player}は、機械のクモが満足するまで意味のない修理をされ続ける...',
     ];
 };

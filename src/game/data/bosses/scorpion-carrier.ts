@@ -8,7 +8,7 @@ const scorpionCarrierActions: BossAction[] = [
         type: ActionType.Attack,
         name: 'はさみ攻撃',
         description: '大きなはさみで攻撃する',
-        messages: ['<USER>は大きなはさみで<TARGET>を挟みつけようとする！'],
+        messages: ['{boss}は大きなはさみで{player}を挟みつけようとする！'],
         damageFormula: (user: Boss) => user.attackPower * 1.25,
         hitRate: 0.8,
         weight: 20
@@ -18,7 +18,7 @@ const scorpionCarrierActions: BossAction[] = [
         type: ActionType.Attack,
         name: '踏みつけ',
         description: 'タイヤの足で踏みつける',
-        messages: ['<USER>はタイヤの足で<TARGET>を踏みつけようとする！'],
+        messages: ['{boss}はタイヤの足で{player}を踏みつけようとする！'],
         damageFormula: (user: Boss) => user.attackPower * 1.5,
         hitRate: 0.9,
         weight: 15
@@ -28,7 +28,7 @@ const scorpionCarrierActions: BossAction[] = [
         type: ActionType.Attack,
         name: 'しっぽ振り回し',
         description: '強力だが命中率が低い攻撃',
-        messages: ['<USER>は巨大な注射器のような尻尾を振り回す！'],
+        messages: ['{boss}は巨大な注射器のような尻尾を振り回す！'],
         damageFormula: (user: Boss) => user.attackPower * 2.5,
         hitRate: 0.6,
         weight: 10,
@@ -39,7 +39,7 @@ const scorpionCarrierActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: 'しっぽ麻酔',
         description: '尻尾の注射器で麻酔を注入する',
-        messages: ['<USER>は尻尾の注射器で<TARGET>に麻酔を注入しようとする！'],
+        messages: ['{boss}は尻尾の注射器で{player}に麻酔を注入しようとする！'],
         damageFormula: (user: Boss) => user.attackPower * 1.0,
         statusEffect: StatusEffectType.Anesthesia,
         statusChance: 0.70,
@@ -54,7 +54,7 @@ const scorpionCarrierActions: BossAction[] = [
         type: ActionType.RestraintAttack,
         name: 'はさみキャッチ',
         description: 'はさみで対象を捕まえる',
-        messages: ['<USER>は巨大なはさみで<TARGET>を捕まえようとする！'],
+        messages: ['{boss}は巨大なはさみで{player}を捕まえようとする！'],
         damageFormula: (user: Boss) => user.attackPower * 0.6,
         weight: 25,
         canUse: (_boss, player, _turn) => {
@@ -70,7 +70,7 @@ const scorpionCarrierActionsRestrained: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '猛毒注射',
         description: '拘束した対象に猛毒を注射する',
-        messages: ['<USER>は拘束した<TARGET>に猛毒を注射する！'],
+        messages: ['{boss}は拘束した{player}に猛毒を注射する！'],
         damageFormula: (user: Boss) => user.attackPower * 1.9,
         statusEffect: StatusEffectType.ScorpionPoison,
         statusChance: 0.90,
@@ -82,7 +82,7 @@ const scorpionCarrierActionsRestrained: BossAction[] = [
         type: ActionType.Attack,
         name: 'かみつき舐め回し',
         description: '拘束した対象を舐め回す',
-        messages: ['<USER>は拘束した<TARGET>を舐め回す！'],
+        messages: ['{boss}は拘束した{player}を舐め回す！'],
         damageFormula: (user: Boss) => user.attackPower * 2.25,
         weight: 25
     },
@@ -91,7 +91,7 @@ const scorpionCarrierActionsRestrained: BossAction[] = [
         type: ActionType.Attack,
         name: 'はさみ攻撃',
         description: '大きなはさみで攻撃する',
-        messages: ['<USER>は大きなはさみで<TARGET>を挟みつける！'],
+        messages: ['{boss}は大きなはさみで{player}を挟みつける！'],
         damageFormula: (user: Boss) => user.attackPower * 1.5,
         weight: 20
     }
@@ -105,8 +105,8 @@ const scorpionCarrierActionsKnockoutRestrained: BossAction[] = [
         name: '大胆に丸呑み',
         description: '対象を丸呑みして体内に運ぶ',
         messages: [
-            '<USER>は<TARGET>を大胆に丸呑みする！',
-            '<TARGET>がサソリの体内に取り込まれる！'
+            '{boss}は{player}を大胆に丸呑みする！',
+            '{player}がサソリの体内に取り込まれる！'
         ],
         weight: 1,
         canUse: (_boss, player, _turn) => {
@@ -123,7 +123,7 @@ const scorpionCarrierActionsEaten: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '脱力剤注入',
         description: '体内の生き物に脱力剤を注入する',
-        messages: ['<USER>は体内の注射器で<TARGET>に脱力剤を注入する！'],
+        messages: ['{boss}は体内の注射器で{player}に脱力剤を注入する！'],
         damageFormula: (user: Boss) => user.attackPower * 1.0,
         statusEffect: StatusEffectType.Weakening,
         statusChance: 0.80,
@@ -136,7 +136,7 @@ const scorpionCarrierActionsEaten: BossAction[] = [
         type: ActionType.DevourAttack,
         name: '体内マッサージ',
         description: '体内の生き物にマッサージして最大HPを吸収',
-        messages: ['<USER>は体内で<TARGET>をマッサージし、エネルギーを吸収する！'],
+        messages: ['{boss}は体内で{player}をマッサージし、エネルギーを吸収する！'],
         damageFormula: (user: Boss) => user.attackPower * 1.5, // Max HP reduction amount
         weight: 30,
         playerStateCondition: 'eaten',
@@ -149,7 +149,7 @@ const scorpionCarrierActionsEaten: BossAction[] = [
         type: ActionType.DevourAttack,
         name: '体内締め付け',
         description: '体内で生き物を締め付けて最大HPを吸収',
-        messages: ['<USER>は体内で<TARGET>を締め付け、エネルギーを吸収する！'],
+        messages: ['{boss}は体内で{player}を締め付け、エネルギーを吸収する！'],
         damageFormula: (user: Boss) => user.attackPower * 1.9, // Max HP reduction amount
         weight: 25,
         playerStateCondition: 'eaten',
@@ -196,8 +196,8 @@ export const scorpionCarrierData: BossData = {
                     name: '体内運搬',
                     description: '体内の生き物を目的地まで運搬する',
                     messages: [
-                        '<USER>は体内の<TARGET>を目的地まで運搬している...',
-                        '<TARGET>はサソリの体内で消化されることはないが、エネルギーを吸収され続ける...',
+                        '{boss}は体内の{player}を目的地まで運搬している...',
+                        '{player}はサソリの体内で消化されることはないが、エネルギーを吸収され続ける...',
                         'タイヤの足音が響く中、運搬は続く...'
                     ],
                     weight: 1
@@ -208,9 +208,9 @@ export const scorpionCarrierData: BossData = {
                     name: '栄養剤注入',
                     description: '体内の生き物に栄養剤を注入する',
                     messages: [
-                        '<USER>は体内の注射器で<TARGET>に栄養剤を注入する...',
-                        '<TARGET>は強制的に栄養剤を摂取させられる...',
-                        '栄養剤によって<TARGET>の意識が朦朧としてくる...'
+                        '{boss}は体内の注射器で{player}に栄養剤を注入する...',
+                        '{player}は強制的に栄養剤を摂取させられる...',
+                        '栄養剤によって{player}の意識が朦朧としてくる...'
                     ],
                     weight: 1
                 },
@@ -220,9 +220,9 @@ export const scorpionCarrierData: BossData = {
                     name: 'エネルギー吸収',
                     description: '体内の生き物からエネルギーを吸収する',
                     messages: [
-                        '<USER>は<TARGET>からエネルギーを吸収している...',
-                        '<TARGET>のエネルギーがサソリに吸収されていく...',
-                        'エネルギーを吸収された<TARGET>は動けなくなる...'
+                        '{boss}は{player}からエネルギーを吸収している...',
+                        '{player}のエネルギーがサソリに吸収されていく...',
+                        'エネルギーを吸収された{player}は動けなくなる...'
                     ],
                     weight: 1
                 },
@@ -232,9 +232,9 @@ export const scorpionCarrierData: BossData = {
                     name: 'マナ吸収',
                     description: '体内の生き物からマナを吸収する',
                     messages: [
-                        '<USER>は<TARGET>からマナを吸収している...',
-                        '<TARGET>のマナがサソリに吸収されていく...',
-                        'マナを吸収された<TARGET>は魔法が使えなくなる...'
+                        '{boss}は{player}からマナを吸収している...',
+                        '{player}のマナがサソリに吸収されていく...',
+                        'マナを吸収された{player}は魔法が使えなくなる...'
                     ],
                     weight: 1
                 },
@@ -244,9 +244,9 @@ export const scorpionCarrierData: BossData = {
                     name: '体内薬剤循環',
                     description: '体内で薬剤を循環させて生き物を無力化する',
                     messages: [
-                        '<USER>は体内で薬剤を循環させている...',
-                        '<TARGET>は薬剤によって完全に無力化される...',
-                        '薬剤の効果で<TARGET>は抵抗する力を失う...'
+                        '{boss}は体内で薬剤を循環させている...',
+                        '{player}は薬剤によって完全に無力化される...',
+                        '薬剤の効果で{player}は抵抗する力を失う...'
                     ],
                     weight: 1
                 }
@@ -382,9 +382,9 @@ scorpionCarrierData.getDialogue = function(situation: 'battle-start' | 'player-r
 // Special finishing move sequence for eaten doomed state
 scorpionCarrierData.finishingMove = function(): string[] {
     return [
-        'サソリは体内の<TARGET>を完全に支配下に置く！',
-        '<TARGET>はサソリの体内で永遠に運搬され続ける！',
+        'サソリは体内の{player}を完全に支配下に置く！',
+        '{player}はサソリの体内で永遠に運搬され続ける！',
         'サソリは満足そうに砂漠を歩き始める...',
-        '<TARGET>は運び屋のサソリの永遠の荷物となった...',
+        '{player}は運び屋のサソリの永遠の荷物となった...',
     ];
 };

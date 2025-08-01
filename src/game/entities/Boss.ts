@@ -7,16 +7,8 @@ import { MessageData } from '../scenes/components/BattleMessageComponent';
 // Message formatter utility
 export function formatMessage(template: string, nameUser: string, nameTarget: string): string {
     return template
-        .replace(/<USER>/g, nameUser)
-        .replace(/<TARGET>/g, nameTarget)
-}
-
-// Message formatter utility
-export function formatMessageSkill(template: string, boss: Boss, player: Player, action: BossAction): string {
-    return template
-        .replace(/<USER>/g, boss.displayName)
-        .replace(/<TARGET>/g, player.name)
-        .replace(/<ACTION>/g, action.name)
+        .replace(/{boss}/g, nameUser)
+        .replace(/{player}/g, nameTarget)
 }
 
 export enum ActionType {
@@ -37,7 +29,7 @@ export interface BossAction {
     type: ActionType;
     name: string;
     description: string;
-    messages?: string[]; // Optional messages with format specifiers: <USER>, <TARGET>, <ACTION>
+    messages?: string[]; // Optional messages with format specifiers: {boss}, {player}
     damage?: number;  // [Deprecated] Fixed damage value (use damageFormula instead)
     damageFormula?: (user: Boss) => number; // Function to calculate damage based on actor's stats
     statusEffect?: StatusEffectType;
@@ -412,7 +404,7 @@ export class Boss extends Actor {
         // Process custom messages if provided
         if (action.messages && action.messages.length > 0) {
             action.messages.forEach(messageTemplate => {
-                const formattedMessage = formatMessageSkill(messageTemplate, this, player, action);
+                const formattedMessage = formatMessage(messageTemplate, this.displayName, player.displayName);
                 messages.push(formattedMessage);
             });
         } else {

@@ -33,7 +33,7 @@ const batVampireActions: BossAction[] = [
         hitRate: 0.85,
         weight: 15,
         playerStateCondition: 'normal',
-        messages: ['<USER>は無数の子コウモリを放った！']
+        messages: ['{boss}は無数の子コウモリを放った！']
     },
     {
         id: 'shadow-bullet',
@@ -46,7 +46,7 @@ const batVampireActions: BossAction[] = [
         hitRate: 0.60,
         weight: 15,
         playerStateCondition: 'normal',
-        messages: ['<USER>は影の弾を放った！']
+        messages: ['{boss}は影の弾を放った！']
     },
     {
         id: 'vampire-hold',
@@ -55,7 +55,7 @@ const batVampireActions: BossAction[] = [
         description: '強力な握力で対象を拘束する',
         weight: 10,
         playerStateCondition: 'normal',
-        messages: ['<USER>は<TARGET>を掴み上げる！']
+        messages: ['{boss}は{player}を掴み上げる！']
     },
 
     // 拘束中専用攻撃
@@ -69,7 +69,7 @@ const batVampireActions: BossAction[] = [
         statusChance: 0.60,
         weight: 30,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>に噛みつき、生気を吸い取る！', '<TARGET>の力と魔力が奪われていく...']
+        messages: ['{boss}は{player}に噛みつき、生気を吸い取る！', '{player}の力と魔力が奪われていく...']
     },
     {
         id: 'vampire-kiss',
@@ -81,7 +81,7 @@ const batVampireActions: BossAction[] = [
         statusChance: 0.90,
         weight: 25,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>に深いキスをした...']
+        messages: ['{boss}は{player}に深いキスをした...']
     },
     {
         id: 'minion-hypnosis',
@@ -110,9 +110,9 @@ const batVampireActions: BossAction[] = [
             return [];
         },
         messages: [
-            '<USER>の瞳が妖艶に光り始める...',
+            '{boss}の瞳が妖艶に光り始める...',
             '「我が眷属となり、永遠の眠りにつきなさい...」',
-            '<TARGET>は<USER>の催眠術にかかり、深い眠りに落ちた！'
+            '{player}は{boss}の催眠術にかかり、深い眠りに落ちた！'
         ]
     },
 
@@ -125,7 +125,7 @@ const batVampireActions: BossAction[] = [
         damageFormula: (user: Boss) => user.attackPower * 1.5,
         weight: 50,
         playerStateCondition: 'ko',
-        messages: ['<USER>は<TARGET>に噛みつき、生命力そのものを吸い取る...', `生命力を吸われた<TARGET>の体が縮小していく！`]
+        messages: ['{boss}は{player}に噛みつき、生命力そのものを吸い取る...', `生命力を吸われた{player}の体が縮小していく！`]
     },
 
     // とどめ攻撃（プレイヤーがDoomed状態時）
@@ -137,10 +137,10 @@ const batVampireActions: BossAction[] = [
         weight: 100,
         playerStateCondition: 'defeated',
         messages: [
-            '<TARGET>の生気は完全に吸い尽くされ、体が小さくなってしまった...',
-            '<USER>は小さくなった<TARGET>を優しく抱き上げると、そのまま口の中に運んでいく...',
+            '{player}の生気は完全に吸い尽くされ、体が小さくなってしまった...',
+            '{boss}は小さくなった{player}を優しく抱き上げると、そのまま口の中に運んでいく...',
             '「ふふ...君のような美しい獲物は、永遠に私の体内で愛でてあげよう」',
-            '<TARGET>は<USER>の体内でペットのように飼われることになった...'
+            '{player}は{boss}の体内でペットのように飼われることになった...'
         ],
         onUse: (_boss: Boss, player: Player) => {
             // 再起不能状態を解除 (TODO: Dead 状態付与時に自動解除したい)
@@ -164,8 +164,8 @@ const batVampireActions: BossAction[] = [
         weight: 25,
         playerStateCondition: 'defeated',
         messages: [
-            '<USER>の胃袋にある吸収器官が<TARGET>をやさしく包み込む',
-            '<TARGET>の生気がゆっくりと吸い取られていく...'
+            '{boss}の胃袋にある吸収器官が{player}をやさしく包み込む',
+            '{player}の生気がゆっくりと吸い取られていく...'
         ]
     },
     {
@@ -178,8 +178,8 @@ const batVampireActions: BossAction[] = [
         statusEffect: StatusEffectType.Charm,
         statusChance: 0.8,
         messages: [
-            '<USER>の体内で柔らかい触手が<TARGET>を優しく愛撫する',
-            '<TARGET>は心地よい感覚に包まれながら生気を奪われていく...'
+            '{boss}の体内で柔らかい触手が{player}を優しく愛撫する',
+            '{player}は心地よい感覚に包まれながら生気を奪われていく...'
         ]
     },
     {
@@ -192,8 +192,8 @@ const batVampireActions: BossAction[] = [
         statusEffect: StatusEffectType.Fascination,
         statusChance: 0.9,
         messages: [
-            '<USER>の胃袋が<TARGET>を包み込むようにマッサージする',
-            '<TARGET>は至福の感覚に魅了されてしまう...'
+            '{boss}の胃袋が{player}を包み込むようにマッサージする',
+            '{player}は至福の感覚に魅了されてしまう...'
         ]
     },
     {
@@ -206,8 +206,8 @@ const batVampireActions: BossAction[] = [
         statusEffect: StatusEffectType.Bliss,
         statusChance: 0.7,
         messages: [
-            '<USER>の体内で無数の細かい器官が<TARGET>をくすぐり始める',
-            '<TARGET>は笑いと快感で意識が朦朧としてくる...'
+            '{boss}の体内で無数の細かい器官が{player}をくすぐり始める',
+            '{player}は笑いと快感で意識が朦朧としてくる...'
         ]
     },
     {
@@ -219,9 +219,9 @@ const batVampireActions: BossAction[] = [
         playerStateCondition: 'defeated',
         messages: [
             '「さあ、私も食事をしようか...」',
-            '<USER>は大きなパンをかじっては飲み込み、もう一つの胃袋に送り込む！',
-            '<TARGET>が収められた胃袋の外側から、くぐもった蠕動の音と、食べ物が消化されていく轟音が響き渡る...',
-            '<TARGET>は別の胃袋に入れられた食べ物の末路を想像し不安になる...'
+            '{boss}は大きなパンをかじっては飲み込み、もう一つの胃袋に送り込む！',
+            '{player}が収められた胃袋の外側から、くぐもった蠕動の音と、食べ物が消化されていく轟音が響き渡る...',
+            '{player}は別の胃袋に入れられた食べ物の末路を想像し不安になる...'
         ]
     },
     {
@@ -233,8 +233,8 @@ const batVampireActions: BossAction[] = [
         playerStateCondition: 'defeated',
         messages: [
             '「君にも栄養を分けてあげよう...」',
-            '<USER>の体内で管のような器官が<TARGET>の口元に伸びてくる！',
-            '<TARGET>は管のような器官を口に入れられ、どろどろになった食べ物を飲まされ続ける...',
+            '{boss}の体内で管のような器官が{player}の口元に伸びてくる！',
+            '{player}は管のような器官を口に入れられ、どろどろになった食べ物を飲まされ続ける...',
             '「よい子だ...これで君はずっと私の大切な宝物でいられる」'
         ]
     }

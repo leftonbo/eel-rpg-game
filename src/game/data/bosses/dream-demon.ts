@@ -10,7 +10,7 @@ const dreamDemonActions: BossAction[] = [
         description: '小さな触手で軽く攻撃',
         messages: [
             'ちょちょいっと触手攻撃ンメェ〜♪',
-            '<USER>は小さな触手で<TARGET>を軽くペチペチと叩いた！'
+            '{boss}は小さな触手で{player}を軽くペチペチと叩いた！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.8,
         hitRate: 0.95,
@@ -29,8 +29,8 @@ const dreamDemonActions: BossAction[] = [
         weight: 25,
         messages: [
             'あたいの可愛さに見とれちゃいなンメェ〜♪',
-            '<USER>は甘い眼差しで<TARGET>を見つめる...',
-            '<TARGET>の心がとろけそうになる...'
+            '{boss}は甘い眼差しで{player}を見つめる...',
+            '{player}の心がとろけそうになる...'
         ]
     },
     {
@@ -43,8 +43,8 @@ const dreamDemonActions: BossAction[] = [
         weight: 20,
         messages: [
             'きらきら〜な粉をまいちゃうンメェ〜♪',
-            '<USER>は光る粉を撒き散らした！',
-            '<TARGET>の体がしびれていく...'
+            '{boss}は光る粉を撒き散らした！',
+            '{player}の体がしびれていく...'
         ]
     },
     {
@@ -57,8 +57,8 @@ const dreamDemonActions: BossAction[] = [
         weight: 25,
         messages: [
             'あまあま〜な息をふーってしてあげるンメェ〜♪',
-            '<USER>は甘い香りの息を<TARGET>に吹きかけた',
-            '<TARGET>の体が熱くなってきた...'
+            '{boss}は甘い香りの息を{player}に吹きかけた',
+            '{player}の体が熱くなってきた...'
         ]
     },
     {
@@ -71,8 +71,8 @@ const dreamDemonActions: BossAction[] = [
         weight: 20,
         messages: [
             'ねむねむになっちゃえンメェ〜♪',
-            '<USER>は催眠術をかけてきた',
-            '<TARGET>のまぶたが重くなってきた...'
+            '{boss}は催眠術をかけてきた',
+            '{player}のまぶたが重くなってきた...'
         ]
     },
     {
@@ -85,8 +85,8 @@ const dreamDemonActions: BossAction[] = [
         weight: 20,
         messages: [
             'だら〜んってしちゃえンメェ〜♪',
-            '<USER>は呪文を唱えた',
-            '<TARGET>の力が抜けていく...'
+            '{boss}は呪文を唱えた',
+            '{player}の力が抜けていく...'
         ]
     },
     {
@@ -99,8 +99,8 @@ const dreamDemonActions: BossAction[] = [
         weight: 25,
         messages: [
             'きゃぴ〜ん♪ メロメロビーム発射ンメェ〜！',
-            '<USER>はハート型の光線を放った！',
-            '<TARGET>は完全にメロメロになってしまった...'
+            '{boss}はハート型の光線を放った！',
+            '{player}は完全にメロメロになってしまった...'
         ]
     },
     {
@@ -113,8 +113,8 @@ const dreamDemonActions: BossAction[] = [
         weight: 20,
         messages: [
             'ぐるぐる〜って混乱させちゃうンメェ〜♪',
-            '<USER>は不思議な渦を作り出した',
-            '<TARGET>の思考が混乱してきた...'
+            '{boss}は不思議な渦を作り出した',
+            '{player}の思考が混乱してきた...'
         ]
     },
     {
@@ -127,8 +127,8 @@ const dreamDemonActions: BossAction[] = [
         weight: 25,
         messages: [
             'ぽっかぽか〜にしてあげるンメェ〜♪',
-            '<USER>は妖艶な魔法をかけた',
-            '<TARGET>の体が火照ってきた...'
+            '{boss}は妖艶な魔法をかけた',
+            '{player}の体が火照ってきた...'
         ]
     },
     {
@@ -141,8 +141,8 @@ const dreamDemonActions: BossAction[] = [
         weight: 20,
         messages: [
             'きゃ〜ん♪ あたいの悩殺ポーズンメェ〜',
-            '<USER>は急接近し深いべろちゅーをしてきた！',
-            '<TARGET>は完全に悩殺されてしまった...'
+            '{boss}は急接近し深いべろちゅーをしてきた！',
+            '{player}は完全に悩殺されてしまった...'
         ]
     },
     {
@@ -155,8 +155,8 @@ const dreamDemonActions: BossAction[] = [
         weight: 15,
         messages: [
             'まほう使えなくしちゃうンメェ〜♪',
-            '<USER>は封印の呪文を唱えた',
-            '<TARGET>の魔力が封じられた！'
+            '{boss}は封印の呪文を唱えた',
+            '{player}の魔力が封じられた！'
         ]
     },
     {
@@ -169,8 +169,8 @@ const dreamDemonActions: BossAction[] = [
         weight: 15,
         messages: [
             'あまあま〜な快楽に溺れちゃえンメェ〜♪',
-            '<USER>は禁断の呪いをかけた...',
-            '<TARGET>は快楽の波に飲み込まれていく...'
+            '{boss}は禁断の呪いをかけた...',
+            '{player}は快楽の波に飲み込まれていく...'
         ]
     },
     {
@@ -183,8 +183,8 @@ const dreamDemonActions: BossAction[] = [
         weight: 15,
         messages: [
             'えっちな魔法で理性を飛ばしちゃうンメェ〜♪',
-            '<USER>は淫らな魔法を唱えた',
-            '<TARGET>の理性が揺らいでいく...'
+            '{boss}は淫らな魔法を唱えた',
+            '{player}の理性が揺らいでいく...'
         ]
     },
     {
@@ -199,7 +199,7 @@ const dreamDemonActions: BossAction[] = [
             // Use when player has multiple debuffs
             return player.statusEffects.getDebuffLevel() >= 5;
         },
-        messages: ['<USER>は強力な催眠波動を放った！', '<TARGET>の意識が朦朧としてきた...']
+        messages: ['{boss}は強力な催眠波動を放った！', '{player}の意識が朦朧としてきた...']
     },
     {
         id: 'brainwash-beam',
@@ -213,7 +213,7 @@ const dreamDemonActions: BossAction[] = [
             // Use when player is severely debuffed
             return player.statusEffects.getDebuffLevel() >= 7;
         },
-        messages: ['<USER>は邪悪な光線を<TARGET>に向けた...', '<TARGET>の思考が侵食されていく...']
+        messages: ['{boss}は邪悪な光線を{player}に向けた...', '{player}の思考が侵食されていく...']
     },
     {
         id: 'sweet-magic',
@@ -223,7 +223,7 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Sweet,
         statusChance: 0.85,
         weight: 20,
-        messages: ['<USER>は甘い魔法をかけた', '<TARGET>は幸せな気分になった...']
+        messages: ['{boss}は甘い魔法をかけた', '{player}は幸せな気分になった...']
     },
     {
         id: 'melting-magic',
@@ -233,7 +233,7 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Melting,
         statusChance: 0.85,
         weight: 20,
-        messages: ['<USER>はとろける魔法をかけた', '<TARGET>の意識がとろけていく...']
+        messages: ['{boss}はとろける魔法をかけた', '{player}の意識がとろけていく...']
     },
     {
         id: 'euphoria-magic',
@@ -243,7 +243,7 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Euphoria,
         statusChance: 0.80,
         weight: 18,
-        messages: ['<USER>は恍惚の魔法をかけた', '<TARGET>はうっとりとした表情になった...']
+        messages: ['{boss}は恍惚の魔法をかけた', '{player}はうっとりとした表情になった...']
     },
     {
         id: 'fascination-art',
@@ -253,7 +253,7 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Fascination,
         statusChance: 0.85,
         weight: 20,
-        messages: ['<USER>は魅惑の術を唱えた', '<TARGET>は深い魅惑に囚われた...']
+        messages: ['{boss}は魅惑の術を唱えた', '{player}は深い魅惑に囚われた...']
     },
     {
         id: 'bliss-spell',
@@ -263,7 +263,7 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Bliss,
         statusChance: 0.75,
         weight: 15,
-        messages: ['<USER>は至福の呪文を唱えた', '<TARGET>は至福の表情を浮かべた...']
+        messages: ['{boss}は至福の呪文を唱えた', '{player}は至福の表情を浮かべた...']
     },
     {
         id: 'enchantment-technique',
@@ -277,7 +277,7 @@ const dreamDemonActions: BossAction[] = [
             // Use when player has multiple debuffs
             return player.statusEffects.getDebuffLevel() >= 6;
         },
-        messages: ['<USER>は強力な魅了術を発動した', '<TARGET>は完全に魅了されてしまった...']
+        messages: ['{boss}は強力な魅了術を発動した', '{player}は完全に魅了されてしまった...']
     },
     
     // Restraint attacks
@@ -290,7 +290,7 @@ const dreamDemonActions: BossAction[] = [
         hitRate: 0.85,
         messages: [
             'しっぽでぎゅーってしちゃうンメェ〜♪',
-            '<USER>は長い尻尾で<TARGET>を捕らえようとしてきた！'
+            '{boss}は長い尻尾で{player}を捕らえようとしてきた！'
         ],
         canUse: (_boss, player, _turn) => {
             return !player.isRestrained() && !player.isEaten() && Math.random() < 0.4;
@@ -305,7 +305,7 @@ const dreamDemonActions: BossAction[] = [
         hitRate: 0.80,
         messages: [
             'まほうの手でつかまえちゃうンメェ〜♪',
-            '<USER>は魔法の手を伸ばして<TARGET>を掴もうとしてきた！'
+            '{boss}は魔法の手を伸ばして{player}を掴もうとしてきた！'
         ],
         canUse: (_boss, player, _turn) => {
             return !player.isRestrained() && !player.isEaten() && Math.random() < 0.35;
@@ -320,8 +320,8 @@ const dreamDemonActions: BossAction[] = [
         hitRate: 0.90,
         messages: [
             'てれぽーとで背後を取るンメェ〜♪',
-            '<USER>は一瞬姿を消した...',
-            '気づくと<USER>が<TARGET>の背後にいた！'
+            '{boss}は一瞬姿を消した...',
+            '気づくと{boss}が{player}の背後にいた！'
         ],
         canUse: (_boss, player, _turn) => {
             return !player.isRestrained() && !player.isEaten() && Math.random() < 0.3;
@@ -341,8 +341,8 @@ const dreamDemonActions: BossAction[] = [
         playerStateCondition: 'restrained',
         messages: [
             'ちゅ〜♪ あまあまキスしてあげるンメェ〜',
-            '<USER>は<TARGET>に熱いキスをした...',
-            '<TARGET>は完全にとろけてしまった...'
+            '{boss}は{player}に熱いキスをした...',
+            '{player}は完全にとろけてしまった...'
         ]
     },
     {
@@ -357,8 +357,8 @@ const dreamDemonActions: BossAction[] = [
         playerStateCondition: 'restrained',
         messages: [
             'べろべろ〜♪ あまあまにしてやるンメェ〜',
-            '<USER>は大きな舌で<TARGET>をべろべろとなめまわした',
-            '<TARGET>の体が震えている...'
+            '{boss}は大きな舌で{player}をべろべろとなめまわした',
+            '{player}の体が震えている...'
         ]
     },
     {
@@ -373,8 +373,8 @@ const dreamDemonActions: BossAction[] = [
         playerStateCondition: 'restrained',
         messages: [
             'ぺったんぺったん〜♪ 密着攻撃ンメェ〜',
-            '<USER>は<TARGET>に体を密着させてきた',
-            '<TARGET>は誘惑に負けそうになっている...'
+            '{boss}は{player}に体を密着させてきた',
+            '{player}は誘惑に負けそうになっている...'
         ]
     },
     {
@@ -389,8 +389,8 @@ const dreamDemonActions: BossAction[] = [
         playerStateCondition: 'restrained',
         messages: [
             'ゆさゆさ〜♪ あまあまにしてやるンメェ〜',
-            '<USER>は<TARGET>の体をリズミカルに揺さぶった',
-            '<TARGET>は快楽の波に飲み込まれていく...'
+            '{boss}は{player}の体をリズミカルに揺さぶった',
+            '{player}は快楽の波に飲み込まれていく...'
         ]
     },
     
@@ -405,7 +405,7 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.85,
         weight: 25,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>に激しく体を押し付けてきた', '<TARGET>は息ができないほど密着されている...']
+        messages: ['{boss}は{player}に激しく体を押し付けてきた', '{player}は息ができないほど密着されている...']
     },
     {
         id: 'intense-shaking',
@@ -417,7 +417,7 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.90,
         weight: 23,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>を激しく揺さぶった', '<TARGET>の理性が揺らいでいく...']
+        messages: ['{boss}は{player}を激しく揺さぶった', '{player}の理性が揺らいでいく...']
     },
     {
         id: 'sensual-movement',
@@ -429,7 +429,7 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.95,
         weight: 26,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は官能的な動きを見せつけてきた', '<TARGET>は目が離せなくなっている...']
+        messages: ['{boss}は官能的な動きを見せつけてきた', '{player}は目が離せなくなっている...']
     },
     {
         id: 'intense-caress',
@@ -441,7 +441,7 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.88,
         weight: 24,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>を激しく愛撫してきた', '<TARGET>の感覚がとろけていく...']
+        messages: ['{boss}は{player}を激しく愛撫してきた', '{player}の感覚がとろけていく...']
     },
     {
         id: 'pressure-attack',
@@ -453,7 +453,7 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.85,
         weight: 22,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>に全体重をかけて圧迫してきた', '<TARGET>は恍惚の表情を浮かべている...']
+        messages: ['{boss}は{player}に全体重をかけて圧迫してきた', '{player}は恍惚の表情を浮かべている...']
     },
     
     // All debuff restraint versions
@@ -467,7 +467,7 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.98,
         weight: 20,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>を見つめながら強力な魅了をかけた', '<TARGET>の意思が完全に奪われていく...']
+        messages: ['{boss}は{player}を見つめながら強力な魅了をかけた', '{player}の意思が完全に奪われていく...']
     },
     {
         id: 'restraint-paralysis',
@@ -479,7 +479,7 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.95,
         weight: 18,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>の神経を痺れさせた', '<TARGET>の体が完全に痺れてしまった...']
+        messages: ['{boss}は{player}の神経を痺れさせた', '{player}の体が完全に痺れてしまった...']
     },
     {
         id: 'restraint-aphrodisiac',
@@ -491,7 +491,7 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.98,
         weight: 22,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>に直接淫毒を注入した', '<TARGET>の体が激しく火照っていく...']
+        messages: ['{boss}は{player}に直接淫毒を注入した', '{player}の体が激しく火照っていく...']
     },
     {
         id: 'restraint-sleep-induction',
@@ -503,7 +503,7 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.95,
         weight: 19,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>の意識を朦朧とさせた', '<TARGET>の意識がだんだん遠のいていく...']
+        messages: ['{boss}は{player}の意識を朦朧とさせた', '{player}の意識がだんだん遠のいていく...']
     },
     {
         id: 'restraint-weakness',
@@ -515,7 +515,7 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.98,
         weight: 21,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>の力を吸い取った', '<TARGET>の体から力が完全に抜けていく...']
+        messages: ['{boss}は{player}の力を吸い取った', '{player}の体から力が完全に抜けていく...']
     },
     {
         id: 'restraint-confusion',
@@ -527,7 +527,7 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.95,
         weight: 18,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>の思考を混乱させた', '<TARGET>は何が何だかわからなくなっている...']
+        messages: ['{boss}は{player}の思考を混乱させた', '{player}は何が何だかわからなくなっている...']
     },
     {
         id: 'restraint-magic-seal',
@@ -539,7 +539,7 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.98,
         weight: 17,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>の魔力を封印した', '<TARGET>の魔法が使えなくなった...']
+        messages: ['{boss}は{player}の魔力を封印した', '{player}の魔法が使えなくなった...']
     },
     {
         id: 'restraint-melting',
@@ -551,7 +551,7 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.95,
         weight: 22,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>の意識をとろけさせた', '<TARGET>の思考が液体のようにとろけていく...']
+        messages: ['{boss}は{player}の意識をとろけさせた', '{player}の思考が液体のようにとろけていく...']
     },
     {
         id: 'restraint-euphoria',
@@ -563,7 +563,7 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.92,
         weight: 19,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>を恍惚状態にした', '<TARGET>はうっとりと夢見心地になっている...']
+        messages: ['{boss}は{player}を恍惚状態にした', '{player}はうっとりと夢見心地になっている...']
     },
     {
         id: 'restraint-sweet',
@@ -575,7 +575,7 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.95,
         weight: 20,
         playerStateCondition: 'restrained',
-        messages: ['<USER>は<TARGET>に甘い幸福感を与えた', '<TARGET>は幸せそうな表情を浮かべている...']
+        messages: ['{boss}は{player}に甘い幸福感を与えた', '{player}は幸せそうな表情を浮かべている...']
     },
     {
         id: 'restraint-hypnosis',
@@ -590,7 +590,7 @@ const dreamDemonActions: BossAction[] = [
         canUse: (_boss, player, _turn) => {
             return player.statusEffects.getDebuffLevel() >= 8;
         },
-        messages: ['<USER>は<TARGET>に強制催眠をかけた', '<TARGET>の意識が完全に支配された...']
+        messages: ['{boss}は{player}に強制催眠をかけた', '{player}の意識が完全に支配された...']
     },
     {
         id: 'restraint-brainwash',
@@ -605,7 +605,7 @@ const dreamDemonActions: BossAction[] = [
         canUse: (_boss, player, _turn) => {
             return player.statusEffects.getDebuffLevel() >= 10;
         },
-        messages: ['<USER>は<TARGET>の思考を洗脳した', '<TARGET>の心が完全に支配されてしまった...']
+        messages: ['{boss}は{player}の思考を洗脳した', '{player}の心が完全に支配されてしまった...']
     },
     
     // Sleep-inducing attacks (restraint-only, after 7 turns restrained)
@@ -625,10 +625,10 @@ const dreamDemonActions: BossAction[] = [
         },
         messages: [
             'ちゅ〜♪ 特別なキスをしてあげるンメェ〜',
-            '<USER>はくちびるに強く魔力を蓄えると、<TARGET>に熱く深いキスをした...',
-            '<TARGET>は眠りに落ちてしまい、<USER>の夢の世界にとらわれてしまった...',
-            '<TARGET>が睡眠状態になった！',
-            '<TARGET>が夢操作状態になった！'
+            '{boss}はくちびるに強く魔力を蓄えると、{player}に熱く深いキスをした...',
+            '{player}は眠りに落ちてしまい、{boss}の夢の世界にとらわれてしまった...',
+            '{player}が睡眠状態になった！',
+            '{player}が夢操作状態になった！'
         ]
     }
 ];
@@ -719,8 +719,8 @@ export const dreamDemonData: BossData = {
                     description: '胃壁で獲物を圧迫して生気を搾り取る',
                     messages: [
                         'おなかの中でぎゅ〜っとしてやるンメェ〜♪',
-                        '<USER>の胃壁が<TARGET>を優しく圧迫してきた...',
-                        '<TARGET>は胃壁に包まれながら生気を吸い取られている...'
+                        '{boss}の胃壁が{player}を優しく圧迫してきた...',
+                        '{player}は胃壁に包まれながら生気を吸い取られている...'
                     ],
                     weight: 1
                 },
@@ -732,8 +732,8 @@ export const dreamDemonData: BossData = {
                     description: '特殊な消化液で獲物を愛撫しながら消化する',
                     messages: [
                         'あまあま〜な消化液でとろとろにしてやるンメェ〜♪',
-                        '<USER>の甘い消化液が<TARGET>を包み込んだ...',
-                        '<TARGET>は消化液に愛撫されながら生気が溶けていく...'
+                        '{boss}の甘い消化液が{player}を包み込んだ...',
+                        '{player}は消化液に愛撫されながら生気が溶けていく...'
                     ],
                     weight: 1
                 },
@@ -745,8 +745,8 @@ export const dreamDemonData: BossData = {
                     description: '胃の内側から優しくマッサージして生気を吸収',
                     messages: [
                         'もみもみ〜♪ 気持ちよくしてあげるンメェ〜',
-                        '<USER>は胃の中で<TARGET>を優しくマッサージしている...',
-                        '<TARGET>は心地よいマッサージを受けながら生気を奪われている...'
+                        '{boss}は胃の中で{player}を優しくマッサージしている...',
+                        '{player}は心地よいマッサージを受けながら生気を奪われている...'
                     ],
                     weight: 1
                 },
@@ -758,8 +758,8 @@ export const dreamDemonData: BossData = {
                     description: '体内で直接生気を吸い取る',
                     messages: [
                         'ちゅーちゅー♪ 生気をいっぱい吸っちゃうンメェ〜',
-                        '<USER>は<TARGET>の生気を直接ちゅーちゅーと吸い取り始めた...',
-                        '<TARGET>は生気を根こそぎ吸い取られて意識が朦朧としている...'
+                        '{boss}は{player}の生気を直接ちゅーちゅーと吸い取り始めた...',
+                        '{player}は生気を根こそぎ吸い取られて意識が朦朧としている...'
                     ],
                     weight: 1
                 }
@@ -778,9 +778,9 @@ export const dreamDemonData: BossData = {
                     description: '夢の中で永遠に獲物を愛で続ける',
                     messages: [
                         'ずっとずっと一緒にいるンメェ〜♪',
-                        '<USER>は夢の中で<TARGET>を永遠に愛でている...',
-                        '<TARGET>は夢の中で<USER>に愛撫され続けている...',
-                        '<TARGET>の意識は<USER>の夢の中に囚われている...'
+                        '{boss}は夢の中で{player}を永遠に愛でている...',
+                        '{player}は夢の中で{boss}に愛撫され続けている...',
+                        '{player}の意識は{boss}の夢の中に囚われている...'
                     ],
                     statusEffect: StatusEffectType.Charm,
                     weight: 1
@@ -792,9 +792,9 @@ export const dreamDemonData: BossData = {
                     description: '夢の中で獲物を甘く拘束し続ける',
                     messages: [
                         'もう逃がさないンメェ〜♪ ずっとあたいのものンメェ〜',
-                        '<USER>は夢の中で<TARGET>を甘く拘束している...',
-                        '<TARGET>は夢の拘束から逃れることができない...',
-                        '<TARGET>の心は<USER>の夢に支配されている...'
+                        '{boss}は夢の中で{player}を甘く拘束している...',
+                        '{player}は夢の拘束から逃れることができない...',
+                        '{player}の心は{boss}の夢に支配されている...'
                     ],
                     statusEffect: StatusEffectType.Hypnosis,
                     weight: 1
@@ -806,9 +806,9 @@ export const dreamDemonData: BossData = {
                     description: '夢の中で獲物に至福を与え続ける',
                     messages: [
                         'あまあま〜な至福をずっと味わわせてあげるンメェ〜♪',
-                        '<USER>は夢の中で<TARGET>に至福を与えている...',
-                        '<TARGET>は夢の中で至福に包まれている...',
-                        '<TARGET>の魂は<USER>の夢に溶けている...'
+                        '{boss}は夢の中で{player}に至福を与えている...',
+                        '{player}は夢の中で至福に包まれている...',
+                        '{player}の魂は{boss}の夢に溶けている...'
                     ],
                     statusEffect: StatusEffectType.Bliss,
                     weight: 1
@@ -820,9 +820,9 @@ export const dreamDemonData: BossData = {
                     description: '夢の中で獲物を魅了し続ける',
                     messages: [
                         'あたいの魅力にもうメロメロンメェ〜♪',
-                        '<USER>は夢の中で<TARGET>を魅了している...',
-                        '<TARGET>は夢の中で<USER>に魅了され続けている...',
-                        '<TARGET>の心は<USER>の魅力に完全に支配されている...'
+                        '{boss}は夢の中で{player}を魅了している...',
+                        '{player}は夢の中で{boss}に魅了され続けている...',
+                        '{player}の心は{boss}の魅力に完全に支配されている...'
                     ],
                     statusEffect: StatusEffectType.Fascination,
                     weight: 1
@@ -834,9 +834,9 @@ export const dreamDemonData: BossData = {
                     description: '夢の中で獲物を甘く支配し続ける',
                     messages: [
                         'あたいに完全に支配されちゃったンメェ〜♪',
-                        '<USER>は夢の中で<TARGET>を甘く支配している...',
-                        '<TARGET>は夢の中で<USER>に支配されている...',
-                        '<TARGET>の意志は<USER>の夢に完全に屈服している...'
+                        '{boss}は夢の中で{player}を甘く支配している...',
+                        '{player}は夢の中で{boss}に支配されている...',
+                        '{player}の意志は{boss}の夢に完全に屈服している...'
                     ],
                     statusEffect: StatusEffectType.Brainwash,
                     weight: 1
@@ -856,9 +856,9 @@ export const dreamDemonData: BossData = {
                     description: '夢の中で体を激しく密着させて生気を吸い取る',
                     messages: [
                         '夢の中でもぺったんぺったんンメェ〜♪',
-                        '<USER>は夢の中で<TARGET>に激しく体を密着させた',
-                        '<USER>は<TARGET>の生気を激しくちゅーちゅーと吸い取っている...',
-                        '<TARGET>は生気が吸い取られているのを感じながら気持ちよくて抵抗できない！'
+                        '{boss}は夢の中で{player}に激しく体を密着させた',
+                        '{boss}は{player}の生気を激しくちゅーちゅーと吸い取っている...',
+                        '{player}は生気が吸い取られているのを感じながら気持ちよくて抵抗できない！'
                     ],
                     weight: 1
                 },
@@ -870,9 +870,9 @@ export const dreamDemonData: BossData = {
                     description: '夢の中で魔力を込めたべろちゅーで生気を吸い取る',
                     messages: [
                         'べろべろ〜♪ 魔力いっぱいのべろちゅーンメェ〜',
-                        '<USER>は夢の中で魔力を込めて<TARGET>にべろちゅーをした',
-                        '<USER>は<TARGET>の生気をべろちゅーで吸い取っている...',
-                        '<TARGET>は魔力に侵されながら生気を奪われていく...'
+                        '{boss}は夢の中で魔力を込めて{player}にべろちゅーをした',
+                        '{boss}は{player}の生気をべろちゅーで吸い取っている...',
+                        '{player}は魔力に侵されながら生気を奪われていく...'
                     ],
                     weight: 1
                 },
@@ -884,9 +884,9 @@ export const dreamDemonData: BossData = {
                     description: '夢の中で抱き着いて激しく動きながら生気を吸い取る',
                     messages: [
                         'ぎゅ〜っと抱き着き攻撃ンメェ〜♪',
-                        '<USER>は夢の中で<TARGET>に抱き着いて激しく動いた',
-                        '<USER>は密着しながら<TARGET>の生気をちゅーちゅーと吸い取っている...',
-                        '<TARGET>は抱き着かれながら生気を奪われて快感に溺れている！'
+                        '{boss}は夢の中で{player}に抱き着いて激しく動いた',
+                        '{boss}は密着しながら{player}の生気をちゅーちゅーと吸い取っている...',
+                        '{player}は抱き着かれながら生気を奪われて快感に溺れている！'
                     ],
                     weight: 1
                 },
@@ -898,9 +898,9 @@ export const dreamDemonData: BossData = {
                     description: '夢の中で触手を使って愛撫しながら生気を吸い取る',
                     messages: [
                         'にゅるにゅる〜♪ 触手いっぱい出しちゃうンメェ〜',
-                        '<USER>は夢の中で無数の触手で<TARGET>を愛撫した',
-                        '<USER>の触手は<TARGET>の生気をじわじわと吸い取っている...',
-                        '<TARGET>は触手に愛撫されながら生気を搾り取られていく...'
+                        '{boss}は夢の中で無数の触手で{player}を愛撫した',
+                        '{boss}の触手は{player}の生気をじわじわと吸い取っている...',
+                        '{player}は触手に愛撫されながら生気を搾り取られていく...'
                     ],
                     weight: 1
                 },
@@ -912,9 +912,9 @@ export const dreamDemonData: BossData = {
                     description: '夢の中で魔法の力で圧迫しながら生気を吸い取る',
                     messages: [
                         'ぎゅぎゅ〜っと魔法で圧迫しちゃうンメェ〜♪',
-                        '<USER>は夢の中で魔法の力で<TARGET>を圧迫した',
-                        '<USER>は魔法で<TARGET>の生気を強制的に吸い取っている...',
-                        '<TARGET>は魔法に圧迫されながら生気を根こそぎ奪われている！'
+                        '{boss}は夢の中で魔法の力で{player}を圧迫した',
+                        '{boss}は魔法で{player}の生気を強制的に吸い取っている...',
+                        '{player}は魔法に圧迫されながら生気を根こそぎ奪われている！'
                     ],
                     weight: 1
                 },
@@ -926,9 +926,9 @@ export const dreamDemonData: BossData = {
                     description: '夢の中で激しく揺さぶりながら生気を吸い取る',
                     messages: [
                         'ゆさゆさ〜♪ 激しく揺さぶっちゃうンメェ〜',
-                        '<USER>は夢の中で<TARGET>を激しく揺さぶった',
-                        '<USER>は揺さぶりながら<TARGET>の生気をどんどん吸い取っている...',
-                        '<TARGET>は激しく揺さぶられながら生気を吸い取られて意識が朦朧としている...'
+                        '{boss}は夢の中で{player}を激しく揺さぶった',
+                        '{boss}は揺さぶりながら{player}の生気をどんどん吸い取っている...',
+                        '{player}は激しく揺さぶられながら生気を吸い取られて意識が朦朧としている...'
                     ],
                     weight: 1
                 },
@@ -940,9 +940,9 @@ export const dreamDemonData: BossData = {
                     description: '夢の中で魅惑的な舞を踊りながら生気を吸い取る',
                     messages: [
                         'くるくる〜♪ 魅惑の舞を踊っちゃうンメェ〜',
-                        '<USER>は夢の中で<TARGET>の周りで魅惑的な舞を踊った',
-                        '<USER>の舞は<TARGET>の生気を踊りながら吸い取っている...',
-                        '<TARGET>は魅惑の舞に見とれながら生気をちゅーちゅー吸われている！'
+                        '{boss}は夢の中で{player}の周りで魅惑的な舞を踊った',
+                        '{boss}の舞は{player}の生気を踊りながら吸い取っている...',
+                        '{player}は魅惑の舞に見とれながら生気をちゅーちゅー吸われている！'
                     ],
                     weight: 1
                 },
@@ -954,9 +954,9 @@ export const dreamDemonData: BossData = {
                     description: '夢の中で魔力を注入しながら生気を吸い取る',
                     messages: [
                         'ずぶずぶ〜♪ 魔力を直接注入しちゃうンメェ〜',
-                        '<USER>は夢の中で<TARGET>に直接魔力を注入した',
-                        '<USER>の魔力は<TARGET>の生気を内側から吸い取っている...',
-                        '<TARGET>は魔力に侵食されながら生気を内側から奪われていく...'
+                        '{boss}は夢の中で{player}に直接魔力を注入した',
+                        '{boss}の魔力は{player}の生気を内側から吸い取っている...',
+                        '{player}は魔力に侵食されながら生気を内側から奪われていく...'
                     ],
                     weight: 1
                 },
@@ -968,9 +968,9 @@ export const dreamDemonData: BossData = {
                     description: '夢の中で甘い誘惑をしながら生気を吸い取る',
                     messages: [
                         'あまあま〜♪ 甘い言葉でおびき寄せちゃうンメェ〜',
-                        '<USER>は夢の中で<TARGET>に甘い誘惑をささやいた',
-                        '<USER>は甘い言葉で<TARGET>の生気をそっと吸い取っている...',
-                        '<TARGET>は甘い誘惑に溺れながら生気を静かに奪われている...'
+                        '{boss}は夢の中で{player}に甘い誘惑をささやいた',
+                        '{boss}は甘い言葉で{player}の生気をそっと吸い取っている...',
+                        '{player}は甘い誘惑に溺れながら生気を静かに奪われている...'
                     ],
                     weight: 1
                 },
@@ -982,9 +982,9 @@ export const dreamDemonData: BossData = {
                     description: '夢の中で完全に支配しながら生気を吸い取る',
                     messages: [
                         'もう完全にあたいのものンメェ〜♪ 支配しちゃったンメェ〜',
-                        '<USER>は夢の中で<TARGET>を完全に支配した',
-                        '<USER>は支配した<TARGET>の生気を容赦なく吸い取っている...',
-                        '<TARGET>は完全に支配されながら生気を全て奪われていく！'
+                        '{boss}は夢の中で{player}を完全に支配した',
+                        '{boss}は支配した{player}の生気を容赦なく吸い取っている...',
+                        '{player}は完全に支配されながら生気を全て奪われていく！'
                     ],
                     weight: 1
                 }
@@ -1015,12 +1015,12 @@ export const dreamDemonData: BossData = {
                 name: 'ゆっくり丸呑み',
                 description: '弱り切った獲物をゆっくりと丸呑みにする',
                 messages: [
-                    '<USER>はクスクスと笑い始めた...',
-                    '<TARGET>は生気を吸い取られすぎて動けなくなってしまった...',
-                    '<USER>はゆっくりと<TARGET>に近づいてくる...',
-                    '<USER>は動けなくなった<TARGET>をゆっくりと口に含んでいく......',
+                    '{boss}はクスクスと笑い始めた...',
+                    '{player}は生気を吸い取られすぎて動けなくなってしまった...',
+                    '{boss}はゆっくりと{player}に近づいてくる...',
+                    '{boss}は動けなくなった{player}をゆっくりと口に含んでいく......',
                     'ごっくん......',
-                    '<TARGET>は<USER>のお腹の中に取り込まれてしまった...'
+                    '{player}は{boss}のお腹の中に取り込まれてしまった...'
                 ],
                 weight: 1
             };
@@ -1036,9 +1036,9 @@ export const dreamDemonData: BossData = {
                         name: 'ゆっくり丸呑み',
                         description: '拘束した獲物をゆっくりと丸呑みにする',
                         messages: [
-                            '<USER>はクスクスと笑い始めた...',
-                            '<USER>はゆっくりと<TARGET>に近づいてくる...',
-                            '<USER>は<TARGET>をゆっくりと口に含んでいく......',
+                            '{boss}はクスクスと笑い始めた...',
+                            '{boss}はゆっくりと{player}に近づいてくる...',
+                            '{boss}は{player}をゆっくりと口に含んでいく......',
                             'ごっくん......'
                         ],
                         weight: 1
@@ -1059,8 +1059,8 @@ export const dreamDemonData: BossData = {
                         name: 'ゆっくり丸呑み',
                         description: '無防備な獲物をゆっくりと丸呑みにする',
                         messages: [
-                            '<USER>はクスクスと笑い始めた...',
-                            '<USER>は<TARGET>をゆっくりと口に含んでいく......',
+                            '{boss}はクスクスと笑い始めた...',
+                            '{boss}は{player}をゆっくりと口に含んでいく......',
                             'ごっくん......'
                         ],
                         weight: 1
@@ -1255,9 +1255,9 @@ dreamDemonData.getDialogue = function(situation: 'battle-start' | 'player-restra
 // Add finishing move for final victory
 dreamDemonData.finishingMove = function() {
     return [
-        '<USER>は力尽きた<TARGET>を完全に消化してしまった...',
-        '<USER>はお腹をさすりながら満足げな表情を浮かべる',
+        '{boss}は力尽きた{player}を完全に消化してしまった...',
+        '{boss}はお腹をさすりながら満足げな表情を浮かべる',
         'けぷっ、おいしかったンメェ〜',
-        '<TARGET>は<USER>の一部となって永遠に夢の世界に残ることになった...'
+        '{player}は{boss}の一部となって永遠に夢の世界に残ることになった...'
     ];
 };
