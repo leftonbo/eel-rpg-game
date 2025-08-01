@@ -46,8 +46,8 @@ const aquaSerpentActions: BossAction[] = [
         description: '海水を操り巨大な水の檻を作成',
         messages: [
             '「シャアアアアアア...」',
-            '<USER>の体が青白く光り、海水が天高く舞い上がる！',
-            '巨大な水の檻が<TARGET>を包み込み、深海の圧力で押し潰そうとする！'
+            '{boss}の体が青白く光り、海水が天高く舞い上がる！',
+            '巨大な水の檻が{player}を包み込み、深海の圧力で押し潰そうとする！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 2.25,
         weight: 5,
@@ -70,8 +70,8 @@ const aquaSerpentActions: BossAction[] = [
         description: '長い体でプレイヤーを巻き付け拘束',
         messages: [
             '「シャアアア...」',
-            '<USER>が長い体を<TARGET>に巻き付けてきた！',
-            '<TARGET>は海蛇の抱擁に捕らわれてしまった...'
+            '{boss}が長い体を{player}に巻き付けてきた！',
+            '{player}は海蛇の抱擁に捕らわれてしまった...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.9,
         weight: 8,
@@ -86,7 +86,7 @@ const aquaSerpentActions: BossAction[] = [
         description: '拘束中の獲物をキスして体力を吸収',
         messages: [
             '「シャアアア...」',
-            '<USER>が<TARGET>を口づけで包み込み、体力を吸収している...'
+            '{boss}が{player}を口づけで包み込み、体力を吸収している...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.4,
         weight: 40,
@@ -100,7 +100,7 @@ const aquaSerpentActions: BossAction[] = [
         description: '拘束中の獲物を体で締めつける',
         messages: [
             '「シャアアア...」',
-            '<USER>が<TARGET>をゆっくりと締めつけている...'
+            '{boss}が{player}をゆっくりと締めつけている...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.0,
         weight: 35,
@@ -113,8 +113,8 @@ const aquaSerpentActions: BossAction[] = [
         description: '体内で津波のような胃液を放出',
         messages: [
             '「シャアアアア...」',
-            '<USER>の体内で激しい胃液の嵐が巻き起こる！',
-            '<TARGET>の最大HPが吸収されていく...'
+            '{boss}の体内で激しい胃液の嵐が巻き起こる！',
+            '{player}の最大HPが吸収されていく...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.1,
         weight: 25,
@@ -127,8 +127,8 @@ const aquaSerpentActions: BossAction[] = [
         description: '体内の壁が収縮してプレイヤーを押し流す',
         messages: [
             '「シャアアア...」',
-            '<USER>の体内の壁が<TARGET>を奥へと押し流している...',
-            '<TARGET>の最大HPが吸収されていく...'
+            '{boss}の体内の壁が{player}を奥へと押し流している...',
+            '{player}の最大HPが吸収されていく...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.25,
         weight: 25,
@@ -141,7 +141,7 @@ const aquaSerpentActions: BossAction[] = [
         description: '体内の光が強くなりプレイヤーを幻惑',
         messages: [
             '「シャアアア...」',
-            '<USER>の体内で神秘的な光が強くなり、<TARGET>を幻惑している...'
+            '{boss}の体内で神秘的な光が強くなり、{player}を幻惑している...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.75,
         weight: 20,
@@ -155,8 +155,8 @@ const aquaSerpentActions: BossAction[] = [
         description: '体内で大量の生命力を吸収',
         messages: [
             '「シャアアアア...」',
-            '<USER>の体内で巨大な渦が発生し、<TARGET>の生命力を激しく吸収している！',
-            '<TARGET>の最大HPが大幅に吸収されていく...'
+            '{boss}の体内で巨大な渦が発生し、{player}の生命力を激しく吸収している！',
+            '{player}の最大HPが大幅に吸収されていく...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.75,
         weight: 10,
@@ -169,7 +169,7 @@ const aquaSerpentActions: BossAction[] = [
             // 30% chance to release player after this attack
             if (Math.random() < 0.3) {
                 player.statusEffects.removeEffect(StatusEffectType.Eaten);
-                return ['<TARGET>は激しい渦に巻き込まれ、<USER>の口から吐き出された！'];
+                return ['{player}は激しい渦に巻き込まれ、{boss}の口から吐き出された！'];
             }
             return [];
         }
@@ -237,9 +237,9 @@ export const aquaSerpentData: BossData = {
                     description: '尻尾まで運ばれた獲物を再び口に運んで飲み込む',
                     messages: [
                         '「シャアアア...」',
-                        '<USER>が<TARGET>を尻尾から吐き出した！',
-                        'しかし、すぐに大きな口で<TARGET>を咥え、再び飲み込んでいく！',
-                        '<TARGET>は再び透明な体内に閉じ込められてしまった...'
+                        '{boss}が{player}を尻尾から吐き出した！',
+                        'しかし、すぐに大きな口で{player}を咥え、再び飲み込んでいく！',
+                        '{player}は再び透明な体内に閉じ込められてしまった...'
                     ],
                     weight: 1
                 };
@@ -260,7 +260,7 @@ export const aquaSerpentData: BossData = {
                     name: '胃液でゆっくり洗われる',
                     description: '体内で胃液にゆっくりと洗われ続ける',
                     messages: [
-                        '<USER>の体内で<TARGET>がゆっくりと胃液に洗われている...',
+                        '{boss}の体内で{player}がゆっくりと胃液に洗われている...',
                         '透明な体内から外の深海が見える...'
                     ],
                     weight: 1
@@ -271,8 +271,8 @@ export const aquaSerpentData: BossData = {
                     name: '激しい蠕動運動でさらに奥へ',
                     description: '体内の筋肉が収縮して更に奥へ運ばれる',
                     messages: [
-                        '<USER>の体内で激しい蠕動運動が起こり、<TARGET>を更に奥へと運んでいる...',
-                        '<TARGET>は抵抗することができない...'
+                        '{boss}の体内で激しい蠕動運動が起こり、{player}を更に奥へと運んでいる...',
+                        '{player}は抵抗することができない...'
                     ],
                     weight: 1
                 },
@@ -282,7 +282,7 @@ export const aquaSerpentData: BossData = {
                     name: 'マッサージされながら深海を眺める',
                     description: '体内でマッサージされながら透明な体内から深海を眺める',
                     messages: [
-                        '<USER>の体内で<TARGET>が優しくマッサージされている...',
+                        '{boss}の体内で{player}が優しくマッサージされている...',
                         '透明な体内から美しい深海の光景が見える...'
                     ],
                     weight: 1
@@ -293,8 +293,8 @@ export const aquaSerpentData: BossData = {
                     name: '体内で渦を起こされてぐるぐる',
                     description: '体内で渦を起こされて目を回す',
                     messages: [
-                        '<USER>の体内で激しい渦が起こり、<TARGET>をぐるぐると回転させている...',
-                        '<TARGET>は目を回して意識が朦朧としている...'
+                        '{boss}の体内で激しい渦が起こり、{player}をぐるぐると回転させている...',
+                        '{player}は目を回して意識が朦朧としている...'
                     ],
                     weight: 1
                 }
@@ -331,8 +331,8 @@ export const aquaSerpentData: BossData = {
                         description: '拘束した獲物を丸呑みする',
                         messages: [
                             '「シャアアア...」',
-                            '<USER>が大きな口を開け、<TARGET>をゆっくりと丸呑みにする！',
-                            '<TARGET>は透明な体内に閉じ込められてしまった...'
+                            '{boss}が大きな口を開け、{player}をゆっくりと丸呑みにする！',
+                            '{player}は透明な体内に閉じ込められてしまった...'
                         ],
                         weight: 1
                     };
@@ -348,7 +348,7 @@ export const aquaSerpentData: BossData = {
                         description: '長い体で獲物を拘束する',
                         messages: [
                             '「シャアアア...」',
-                            '<USER>が長い体を<TARGET>に巻き付けてきた！'
+                            '{boss}が長い体を{player}に巻き付けてきた！'
                         ],
                         weight: 1
                     };
@@ -360,8 +360,8 @@ export const aquaSerpentData: BossData = {
                         description: '獲物を丸呑みする',
                         messages: [
                             '「シャアアア...」',
-                            '<USER>が大きな口を開け、<TARGET>をゆっくりと丸呑みにする！',
-                            '<TARGET>は透明な体内に閉じ込められてしまった...'
+                            '{boss}が大きな口を開け、{player}をゆっくりと丸呑みにする！',
+                            '{player}は透明な体内に閉じ込められてしまった...'
                         ],
                         weight: 1
                     };
@@ -439,8 +439,8 @@ export const aquaSerpentData: BossData = {
 aquaSerpentData.finishingMove = function() {
     return [
         '「シャアアア...」',
-        '<USER>は<TARGET>を体内の奥深くへと運んでいく...',
-        '<TARGET>はアクアサーペントの透明な体内で、美しい深海の光景を眺めながら永遠に過ごすことになった...'
+        '{boss}は{player}を体内の奥深くへと運んでいく...',
+        '{player}はアクアサーペントの透明な体内で、美しい深海の光景を眺めながら永遠に過ごすことになった...'
     ];
 };
 

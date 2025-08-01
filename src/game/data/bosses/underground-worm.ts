@@ -10,7 +10,7 @@ const undergroundWormActions: BossAction[] = [
         description: '地面を割いて攻撃',
         messages: [
             '「グルルル...」',
-            '<USER>は地面を割って<TARGET>を攻撃した！',
+            '{boss}は地面を割って{player}を攻撃した！',
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.2,
         weight: 40,
@@ -24,8 +24,8 @@ const undergroundWormActions: BossAction[] = [
         description: '石を溶かす息を吐いて敵を石化させる',
         messages: [
             '「シュルシュル...」',
-            '<USER>は石を溶かす息を吐いた！',
-            '<TARGET>は石のように固まってしまった！'
+            '{boss}は石を溶かす息を吐いた！',
+            '{player}は石のように固まってしまった！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.8,
         hitRate: 0.75,
@@ -42,7 +42,7 @@ const undergroundWormActions: BossAction[] = [
         description: '巨大な体で相手を巻き込む',
         messages: [
             '「グオオオ...」',
-            '<USER>は巨大な体で<TARGET>を巻き込んだ！',
+            '{boss}は巨大な体で{player}を巻き込んだ！',
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.9,
         weight: 15,
@@ -57,7 +57,7 @@ const undergroundWormActions: BossAction[] = [
         description: '巨大な口で相手を呑み込む',
         messages: [
             '「ガバッ！」',
-            '<USER>は巨大な口を開いて<TARGET>を呑み込んだ！',
+            '{boss}は巨大な口を開いて{player}を呑み込んだ！',
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.1,
         weight: 20,
@@ -74,7 +74,7 @@ const undergroundWormDevourActions: BossAction[] = [
         name: '砂利研磨',
         description: '体内の砂利でプレイヤーを研磨する',
         messages: [
-            '<USER>の体内で砂利が<TARGET>を研磨する...',
+            '{boss}の体内で砂利が{player}を研磨する...',
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.4,
         weight: 35
@@ -85,7 +85,7 @@ const undergroundWormDevourActions: BossAction[] = [
         name: '消化液攻撃',
         description: '強酸性の消化液で溶解攻撃',
         messages: [
-            '<USER>の強酸性の消化液が<TARGET>を溶かす...',
+            '{boss}の強酸性の消化液が{player}を溶かす...',
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.7,
         weight: 40
@@ -96,7 +96,7 @@ const undergroundWormDevourActions: BossAction[] = [
         name: '石化消化',
         description: '体内で石化させて消化を遅らせる',
         messages: [
-            '<USER>の体内で特殊な消化液により<TARGET>は石化してしまった！',
+            '{boss}の体内で特殊な消化液により{player}は石化してしまった！',
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.2,
         statusEffect: StatusEffectType.Petrified,
@@ -115,8 +115,8 @@ const undergroundWormPostDefeatedActions: BossAction[] = [
         name: '地底の静寂',
         description: '深い地底の静かな環境でプレイヤーを包み込む',
         messages: [
-            '<USER>は地底深くへと潜っていく...',
-            '<TARGET>は静寂な地底の暗闇に包まれ、安らかな眠りに落ちていく'
+            '{boss}は地底深くへと潜っていく...',
+            '{player}は静寂な地底の暗闇に包まれ、安らかな眠りに落ちていく'
         ],
         weight: 30,
         playerStateCondition: 'defeated'
@@ -127,8 +127,8 @@ const undergroundWormPostDefeatedActions: BossAction[] = [
         name: '鉱物吸収',
         description: '体内で地底の鉱物を使ってプレイヤーを石化保存する',
         messages: [
-            '<USER>の体内に地底の鉱物が流れ込む...',
-            '<TARGET>の体がゆっくりと美しい鉱石へと変化していく'
+            '{boss}の体内に地底の鉱物が流れ込む...',
+            '{player}の体がゆっくりと美しい鉱石へと変化していく'
         ],
         statusEffect: StatusEffectType.Petrified,
         statusChance: 0.8,
@@ -141,8 +141,8 @@ const undergroundWormPostDefeatedActions: BossAction[] = [
         name: '地下水循環',
         description: '体内の地下水系でプレイヤーを優しく循環させる',
         messages: [
-            '<USER>の体内で清らかな地下水が流れている...',
-            '<TARGET>は地下水流に包まれながら永遠の安息を得る'
+            '{boss}の体内で清らかな地下水が流れている...',
+            '{player}は地下水流に包まれながら永遠の安息を得る'
         ],
         weight: 20,
         playerStateCondition: 'defeated'
@@ -153,8 +153,8 @@ const undergroundWormPostDefeatedActions: BossAction[] = [
         name: '化石化保存',
         description: '時間をかけて獲物を化石として完全保存する',
         messages: [
-            '<USER>は獲物を大切に保存しようとしている...',
-            '<TARGET>は悠久の時を超えて保存されるため、ゆっくりと化石へと変化していく'
+            '{boss}は獲物を大切に保存しようとしている...',
+            '{player}は悠久の時を超えて保存されるため、ゆっくりと化石へと変化していく'
         ],
         weight: 15,
         playerStateCondition: 'defeated'

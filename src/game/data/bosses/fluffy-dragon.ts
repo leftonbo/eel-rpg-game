@@ -14,7 +14,7 @@ const fluffyDragonActions: BossAction[] = [
         playerStateCondition: 'normal',
         messages: [
             'ふわふわ〜♪ やさしくしてあげるね',
-            '<USER>はふわふわの毛で<TARGET>を優しく包み込むように攻撃した'
+            '{boss}はふわふわの毛で{player}を優しく包み込むように攻撃した'
         ]
     },
     {
@@ -28,7 +28,7 @@ const fluffyDragonActions: BossAction[] = [
         playerStateCondition: 'normal',
         messages: [
             'ぽふぽふ〜♪ 毛玉攻撃だよ',
-            '<USER>はふわふわの毛玉を<TARGET>に向けて飛ばした！'
+            '{boss}はふわふわの毛玉を{player}に向けて飛ばした！'
         ]
     },
 
@@ -45,8 +45,8 @@ const fluffyDragonActions: BossAction[] = [
         weight: 30,
         messages: [
             'ふわ〜♪ いい香りのブレスをどうぞ',
-            '<USER>はラベンダーの香りがする甘いブレスを吐いた',
-            '<TARGET>は心地よい香りに包まれている...'
+            '{boss}はラベンダーの香りがする甘いブレスを吐いた',
+            '{player}は心地よい香りに包まれている...'
         ],
         canUse: (_boss, _player, _turn) => {
             // Always available
@@ -61,7 +61,7 @@ const fluffyDragonActions: BossAction[] = [
                 // 眠気状態を削除して睡眠状態を付与
                 player.statusEffects.removeEffect(StatusEffectType.Sleepy);
                 player.statusEffects.addEffect(StatusEffectType.Sleep, 3);
-                messages.push('<TARGET>は深い眠りに落ちてしまった...');
+                messages.push('{player}は深い眠りに落ちてしまった...');
             }
             return messages;
         }
@@ -78,8 +78,8 @@ const fluffyDragonActions: BossAction[] = [
         weight: 25,
         messages: [
             'ふわふわ〜♪ 心地よいオーラだよ',
-            '<USER>のふわふわの毛から心地よいオーラが漂ってきた',
-            '<TARGET>は心地よさで力が抜けていく...'
+            '{boss}のふわふわの毛から心地よいオーラが漂ってきた',
+            '{player}は心地よさで力が抜けていく...'
         ]
     },
 
@@ -93,8 +93,8 @@ const fluffyDragonActions: BossAction[] = [
         hitRate: 0.85,
         messages: [
             'ふわふわ〜♪ ぎゅーってしてあげる',
-            '<USER>はふわふわの毛で<TARGET>を優しく包み込もうとしてきた！',
-            '<TARGET>はふわふわの毛に包まれて身動きが取れなくなった...'
+            '{boss}はふわふわの毛で{player}を優しく包み込もうとしてきた！',
+            '{player}はふわふわの毛に包まれて身動きが取れなくなった...'
         ],
         canUse: (_boss, player, _turn) => {
             // 眠気状態や睡眠状態の時により使いやすく
@@ -116,9 +116,9 @@ const fluffyDragonActions: BossAction[] = [
         weight: 1,
         messages: [
             'ふわふわ〜♪ お腹の中で暖かくしてあげる',
-            '<USER>は<TARGET>を優しく口に含んで...',
+            '{boss}は{player}を優しく口に含んで...',
             'ごくん...',
-            '<TARGET>は<USER>のふわふわな胃袋に包まれた...'
+            '{player}は{boss}のふわふわな胃袋に包まれた...'
         ]
     },
 
@@ -133,8 +133,8 @@ const fluffyDragonActions: BossAction[] = [
         playerStateCondition: 'restrained',
         messages: [
             'ふわふわ〜♪ 気持ちよくしてあげる',
-            '<USER>はふわふわの毛で<TARGET>を優しくマッサージした',
-            '<TARGET>は心地よいマッサージに身を委ねている...'
+            '{boss}はふわふわの毛で{player}を優しくマッサージした',
+            '{player}は心地よいマッサージに身を委ねている...'
         ]
     },
     {
@@ -149,8 +149,8 @@ const fluffyDragonActions: BossAction[] = [
         playerStateCondition: 'restrained',
         messages: [
             'ふわふわ〜♪ 暖かくて眠くなるでしょ？',
-            '<USER>は<TARGET>を暖かく包み込んだ',
-            '<TARGET>は暖かさで眠気に襲われている...'
+            '{boss}は{player}を暖かく包み込んだ',
+            '{player}は暖かさで眠気に襲われている...'
         ]
     }
 ];
@@ -165,8 +165,8 @@ const fluffyStomachActions: BossAction[] = [
         description: 'ふわふわな胃袋の毛による優しい圧迫攻撃',
         messages: [
             'ふわふわ〜♪ お腹の中でも気持ちよくしてあげる',
-            '<USER>のふわふわな胃袋が<TARGET>を優しくマッサージしている...',
-            '<TARGET>は胃袋の毛に包まれながら生気を吸い取られている...'
+            '{boss}のふわふわな胃袋が{player}を優しくマッサージしている...',
+            '{player}は胃袋の毛に包まれながら生気を吸い取られている...'
         ],
         weight: 1
     },
@@ -178,8 +178,8 @@ const fluffyStomachActions: BossAction[] = [
         description: '眠りを誘う特殊な空気を送り込む',
         messages: [
             'ふわふわ〜♪ もっと眠くなる空気をどうぞ',
-            '<USER>は胃袋の中に眠りを誘う甘い空気を送り込んだ...',
-            '<TARGET>は甘い空気に包まれながら最大HPを奪われていく...'
+            '{boss}は胃袋の中に眠りを誘う甘い空気を送り込んだ...',
+            '{player}は甘い空気に包まれながら最大HPを奪われていく...'
         ],
         weight: 1
     },
@@ -191,8 +191,8 @@ const fluffyStomachActions: BossAction[] = [
         description: '体温による心地よい包み込み攻撃',
         messages: [
             'ふわふわ〜♪ ずっと暖かくしてあげる',
-            '<USER>の胃袋が<TARGET>を温かく包み込んでいる...',
-            '<TARGET>は心地よい温かさの中で力を失っていく...'
+            '{boss}の胃袋が{player}を温かく包み込んでいる...',
+            '{player}は心地よい温かさの中で力を失っていく...'
         ],
         weight: 1
     }
@@ -207,9 +207,9 @@ const deepStomachActions: BossAction[] = [
         description: '粘液に包まれながら丸呑みされる夢を見続ける',
         messages: [
             'ふわふわ〜♪ いい夢を見せてあげる',
-            '<USER>の奥の胃袋で<TARGET>は粘液に包まれている...',
-            '<TARGET>は丸呑みされる夢を何度も見続けている...',
-            '<TARGET>の意識は<USER>の夢の世界に囚われている...'
+            '{boss}の奥の胃袋で{player}は粘液に包まれている...',
+            '{player}は丸呑みされる夢を何度も見続けている...',
+            '{player}の意識は{boss}の夢の世界に囚われている...'
         ],
         statusEffect: StatusEffectType.Sleep,
         weight: 1
@@ -221,9 +221,9 @@ const deepStomachActions: BossAction[] = [
         description: '目覚めを阻止する強制睡眠',
         messages: [
             'ふわふわ〜♪ ずっと眠っていてね',
-            '<USER>は<TARGET>を深い眠りに閉じ込めている...',
-            '<TARGET>は目覚めることができない...',
-            '<TARGET>の魂は<USER>の中で永遠に眠り続ける...'
+            '{boss}は{player}を深い眠りに閉じ込めている...',
+            '{player}は目覚めることができない...',
+            '{player}の魂は{boss}の中で永遠に眠り続ける...'
         ],
         statusEffect: StatusEffectType.Hypnosis,
         weight: 1
@@ -235,9 +235,9 @@ const deepStomachActions: BossAction[] = [
         description: 'ねっとりした粘液による包み込み',
         messages: [
             'ふわふわ〜♪ ねっとり包んであげる',
-            '<USER>の粘液が<TARGET>をねっとりと包み込んでいる...',
-            '<TARGET>は粘液に愛撫されながら意識を失っていく...',
-            '<TARGET>の心は<USER>の胃袋に完全に支配されている...'
+            '{boss}の粘液が{player}をねっとりと包み込んでいる...',
+            '{player}は粘液に愛撫されながら意識を失っていく...',
+            '{player}の心は{boss}の胃袋に完全に支配されている...'
         ],
         statusEffect: StatusEffectType.Melting,
         weight: 1
@@ -249,9 +249,9 @@ const deepStomachActions: BossAction[] = [
         description: '完全な支配状態での至福演出',
         messages: [
             'ふわふわ〜♪ もう何も心配いらないよ',
-            '<USER>は<TARGET>を永遠の安らぎで包んでいる...',
-            '<TARGET>は完全に安らかな表情を浮かべている...',
-            '<TARGET>は<USER>の一部として永遠に過ごすことになった...'
+            '{boss}は{player}を永遠の安らぎで包んでいる...',
+            '{player}は完全に安らかな表情を浮かべている...',
+            '{player}は{boss}の一部として永遠に過ごすことになった...'
         ],
         statusEffect: StatusEffectType.Bliss,
         weight: 1
@@ -307,9 +307,9 @@ export const fluffyDragonData: BossData = {
                 description: 'ふわふわ胃袋から本物の胃袋へ移動させる',
                 messages: [
                     'ふわふわ〜♪ より奥で休んでもらいましょう',
-                    '<TARGET>は完全に眠りに落ち、<USER>のより奥の胃袋に送られていく...',
+                    '{player}は完全に眠りに落ち、{boss}のより奥の胃袋に送られていく...',
                     'そこはねっとりした粘液に満ちた本物の胃袋だった...',
-                    '<USER>が起きている限り、<TARGET>は目覚めることができない...'
+                    '{boss}が起きている限り、{player}は目覚めることができない...'
                 ],
                 weight: 1
             };
@@ -397,10 +397,10 @@ export const fluffyDragonData: BossData = {
     // カスタムフィニッシュムーブ
     finishingMove: function() {
         return [
-            '<USER>は力尽きた<TARGET>を奥の胃袋で完全に消化してしまった...',
-            '<USER>はお腹をさすりながら満足げな表情を浮かべる',
+            '{boss}は力尽きた{player}を奥の胃袋で完全に消化してしまった...',
+            '{boss}はお腹をさすりながら満足げな表情を浮かべる',
             'ふわふわ〜♪ とても美味しかったです',
-            '<TARGET>は<USER>の一部となって永遠にふわふわの夢の中で過ごすことになった...'
+            '{player}は{boss}の一部となって永遠にふわふわの夢の中で過ごすことになった...'
         ];
     },
     

@@ -7,7 +7,7 @@ const mikanDragonActions: BossAction[] = [
         type: ActionType.Attack,
         name: '蜜柑の爪',
         description: '蜜柑のような鋭い爪で攻撃',
-        messages: ['<USER>は蜜柑のような鋭い爪で<TARGET>を攻撃した！'],
+        messages: ['{boss}は蜜柑のような鋭い爪で{player}を攻撃した！'],
         damageFormula: (user: Boss) => user.attackPower * 0.9,
         weight: 25,
         playerStateCondition: 'normal'
@@ -17,7 +17,7 @@ const mikanDragonActions: BossAction[] = [
         type: ActionType.Attack,
         name: '蜜柑の尻尾',
         description: '蜜柑色の尻尾で叩く',
-        messages: ['<USER>は蜜柑色の尻尾で<TARGET>を叩いた！'],
+        messages: ['{boss}は蜜柑色の尻尾で{player}を叩いた！'],
         damageFormula: (user: Boss) => user.attackPower * 1.1,
         weight: 20,
         playerStateCondition: 'normal'
@@ -27,7 +27,7 @@ const mikanDragonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '蜜柑の香り',
         description: '甘い蜜柑の香りで獲物を魅了する',
-        messages: ['<USER>は甘い蜜柑の香りを放った！'],
+        messages: ['{boss}は甘い蜜柑の香りを放った！'],
         damageFormula: (user: Boss) => user.attackPower * 0.6,
         hitRate: 0.9,
         statusEffect: StatusEffectType.Charm,
@@ -44,7 +44,7 @@ const mikanDragonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '蜜柑の粘液',
         description: '蜜柑の汁のような粘液で獲物をネバネバにする',
-        messages: ['<USER>は口から蜜柑のような粘液を放った！'],
+        messages: ['{boss}は口から蜜柑のような粘液を放った！'],
         damageFormula: (user: Boss) => user.attackPower * 0.7,
         hitRate: 0.95,
         statusEffect: StatusEffectType.Slimed,
@@ -57,7 +57,7 @@ const mikanDragonActions: BossAction[] = [
         description: '長い舌で獲物を拘束する',
         messages: [
             '「フルルル...」',
-            '<USER>は長い舌で<TARGET>を巻き付けてきた！'
+            '{boss}は長い舌で{player}を巻き付けてきた！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.0,
         weight: 15,
@@ -73,7 +73,7 @@ const mikanDragonActions: BossAction[] = [
         description: '舌で獲物を締め付ける',
         messages: [
             '「フルルル...」',
-            '<USER>は巻き付けた舌で<TARGET>を締め付ける！'
+            '{boss}は巻き付けた舌で{player}を締め付ける！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.3,
         weight: 30,
@@ -86,7 +86,7 @@ const mikanDragonActions: BossAction[] = [
         description: '舌で獲物を舐めて体力を吸収する',
         messages: [
             '「フルルル...」',
-            '<USER>は<TARGET>を体ごとキスして体力を吸収する！'
+            '{boss}は{player}を体ごとキスして体力を吸収する！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.6,
         weight: 25,
@@ -100,7 +100,7 @@ const mikanDragonActions: BossAction[] = [
         description: '舌を口に入れて蜜柑の汁を注入し、魅了する',
         messages: [
             '「フルルル...」',
-            '<USER>は舌を<TARGET>の口に入れて蜜柑の汁を注入している！'
+            '{boss}は舌を{player}の口に入れて蜜柑の汁を注入している！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.1,
         statusEffect: StatusEffectType.Charm,
@@ -149,8 +149,8 @@ export const mikanDragonData: BossData = {
                     description: '獲物の体を蜜柑の汁で満たし、培養し続ける',
                     messages: [
                         '「フルルル...」',
-                        '<USER>の体内で蜜柑の汁が<TARGET>を培養している...',
-                        '<TARGET>の体は徐々に蜜柑ドラゴンの幼体のような姿に変わっていく...'
+                        '{boss}の体内で蜜柑の汁が{player}を培養している...',
+                        '{player}の体は徐々に蜜柑ドラゴンの幼体のような姿に変わっていく...'
                     ],
                     statusEffect: StatusEffectType.Charm,
                     weight: 1
@@ -162,8 +162,8 @@ export const mikanDragonData: BossData = {
                     description: '体内触手で獲物を優しく愛撫し続ける',
                     messages: [
                         '「フルルル...」',
-                        '<USER>の体内触手が<TARGET>を優しく愛撫している...',
-                        '<TARGET>は徐々に抵抗する意志を失っていく...'
+                        '{boss}の体内触手が{player}を優しく愛撫している...',
+                        '{player}は徐々に抵抗する意志を失っていく...'
                     ],
                     statusEffect: StatusEffectType.Lethargy,
                     weight: 1
@@ -175,8 +175,8 @@ export const mikanDragonData: BossData = {
                     description: '蜜柑の汁を注入して獲物を同族化させる',
                     messages: [
                         '「フルルル...」',
-                        '<USER>が<TARGET>に大量の蜜柑汁を注入している...',
-                        '<TARGET>の体は蜜柑ドラゴンの幼体へと変化している...'
+                        '{boss}が{player}に大量の蜜柑汁を注入している...',
+                        '{player}の体は蜜柑ドラゴンの幼体へと変化している...'
                     ],
                     statusEffect: StatusEffectType.Charm,
                     weight: 1
@@ -195,7 +195,7 @@ export const mikanDragonData: BossData = {
                     description: '体内触手で蜜柑の汁を注入し、最大HPを減らす',
                     messages: [
                         '「フルルル...」',
-                        '<USER>の体内触手が<TARGET>の口に蜜柑汁を注入している！'
+                        '{boss}の体内触手が{player}の口に蜜柑汁を注入している！'
                     ],
                     damageFormula: (user: Boss) => user.attackPower * 1.5,
                     statusEffect: StatusEffectType.Charm,
@@ -208,7 +208,7 @@ export const mikanDragonData: BossData = {
                     description: '蜜柑の果肉のような胃壁でマッサージし、最大HPを減らす',
                     messages: [
                         '「フルルル...」',
-                        '<USER>の胃壁が<TARGET>を蜜柑の果肉のように優しくマッサージしている！'
+                        '{boss}の胃壁が{player}を蜜柑の果肉のように優しくマッサージしている！'
                     ],
                     damageFormula: (user: Boss) => user.attackPower * 2.2,
                     weight: 1
@@ -220,7 +220,7 @@ export const mikanDragonData: BossData = {
                     description: '体内触手でくすぐり、最大HPを減らして脱力状態にする',
                     messages: [
                         '「フルルル...」',
-                        '<USER>の体内触手が<TARGET>をくすぐっている！'
+                        '{boss}の体内触手が{player}をくすぐっている！'
                     ],
                     damageFormula: (user: Boss) => user.attackPower * 1.6,
                     statusEffect: StatusEffectType.Lethargy,
@@ -242,7 +242,7 @@ export const mikanDragonData: BossData = {
                         description: '拘束した獲物を丸呑みする',
                         messages: [
                             '「フルルル...」',
-                            '<USER>が大きな口を開け、<TARGET>を丸呑みにする！'
+                            '{boss}が大きな口を開け、{player}を丸呑みにする！'
                         ],
                         weight: 1
                     };
@@ -258,7 +258,7 @@ export const mikanDragonData: BossData = {
                         description: '長い舌で獲物を拘束する',
                         messages: [
                             '「フルルル...」',
-                            '<USER>は長い舌で<TARGET>を巻き付けてきた！'
+                            '{boss}は長い舌で{player}を巻き付けてきた！'
                         ],
                         weight: 1
                     };
@@ -270,7 +270,7 @@ export const mikanDragonData: BossData = {
                         description: '拘束した獲物を丸呑みする',
                         messages: [
                             '「フルルル...」',
-                            '<USER>が大きな口を開け、<TARGET>を丸呑みにする！'
+                            '{boss}が大きな口を開け、{player}を丸呑みにする！'
                         ],
                         weight: 1
                     };
@@ -336,8 +336,8 @@ export const mikanDragonData: BossData = {
 mikanDragonData.finishingMove = function() {
     return [
         '「フルルル...」',
-        '<USER>の体内触手が<TARGET>を胃袋の奥へと縛り付ける...',
-        '<TARGET>は蜜柑の粘液に満たされれた体内で<USER>の幼体として培養されることになった...'
+        '{boss}の体内触手が{player}を胃袋の奥へと縛り付ける...',
+        '{player}は蜜柑の粘液に満たされれた体内で{boss}の幼体として培養されることになった...'
     ];
 };
 

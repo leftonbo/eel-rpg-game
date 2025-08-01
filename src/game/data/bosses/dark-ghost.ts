@@ -48,7 +48,7 @@ const darkGhostActions: BossAction[] = [
         description: '影の触手で対象を拘束する',
         messages: [
             '「もっとじっくり見たいナ！」',
-            '<USER>は影の触手で<TARGET>を捕らえようとしてきた！'
+            '{boss}は影の触手で{player}を捕らえようとしてきた！'
         ],
         weight: 15,
         hitRate: 0.9,
@@ -65,7 +65,7 @@ const darkGhostActions: BossAction[] = [
         description: '拘束中の対象を影の舌でなめまわす（与えたダメージ分回復）',
         messages: [
             '「味見しちゃうヨ...」',
-            '<USER>は舌で<TARGET>をなめまわしてきた！'
+            '{boss}は舌で{player}をなめまわしてきた！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.3,
         weight: 30,
@@ -114,8 +114,8 @@ export const darkGhostData: BossData = {
                     description: '魂だけになった獲物からエネルギーを吸い続ける',
                     messages: [
                         '「ケケケ...」',
-                        '<USER>が<TARGET>の魂からエネルギーを吸い取っている...',
-                        '<TARGET>の魂は<USER>の中で力を失っていく...'
+                        '{boss}が{player}の魂からエネルギーを吸い取っている...',
+                        '{player}の魂は{boss}の中で力を失っていく...'
                     ],
                     statusEffect: StatusEffectType.Exhausted,
                     weight: 1
@@ -127,8 +127,8 @@ export const darkGhostData: BossData = {
                     description: '魂を操作して獲物を支配し続ける',
                     messages: [
                         '「フフフ...」',
-                        '<USER>が<TARGET>の魂を操縦している...',
-                        '<TARGET>の意識は<USER>に支配されている...'
+                        '{boss}が{player}の魂を操縦している...',
+                        '{player}の意識は{boss}に支配されている...'
                     ],
                     statusEffect: StatusEffectType.Charm,
                     weight: 1
@@ -140,8 +140,8 @@ export const darkGhostData: BossData = {
                     description: '魂に毒を流し込み続ける',
                     messages: [
                         '「ケケケ...」',
-                        '<USER>が<TARGET>の魂に毒を流し込んでいる...',
-                        '<TARGET>の魂は徐々に汚染されていく...'
+                        '{boss}が{player}の魂に毒を流し込んでいる...',
+                        '{player}の魂は徐々に汚染されていく...'
                     ],
                     statusEffect: StatusEffectType.Poison,
                     weight: 1
@@ -153,8 +153,8 @@ export const darkGhostData: BossData = {
                     description: '魂の動きを鈍らせ続ける',
                     messages: [
                         '「フフフ...」',
-                        '<USER>が<TARGET>の魂の動きを鈍らせている...',
-                        '<TARGET>の魂は重く沈んでいく...'
+                        '{boss}が{player}の魂の動きを鈍らせている...',
+                        '{player}の魂は重く沈んでいく...'
                     ],
                     statusEffect: StatusEffectType.Slow,
                     weight: 1
@@ -166,8 +166,8 @@ export const darkGhostData: BossData = {
                     description: '魂を監視し続けて逃げられないようにする',
                     messages: [
                         '「ケケケ...」',
-                        '<USER>が<TARGET>の魂を監視している...',
-                        '<TARGET>の魂は<USER>の視線から逃れられない...'
+                        '{boss}が{player}の魂を監視している...',
+                        '{player}の魂は{boss}の視線から逃れられない...'
                     ],
                     statusEffect: StatusEffectType.Paralysis,
                     weight: 1
@@ -187,7 +187,7 @@ export const darkGhostData: BossData = {
                     description: '体内にいる獲物の生命エネルギーを吸収する',
                     messages: [
                         '「キミのタマシイ、おいしいネ...」',
-                        '<USER>は体内の<TARGET>の魂からエネルギーを吸い取っている...'
+                        '{boss}は体内の{player}の魂からエネルギーを吸い取っている...'
                     ],
                     weight: 30
                 },
@@ -199,7 +199,7 @@ export const darkGhostData: BossData = {
                     description: '体内にいる獲物の魂を影の触手で引き抜こうとする',
                     messages: [
                         '「ユックリと引き抜いてあげるヨ...」',
-                        '<USER>の胃袋から影の触手が伸び、<TARGET>の魂を引き抜こうとする...'
+                        '{boss}の胃袋から影の触手が伸び、{player}の魂を引き抜こうとする...'
                     ],
                     weight: 25
                 },
@@ -211,7 +211,7 @@ export const darkGhostData: BossData = {
                     description: '体内にいる獲物を粘液で包み込み、動きを封じる',
                     messages: [
                         '「ネバネバ粘液から抜け出せるかナ？」',
-                        '<USER>の胃袋が大量の粘液を出し、<TARGET>を包み込む...'
+                        '{boss}の胃袋が大量の粘液を出し、{player}を包み込む...'
                     ],
                     statusEffect: StatusEffectType.Slimed,
                     weight: 25
@@ -224,7 +224,7 @@ export const darkGhostData: BossData = {
                     description: '絶望的な言葉で心を折り恐怖を植え付ける',
                     messages: [
                         '「もう誰も助けに来ないヨ...」',
-                        '<USER>が<TARGET>の心に絶望を囁いている...'
+                        '{boss}が{player}の心に絶望を囁いている...'
                     ],
                     statusEffect: StatusEffectType.Fear,
                     statusChance: 0.8,
@@ -238,7 +238,7 @@ export const darkGhostData: BossData = {
                     description: '記憶を蝕みスキルの記憶を奪う',
                     messages: [
                         '「難しいことなんて忘れて、楽にしてあげるネ...」',
-                        '<USER>が<TARGET>の記憶を侵食している...'
+                        '{boss}が{player}の記憶を侵食している...'
                     ],
                     statusEffect: StatusEffectType.Oblivion,
                     weight: 15,
@@ -289,7 +289,7 @@ export const darkGhostData: BossData = {
                         description: '魂を吸い取るために対象を丸呑みにする',
                         messages: [
                             '「イタダキマース！」',
-                            '<USER>は大きな口を開け、<TARGET>を吸い込む！'
+                            '{boss}は大きな口を開け、{player}を吸い込む！'
                         ],
                         weight: 1
                     };
@@ -305,7 +305,7 @@ export const darkGhostData: BossData = {
                         description: '対象を影の触手で拘束する',
                         messages: [
                             '「もっとじっくり見たいナ！」',
-                            '<USER>は影の触手で<TARGET>を捕らえようとしてきた！'
+                            '{boss}は影の触手で{player}を捕らえようとしてきた！'
                         ],
                         weight: 1
                     };
@@ -317,7 +317,7 @@ export const darkGhostData: BossData = {
                         description: '魂を吸い取るために対象を丸呑みにする',
                         messages: [
                             '「イタダキマース！」',
-                            '<USER>は大きな口を開け、<TARGET>を吸い込む！'
+                            '{boss}は大きな口を開け、{player}を吸い込む！'
                         ],
                         weight: 1
                     };
@@ -377,8 +377,8 @@ export const darkGhostData: BossData = {
 // Add finishing move for doomed player
 darkGhostData.finishingMove = function() {
     return [
-        '<USER>は<TARGET>の魂ごと吸い取り、<USER>の体に取り込む！',
-        '<TARGET>の魂は<USER>の中に閉じ込められ、満足するまで生命エネルギーを吸われ続けることになった...'
+        '{boss}は{player}の魂ごと吸い取り、{boss}の体に取り込む！',
+        '{player}の魂は{boss}の中に閉じ込められ、満足するまで生命エネルギーを吸われ続けることになった...'
     ];
 };
 

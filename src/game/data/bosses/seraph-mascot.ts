@@ -11,7 +11,7 @@ const seraphMascotContactActions: BossAction[] = [
         description: '巨大な手でやさしく撫でようとする',
         messages: [
             '「だいじょうぶだよ〜♪」',
-            '<USER>は<TARGET>を優しく撫でようとする！',
+            '{boss}は{player}を優しく撫でようとする！',
             'しかし、あまりにも大きすぎて...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.6,
@@ -26,8 +26,8 @@ const seraphMascotContactActions: BossAction[] = [
         description: '神聖な光で対象を祝福する',
         messages: [
             '「みんなで幸せになろうね〜♪」',
-            '<USER>は<TARGET>に神聖な光を浴びせる！',
-            '<TARGET>が祝福の光に包まれた！'
+            '{boss}は{player}に神聖な光を浴びせる！',
+            '{player}が祝福の光に包まれた！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.4,
         statusEffect: StatusEffectType.Blessed,
@@ -42,8 +42,8 @@ const seraphMascotContactActions: BossAction[] = [
         description: '巨大すぎる存在感で相手を圧倒する',
         messages: [
             '「あれ？怖がらないで〜」',
-            '<USER>の巨大な存在感が<TARGET>を圧倒する！',
-            '<TARGET>は巨大さに圧倒されてしまった！'
+            '{boss}の巨大な存在感が{player}を圧倒する！',
+            '{player}は巨大さに圧倒されてしまった！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.3,
         statusEffect: StatusEffectType.Overwhelmed,
@@ -58,7 +58,7 @@ const seraphMascotContactActions: BossAction[] = [
         description: '頭の上の輪っかが落ちそうになる',
         messages: [
             '「あっ、わっかが〜！」',
-            '<USER>の頭上の輪っかが<TARGET>の方へ落ちてくる！'
+            '{boss}の頭上の輪っかが{player}の方へ落ちてくる！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.1,
         hitRate: 0.85,
@@ -72,8 +72,8 @@ const seraphMascotContactActions: BossAction[] = [
         description: '大きな翼で優しく抱きしめる',
         messages: [
             '「抱っこしてあげる〜♪」',
-            '<USER>は大きな翼で<TARGET>を包み込む！',
-            '<TARGET>が翼に包まれて動けなくなった！'
+            '{boss}は大きな翼で{player}を包み込む！',
+            '{player}が翼に包まれて動けなくなった！'
         ],
         weight: 25,
         canUse: (_boss, player, _turn) => {
@@ -91,8 +91,8 @@ const seraphMascotCareActions: BossAction[] = [
         description: '不幸を取り除くため長い舌で舐め回す',
         messages: [
             '「不幸を取ってあげるね〜♪」',
-            '<USER>は長い舌で<TARGET>を丁寧に舐め回す！',
-            '<TARGET>は救済の粘液でベトベトになった！'
+            '{boss}は長い舌で{player}を丁寧に舐め回す！',
+            '{player}は救済の粘液でベトベトになった！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.3,
         statusEffect: StatusEffectType.Slimed,
@@ -107,8 +107,8 @@ const seraphMascotCareActions: BossAction[] = [
         description: '本格的な救済のため特別な状態にする',
         messages: [
             '「もっとちゃんと救済してあげなきゃ〜♪」',
-            '<USER>は<TARGET>をより深い救済状態へと導く！',
-            '<TARGET>は救済の準備が整った状態になった！'
+            '{boss}は{player}をより深い救済状態へと導く！',
+            '{player}は救済の準備が整った状態になった！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.0,
         statusEffect: StatusEffectType.SalvationState,
@@ -123,7 +123,7 @@ const seraphMascotCareActions: BossAction[] = [
         description: '守ろうとして強く抱きしめる',
         messages: [
             '「守ってあげる〜♪」',
-            '<USER>は<TARGET>を強く抱きしめる！',
+            '{boss}は{player}を強く抱きしめる！',
             'しかし力が強すぎて...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.6,
@@ -141,8 +141,8 @@ const seraphMascotProtectionActions: BossAction[] = [
         description: '体内の聖域で完全に保護する',
         messages: [
             '「ここなら絶対安全だよ〜♪」',
-            '<USER>の体内で<TARGET>が聖なる光に包まれる！',
-            '<TARGET>の生命力が聖域で吸収されていく...'
+            '{boss}の体内で{player}が聖なる光に包まれる！',
+            '{player}の生命力が聖域で吸収されていく...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.8,
         weight: 30,
@@ -155,8 +155,8 @@ const seraphMascotProtectionActions: BossAction[] = [
         description: '神聖な力で対象を浄化する',
         messages: [
             '「不純なものを取り除いてあげるね〜♪」',
-            '<USER>の体内で神聖な力が<TARGET>を浄化する！',
-            '<TARGET>の最大HPが聖なる力で削られていく...'
+            '{boss}の体内で神聖な力が{player}を浄化する！',
+            '{player}の最大HPが聖なる力で削られていく...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 2.2,
         weight: 25,
@@ -169,8 +169,8 @@ const seraphMascotProtectionActions: BossAction[] = [
         description: '祝福と共に生命力を吸収する',
         messages: [
             '「たくさん祝福してあげるね〜♪」',
-            '<USER>は<TARGET>を祝福しながら生命力を吸収する！',
-            '<TARGET>は至福の中で力を奪われていく...'
+            '{boss}は{player}を祝福しながら生命力を吸収する！',
+            '{player}は至福の中で力を奪われていく...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 2.0,
         statusEffect: StatusEffectType.Blessed,
@@ -185,8 +185,8 @@ const seraphMascotProtectionActions: BossAction[] = [
         description: '永続的な救済サイクルを開始する',
         messages: [
             '「ずっと救済してあげるからね〜♪」',
-            '<USER>は<TARGET>を永続的な救済サイクルに組み込む！',
-            '<TARGET>は救済の輪の中で循環し続ける...'
+            '{boss}は{player}を永続的な救済サイクルに組み込む！',
+            '{player}は救済の輪の中で循環し続ける...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.5,
         statusEffect: StatusEffectType.SalvationState,
@@ -205,7 +205,7 @@ const seraphMascotEternalActions: BossAction[] = [
         description: '永遠に世話をし続ける',
         messages: [
             '「ずっとお世話してあげるからね〜♪」',
-            '<USER>は体内の<TARGET>を永続的にお世話し続けている...',
+            '{boss}は体内の{player}を永続的にお世話し続けている...',
             'でも、お世話が丁寧すぎて疲れてしまう...'
         ],
         weight: 30,
@@ -218,7 +218,7 @@ const seraphMascotEternalActions: BossAction[] = [
         description: '過度に保護しようとする',
         messages: [
             '「危ないものから守ってあげなきゃ〜！」',
-            '<USER>は体内の<TARGET>を聖なる力で過度に保護しようとする！',
+            '{boss}は体内の{player}を聖なる力で過度に保護しようとする！',
             '何もかもから守ろうとして、自由を奪ってしまう...'
         ],
         statusEffect: StatusEffectType.SalvationState,
@@ -233,8 +233,8 @@ const seraphMascotEternalActions: BossAction[] = [
         description: '救済への強迫観念が発動する',
         messages: [
             '「まだ救済が足りない！もっと、もっと〜！」',
-            '<USER>の救済への強迫観念が暴走し、体内の<TARGET>を締め付ける！',
-            '<TARGET>は完璧な救済を求められ続ける...'
+            '{boss}の救済への強迫観念が暴走し、体内の{player}を締め付ける！',
+            '{player}は完璧な救済を求められ続ける...'
         ],
         weight: 20,
         playerStateCondition: 'defeated'
@@ -246,7 +246,7 @@ const seraphMascotEternalActions: BossAction[] = [
         description: '愛情が深すぎて息ができなくなる',
         messages: [
             '「だいすき〜♪ ずっと一緒にいようね〜♪」',
-            '<USER>の深すぎる愛情で<TARGET>を体内できつく抱きしめ、息苦しくさせる！',
+            '{boss}の深すぎる愛情で{player}を体内できつく抱きしめ、息苦しくさせる！',
             '善意の愛情が逆に苦しみとなってしまう...'
         ],
         statusEffect: StatusEffectType.Overwhelmed,
@@ -345,8 +345,8 @@ const seraphMascotAIStrategy = (boss: Boss, player: Player, turn: number): BossA
                     description: '体内の聖域で完全に保護する',
                     messages: [
                         '「もう傷つかないように、ずっと守ってあげる〜♪」',
-                        '<USER>は<TARGET>を体内の聖域へと運ぶ！',
-                        '完全な保護のため、<TARGET>は聖なる胃袋に包まれた！'
+                        '{boss}は{player}を体内の聖域へと運ぶ！',
+                        '完全な保護のため、{player}は聖なる胃袋に包まれた！'
                     ],
                     weight: 1
                 };
@@ -526,11 +526,11 @@ export const seraphMascotData: BossData = {
 // フィニッシュムーブの実装
 seraphMascotData.finishingMove = function(): string[] {
     return [
-        'セラフィムマスコットは<TARGET>を完全に救済した！',
+        'セラフィムマスコットは{player}を完全に救済した！',
         '「もう何も心配いらないよ〜♪ ずっとお姉さんが守ってあげるからね〜♪」',
-        '<TARGET>はセラフィムマスコットの体内でずっと保護を受けることになった！',
-        'セラフィムマスコットは毎日<TARGET>をお世話し続け、「今日も元気かな〜？」と優しく語りかけている...',
-        'しかし、その愛情は深すぎて、セラフィムマスコットが飽きるまで<TARGET>は外の世界を見ることはない...'
+        '{player}はセラフィムマスコットの体内でずっと保護を受けることになった！',
+        'セラフィムマスコットは毎日{player}をお世話し続け、「今日も元気かな〜？」と優しく語りかけている...',
+        'しかし、その愛情は深すぎて、セラフィムマスコットが飽きるまで{player}は外の世界を見ることはない...'
     ];
 };
 

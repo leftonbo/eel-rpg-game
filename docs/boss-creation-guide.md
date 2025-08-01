@@ -76,7 +76,7 @@ interface BossAction {
     type: ActionType;               // 行動タイプ
     name: string;                   // 行動名
     description: string;            // 行動説明
-    messages?: string[];            // メッセージ（<USER>, <TARGET>, <ACTION>を使用）
+    messages?: string[];            // メッセージ（{boss}, {player}を使用）
     damage?: number;                // [非推奨] 固定ダメージ量（damageFormulaを使用推奨）
     damageFormula?: (user: Boss) => number; // ダメージ計算式（ボスのステータスに基づく）
     statusEffect?: StatusEffectType; // 状態異常タイプ
@@ -182,8 +182,8 @@ const newBossActions: BossAction[] = [
         description: '体内で獲物の生命力を吸収する',
         messages: [
             '「グルルル...」',
-            '<USER>が<TARGET>の生命力を吸収している...',
-            '<TARGET>の最大HPが減少していく...'
+            '{boss}が{player}の生命力を吸収している...',
+            '{player}の最大HPが減少していく...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 2.0,
         weight: 30,
@@ -200,7 +200,7 @@ const newBossActions: BossAction[] = [
             // カスタム効果の実装例
             if (Math.random() < 0.3) {
                 player.statusEffects.removeEffect(StatusEffectType.Eaten);
-                return ['<TARGET>は攻撃の衝撃で<USER>の体外に吹き飛ばされた！'];
+                return ['{player}は攻撃の衝撃で{boss}の体外に吹き飛ばされた！'];
             }
             return [];
         }
@@ -245,8 +245,8 @@ export const newBossData: BossData = {
 newBossData.finishingMove = function() {
     return [
         '「グルルル...」',
-        '<USER>は<TARGET>を完全に制圧した...',
-        '<TARGET>は<USER>の支配下に置かれることになった...'
+        '{boss}は{player}を完全に制圧した...',
+        '{player}は{boss}の支配下に置かれることになった...'
     ];
 };
 
