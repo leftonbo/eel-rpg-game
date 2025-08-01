@@ -261,13 +261,13 @@ const deepStomachActions: BossAction[] = [
 export const fluffyDragonData: BossData = {
     id: 'fluffy-dragon',
     name: 'FluffyDragon',
-    displayName: '🐲 ふわふわドラゴン',
+    displayName: 'ふわふわドラゴン',
     description: '寒冷地に住む真っ白でふわふわな毛に覆われたドラゴン',
     questNote: `寒冷地の奥地で、旅人たちが突然姿を消す事件が続発している。生存者の証言によると、白くてふわふわな毛に覆われた巨大なドラゴンが現れ、甘いラベンダーの香りと共に人々を眠らせて連れ去っているという。このふわふわドラゴンを討伐し、行方不明者たちを救出せよ。`,
-    maxHp: 350,
+    maxHp: 600,
     attackPower: 14,
     actions: fluffyDragonActions,
-    icon: '🐲',
+    icon: '🛏️',
     explorerLevelRequired: 7,
     victoryTrophy: {
         name: 'ふわふわの毛玉',

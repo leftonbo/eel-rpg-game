@@ -19,6 +19,7 @@ export class BattleUIManager {
     private playerStatusEffects: HTMLElement | null = null;
     
     // UI Elements - Boss
+    private bossIconElement: HTMLElement | null = null;
     private bossNameElement: HTMLElement | null = null;
     private bossHpElement: HTMLElement | null = null;
     private bossMaxHpElement: HTMLElement | null = null;
@@ -51,6 +52,7 @@ export class BattleUIManager {
         this.playerStatusEffects = document.getElementById('player-status-effects');
         
         // Boss UI elements
+        this.bossIconElement = document.getElementById('boss-icon');
         this.bossNameElement = document.getElementById('boss-name');
         this.bossHpElement = document.getElementById('boss-hp');
         this.bossMaxHpElement = document.getElementById('boss-max-hp');
@@ -134,6 +136,11 @@ export class BattleUIManager {
      * ボスUI更新
      */
     updateBossUI(boss: Boss): void {
+        // Update boss icon
+        if (this.bossIconElement) {
+            this.bossIconElement.textContent = boss.icon;
+        }
+        
         // Set boss name
         if (this.bossNameElement) {
             this.bossNameElement.textContent = boss.displayName;

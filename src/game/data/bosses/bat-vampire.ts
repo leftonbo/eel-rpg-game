@@ -439,7 +439,7 @@ export const batVampireData: BossData = {
         'ようこそ、我が城へ...君のような美しい獲物は久々だ'
     ],
     maxHp: 640,
-    attackPower: 28,
+    attackPower: 30,
     actions: batVampireActions,
     aiStrategy: batVampireAIStrategy,
     suppressAutoFinishingMove: true, // カスタムとどめ攻撃を使用

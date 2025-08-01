@@ -7,6 +7,7 @@ import * as ts from 'typescript';
 interface BossOverview {
   id: string;
   displayName: string;
+  icon?: string;
   explorerLevelRequired: number;
   maxHp: number;
   attackPower: number;
@@ -69,6 +70,11 @@ function extractBossDataFromAST(code: string, filename: string): BossOverview | 
               bossData.displayName = initializer.text;
             }
             break;
+          case 'icon':
+            if (ts.isStringLiteral(initializer)) {
+              bossData.icon = initializer.text;
+            }
+            break;
           case 'maxHp':
             if (ts.isNumericLiteral(initializer)) {
               const value = parseInt(initializer.text, 10);
@@ -117,6 +123,7 @@ function extractBossDataFromAST(code: string, filename: string): BossOverview | 
     return {
       id: bossData.id,
       displayName: bossData.displayName,
+      icon: bossData.icon,
       explorerLevelRequired: bossData.explorerLevelRequired || 0,
       maxHp: bossData.maxHp,
       attackPower: bossData.attackPower,
@@ -178,6 +185,44 @@ async function getAllBossData(): Promise<BossOverview[]> {
   return bosses.sort((a, b) => a.explorerLevelRequired - b.explorerLevelRequired);
 }
 
+/**
+ * 文字列の表示幅を計算する関数
+ * 日本語文字や絵文字は2文字分の幅として計算
+ */
+function getDisplayWidth(str: string): number {
+  let width = 0;
+  for (const char of str) {
+    const code = char.codePointAt(0);
+    if (!code) continue;
+    
+    // 絵文字や全角文字は2文字分の幅
+    if (
+      (code >= 0x1F000 && code <= 0x1F9FF) || // 絵文字範囲
+      (code >= 0x3000 && code <= 0x303F) ||   // CJKシンボル
+      (code >= 0x3040 && code <= 0x309F) ||   // ひらがな
+      (code >= 0x30A0 && code <= 0x30FF) ||   // カタカナ
+      (code >= 0x4E00 && code <= 0x9FAF) ||   // CJK統合漢字
+      (code >= 0xFF00 && code <= 0xFFEF)      // 全角ASCII
+    ) {
+      width += 2;
+    } else {
+      width += 1;
+    }
+  }
+  return width;
+}
+
+/**
+ * 指定した表示幅になるように文字列をパディングする関数
+ */
+function padToDisplayWidth(str: string, targetWidth: number, padStart = false): string {
+  const currentWidth = getDisplayWidth(str);
+  const paddingNeeded = Math.max(0, targetWidth - currentWidth);
+  const padding = ' '.repeat(paddingNeeded);
+  
+  return padStart ? padding + str : str + padding;
+}
+
 function displayBossTable(bosses: BossOverview[], options: { detailed?: boolean; json?: boolean } = {}) {
   if (options.json) {
     console.log(JSON.stringify(bosses, null, 2));
@@ -189,7 +234,8 @@ function displayBossTable(bosses: BossOverview[], options: { detailed?: boolean;
   
   if (options.detailed) {
     bosses.forEach((boss, index) => {
-      console.log(`\n${index + 1}. ${boss.displayName} (${boss.id})`);
+      const icon = boss.icon || '❓';
+      console.log(`\n${index + 1}. ${icon} ${boss.displayName} (${boss.id})`);
       console.log(`   解禁レベル: ${boss.explorerLevelRequired}`);
       console.log(`   HP: ${boss.maxHp} | 攻撃力: ${boss.attackPower}`);
       if (boss.questNote) {
@@ -204,12 +250,14 @@ function displayBossTable(bosses: BossOverview[], options: { detailed?: boolean;
     });
   } else {
     // Simple table display
-    console.log('\n| 解禁Lv | ボス名                    | HP  | 攻撃力 | ID                |');
-    console.log('|--------|---------------------------|-----|--------|--------------------|');
+    console.log('\n| 解禁Lv | ボス名                      | HP  | 攻撃力 | ID                |');
+    console.log('|--------|------------------------------|-----|--------|--------------------|');
     
     bosses.forEach(boss => {
       const level = boss.explorerLevelRequired.toString().padStart(6);
-      const name = boss.displayName.padEnd(25);
+      const icon = boss.icon || '❓';
+      const nameWithIcon = `${icon} ${boss.displayName}`;
+      const name = padToDisplayWidth(nameWithIcon, 28);
       const hp = boss.maxHp.toString().padStart(3);
       const attack = boss.attackPower.toString().padStart(6);
       const id = boss.id.padEnd(18);

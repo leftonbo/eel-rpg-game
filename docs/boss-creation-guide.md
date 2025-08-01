@@ -211,7 +211,7 @@ const newBossActions: BossAction[] = [
 export const newBossData: BossData = {
     id: 'new-boss',
     name: 'NewBoss',
-    displayName: '🔥 新しいボス',
+    displayName: '新しいボス',
     description: 'ボスの説明',
     questNote: 'クエストの詳細説明...',
     maxHp: 300,
