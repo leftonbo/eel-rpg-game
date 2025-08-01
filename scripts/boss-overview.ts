@@ -2,6 +2,7 @@
 
 import { readdir, readFile } from 'fs/promises';
 import { join } from 'path';
+import * as ts from 'typescript';
 
 interface BossOverview {
   id: string;
@@ -15,79 +16,139 @@ interface BossOverview {
 }
 
 /**
- * TypeScriptファイルからボスデータを抽出する関数
- * 正規表現を使用してコードを解析し、必要な値を抽出
+ * TypeScript ASTを使用してボスデータを抽出する関数
+ * より安全で確実な解析が可能
  */
-function extractBossDataFromCode(code: string, filename: string): BossOverview | null {
+function extractBossDataFromAST(code: string, filename: string): BossOverview | null {
   try {
-    // ボスデータオブジェクト（export const xxxData = { ... }）を探す
-    const bossDataMatch = code.match(/export\s+const\s+\w+Data:\s*BossData\s*=\s*{([^}]+(?:{[^}]*}[^}]*)*[^}]*)}/s);
-    if (!bossDataMatch) {
+    const sourceFile = ts.createSourceFile(
+      filename,
+      code,
+      ts.ScriptTarget.Latest,
+      true
+    );
+
+    let bossDataObject: ts.ObjectLiteralExpression | null = null;
+
+    // export const xxxData: BossData = { ... } を探す
+    ts.forEachChild(sourceFile, (node) => {
+      if (ts.isVariableStatement(node) && 
+          node.modifiers?.some(mod => mod.kind === ts.SyntaxKind.ExportKeyword)) {
+        
+        const declaration = node.declarationList.declarations[0];
+        if (declaration?.name && ts.isIdentifier(declaration.name)) {
+          const name = declaration.name.text;
+          if (name.endsWith('Data') && declaration.initializer && ts.isObjectLiteralExpression(declaration.initializer)) {
+            bossDataObject = declaration.initializer;
+          }
+        }
+      }
+    });
+
+    if (!bossDataObject) {
       console.warn(`No boss data object found in ${filename}`);
       return null;
     }
+
+    // オブジェクトのプロパティを解析
+    const bossData: Partial<BossOverview> = {};
     
-    const bossDataContent = bossDataMatch[1];
-    
-    // displayName を抽出
-    const displayNameMatch = bossDataContent.match(/displayName:\s*['"`]([^'"`]+)['"`]/);
-    if (!displayNameMatch) return null;
-    
-    // id を抽出
-    const idMatch = bossDataContent.match(/id:\s*['"`]([^'"`]+)['"`]/);
-    if (!idMatch) return null;
-    
-    // maxHp を抽出
-    const maxHpMatch = bossDataContent.match(/maxHp:\s*(\d+)/);
-    if (!maxHpMatch) return null;
-    
-    // attackPower を抽出
-    const attackPowerMatch = bossDataContent.match(/attackPower:\s*(\d+)/);
-    if (!attackPowerMatch) return null;
-    
-    // explorerLevelRequired を抽出（オプション、デフォルト1）
-    const explorerLevelMatch = bossDataContent.match(/explorerLevelRequired:\s*(\d+)/);
-    const explorerLevelRequired = explorerLevelMatch ? parseInt(explorerLevelMatch[1]) : 1;
-    
-    // questNote を抽出（オプション）- 複数行対応
-    const questNoteMatch = bossDataContent.match(/questNote:\s*['"`]([^'"`]*(?:\\.[^'"`]*)*)['"`]/s);
-    const questNote = questNoteMatch ? questNoteMatch[1] : undefined;
-    
-    // victoryTrophy を抽出（オプション）
-    let victoryTrophy: { name: string; description: string } | undefined;
-    const victoryTrophyMatch = bossDataContent.match(/victoryTrophy:\s*{\s*name:\s*['"`]([^'"`]+)['"`][^}]*description:\s*['"`]([^'"`]+)['"`][^}]*}/s);
-    if (victoryTrophyMatch) {
-      victoryTrophy = {
-        name: victoryTrophyMatch[1],
-        description: victoryTrophyMatch[2]
-      };
+    bossDataObject.properties.forEach(property => {
+      if (ts.isPropertyAssignment(property) && ts.isIdentifier(property.name)) {
+        const propertyName = property.name.text;
+        const initializer = property.initializer;
+
+        switch (propertyName) {
+          case 'id':
+            if (ts.isStringLiteral(initializer)) {
+              bossData.id = initializer.text;
+            }
+            break;
+          case 'displayName':
+            if (ts.isStringLiteral(initializer)) {
+              bossData.displayName = initializer.text;
+            }
+            break;
+          case 'maxHp':
+            if (ts.isNumericLiteral(initializer)) {
+              bossData.maxHp = parseInt(initializer.text);
+            }
+            break;
+          case 'attackPower':
+            if (ts.isNumericLiteral(initializer)) {
+              bossData.attackPower = parseInt(initializer.text);
+            }
+            break;
+          case 'explorerLevelRequired':
+            if (ts.isNumericLiteral(initializer)) {
+              bossData.explorerLevelRequired = parseInt(initializer.text);
+            }
+            break;
+          case 'questNote':
+            if (ts.isStringLiteral(initializer)) {
+              bossData.questNote = initializer.text;
+            }
+            break;
+          case 'victoryTrophy':
+            if (ts.isObjectLiteralExpression(initializer)) {
+              const trophy = extractTrophyFromObject(initializer);
+              if (trophy) bossData.victoryTrophy = trophy;
+            }
+            break;
+          case 'defeatTrophy':
+            if (ts.isObjectLiteralExpression(initializer)) {
+              const trophy = extractTrophyFromObject(initializer);
+              if (trophy) bossData.defeatTrophy = trophy;
+            }
+            break;
+        }
+      }
+    });
+
+    // 必須プロパティの確認
+    if (!bossData.id || !bossData.displayName || !bossData.maxHp || !bossData.attackPower) {
+      console.warn(`Missing required properties in ${filename}`);
+      return null;
     }
-    
-    // defeatTrophy を抽出（オプション）
-    let defeatTrophy: { name: string; description: string } | undefined;
-    const defeatTrophyMatch = bossDataContent.match(/defeatTrophy:\s*{\s*name:\s*['"`]([^'"`]+)['"`][^}]*description:\s*['"`]([^'"`]+)['"`][^}]*}/s);
-    if (defeatTrophyMatch) {
-      defeatTrophy = {
-        name: defeatTrophyMatch[1],
-        description: defeatTrophyMatch[2]
-      };
-    }
-    
+
     return {
-      id: idMatch[1],
-      displayName: displayNameMatch[1],
-      explorerLevelRequired,
-      maxHp: parseInt(maxHpMatch[1]),
-      attackPower: parseInt(attackPowerMatch[1]),
-      questNote,
-      victoryTrophy,
-      defeatTrophy
+      id: bossData.id,
+      displayName: bossData.displayName,
+      explorerLevelRequired: bossData.explorerLevelRequired || 1,
+      maxHp: bossData.maxHp,
+      attackPower: bossData.attackPower,
+      questNote: bossData.questNote,
+      victoryTrophy: bossData.victoryTrophy,
+      defeatTrophy: bossData.defeatTrophy,
     };
-    
+
   } catch (error) {
-    console.warn(`Error parsing ${filename}:`, error);
+    console.warn(`Error parsing ${filename} with AST:`, error);
     return null;
   }
+}
+
+/**
+ * トロフィーオブジェクトからname/descriptionを抽出する補助関数
+ */
+function extractTrophyFromObject(obj: ts.ObjectLiteralExpression): { name: string; description: string } | null {
+  let name: string | undefined;
+  let description: string | undefined;
+
+  obj.properties.forEach(property => {
+    if (ts.isPropertyAssignment(property) && ts.isIdentifier(property.name)) {
+      const propertyName = property.name.text;
+      const initializer = property.initializer;
+
+      if (propertyName === 'name' && ts.isStringLiteral(initializer)) {
+        name = initializer.text;
+      } else if (propertyName === 'description' && ts.isStringLiteral(initializer)) {
+        description = initializer.text;
+      }
+    }
+  });
+
+  return (name && description) ? { name, description } : null;
 }
 
 async function getAllBossData(): Promise<BossOverview[]> {
@@ -102,7 +163,7 @@ async function getAllBossData(): Promise<BossOverview[]> {
       const filePath = join(bossesDir, file);
       const code = await readFile(filePath, 'utf-8');
       
-      const bossData = extractBossDataFromCode(code, file);
+      const bossData = extractBossDataFromAST(code, file);
       if (bossData) {
         bosses.push(bossData);
       }
