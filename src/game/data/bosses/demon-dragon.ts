@@ -164,49 +164,31 @@ const demonDragonActions: BossAction[] = [
         ]
     },
 
-    // 食べられ状態システム (1-6ターン)
+    // 食べられ状態システム (簡略化: 3段階)
     {
-        id: 'peristalsis-1',
+        id: 'esophagus-travel',
         type: ActionType.DevourAttack,
-        name: '蠕動運動 (食道入り口)',
-        description: '食道の入り口で蠕動により最大HPを奪う',
-        damageFormula: (user: Boss) => user.attackPower * 0.5,
-        weight: 1,
-        playerStateCondition: 'eaten',
-        canUse: (boss: Boss, _player: Player, _turn: number) => {
-            const eatenTurnCount = boss.getCustomVariable<number>('eatenTurnCount', 0);
-            return eatenTurnCount === 1;
-        },
-        messages: [
-            '{boss}の食道の入り口で、{player}は温かく湿った環境に包まれる...',
-            '食道の壁がゆっくりと蠕動し、{player}を奥へと送り込もうとしている...',
-            '{player}の最大HPが少し減少した！'
-        ]
-    },
-    {
-        id: 'peristalsis-2',
-        type: ActionType.DevourAttack,
-        name: '蠕動運動 (食道中間部)',
-        description: '食道の中間部での蠕動により最大HPを奪う',
+        name: '食道移動',
+        description: '食道内を移動しながら最大HPを奪われる',
         damageFormula: (user: Boss) => user.attackPower * 0.6,
         weight: 1,
         playerStateCondition: 'eaten',
         canUse: (boss: Boss, _player: Player, _turn: number) => {
             const eatenTurnCount = boss.getCustomVariable<number>('eatenTurnCount', 0);
-            return eatenTurnCount === 2;
+            return eatenTurnCount <= 2;
         },
         messages: [
-            '{player}は食道の中間部に運ばれ、さらに強い蠕動に包まれる...',
-            '周囲の筋肉が{player}を優しく包み込みながら、胴体部へと押し流していく...',
-            '{player}の最大HPがさらに減少した！'
+            '{boss}の食道内で{player}は温かく湿った環境に包まれている...',
+            '食道の壁が蠕動し、{player}を胴体部へと押し流していく...',
+            '{player}の最大HPが減少した！'
         ]
     },
     {
-        id: 'peristalsis-3',
+        id: 'crop-arrival',
         type: ActionType.DevourAttack,
-        name: '蠕動運動 (胴体部への移動)',
-        description: '胴体部への移動中の蠕動により最大HPを奪う',
-        damageFormula: (user: Boss) => user.attackPower * 0.7,
+        name: '嗉嚢到着',
+        description: '嗉嚢に到着、脱出の最後のチャンス',
+        damageFormula: (user: Boss) => user.attackPower * 0.4,
         weight: 1,
         playerStateCondition: 'eaten',
         canUse: (boss: Boss, _player: Player, _turn: number) => {
@@ -214,46 +196,9 @@ const demonDragonActions: BossAction[] = [
             return eatenTurnCount === 3;
         },
         messages: [
-            '{player}は長い首から胴体部へと運ばれていく...',
-            '蠕動がより強くなり、{player}の体をぎゅうぎゅうと圧迫しながら押し流していく...',
-            '{player}の最大HPがかなり減少した！'
-        ]
-    },
-    {
-        id: 'peristalsis-4',
-        type: ActionType.DevourAttack,
-        name: '蠕動運動 (嗉嚢手前)',
-        description: '嗉嚢手前での最終蠕動により最大HPを奪う',
-        damageFormula: (user: Boss) => user.attackPower * 0.8,
-        weight: 1,
-        playerStateCondition: 'eaten',
-        canUse: (boss: Boss, _player: Player, _turn: number) => {
-            const eatenTurnCount = boss.getCustomVariable<number>('eatenTurnCount', 0);
-            return eatenTurnCount === 4;
-        },
-        messages: [
-            '{player}は嗉嚢の手前まで運ばれてきた...',
-            '最後の強力な蠕動が{player}を包み込み、もはや逃れることは困難になってきた...',
-            '{player}の最大HPが大幅に減少した！'
-        ]
-    },
-    {
-        id: 'reach-crop',
-        type: ActionType.DevourAttack,
-        name: '嗉嚢到着',
-        description: '嗉嚢に到着し、次のターンに脱出できないと危険な状況に',
-        damageFormula: (user: Boss) => user.attackPower * 0.3,
-        weight: 1,
-        playerStateCondition: 'eaten',
-        canUse: (boss: Boss, _player: Player, _turn: number) => {
-            const eatenTurnCount = boss.getCustomVariable<number>('eatenTurnCount', 0);
-            return eatenTurnCount === 5;
-        },
-        messages: [
-            '{player}はついに{boss}の嗉嚢に到着してしまった...',
-            '嗉嚢の中は温かく、不思議と心地よい感覚に包まれている...',
-            'しかし、ここから先に進んでしまうと、もう二度と戻れなくなってしまうだろう...',
-            '次のターンまでに脱出しなければ、非常に危険な状況になる！'
+            '{player}は{boss}の嗉嚢に到着してしまった...',
+            '温かく心地よい感覚に包まれているが、これが最後のチャンスだ！',
+            '次のターンまでに脱出しなければ、魔の胃袋に取り込まれてしまう！'
         ]
     },
     {
@@ -265,7 +210,7 @@ const demonDragonActions: BossAction[] = [
         playerStateCondition: 'eaten',
         canUse: (boss: Boss, _player: Player, _turn: number) => {
             const eatenTurnCount = boss.getCustomVariable<number>('eatenTurnCount', 0);
-            return eatenTurnCount === 6;
+            return eatenTurnCount >= 4;
         },
         onUse: (boss: Boss, player: Player, _turn: number) => {
             // プレイヤーを敗北状態にする
@@ -274,9 +219,7 @@ const demonDragonActions: BossAction[] = [
             player.statusEffects.addEffect(StatusEffectType.DemonStomach);
             
             // 敗北状態の初期設定
-            boss.setCustomVariable('postDefeatedTurn', 0);
-            boss.setCustomVariable('currentStomachPattern', Math.floor(Math.random() * 3)); // 0-2のパターン
-            boss.setCustomVariable('stomachPatternTimer', 0);
+            boss.setCustomVariable('stomachPattern', Math.floor(Math.random() * 3)); // 0-2のパターン
             
             return [];
         },
@@ -288,204 +231,67 @@ const demonDragonActions: BossAction[] = [
         ]
     },
 
-    // 敗北状態システム - パターンA: 粘液付けの胃袋 (4行動)
+    // 敗北状態システム - 統合版（パターン別メッセージ）
     {
-        id: 'slime-wrap',
+        id: 'stomach-experience',
         type: ActionType.PostDefeatedAttack,
-        name: '粘液包み込み',
-        description: '暖かい粘液が全身を優しく包み込む',
-        weight: 25,
+        name: '魔の胃袋体験',
+        description: '魔の胃袋で幸せな体験をする',
+        weight: 100,
         playerStateCondition: 'defeated',
-        canUse: (boss: Boss, _player: Player, _turn: number) => {
-            return boss.getCustomVariable<number>('currentStomachPattern', 0) === 0;
-        },
-        messages: [
-            '暖かい粘液が{player}の全身を優しく包み込んでいく...',
-            '粘液は{player}の肌に心地よく密着し、安らかな感覚をもたらす...',
-            '{player}は粘液の暖かさに包まれて、とても幸せな気分になっている...'
-        ]
-    },
-    {
-        id: 'slime-massage',
-        type: ActionType.PostDefeatedAttack,
-        name: '粘液マッサージ',
-        description: '波状の粘液による心地よいマッサージ',
-        weight: 25,
-        playerStateCondition: 'defeated',
-        canUse: (boss: Boss, _player: Player, _turn: number) => {
-            return boss.getCustomVariable<number>('currentStomachPattern', 0) === 0;
-        },
-        messages: [
-            '粘液が波のようにうねり、{player}を心地よくマッサージしてくれる...',
-            'リズミカルな粘液の動きが、{player}の疲れを癒していく...',
-            '{player}は粘液マッサージの気持ちよさに、うっとりとしている...'
-        ]
-    },
-    {
-        id: 'slime-penetration',
-        type: ActionType.PostDefeatedAttack,
-        name: '粘液浸透',
-        description: '肌への浸透による幸福感',
-        weight: 25,
-        playerStateCondition: 'defeated',
-        canUse: (boss: Boss, _player: Player, _turn: number) => {
-            return boss.getCustomVariable<number>('currentStomachPattern', 0) === 0;
-        },
-        messages: [
-            '粘液が{player}の肌に浸透し、幸せな感覚が体の奥まで染み渡る...',
-            '体の芯から温かくなり、これまでに感じたことのない至福に包まれる...',
-            '{player}は粘液が運ぶ幸福感に完全に身を委ねている...'
-        ]
-    },
-    {
-        id: 'slime-unity',
-        type: ActionType.PostDefeatedAttack,
-        name: '粘液一体化',
-        description: '粘液と一体化した至福状態',
-        weight: 25,
-        playerStateCondition: 'defeated',
-        canUse: (boss: Boss, _player: Player, _turn: number) => {
-            return boss.getCustomVariable<number>('currentStomachPattern', 0) === 0;
-        },
-        messages: [
-            'もはや{player}は粘液と一体になったような至福の感覚に包まれている...',
-            '自分と粘液の境界が曖昧になり、永遠にこの状態でいたいと感じる...',
-            '{player}は粘液と共に存在する完璧な調和の中にいる...'
-        ]
-    },
-
-    // 敗北状態システム - パターンB: 触手詰めの胃袋 (4行動)
-    {
-        id: 'tentacle-appearance',
-        type: ActionType.PostDefeatedAttack,
-        name: '触手登場',
-        description: '柔らかい触手の登場',
-        weight: 25,
-        playerStateCondition: 'defeated',
-        canUse: (boss: Boss, _player: Player, _turn: number) => {
-            return boss.getCustomVariable<number>('currentStomachPattern', 0) === 1;
-        },
-        messages: [
-            '無数の柔らかい触手がゆっくりと{player}に近づいてくる...',
-            '触手は絹のような手触りで、{player}を優しく撫でていく...',
-            '{player}は触手の柔らかさに心を奪われている...'
-        ]
-    },
-    {
-        id: 'tentacle-caress',
-        type: ActionType.PostDefeatedAttack,
-        name: '触手愛撫',
-        description: '全身への優しい愛撫',
-        weight: 25,
-        playerStateCondition: 'defeated',
-        canUse: (boss: Boss, _player: Player, _turn: number) => {
-            return boss.getCustomVariable<number>('currentStomachPattern', 0) === 1;
-        },
-        messages: [
-            '触手たちが{player}の全身を優しく撫で回し、抵抗する気力を奪っていく...',
-            '繊細な触手の動きが{player}に極上の快感をもたらす...',
-            '{player}は触手の愛撫に完全に魅了されてしまった...'
-        ]
-    },
-    {
-        id: 'tentacle-embrace',
-        type: ActionType.PostDefeatedAttack,
-        name: '触手包み込み',
-        description: '触手による完全包囲体験',
-        weight: 25,
-        playerStateCondition: 'defeated',
-        canUse: (boss: Boss, _player: Player, _turn: number) => {
-            return boss.getCustomVariable<number>('currentStomachPattern', 0) === 1;
-        },
-        messages: [
-            '触手に完全に包まれ、{player}のあらゆる部分が愛撫され続ける...',
-            '触手の温かい抱擁の中で、{player}は安心感と快感に包まれる...',
-            '{player}は触手たちの愛に包まれて、至福の時を過ごしている...'
-        ]
-    },
-    {
-        id: 'tentacle-domination',
-        type: ActionType.PostDefeatedAttack,
-        name: '触手支配',
-        description: '触手による完全支配状態',
-        weight: 25,
-        playerStateCondition: 'defeated',
-        canUse: (boss: Boss, _player: Player, _turn: number) => {
-            return boss.getCustomVariable<number>('currentStomachPattern', 0) === 1;
-        },
-        messages: [
-            '触手の愛撫に完全に支配され、{player}には幸福感だけが残っている...',
-            'もはや触手なしでは生きていけないと感じるほど、深い絆を感じる...',
-            '{player}は触手たちの優しい支配下で、永遠の幸せを手に入れた...'
-        ]
-    },
-
-    // 敗北状態システム - パターンC: 圧縮胃袋 (4行動)
-    {
-        id: 'pressure-start',
-        type: ActionType.PostDefeatedAttack,
-        name: '圧力開始',
-        description: '心地よい圧迫感の開始',
-        weight: 25,
-        playerStateCondition: 'defeated',
-        canUse: (boss: Boss, _player: Player, _turn: number) => {
-            return boss.getCustomVariable<number>('currentStomachPattern', 0) === 2;
-        },
-        messages: [
-            '胃袋の壁がゆっくりと収縮し、{player}に心地よい圧迫感を与えてくる...',
-            '適度な圧力が{player}を包み込み、安心できる感覚をもたらす...',
-            '{player}は優しい圧迫感に包まれて、リラックスしている...'
-        ]
-    },
-    {
-        id: 'pressure-enhance',
-        type: ActionType.PostDefeatedAttack,
-        name: '圧力強化',
-        description: '優しい押しつぶし感覚',
-        weight: 25,
-        playerStateCondition: 'defeated',
-        canUse: (boss: Boss, _player: Player, _turn: number) => {
-            return boss.getCustomVariable<number>('currentStomachPattern', 0) === 2;
-        },
-        messages: [
-            '圧力が強くなり、{player}の全身が優しく押しつぶされる幸せな感覚...',
-            '胃袋の壁が{player}を愛おしそうに抱きしめるように圧迫する...',
-            '{player}は圧迫されることの心地よさに目覚めている...'
-        ]
-    },
-    {
-        id: 'pressure-adjust',
-        type: ActionType.PostDefeatedAttack,
-        name: '圧力調整',
-        description: '安心感をもたらす絶妙圧力',
-        weight: 25,
-        playerStateCondition: 'defeated',
-        canUse: (boss: Boss, _player: Player, _turn: number) => {
-            return boss.getCustomVariable<number>('currentStomachPattern', 0) === 2;
-        },
-        messages: [
-            '絶妙な圧力で包み込まれ、{player}はまるで安全な場所にいるような安心感を得る...',
-            '胃袋の圧力が{player}を完璧に支え、不安や恐怖が消えていく...',
-            '{player}は圧力に守られているような、究極の安心感に包まれている...'
-        ]
-    },
-    {
-        id: 'pressure-perfection',
-        type: ActionType.PostDefeatedAttack,
-        name: '圧力完成',
-        description: '永続願望を生む完璧圧力',
-        weight: 25,
-        playerStateCondition: 'defeated',
-        canUse: (boss: Boss, _player: Player, _turn: number) => {
-            return boss.getCustomVariable<number>('currentStomachPattern', 0) === 2;
-        },
-        messages: [
-            '完璧な圧力に包まれ、{player}はこの状態が永遠に続けばいいと思ってしまう...',
-            'もはや外の世界には戻りたくないと感じるほど、完璧な環境に包まれている...',
-            '{player}は圧力による完璧な抱擁の中で、真の幸福を見つけた...'
-        ]
+        messages: [] // 動的に設定される
     }
 ];
+
+// ヘルパー関数: パターン別メッセージ生成
+const getStomachMessages = (pattern: number): string[] => {
+    const patterns = [
+        [ // パターン0: 粘液付けの胃袋
+            '暖かい粘液が{player}の全身を優しく包み込んでいく...',
+            '粘液は{player}の肌に心地よく密着し、至福の感覚をもたらす...',
+            '{player}は粘液の暖かさに包まれて、とても幸せな気分になっている...'
+        ],
+        [ // パターン1: 触手詰めの胃袋
+            '無数の柔らかい触手が{player}に近づき、優しく愛撫していく...',
+            '触手は絹のような手触りで、{player}に極上の快感をもたらす...',
+            '{player}は触手の愛撫に完全に魅了され、至福の時を過ごしている...'
+        ],
+        [ // パターン2: 圧縮胃袋
+            '胃袋の壁がゆっくりと収縮し、{player}に心地よい圧迫感を与える...',
+            '絶妙な圧力が{player}を包み込み、究極の安心感をもたらす...',
+            '{player}は圧力による完璧な抱擁の中で、真の幸福を見つけた...'
+        ]
+    ];
+    return patterns[pattern] || patterns[0];
+};
+
+// ヘルパー関数: 食べられ状態行動選択
+const selectEatenAction = (boss: Boss, player: Player, turn: number): BossAction | null => {
+    let eatenTurnCount = boss.getCustomVariable<number>('eatenTurnCount', 0);
+    eatenTurnCount++;
+    boss.setCustomVariable('eatenTurnCount', eatenTurnCount);
+    
+    const eatenActions = demonDragonActions.filter(action => 
+        action.playerStateCondition === 'eaten' && 
+        action.canUse && action.canUse(boss, player, turn)
+    );
+    
+    return eatenActions.length > 0 ? eatenActions[0] : null;
+};
+
+// ヘルパー関数: 敗北状態行動選択
+const selectDefeatedAction = (boss: Boss): BossAction => {
+    const stomachPattern = boss.getCustomVariable<number>('stomachPattern', 0);
+    const stomachAction = demonDragonActions.find(action => action.id === 'stomach-experience');
+    
+    if (stomachAction) {
+        // パターンに応じたメッセージを動的に設定
+        stomachAction.messages = getStomachMessages(stomachPattern);
+        return stomachAction;
+    }
+    
+    return demonDragonActions[0];
+};
 
 export const demonDragonData: BossData = {
     id: 'demon-dragon',
@@ -513,83 +319,20 @@ export const demonDragonData: BossData = {
         'もがけばもがくほど美味しくなるぞ...'
     ],
     
-    // 複雑なAI戦略 (customVariables活用)
+    // 簡略化されたAI戦略
     aiStrategy: (boss: Boss, player: Player, turn: number): BossAction => {
         // プレイヤーが敗北状態の場合
         if (player.isDefeated()) {
-            // 敗北後のターン数管理
-            let postDefeatedTurn = boss.getCustomVariable<number>('postDefeatedTurn', 0);
-            postDefeatedTurn++;
-            boss.setCustomVariable('postDefeatedTurn', postDefeatedTurn);
-            
-            // パターン切り替えタイマー管理
-            let stomachPatternTimer = boss.getCustomVariable<number>('stomachPatternTimer', 0);
-            stomachPatternTimer++;
-            boss.setCustomVariable('stomachPatternTimer', stomachPatternTimer);
-            
-            // 10ターンごとにパターン切り替え
-            if (stomachPatternTimer >= 10) {
-                const newPattern = Math.floor(Math.random() * 3);
-                boss.setCustomVariable('currentStomachPattern', newPattern);
-                boss.setCustomVariable('stomachPatternTimer', 0);
-                
-                // パターン切り替えメッセージ用の特別な行動
-                return {
-                    id: 'pattern-transition',
-                    type: ActionType.PostDefeatedAttack,
-                    name: 'パターン切り替え',
-                    description: '胃袋の環境が変化する',
-                    weight: 1,
-                    playerStateCondition: 'defeated',
-                    messages: [
-                        '魔の胃袋の環境がゆっくりと変化し始める...',
-                        '{player}を包む感覚が新たなものへと変わっていく...',
-                        '異なる種類の幸福感が{player}を待っている...'
-                    ]
-                };
-            }
-            
-            // 現在のパターンに基づいて行動を選択
-            const postDefeatedActions = demonDragonActions.filter(action => 
-                action.playerStateCondition === 'defeated' && 
-                action.canUse && action.canUse(boss, player, turn)
-            );
-            
-            if (postDefeatedActions.length > 0) {
-                const totalWeight = postDefeatedActions.reduce((sum, action) => sum + action.weight, 0);
-                let random = Math.random() * totalWeight;
-                
-                for (const action of postDefeatedActions) {
-                    random -= action.weight;
-                    if (random <= 0) {
-                        return action;
-                    }
-                }
-            }
-            
-            // フォールバック
-            return postDefeatedActions[0] || demonDragonActions[0];
+            return selectDefeatedAction(boss);
         }
         
         // プレイヤーが食べられ状態の場合
         if (player.isEaten()) {
-            // 食べられターン数管理
-            let eatenTurnCount = boss.getCustomVariable<number>('eatenTurnCount', 0);
-            eatenTurnCount++;
-            boss.setCustomVariable('eatenTurnCount', eatenTurnCount);
-            
-            // 食べられ状態の段階別行動
-            const eatenActions = demonDragonActions.filter(action => 
-                action.playerStateCondition === 'eaten' && 
-                action.canUse && action.canUse(boss, player, turn)
-            );
-            
-            if (eatenActions.length > 0) {
-                return eatenActions[0]; // 条件に合う最初の行動を選択
-            }
+            const eatenAction = selectEatenAction(boss, player, turn);
+            if (eatenAction) return eatenAction;
         }
         
-        // ソウルバキューム特殊技の管理
+        // ソウルバキューム特殊技の優先判定
         const soulVacuumAction = demonDragonActions.find(action => 
             action.id === 'soul-vacuum'
         );
@@ -603,7 +346,6 @@ export const demonDragonData: BossData = {
                 action.id === 'swallow-whole'
             );
             if (swallowAction) {
-                // 食べられターン数を初期化
                 boss.setCustomVariable('eatenTurnCount', 0);
                 return swallowAction;
             }
@@ -614,19 +356,7 @@ export const demonDragonData: BossData = {
             const restraintActions = demonDragonActions.filter(action => 
                 action.playerStateCondition === 'restrained'
             );
-            
-            if (restraintActions.length > 0) {
-                // 重み付きランダム選択
-                const totalWeight = restraintActions.reduce((sum, action) => sum + action.weight, 0);
-                let random = Math.random() * totalWeight;
-                
-                for (const action of restraintActions) {
-                    random -= action.weight;
-                    if (random <= 0) {
-                        return action;
-                    }
-                }
-            }
+            return selectWeightedAction(restraintActions);
         }
         
         // 通常状態の行動選択
@@ -635,35 +365,29 @@ export const demonDragonData: BossData = {
             (!action.canUse || action.canUse(boss, player, turn))
         );
         
-        if (normalActions.length > 0) {
-            // HP割合による戦術調整
-            const bossHpPercent = boss.hp / boss.maxHp;
-            
-            // HP50%以下で拘束攻撃の重みを上げる
-            let modifiedActions = [...normalActions];
-            if (bossHpPercent <= 0.5) {
-                const restraintAction = normalActions.find(action => 
-                    action.id === 'tail-restraint'
-                );
-                if (restraintAction) {
-                    // 拘束攻撃を複数回追加して重みを上げる
-                    modifiedActions.push(restraintAction, restraintAction);
-                }
-            }
-            
-            // 重み付きランダム選択
-            const totalWeight = modifiedActions.reduce((sum, action) => sum + action.weight, 0);
-            let random = Math.random() * totalWeight;
-            
-            for (const action of modifiedActions) {
-                random -= action.weight;
-                if (random <= 0) {
-                    return action;
-                }
+        // HP50%以下で拘束攻撃の重みを上げる
+        if (boss.hp / boss.maxHp <= 0.5) {
+            const restraintAction = normalActions.find(action => action.id === 'tail-restraint');
+            if (restraintAction) {
+                return Math.random() < 0.4 ? restraintAction : selectWeightedAction(normalActions);
             }
         }
         
-        // フォールバック
-        return demonDragonActions[0];
+        return selectWeightedAction(normalActions);
     }
 };
+
+// ヘルパー関数: 重み付きランダム選択
+function selectWeightedAction(actions: BossAction[]): BossAction {
+    if (actions.length === 0) return demonDragonActions[0];
+    
+    const totalWeight = actions.reduce((sum, action) => sum + action.weight, 0);
+    let random = Math.random() * totalWeight;
+    
+    for (const action of actions) {
+        random -= action.weight;
+        if (random <= 0) return action;
+    }
+    
+    return actions[0];
+}
