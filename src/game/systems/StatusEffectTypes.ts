@@ -106,7 +106,11 @@ export enum StatusEffectType {
     // Dual Jester effects
     FalseSecurity = 'false-security',
     Manic = 'manic',
-    Bipolar = 'bipolar'
+    Bipolar = 'bipolar',
+    
+    // Demon Dragon effects
+    DemonStomach = 'demon-stomach',
+    SoulDrain = 'soul-drain'
 }
 
 export interface StatusEffect {
