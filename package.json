@@ -18,7 +18,8 @@
     "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "boss-overview": "tsx scripts/boss-overview.ts"
   },
   "keywords": [
     "game",
@@ -42,6 +43,7 @@
     "gray-matter": "^4.0.3",
     "rimraf": "^6.0.0",
     "rollup-plugin-visualizer": "^6.0.0",
+    "tsx": "^4.20.3",
     "typescript": "^5.0.0",
     "vite": "^7.0.0",
     "vite-plugin-ejs": "^1.7.0",
