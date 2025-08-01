@@ -90,6 +90,11 @@ export class OutGameBossSelectScene extends BaseOutGameScene {
         const bossData = getBossData(bossId);
         
         // モーダルタイトル
+        const modalTitleIcon = document.getElementById('modal-boss-icon');
+        if (modalTitleIcon) {
+            modalTitleIcon.textContent = bossData.icon;
+        }
+        
         const modalTitle = document.getElementById('modal-boss-name');
         if (modalTitle) {
             modalTitle.textContent = bossData.displayName;

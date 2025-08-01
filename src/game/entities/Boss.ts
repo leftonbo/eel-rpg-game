@@ -79,7 +79,7 @@ export interface BossData {
     getDialogue?: (situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') => string;
     finishingMove?: () => string[];
     suppressAutoFinishingMove?: boolean; // 自動とどめ攻撃を抑制し、AI戦略でカスタムとどめ攻撃を処理
-    icon?: string;
+    icon: string;
     guestCharacterInfo?: BossGuestCharacterInfo; // ゲストキャラクター情報（制作者名、元キャラ名など）
     /** 戦闘開始時のメッセージ進行 */
     battleStartMessages?: MessageData[];

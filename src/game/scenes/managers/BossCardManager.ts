@@ -64,7 +64,7 @@ export class BossCardManager {
                         <div class="boss-status-badge defeat" id="boss-status-defeat-${bossData.id}"></div>
                     </div>
                     <div class="card-body text-center">
-                        <h3 class="card-title">${bossData.displayName}</h3>
+                        <h3 class="card-title">${bossData.icon} ${bossData.displayName}</h3>
                         <p class="card-text">${bossData.description}</p>
                         <button class="btn btn-success w-100">選択</button>
                     </div>
