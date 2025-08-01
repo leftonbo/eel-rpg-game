@@ -179,7 +179,7 @@ const aquaSerpentActions: BossAction[] = [
 export const aquaSerpentData: BossData = {
     id: 'aqua-serpent',
     name: 'AquaSerpent',
-    displayName: '🐍 アクアサーペント',
+    displayName: 'アクアサーペント',
     description: '大海原を泳ぐ神秘的な海蛇型の龍',
     questNote: `大海原の深くに潜む、青い体を持つ巨大な海蛇型の龍。体内が淡く光っており、透明なお腹から内部が見える神秘的な存在。獲物を体内に閉じ込めて生命力を吸収する習性を持つ。その美しくも恐ろしい力を止めることができるのか？`,
     maxHp: 750,

@@ -112,7 +112,7 @@ const mikanDragonActions: BossAction[] = [
 export const mikanDragonData: BossData = {
     id: 'mikan-dragon',
     name: 'MikanDragon',
-    displayName: '🍊 蜜柑ドラゴン',
+    displayName: '蜜柑ドラゴン',
     description: '蜜柑の香りを放つ甘いドラゴン',
     questNote: `蜜柑畑に現れた美しいドラゴンが、通りかかる旅人を甘い香りで誘い込んでいるという。その蜜柑ドラゴンを調査し、対処することがあなたの任務だ。`,
     maxHp: 450,

@@ -57,7 +57,7 @@ ElnalFTBの敗北システムは以下の2段階で構成されています：
 ### 候補1: 👑 冥界の支配者アビス
 ```typescript
 id: 'abyss-lord'
-displayName: '👑 冥界の支配者アビス'
+displayName: '冥界の支配者アビス'
 maxHp: 800
 attackPower: 24
 explorerLevelRequired: 10
@@ -219,7 +219,7 @@ abyssLordData.finishingMove = function(): string[] {
 ### 候補2: ☠️ 死神の化身リーパー
 ```typescript
 id: 'death-reaper'
-displayName: '☠️ 死神の化身リーパー'
+displayName: '死神の化身リーパー'
 maxHp: 666
 attackPower: 25
 explorerLevelRequired: 10
@@ -381,7 +381,7 @@ deathReaperData.finishingMove = function(): string[] {
 ### 候補3: 🌀 虚無の王ヴォイド
 ```typescript
 id: 'void-sovereign'
-displayName: '🌀 虚無の王ヴォイド'
+displayName: '虚無の王ヴォイド'
 maxHp: 750
 attackPower: 23
 explorerLevelRequired: 10

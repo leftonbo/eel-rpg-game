@@ -82,7 +82,7 @@ const swampDragonActions: BossAction[] = [
 export const swampDragonData: BossData = {
     id: 'swamp-dragon',
     name: 'SwampDragon',
-    displayName: '🐲 沼のドラゴン',
+    displayName: '沼のドラゴン',
     description: '沼地に生息するドラゴン',
     questNote: `沼地に生息する焼け茶色のドラゴンが、通りかかる旅人を襲い続けている。そのドラゴンを討伐し、平和を取り戻すことがあなたの任務だ。`,
     maxHp: 400,

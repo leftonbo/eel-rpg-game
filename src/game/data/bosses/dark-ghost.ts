@@ -77,7 +77,7 @@ const darkGhostActions: BossAction[] = [
 export const darkGhostData: BossData = {
     id: 'dark-ghost',
     name: 'DarkGhost',
-    displayName: '👻 闇のおばけ',
+    displayName: '闇のおばけ',
     description: '漆黒の森に潜むおばけ',
     questNote: `漆黒の森に向かう冒険者たちが行方不明になっている。目撃情報によると、そこには奇妙な生命体が徘徊しているという…。あなたの任務はその生命体を調査し、討伐することだ。`,
     maxHp: 320,
