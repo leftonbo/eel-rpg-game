@@ -13,7 +13,11 @@ const thermalArchiverActions: BossAction[] = [
             '[SCAN] 生体データ取得中...',
             '機械的なスキャンレーザーが{player}を照射した'
         ],
-        damageFormula: (user: Boss) => user.attackPower * 0.8,
+        damageFormula: (user: Boss) => {
+            const systemLoad = user.getCustomVariable<number>('systemLoad') || 0;
+            const loadModifier = 1 - (systemLoad / 200); // システム負荷により性能低下
+            return user.attackPower * 0.8 * Math.max(0.5, loadModifier);
+        },
         hitRate: 0.95,
         weight: 25,
         playerStateCondition: 'normal'
@@ -28,9 +32,13 @@ const thermalArchiverActions: BossAction[] = [
             '[PREP] 保存処理開始...',
             '{player}の体に特殊な保存液が噴霧された'
         ],
-        damageFormula: (user: Boss) => user.attackPower * 1.0,
+        damageFormula: (user: Boss) => {
+            const systemLoad = user.getCustomVariable<number>('systemLoad') || 0;
+            const loadModifier = 1 - (systemLoad / 200);
+            return user.attackPower * 1.0 * Math.max(0.6, loadModifier);
+        },
         hitRate: 0.85,
-        statusEffect: StatusEffectType.Weakness, // 保存処理中として仮実装
+        statusEffect: StatusEffectType.Weakness,
         statusChance: 0.70,
         weight: 20
     },
@@ -63,8 +71,15 @@ const thermalArchiverActions: BossAction[] = [
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.2,
         weight: 20,
-        canUse: (_boss, player, _turn) => {
-            return !player.isRestrained() && !player.isEaten() && Math.random() < 0.5;
+        canUse: (boss, player, _turn) => {
+            const archiveCapacity = boss.getCustomVariable<number>('archiveCapacity') || 0;
+            const systemLoad = boss.getCustomVariable<number>('systemLoad') || 0;
+            
+            // アーカイブ容量とシステム負荷による使用制限
+            const capacityOk = archiveCapacity < 85; // 容量85%未満で使用可能
+            const systemOk = systemLoad < 80; // システム負荷80%未満で使用可能
+            
+            return !player.isRestrained() && !player.isEaten() && capacityOk && systemOk && Math.random() < 0.5;
         }
     },
 
@@ -80,8 +95,16 @@ const thermalArchiverActions: BossAction[] = [
             '{boss}の保管庫が開き、{player}を内部のアーカイブシステムに収納した！'
         ],
         weight: 15,
-        canUse: (_boss, player, _turn) => {
-            return !player.isEaten() && (player.isRestrained() || player.isKnockedOut()) && Math.random() < 0.6;
+        canUse: (boss, player, _turn) => {
+            const temperatureLevel = boss.getCustomVariable<number>('temperatureLevel') || 37;
+            const archiveCapacity = boss.getCustomVariable<number>('archiveCapacity') || 0;
+            
+            // 温度レベルが適切で、アーカイブ容量に余裕がある場合のみ使用可能
+            const temperatureOk = temperatureLevel >= 37 && temperatureLevel <= 42; // 適正温度範囲
+            const capacityOk = archiveCapacity < 90; // 容量90%未満で使用可能
+            
+            return !player.isEaten() && (player.isRestrained() || player.isKnockedOut()) && 
+                   temperatureOk && capacityOk && Math.random() < 0.6;
         }
     },
 
@@ -350,8 +373,19 @@ export const thermalArchiverData: BossData = {
             }
         }
         
-        // アーカイブ容量管理
-        boss.setCustomVariable('archiveCapacity', currentCapacity + 1);
+        // アーカイブ容量とシステム状態管理
+        const newCapacity = Math.min(100, currentCapacity + 2);
+        boss.setCustomVariable('archiveCapacity', newCapacity);
+        
+        // システム負荷を徐々に増加
+        const newSystemLoad = Math.min(100, systemLoad + 1);
+        boss.setCustomVariable('systemLoad', newSystemLoad);
+        
+        // 容量が高い場合は品質劣化
+        if (newCapacity > 70) {
+            const qualityDrop = Math.floor((newCapacity - 70) / 5);
+            boss.setCustomVariable('preservationQuality', Math.max(30, preservationQuality - qualityDrop));
+        }
         
         // Default to weighted random selection based on player state
         const currentPlayerState = boss.getPlayerState(player);
