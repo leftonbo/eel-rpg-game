@@ -71,17 +71,20 @@ function extractBossDataFromAST(code: string, filename: string): BossOverview | 
             break;
           case 'maxHp':
             if (ts.isNumericLiteral(initializer)) {
-              bossData.maxHp = parseInt(initializer.text);
+              const value = parseInt(initializer.text, 10);
+              if (!isNaN(value)) bossData.maxHp = value;
             }
             break;
           case 'attackPower':
             if (ts.isNumericLiteral(initializer)) {
-              bossData.attackPower = parseInt(initializer.text);
+              const value = parseInt(initializer.text, 10);
+              if (!isNaN(value)) bossData.attackPower = value;
             }
             break;
           case 'explorerLevelRequired':
             if (ts.isNumericLiteral(initializer)) {
-              bossData.explorerLevelRequired = parseInt(initializer.text);
+              const value = parseInt(initializer.text, 10);
+              if (!isNaN(value)) bossData.explorerLevelRequired = value;
             }
             break;
           case 'questNote':
@@ -114,7 +117,7 @@ function extractBossDataFromAST(code: string, filename: string): BossOverview | 
     return {
       id: bossData.id,
       displayName: bossData.displayName,
-      explorerLevelRequired: bossData.explorerLevelRequired || 1,
+      explorerLevelRequired: bossData.explorerLevelRequired || 0,
       maxHp: bossData.maxHp,
       attackPower: bossData.attackPower,
       questNote: bossData.questNote,
