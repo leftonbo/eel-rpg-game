@@ -223,12 +223,12 @@ export class AbilitySystem {
 // Equipment definitions
 export const WEAPONS: Equipment[] = [
     { id: 'bare-hands', name: '素手', description: '生身の拳で戦う', attackPowerBonus: 0, requiredLevel: 0, abilityType: AbilityType.Combat },
-    { id: 'slingshot', name: 'パチンコ', description: '小石を飛ばす簡易武器', attackPowerBonus: 2, requiredLevel: 1, abilityType: AbilityType.Combat },
+    { id: 'slingshot', name: 'パチンコ', description: '小石を飛ばす簡易武器', attackPowerBonus: 3, requiredLevel: 1, abilityType: AbilityType.Combat },
     { id: 'wooden-bow', name: '木の弓矢', description: '木製の弓と矢', attackPowerBonus: 6, requiredLevel: 2, abilityType: AbilityType.Combat },
     { id: 'compound-bow', name: 'コンパウンドボウ', description: '現代的な複合弓', attackPowerBonus: 10, requiredLevel: 4, abilityType: AbilityType.Combat },
     { id: 'submachine-gun', name: 'サブマシンガン', description: '連射可能な自動火器', attackPowerBonus: 15, requiredLevel: 6, abilityType: AbilityType.Combat },
-    { id: 'laser-rifle', name: 'レーザーライフル', description: '未来的なエネルギー兵器', attackPowerBonus: 20, requiredLevel: 8, abilityType: AbilityType.Combat },
-    { id: 'super-blaster', name: 'スーパーブラスター', description: '究極の破壊兵器', attackPowerBonus: 30, requiredLevel: 10, abilityType: AbilityType.Combat }
+    { id: 'laser-rifle', name: 'レーザーライフル', description: '未来的なエネルギー兵器', attackPowerBonus: 25, requiredLevel: 8, abilityType: AbilityType.Combat },
+    { id: 'super-blaster', name: 'スーパーブラスター', description: '究極の破壊兵器', attackPowerBonus: 40, requiredLevel: 10, abilityType: AbilityType.Combat }
 ];
 
 export const ARMORS: Equipment[] = [
@@ -238,5 +238,5 @@ export const ARMORS: Equipment[] = [
     { id: 'adventurer-clothes', name: '冒険者の服', description: '冒険に適した丈夫な服', hpBonus: 50, requiredLevel: 4, abilityType: AbilityType.Toughness },
     { id: 'military-jacket', name: '軍用ジャケット', description: '軍事用の防護服', hpBonus: 100, requiredLevel: 6, abilityType: AbilityType.Toughness },
     { id: 'future-suit', name: '近未来スーツ', description: '高性能な防護スーツ', hpBonus: 200, requiredLevel: 8, abilityType: AbilityType.Toughness },
-    { id: 'super-armor', name: '超合金アーマー', description: '最強の防護装備', hpBonus: 500, requiredLevel: 10, abilityType: AbilityType.Toughness }
+    { id: 'super-armor', name: '超合金アーマー', description: '最強の防護装備', hpBonus: 400, requiredLevel: 10, abilityType: AbilityType.Toughness }
 ];

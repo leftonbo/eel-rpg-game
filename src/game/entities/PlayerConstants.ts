@@ -15,7 +15,7 @@ export const BASE_MAX_HP = 100;
 export const BASE_MAX_MP = 50;
 
 /** 基本攻撃力 */
-export const BASE_ATTACK_POWER = 5;
+export const BASE_ATTACK_POWER = 10;
 
 /** セーブデータバージョン */
 export const SAVE_DATA_VERSION = 4;
