@@ -170,7 +170,7 @@ export const mechSpiderData: BossData = {
     displayName: '機械のクモ',
     description: `汎用修理メカ`,
     questNote: '古代遺跡から逃げ延びた者によると、そこには奇妙なクモが生息しているという。遺跡の調査を安全にするために、あなたはそのクモを討伐することになった。',
-    maxHp: 350,
+    maxHp: 300,
     attackPower: 12,
     actions: mechSpiderActions,
     icon: '🕷️',

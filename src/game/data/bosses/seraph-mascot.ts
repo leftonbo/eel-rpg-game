@@ -442,8 +442,8 @@ export const seraphMascotData: BossData = {
     displayName: 'セラフィムマスコット',
     description: '善意溢れる巨大天使マスコット',
     questNote: '天空の彼方から、巨大な天使のような存在が降りてきた。それは無垢な笑顔で「みんなを救済してあげる〜♪」と言いながら、その圧倒的な大きさで街を踏み荒らしている。善意に満ちた瞳は、あなたを「救済が必要な存在」として認識したようだ...',
-    maxHp: 520,
-    attackPower: 19,
+    maxHp: 1000,
+    attackPower: 32,
     actions: seraphMascotContactActions
         .concat(seraphMascotCareActions)
         .concat(seraphMascotProtectionActions)
