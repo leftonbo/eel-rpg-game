@@ -15,6 +15,14 @@ export class PlayerModalManager {
     // CSS class constants
     private static readonly PROGRESS_BAR_WARNING = 'progress-bar bg-warning progress-bar-striped progress-bar-animated';
     private static readonly PROGRESS_BAR_INFO = 'progress-bar bg-info';
+    
+    // Event listener reference for cleanup
+    private updatePlayerSummaryListener = () => {
+        const playerModal = document.getElementById('player-detail-modal');
+        if (playerModal && playerModal.classList.contains('show')) {
+            this.updatePlayerModalContent();
+        }
+    };
 
     constructor(game: Game) {
         this.game = game;
@@ -34,12 +42,23 @@ export class PlayerModalManager {
                 document.dispatchEvent(event);
             });
         }
+        
+        // Listen for player summary update requests
+        document.addEventListener('updatePlayerSummary', this.updatePlayerSummaryListener);
     }
 
     /**
-     * Show player details modal
+     * Cleanup method to remove event listeners.
+     * This method should be called during the cleanup phase of the game or scene lifecycle.
      */
-    showPlayerDetails(): void {
+    public destroy(): void {
+        document.removeEventListener('updatePlayerSummary', this.updatePlayerSummaryListener);
+    }
+
+    /**
+     * Update player modal content when already visible
+     */
+    private updatePlayerModalContent(): void {
         const player = this.game.getPlayer();
         const abilityLevels = player.getAbilityLevels();
 
@@ -61,6 +80,14 @@ export class PlayerModalManager {
         
         // Update explorer tab
         this.updateExplorerTab();
+    }
+
+    /**
+     * Show player details modal
+     */
+    showPlayerDetails(): void {
+        // Update all modal content
+        this.updatePlayerModalContent();
         
         // Update debug controls visibility in modal
         this.updateDebugControlsVisibilityInModal();
