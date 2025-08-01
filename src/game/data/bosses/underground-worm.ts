@@ -21,18 +21,36 @@ const undergroundWormActions: BossAction[] = [
         id: 'petrifying-breath',
         type: ActionType.StatusAttack,
         name: '石化の息',
-        description: '石を溶かす息を吐いて敵を石化させる',
+        description: '体を石のように固める息を吐いて敵を石化させる',
         messages: [
             '「シュルシュル...」',
-            '{boss}は石を溶かす息を吐いた！',
-            '{player}は石のように固まってしまった！'
+            '{boss}は石化の息を吐いた！',
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.8,
         hitRate: 0.75,
         statusEffect: StatusEffectType.Petrified,
+        statusChance: 0.6, // 石化の成功率
         weight: 25,
-        canUse: (_boss, player, _turn) => {
-            return !player.statusEffects.hasEffect(StatusEffectType.Petrified);
+        canUse: (boss, player, turn) => {
+            if (player.statusEffects.hasEffect(StatusEffectType.Petrified)) {
+                return false;
+            }
+            
+            // 最後に石化攻撃を行ったターンから20ターン以上経過している場合のみ使用可能
+            const lastTurnPetrified = boss.getCustomVariable('lastTurnPetrified') || -20;
+            if (turn - lastTurnPetrified < 20) {
+                return false;
+            }
+            
+            return true;
+        },
+        onUse: (boss, player, turn) => {
+            if (player.statusEffects.hasEffect(StatusEffectType.Petrified)) {
+                // 石化攻撃を行ったターンを記録
+                boss.setCustomVariable('lastTurnPetrified', turn);
+            }
+
+            return [];
         }
     },
     {
@@ -61,8 +79,9 @@ const undergroundWormActions: BossAction[] = [
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.1,
         weight: 20,
+        hitRate: 0.7,
         canUse: (_boss, player, _turn) => {
-            return !player.isEaten() && Math.random() < 0.6;
+            return !player.isEaten() && player.getHpPercentage() <= 50 && Math.random() < 0.6;
         }
     }
 ];
@@ -71,10 +90,10 @@ const undergroundWormDevourActions: BossAction[] = [
     {
         id: 'gravel-grinding',
         type: ActionType.DevourAttack,
-        name: '砂利研磨',
-        description: '体内の砂利でプレイヤーを研磨する',
+        name: '体内研磨',
+        description: '凸凹した胃壁でプレイヤーを研磨する',
         messages: [
-            '{boss}の体内で砂利が{player}を研磨する...',
+            'ざらざらとした{boss}の胃壁が激しく動き、{player}を研磨する...',
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.4,
         weight: 35
@@ -82,10 +101,10 @@ const undergroundWormDevourActions: BossAction[] = [
     {
         id: 'digestive-acid-attack',
         type: ActionType.DevourAttack,
-        name: '消化液攻撃',
-        description: '強酸性の消化液で溶解攻撃',
+        name: '胃液攻撃',
+        description: '砂まみれの胃液で攻撃',
         messages: [
-            '{boss}の強酸性の消化液が{player}を溶かす...',
+            '砂まみれの胃液が{player}を覆い、体力を奪う...',
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.7,
         weight: 40
@@ -93,18 +112,64 @@ const undergroundWormDevourActions: BossAction[] = [
     {
         id: 'petrifying-digestion',
         type: ActionType.StatusAttack,
-        name: '石化消化',
-        description: '体内で石化させて消化を遅らせる',
+        name: '石化の胃液',
+        description: '体内で石化の胃液を浴びせる',
         messages: [
-            '{boss}の体内で特殊な消化液により{player}は石化してしまった！',
+            '{boss}の体内で特殊な胃液が{player}を覆う！',
         ],
-        damageFormula: (user: Boss) => user.attackPower * 1.2,
         statusEffect: StatusEffectType.Petrified,
         weight: 25,
-        canUse: (_boss, player, _turn) => {
-            return !player.statusEffects.hasEffect(StatusEffectType.Petrified);
+        canUse: (boss, player, turn) => {
+            if (player.statusEffects.hasEffect(StatusEffectType.Petrified)) {
+                return false;
+            }
+            
+            // 20ターンごとに使用可能
+            const lastTurnPetrified = boss.getCustomVariable('lastTurnPetrified') || -20;
+            if (lastTurnPetrified + 20 > turn) {
+                return false; // 20ターン経過していない
+            }
+            
+            return true;
+        },
+        onUse: (boss, player, turn) => {
+            if (player.statusEffects.hasEffect(StatusEffectType.Petrified)) {
+                // 石化攻撃を行ったターンを記録
+                boss.setCustomVariable('lastTurnPetrified', turn);
+            }
+
+            return [];
         }
     }
+];
+
+// とどめ攻撃
+const undergroundWormFinishActions: BossAction[] = [
+    // とどめ攻撃（プレイヤーがDoomed状態時）
+    {
+        id: 'finishing-gulp',
+        type: ActionType.FinishingMove,
+        name: '体内保管器官へ',
+        description: '体内で力尽きた獲物を石化させ、さらに奥深くの石化器官に送り込む',
+        weight: 100,
+        playerStateCondition: 'defeated',
+        messages: [
+            '{boss}の体内活動に耐えられなかった{player}は、ゆっくりと石化していく...',
+            '{boss}の胃袋が収縮し、{player}を体内保管器官へと送り込む！',
+            '{player}は石化したまま、{boss}の気が済むまで体内に保存されることになる...',
+        ],
+        onUse: (_boss: Boss, player: Player) => {
+            // 再起不能状態を解除 (TODO: Dead 状態付与時に自動解除したい)
+            player.statusEffects.removeEffect(StatusEffectType.Doomed);
+            // プレイヤーを敗北状態にする
+            player.statusEffects.addEffect(StatusEffectType.Dead);
+            // 石化状態にする
+            player.statusEffects.addEffect(StatusEffectType.Petrified, -1); // 永続的に石化状態にする
+
+            // メッセージは設定されているのでここでは何もしない
+            return [];
+        }
+    },
 ];
 
 // 敗北後の継続攻撃（プレイヤーがKO状態で体内にいる時）
@@ -128,10 +193,8 @@ const undergroundWormPostDefeatedActions: BossAction[] = [
         description: '体内で地底の鉱物を使ってプレイヤーを石化保存する',
         messages: [
             '{boss}の体内に地底の鉱物が流れ込む...',
-            '{player}の体がゆっくりと美しい鉱石へと変化していく'
+            '{player}の体がゆっくりと鉱石へと変化していく...'
         ],
-        statusEffect: StatusEffectType.Petrified,
-        statusChance: 0.8,
         weight: 25,
         playerStateCondition: 'defeated'
     },
@@ -142,19 +205,19 @@ const undergroundWormPostDefeatedActions: BossAction[] = [
         description: '体内の地下水系でプレイヤーを優しく循環させる',
         messages: [
             '{boss}の体内で清らかな地下水が流れている...',
-            '{player}は地下水流に包まれながら永遠の安息を得る'
+            '{player}は地下水流に包まれながら安息を得る...'
         ],
         weight: 20,
         playerStateCondition: 'defeated'
     },
     {
-        id: 'fossil-preservation',
+        id: 'underground-grinding',
         type: ActionType.PostDefeatedAttack,
-        name: '化石化保存',
-        description: '時間をかけて獲物を化石として完全保存する',
+        name: '深い体内での研磨',
+        description: '保存している石化した獲物をゆっくりと研磨する',
         messages: [
-            '{boss}は獲物を大切に保存しようとしている...',
-            '{player}は悠久の時を超えて保存されるため、ゆっくりと化石へと変化していく'
+            '{boss}のざらさらな胃壁がゆっくりと動き、{player}を優しく研磨する...',
+            '石化した{player}の体が磨かれ、綺麗な体として保存される...'
         ],
         weight: 15,
         playerStateCondition: 'defeated'
@@ -172,10 +235,40 @@ export const undergroundWormData: BossData = {
     icon: '🪨',
     explorerLevelRequired: 5,
     actions: undergroundWormActions.concat(undergroundWormDevourActions).concat(undergroundWormPostDefeatedActions),
+    customVariables: {
+        defeatStartTurn: -1, // 敗北開始ターン
+        lastTurnPetrified: -20, // 最後に石化攻撃を行ったターン
+    },
+    suppressAutoFinishingMove: true, // 自動的なとどめ攻撃を抑制
     aiStrategy: (boss: Boss, player: Player, turn: number) => {
         // プレイヤーが敗北状態の場合は敗北後攻撃を使用
         if (player.isDefeated()) {
-            const postDefeatedActions = boss.actions.filter(a => a.type === ActionType.PostDefeatedAttack);
+            let defeatStartTurn = boss.getCustomVariable('defeatStartTurn', -1);
+            if (defeatStartTurn === -1) {
+                // 敗北開始ターンを記録
+                defeatStartTurn = turn - 1;
+                boss.setCustomVariable('defeatStartTurn', defeatStartTurn);
+            }
+            
+            const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
+            // 10 ターンごとに特殊演出
+            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 10 === 0) {
+                return {
+                    id: 'reincarnation-predation',
+                    type: ActionType.PostDefeatedAttack,
+                    name: '再石化',
+                    description: '石化解除されそうになった獲物を再び石化させる',
+                    messages: [
+                        `{player}の石化が緩み、体が少しずつ動くようになる...`,
+                        '突如、{boss}の胃袋が大量の胃液を放出し、{player}を包み込む！',
+                        '{player}は再び石化の状態に戻されてしまった...'
+                    ],
+                    weight: 1
+                };
+            }
+            
+            const postDefeatedActions = undergroundWormPostDefeatedActions.filter(a => a.canUse?.(boss, player, turn) !== false);
+            
             if (postDefeatedActions.length > 0) {
                 const weights = postDefeatedActions.map(a => a.weight || 1);
                 const totalWeight = weights.reduce((sum, w) => sum + w, 0);
@@ -189,6 +282,28 @@ export const undergroundWormData: BossData = {
                 }
                 return postDefeatedActions[0];
             }
+        }
+        
+        // 食べられ＋最大HP0でとどめ攻撃
+        if (player.isEaten() && player.isDoomed()) {
+            const finishingActions = undergroundWormFinishActions;
+            return finishingActions[0];
+        }
+        
+        // 食べられ状態時の行動
+        if (player.isEaten()) {
+            const devourActions = undergroundWormDevourActions.filter(a => a.canUse?.(boss, player, turn) !== false);
+            const weights = devourActions.map(a => a.weight || 1);
+            const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+            let random = Math.random() * totalWeight;
+            
+            for (let i = 0; i < devourActions.length; i++) {
+                random -= weights[i];
+                if (random <= 0) {
+                    return devourActions[i];
+                }
+            }
+            return devourActions[0];
         }
         
         // HP が50%以下になったら積極的に丸呑みを狙う
@@ -220,12 +335,24 @@ export const undergroundWormData: BossData = {
             }
         }
         
-        // 通常攻撃をデフォルト
-        const defaultAction = boss.actions.find(a => a.type === ActionType.Attack);
-        if (!defaultAction) {
-            throw new Error('No default action found for underground worm');
+        // 通常行動
+        const defaultActions = undergroundWormActions.filter(a => a.canUse?.(boss, player, turn) !== false);
+        if (defaultActions.length > 0) {
+            const weights = defaultActions.map(a => a.weight || 1);
+            const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+            let random = Math.random() * totalWeight;
+            
+            for (let i = 0; i < defaultActions.length; i++) {
+                random -= weights[i];
+                if (random <= 0) {
+                    return defaultActions[i];
+                }
+            }
+            return defaultActions[0];
         }
-        return defaultAction;
+        
+        // デフォルトの攻撃行動
+        return undergroundWormActions[0];
     },
     
     // 記念品設定
