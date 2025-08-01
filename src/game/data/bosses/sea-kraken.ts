@@ -138,10 +138,23 @@ export const seaKrakenData: BossData = {
                     description: '体内の無数の吸盤で獲物の体力を永遠に吸収し続ける',
                     messages: [
                         '「シュゥゥゥ...」',
-                        '{boss}の胃袋の吸盤が{player}を吸引している...',
-                        '{player}のエネルギーが永遠に吸収されていく...'
+                        '{boss}の胃袋の吸盤が{player}の体のあちこちに吸い付く！',
+                        '吸盤がエネルギーを吸い出すように動き、{player}のエネルギーが永遠に吸収されていく...'
                     ],
                     statusEffect: StatusEffectType.Weakness,
+                    weight: 1
+                },
+                {
+                    id: 'internal-ink-injection',
+                    type: ActionType.PostDefeatedAttack,
+                    name: '体内イカスミ注入',
+                    description: '胃袋吸盤が獲物の口に吸い付き、イカスミを注入する',
+                    messages: [
+                        '「ゴポポポ...」',
+                        '{boss}の胃袋の吸盤が{player}の口に吸い付いてイカスミを注入する！',
+                        '{player}は催眠状態になりながら、養分を無理やり注入される...'
+                    ],
+                    statusEffect: StatusEffectType.Charm,
                     weight: 1
                 }
             ];

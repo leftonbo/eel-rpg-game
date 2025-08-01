@@ -179,8 +179,8 @@ export const mechSpiderData: BossData = {
         description: '機械のクモが生成する特殊な合成糸。非常に強靭で、古代技術の結晶が込められている。'
     },
     defeatTrophy: {
-        name: '縮小回路',
-        description: '機械のクモの体内に組み込まれた縮小技術の回路チップ。未知の技術で作られた貴重な部品。'
+        name: 'クモの縮小液',
+        description: '機械のクモの体内で生成される縮小液。この液体に晒された物体は、生物や機械関係なしに縮小される。'
     },
     explorerLevelRequired: 0,
     personality: [

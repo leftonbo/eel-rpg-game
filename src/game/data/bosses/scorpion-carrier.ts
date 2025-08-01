@@ -233,8 +233,7 @@ export const scorpionCarrierData: BossData = {
                     description: '体内の生き物からマナを吸収する',
                     messages: [
                         '{boss}は{player}からマナを吸収している...',
-                        '{player}のマナがサソリに吸収されていく...',
-                        'マナを吸収された{player}は魔法が使えなくなる...'
+                        '{player}のマナがサソリに吸収されていく...'
                     ],
                     weight: 1
                 },

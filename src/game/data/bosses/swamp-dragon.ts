@@ -107,6 +107,7 @@ export const swampDragonData: BossData = {
         'この匂い...悪くない'
     ],
     customVariables: {
+        defeatStartTurn: -1,
         fireBreathCooldown: 0,
         aggressionLevel: 1,
         hasUsedFinisher: false,
@@ -134,6 +135,31 @@ export const swampDragonData: BossData = {
 
         // If player is defeated, use special post-defeat actions
         if (player.isDefeated()) {
+            let defeatStartTurn = boss.getCustomVariable('defeatStartTurn', -1);
+            if (defeatStartTurn === -1) {
+                // 敗北開始ターンを記録
+                defeatStartTurn = turn - 1;
+                boss.setCustomVariable('defeatStartTurn', defeatStartTurn);
+            }
+
+            const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
+            // 10 ターンごとに特殊演出
+            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 10 === 0) {
+                return {
+                    id: 'swamp-stew-shower',
+                    type: ActionType.PostDefeatedAttack,
+                    name: '沼のシチューかけ',
+                    description: '沼のシチューを食べて、体内のプレイヤーに浴びせる',
+                    messages: [
+                        '「グルル...！」',
+                        '{boss}が沼のシチューをゆっくりと味わって食べている...',
+                        '突然、温かい沼のシチューが{player}の体に降り注ぐ！',
+                        '{player}は体内で沼の風味豊かなシチューまみれになってしまった...'
+                    ],
+                    weight: 1
+                };
+            }
+            
             const postDefeatedActions: BossAction[] = [
                 {
                     id: 'deep-digestion',
