@@ -231,7 +231,7 @@ export const thermalArchiverData: BossData = {
     displayName: 'サーマル・アーカイバー',
     description: '自動生体標本保管装置',
     questNote: '火山地帯の遺跡で発見された謎の機械装置。生物を「標本」として収集・保管する機能を持つようだが、その目的は不明。調査のため、この装置を停止させることがあなたの任務だ。',
-    maxHp: 430,
+    maxHp: 580,
     attackPower: 17,
     actions: thermalArchiverActions,
     icon: '🏭',
@@ -256,7 +256,8 @@ export const thermalArchiverData: BossData = {
         archiveCapacity: 0,
         temperatureLevel: 37,
         preservationQuality: 100,
-        specimenCount: 0
+        specimenCount: 0,
+        systemLoad: 0
     },
     aiStrategy: (boss, player, turn) => {
         // Archive system AI Strategy
@@ -264,6 +265,8 @@ export const thermalArchiverData: BossData = {
         // カスタム変数管理
         const currentCapacity = boss.getCustomVariable<number>('archiveCapacity') || 0;
         const specimenCount = boss.getCustomVariable<number>('specimenCount') || 0;
+        const systemLoad = boss.getCustomVariable<number>('systemLoad') || 0;
+        const preservationQuality = boss.getCustomVariable<number>('preservationQuality') || 100;
 
         // If player is defeated, use post-defeat archive actions
         if (player.isDefeated()) {
@@ -320,11 +323,13 @@ export const thermalArchiverData: BossData = {
             }
         }
         
-        // HP-based strategy adjustments
+        // HP-based strategy adjustments with system monitoring
         const hpPercentage = boss.getHpPercentage();
         if (hpPercentage < 30) {
-            // Low HP: prioritize archiving valuable specimens
-            boss.setCustomVariable('temperatureLevel', 42); // 緊急保存モード
+            // Low HP: emergency archiving mode
+            boss.setCustomVariable('temperatureLevel', 42);
+            boss.setCustomVariable('systemLoad', Math.min(100, systemLoad + 15));
+            boss.setCustomVariable('preservationQuality', Math.max(50, preservationQuality - 10));
             
             if (!player.isEaten() && Math.random() < 0.6) {
                 const archiveAction = thermalArchiverActions.find(action => action.type === ActionType.EatAttack);
@@ -333,8 +338,9 @@ export const thermalArchiverData: BossData = {
                 }
             }
         } else if (hpPercentage < 60) {
-            // Medium HP: increase restraint attempts
-            boss.setCustomVariable('temperatureLevel', 39); // 準備モード
+            // Medium HP: preparation mode
+            boss.setCustomVariable('temperatureLevel', 39);
+            boss.setCustomVariable('systemLoad', Math.min(100, systemLoad + 5));
             
             if (!player.isRestrained() && Math.random() < 0.5) {
                 const restraintAction = thermalArchiverActions.find(action => action.type === ActionType.RestraintAttack);
