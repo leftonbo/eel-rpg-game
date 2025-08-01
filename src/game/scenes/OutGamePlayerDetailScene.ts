@@ -42,6 +42,11 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
                 document.dispatchEvent(event);
             });
         }
+        
+        // プレイヤー詳細モーダルの更新イベント
+        document.addEventListener('updatePlayerSummary', () => {
+            this.updatePlayerDetails();
+        });
     }
     
     /**
