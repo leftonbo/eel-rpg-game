@@ -581,7 +581,7 @@ const initializeStomachExperienceVariables = (boss: Boss): void => {
     boss.setCustomVariable('regurgitationProgress', 0);
     
     // 1, 2, 3のパターンをランダムに並び替えて配列に格納
-    let stomachPatterns = [1, 2, 3];
+    const stomachPatterns = [1, 2, 3];
     boss.setCustomVariable('arrayStomachPatterns', shuffleArray(stomachPatterns));
 }
 
