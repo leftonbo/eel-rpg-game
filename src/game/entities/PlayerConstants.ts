@@ -75,10 +75,10 @@ export const POWER_ATTACK_DEFAULT_MULTIPLIER = 2.5;
 export const POWER_ATTACK_NO_MP_MULTIPLIER = 2;
 
 /** ウルトラスマッシュの基本ダメージ倍率 */
-export const ULTRA_SMASH_BASE_DAMAGE_MULTIPLIER = 1;
+export const ULTRA_SMASH_BASE_DAMAGE_MULTIPLIER = 2;
 
 /** ウルトラスマッシュのMPダメージ倍率 */
-export const ULTRA_SMASH_MP_DAMAGE_MULTIPLIER = 1;
+export const ULTRA_SMASH_MP_DAMAGE_MULTIPLIER = 4;
 
 /** もがく時のダメージ倍率（アジリティLv5+時） */
 export const STRUGGLE_DAMAGE_MULTIPLIER = 1.5;

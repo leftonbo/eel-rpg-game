@@ -72,8 +72,7 @@ const seraphMascotContactActions: BossAction[] = [
         description: '大きな翼で優しく抱きしめる',
         messages: [
             '「抱っこしてあげる〜♪」',
-            '{boss}は大きな翼で{player}を包み込む！',
-            '{player}が翼に包まれて動けなくなった！'
+            '{boss}は大きな翼で{player}を包み込む！'
         ],
         weight: 25,
         canUse: (_boss, player, _turn) => {
@@ -92,10 +91,10 @@ const seraphMascotCareActions: BossAction[] = [
         messages: [
             '「不幸を取ってあげるね〜♪」',
             '{boss}は長い舌で{player}を丁寧に舐め回す！',
-            '{player}は救済の粘液でベトベトになった！'
+            '{player}は救済の粘液でベトベトになる...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.3,
-        statusEffect: StatusEffectType.Slimed,
+        statusEffect: StatusEffectType.HolySlimed,
         statusChance: 0.80,
         weight: 35,
         playerStateCondition: 'restrained'
@@ -106,15 +105,28 @@ const seraphMascotCareActions: BossAction[] = [
         name: '救済の準備',
         description: '本格的な救済のため特別な状態にする',
         messages: [
-            '「もっとちゃんと救済してあげなきゃ〜♪」',
-            '{boss}は{player}をより深い救済状態へと導く！',
-            '{player}は救済の準備が整った状態になった！'
+            '「体に染み付く救済をしてあげるよ〜♪」',
+            '{boss}は小さな{player}の体を口にくわえ、激しい神聖の力を注ぎ込む！',
+            '{player}は{boss}の救済の力に圧倒される！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.0,
         statusEffect: StatusEffectType.SalvationState,
         statusChance: 0.90,
         weight: 30,
-        playerStateCondition: 'restrained'
+        playerStateCondition: 'restrained',
+        canUse: (boss: Boss, player: Player, turn: number): boolean => {
+            // 救済状態でない場合のみ使用可能
+            const isInSalvation = player.statusEffects.hasEffect(StatusEffectType.SalvationState);
+            const lastUsed = boss.getCustomVariable<number>('salvationAbilityLastUsed', -1);
+            // 20ターン経過後に使用可能
+            return !isInSalvation && (lastUsed === -1 || turn - lastUsed >= 20);
+        },
+        onPreUse: (_action: BossAction, boss: Boss, _player: Player, turn: number) => {
+            // クールダウン記録
+            boss.setCustomVariable('salvationAbilityLastUsed', turn);
+            // スキル内容の変更はしない
+            return null;
+        }
     },
     {
         id: 'protective-squeeze',
@@ -144,7 +156,7 @@ const seraphMascotProtectionActions: BossAction[] = [
             '{boss}の体内で{player}が聖なる光に包まれる！',
             '{player}の生命力が聖域で吸収されていく...'
         ],
-        damageFormula: (user: Boss) => user.attackPower * 1.8,
+        damageFormula: (user: Boss) => user.attackPower * 1.3,
         weight: 30,
         playerStateCondition: 'eaten'
     },
@@ -156,9 +168,9 @@ const seraphMascotProtectionActions: BossAction[] = [
         messages: [
             '「不純なものを取り除いてあげるね〜♪」',
             '{boss}の体内で神聖な力が{player}を浄化する！',
-            '{player}の最大HPが聖なる力で削られていく...'
+            '{player}の生命力が聖なる力で削られていく...'
         ],
-        damageFormula: (user: Boss) => user.attackPower * 2.2,
+        damageFormula: (user: Boss) => user.attackPower * 1.5,
         weight: 25,
         playerStateCondition: 'eaten'
     },
@@ -172,7 +184,7 @@ const seraphMascotProtectionActions: BossAction[] = [
             '{boss}は{player}を祝福しながら生命力を吸収する！',
             '{player}は至福の中で力を奪われていく...'
         ],
-        damageFormula: (user: Boss) => user.attackPower * 2.0,
+        damageFormula: (user: Boss) => user.attackPower * 1.0,
         statusEffect: StatusEffectType.Blessed,
         statusChance: 0.60,
         weight: 20,
@@ -188,15 +200,54 @@ const seraphMascotProtectionActions: BossAction[] = [
             '{boss}は{player}を永続的な救済サイクルに組み込む！',
             '{player}は救済の輪の中で循環し続ける...'
         ],
-        damageFormula: (user: Boss) => user.attackPower * 1.5,
+        damageFormula: (user: Boss) => user.attackPower * 1.0,
         statusEffect: StatusEffectType.SalvationState,
         statusChance: 0.70,
         weight: 15,
-        playerStateCondition: 'eaten'
+        playerStateCondition: 'eaten',
+        canUse: (boss: Boss, _player: Player, turn: number): boolean => {
+            // クールダウンチェック（20ターン）
+            const lastUsed = boss.getCustomVariable<number>('salvationAbilityLastUsed', -1);
+            return lastUsed === -1 || turn - lastUsed >= 20;
+        },
+        onPreUse: (_action: BossAction, boss: Boss, _player: Player, turn: number) => {
+            // クールダウン記録
+            boss.setCustomVariable('salvationAbilityLastUsed', turn);
+            // スキル内容の変更はしない
+            return null;
+        }
     }
 ];
 
-// 段階4: 永続救済フェーズ（敗北後の継続的世話）
+// 段階4: 敗北後のとどめ行動（永続救済への移行）
+const seraphMascotFinishingMove: BossAction = {
+    id: 'finish-to-eternal-care',
+    type: ActionType.FinishingMove,
+    name: '永遠の加護',
+    description: '体内で力尽きた対象を永遠にお世話する',
+    weight: 100,
+    playerStateCondition: 'defeated',
+    messages: [
+        'セラフィムマスコットの聖なる力に晒されすぎた{player}は力尽き、体が縮んでいく...',
+        '「疲れちゃったかな～？じゃあ、特別な場所に連れてってあげるね～♪」',
+        'セラフィムマスコットの胃壁が、小さくなった{player}の体を更に奥に押し込んでいく！',
+        '「もう何も心配いらないよ〜♪ ずっとお姉さんが守ってあげるからね〜♪」',
+        '{player}の体はセラフィムマスコットの体内に完全に取り込まれてしまった！',
+        'その深すぎる愛情によって、セラフィムマスコットの救済が終わるまで{player}は外の世界を見ることはない...'
+    ],
+    onUse: (_boss: Boss, player: Player) => {
+        // プレイヤーを敗北状態にし、体内での永続的な世話を開始
+        player.statusEffects.removeEffect(StatusEffectType.Doomed);
+        player.statusEffects.addEffect(StatusEffectType.Dead);
+        player.statusEffects.addEffect(StatusEffectType.Shrunk, -1); // 縮小状態にする
+        player.statusEffects.addEffect(StatusEffectType.SalvationState, -1); // 永続的な救済状態
+        
+        // メッセージ追加は無し
+        return [];
+    }
+};
+
+// 段階5: 永続救済フェーズ（敗北後の継続的世話）
 const seraphMascotEternalActions: BossAction[] = [
     {
         id: 'eternal-care',
@@ -205,8 +256,8 @@ const seraphMascotEternalActions: BossAction[] = [
         description: '永遠に世話をし続ける',
         messages: [
             '「ずっとお世話してあげるからね〜♪」',
-            '{boss}は体内の{player}を永続的にお世話し続けている...',
-            'でも、お世話が丁寧すぎて疲れてしまう...'
+            '{boss}の体内器官が{player}にマッサージをし、お世話を続けている...',
+            '柔らかくも丁寧なお世話が続き、{player}は心地よい感覚に包まれる...'
         ],
         weight: 30,
         playerStateCondition: 'defeated'
@@ -218,11 +269,9 @@ const seraphMascotEternalActions: BossAction[] = [
         description: '過度に保護しようとする',
         messages: [
             '「危ないものから守ってあげなきゃ〜！」',
-            '{boss}は体内の{player}を聖なる力で過度に保護しようとする！',
-            '何もかもから守ろうとして、自由を奪ってしまう...'
+            '{boss}は体内の{player}に聖なる力を流し込み、過度に保護しようとする！',
+            '小さな{player}は過保護な環境に包まれ、身動きがとれなくなる...'
         ],
-        statusEffect: StatusEffectType.SalvationState,
-        statusChance: 0.60,
         weight: 25,
         playerStateCondition: 'defeated'
     },
@@ -233,8 +282,8 @@ const seraphMascotEternalActions: BossAction[] = [
         description: '救済への強迫観念が発動する',
         messages: [
             '「まだ救済が足りない！もっと、もっと〜！」',
-            '{boss}の救済への強迫観念が暴走し、体内の{player}を締め付ける！',
-            '{player}は完璧な救済を求められ続ける...'
+            '{boss}の救済への強迫観念が暴走し、体内器官が{player}の体を締め付ける！',
+            '{player}は救済の圧力に苦しむも、柔らかい感触にうっとりしてしまう...'
         ],
         weight: 20,
         playerStateCondition: 'defeated'
@@ -246,7 +295,7 @@ const seraphMascotEternalActions: BossAction[] = [
         description: '愛情が深すぎて息ができなくなる',
         messages: [
             '「だいすき〜♪ ずっと一緒にいようね〜♪」',
-            '{boss}の深すぎる愛情で{player}を体内できつく抱きしめ、息苦しくさせる！',
+            '{boss}が自分のお腹を抱きしめると、その深すぎる愛情によって{player}の体がきつく締め付けられる！',
             '善意の愛情が逆に苦しみとなってしまう...'
         ],
         statusEffect: StatusEffectType.Overwhelmed,
@@ -255,6 +304,28 @@ const seraphMascotEternalActions: BossAction[] = [
         playerStateCondition: 'defeated'
     }
 ];
+
+// 永続救済フェーズ 8 ターンごとに行う聖なる粘液シャワー
+const seraphMascotSacredShowerAction: BossAction = {
+    id: 'sacred-shower',
+    type: ActionType.PostDefeatedAttack,
+    name: '聖なるシャワー',
+    description: '体内で聖なる粘液のシャワーを浴びせる',
+    statusEffect: StatusEffectType.HolySlimed,
+    statusChance: 1.0,
+    messages: [
+        '「体をキレイにしてあげるね～♪」',
+        '{boss}の体内器官から聖なる粘液のシャワーが降り注ぐ！',
+        '{player}はその聖なる粘液に包まれ、心地よい感覚に浸る...',
+        '「もみ洗いもしてあげるよ～♪」',
+        '{boss}の体内器官が聖なる粘液を出しながら、優しく{player}を揉み洗いする！',
+        '{player}は粘液ごと体をもみくちゃにされ、意識がぼうっとしていく...',
+        '「これでいつでもキレイだよ～♪また洗ってあげるからね～♪」',
+        '体を洗われた{player}は、心も体も清められた感覚に浸る...'
+    ],
+    weight: 200,
+    playerStateCondition: 'defeated'
+};
 
 // AI戦略: 救済レベル管理と段階的エスカレーション
 const seraphMascotAIStrategy = (boss: Boss, player: Player, turn: number): BossAction => {
@@ -280,6 +351,11 @@ const seraphMascotAIStrategy = (boss: Boss, player: Player, turn: number): BossA
         postDefeatedTurn++;
         boss.setCustomVariable('postDefeatedTurn', postDefeatedTurn);
         
+        // 8ターンごとに聖なるシャワーを浴びせる
+        if (postDefeatedTurn % 8 === 0) {
+            return seraphMascotSacredShowerAction;
+        }
+        
         // 永続救済フェーズの行動選択
         const eternalActions = seraphMascotEternalActions;
         const totalWeight = eternalActions.reduce((sum, action) => sum + action.weight, 0);
@@ -292,6 +368,12 @@ const seraphMascotAIStrategy = (boss: Boss, player: Player, turn: number): BossA
             }
         }
         return eternalActions[0];
+    }
+    
+    // プレイヤーが危機状態 (最大HPが0)
+    if (player.isDoomed()) {
+        // とどめ行動を選択
+        return seraphMascotFinishingMove;
     }
     
     // プレイヤーが食べられた状態（保護フェーズ）
@@ -307,15 +389,8 @@ const seraphMascotAIStrategy = (boss: Boss, player: Player, turn: number): BossA
             }
         }
         
-        // 重み付きランダム選択（salvation-cycleのクールダウンチェック付き）
-        const availableActions = protectionActions.filter(action => {
-            if (action.id === 'salvation-cycle') {
-                // クールダウンチェック（20ターン）
-                const lastUsed = boss.getCustomVariable<number>('salvationAbilityLastUsed', -1);
-                return lastUsed === -1 || turn - lastUsed >= 20;
-            }
-            return true;
-        });
+        // 重み付きランダム選択
+        const availableActions = protectionActions.filter(action => action.canUse ? action.canUse(boss, player, turn) : true);
         
         const totalWeight = availableActions.reduce((sum, action) => sum + action.weight, 0);
         let random = Math.random() * totalWeight;
@@ -323,10 +398,6 @@ const seraphMascotAIStrategy = (boss: Boss, player: Player, turn: number): BossA
         for (const action of availableActions) {
             random -= action.weight;
             if (random <= 0) {
-                // salvation-cycle使用時はクールダウン記録
-                if (action.id === 'salvation-cycle') {
-                    boss.setCustomVariable('salvationAbilityLastUsed', turn);
-                }
                 return action;
             }
         }
@@ -344,9 +415,9 @@ const seraphMascotAIStrategy = (boss: Boss, player: Player, turn: number): BossA
                     name: '完全なる保護',
                     description: '体内の聖域で完全に保護する',
                     messages: [
-                        '「もう傷つかないように、ずっと守ってあげる〜♪」',
-                        '{boss}は{player}を体内の聖域へと運ぶ！',
-                        '完全な保護のため、{player}は聖なる胃袋に包まれた！'
+                        '「もう傷つかないように、おなかの聖域で守ってあげる〜♪」',
+                        '{boss}は{player}を長い舌で巻き取り、そのまま飲み込んでしまった！',
+                        '{player}は聖なる胃袋に包まれる...'
                     ],
                     weight: 1
                 };
@@ -367,16 +438,11 @@ const seraphMascotAIStrategy = (boss: Boss, player: Player, turn: number): BossA
     if (player.isRestrained()) {
         const careActions = seraphMascotCareActions;
         
-        // 救済状態でない場合は準備を優先（クールダウンチェック付き）
+        // 救済状態でない場合は準備を優先
         if (!isPlayerInSalvation && Math.random() < 0.6) {
-            const preparationAction = careActions.find(action => action.id === 'salvation-preparation');
+            const preparationAction = careActions.find(action => action.canUse && action.canUse(boss, player, turn) && action.id === 'salvation-preparation');
             if (preparationAction) {
-                // クールダウンチェック（20ターン）
-                const lastUsed = boss.getCustomVariable<number>('salvationAbilityLastUsed', -1);
-                if (lastUsed === -1 || turn - lastUsed >= 20) {
-                    boss.setCustomVariable('salvationAbilityLastUsed', turn);
-                    return preparationAction;
-                }
+                return preparationAction;
             }
         }
         
@@ -448,6 +514,7 @@ export const seraphMascotData: BossData = {
         .concat(seraphMascotCareActions)
         .concat(seraphMascotProtectionActions)
         .concat(seraphMascotEternalActions),
+    suppressAutoFinishingMove: true,
     icon: '☁️',
     explorerLevelRequired: 9,
     
@@ -521,17 +588,6 @@ export const seraphMascotData: BossData = {
         hasUsedCompleteProtection: false,  // 完全保護使用フラグ
         salvationAbilityLastUsed: -1 // 救済能力(preparation/cycle)共通クールダウン
     }
-};
-
-// フィニッシュムーブの実装
-seraphMascotData.finishingMove = function(): string[] {
-    return [
-        'セラフィムマスコットは{player}を完全に救済した！',
-        '「もう何も心配いらないよ〜♪ ずっとお姉さんが守ってあげるからね〜♪」',
-        '{player}はセラフィムマスコットの体内でずっと保護を受けることになった！',
-        'セラフィムマスコットは毎日{player}をお世話し続け、「今日も元気かな〜？」と優しく語りかけている...',
-        'しかし、その愛情は深すぎて、セラフィムマスコットが飽きるまで{player}は外の世界を見ることはない...'
-    ];
 };
 
 // 状況別台詞システム

@@ -173,6 +173,7 @@ export const mechSpiderData: BossData = {
     maxHp: 300,
     attackPower: 12,
     actions: mechSpiderActions,
+    suppressAutoFinishingMove: true,
     icon: '🕷️',
     victoryTrophy: {
         name: '機械の合成糸',
@@ -196,6 +197,36 @@ export const mechSpiderData: BossData = {
         
         // If player is post-defeated, use special post-defeat actions
         if (player.isDefeated()) {
+            const defeatStartTurn = boss.getCustomVariable<number>('defeatStartTurn', -1);
+            // If this is the first turn player is defeated, record it
+            if (defeatStartTurn === -1) {
+                boss.setCustomVariable('defeatStartTurn', turn);
+            }
+
+            const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
+            
+            // Every 8 turns since defeat, use a special post-defeat action
+            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 8 === 0) {
+                const specialPostDefeatAction: BossAction = {
+                    id: 'repair-inspection',
+                    type: ActionType.PostDefeatedAttack,
+                    name: '修理完了検査',
+                    description: '修理が完了したか生命体を検査し続ける',
+                    messages: [
+                        '{boss}の体内修理装置の拘束が緩んだ途端、{player}の体が狭い透明の部屋に押し込まれる！',
+                        'REPAIR INSPECTION PROTOCOL...',
+                        '{boss}の体内スキャン装置が動き出し、透明の壁越しに{player}の修理完了を検査している...',
+                        'ERROR: REPAIR REQUIRED PARTS DETECTED',
+                        'RESTARTING REPAIR SYSTEM...',
+                        '{boss}の体内修理装置が再起動し、{player}の体を合成糸で再び拘束し始める！',
+                        '{player}の体が再び体内修理装置の内部へと戻っていく...'
+                    ],
+                    weight: 1
+                };
+                
+                return specialPostDefeatAction;
+            }
+            
             const postDefeatedActions: BossAction[] = [
                 {
                     id: 'internal-repair-system',
@@ -228,7 +259,7 @@ export const mechSpiderData: BossData = {
                     description: '意味のない修理作業を生命体に施し続ける',
                     messages: [
                         'PROCESSING REPAIR SEQUENCE...',
-                        '{boss}が{player}にがらくたのようなパーツを接着しようとする...',
+                        '{boss}の体内修理装置が{player}にがらくたのようなパーツを接着しようとする...',
                         'しかし、糊でくっつけられたパーツはすぐに外れてしまう...'
                     ],
                     weight: 1
@@ -240,25 +271,43 @@ export const mechSpiderData: BossData = {
                     description: '体内の拘束システムで生命体を固定し続ける',
                     messages: [
                         'RESTRAINT SYSTEM ACTIVE...',
-                        '{boss}の体内拘束システムが{player}を固定している...',
+                        '{boss}の体内拘束システムが、合成糸で{player}を何重にも固定している...',
                         '{player}は機械的な拘束から逃れられない...'
-                    ],
-                    weight: 1
-                },
-                {
-                    id: 'repair-inspection',
-                    type: ActionType.PostDefeatedAttack,
-                    name: '修理完了検査',
-                    description: '修理が完了したか生命体を検査し続ける',
-                    messages: [
-                        'REPAIR INSPECTION PROTOCOL...',
-                        '{boss}が{player}の修理完了を検査している...',
-                        '不整合を検知した{boss}は{player}の修理を続ける...'
                     ],
                     weight: 1
                 }
             ];
             return postDefeatedActions[Math.floor(Math.random() * postDefeatedActions.length)];
+        }
+        
+        // Custom finishing action
+        if (player.isDoomed()) {
+            const cocoonFinishAction: BossAction = {
+                id: 'cocoon-finish-process',
+                type: ActionType.FinishingMove,
+                name: '縮小プロセス完了',
+                description: '縮小化が完了した対象を体内に取り込み、体内修理装置に縛りつける',
+                messages: [
+                    '{player}は繭の中で完全に小さくなってしまった...',
+                    '機械のクモは繭に噛みつき、中身を{player}ごと吸い上げる！',
+                    '{player}は縮小液ごと機械のクモの口へと吸い込まれ、そのまま飲み込まれていく...',
+                    '機械のクモの体内機械が、飲み込んだ{player}を体内修理装置へと送り込む！',
+                    '{player}を受け取った体内修理装置は、{player}を合成糸で装置に縛り付ける！',
+                    '修理装置に縛り付けられた{player}は、機械のクモが満足するまで意味のない修理をされ続ける...',
+                ],
+                weight: 1,
+                onUse: (_boss, player, _turn) => {
+                    player.statusEffects.removeEffect(StatusEffectType.Cocoon);
+                    player.statusEffects.removeEffect(StatusEffectType.Doomed);
+                    player.statusEffects.addEffect(StatusEffectType.Dead);
+                    player.statusEffects.addEffect(StatusEffectType.Eaten);
+                    player.statusEffects.addEffect(StatusEffectType.Shrunk, -1);
+                    
+                    return [];
+                }
+            };
+            
+            return cocoonFinishAction;
         }
         
         // State-based action selection
@@ -401,15 +450,4 @@ mechSpiderData.getDialogue = function(situation: 'battle-start' | 'player-restra
     
     const options = dialogues[situation] || dialogues['battle-start'];
     return options[Math.floor(Math.random() * options.length)];
-};
-
-// Special finishing move sequence for cocoon doomed state
-mechSpiderData.finishingMove = function(): string[] {
-    return [
-        '{player}は繭の中で完全に小さくなってしまった...',
-        '機械のクモは繭に噛みつき、中身を{player}ごと吸い上げる！',
-        '{player}が機械のクモの体内に取り込まれた！',
-        '機械のクモは体内の{player}を合成糸で拘束し、体内修理装置に縛りつける！',
-        '修理装置に縛り付けられた{player}は、機械のクモが満足するまで意味のない修理をされ続ける...',
-    ];
 };

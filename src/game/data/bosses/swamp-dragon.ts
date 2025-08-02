@@ -143,8 +143,8 @@ export const swampDragonData: BossData = {
             }
 
             const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
-            // 10 ターンごとに特殊演出
-            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 10 === 0) {
+            // 8 ターンごとに特殊演出
+            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 8 === 0) {
                 return {
                     id: 'swamp-stew-shower',
                     type: ActionType.PostDefeatedAttack,

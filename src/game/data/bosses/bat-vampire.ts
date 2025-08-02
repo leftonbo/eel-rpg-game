@@ -147,6 +147,8 @@ const batVampireActions: BossAction[] = [
             player.statusEffects.removeEffect(StatusEffectType.Doomed);
             // プレイヤーを敗北状態にする
             player.statusEffects.addEffect(StatusEffectType.Dead);
+            // 縮小状態にする
+            player.statusEffects.addEffect(StatusEffectType.Shrunk, -1);
             // 食べられ状態にする (フレーバー)
             player.statusEffects.addEffect(StatusEffectType.Eaten);
             
@@ -282,12 +284,12 @@ const batVampireAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
         
         const lastFeedingTurn = boss.getCustomVariable<number>('lastFeedingTurn', 0);
         
-        // 給餌システムの判定（15-20ターンごとに2ターンシーケンス）
+        // 給餌システムの判定（8ターンごとに2ターンシーケンス）
         const turnsSinceFeeding = postDefeatedTurn - lastFeedingTurn;
         const feedingState = boss.getCustomVariable<string>('feedingState', 'none');
         
         // 給餌シーケンスの開始判定
-        if (feedingState === 'none' && turnsSinceFeeding >= 15 && Math.random() < 0.3) {
+        if (feedingState === 'none' && turnsSinceFeeding >= 8 && Math.random() < 0.3) {
             // 食事の時間を開始
             boss.setCustomVariable('feedingState', 'meal');
             const mealAction = batVampireActions.find(action => 

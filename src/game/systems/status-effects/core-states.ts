@@ -41,13 +41,14 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
     [StatusEffectType.Exhausted, {
         type: StatusEffectType.Exhausted,
         name: '疲れ果て',
-        description: 'スキル使用不可、攻撃力半減、受けるダメージ1.5倍',
+        description: 'スキル使用不可、攻撃力半減、受けるダメージ1.5倍、もがく成功率半減',
         duration: 4,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
             attackPower: 0.5,
             damageReceived: 1.5,
+            struggleRate: 0.5, // Struggle success rate halved
             canUseSkills: false
         }
     }],

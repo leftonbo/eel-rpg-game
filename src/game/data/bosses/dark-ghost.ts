@@ -106,6 +106,49 @@ export const darkGhostData: BossData = {
 
         // If player is defeated, use special post-defeat actions
         if (player.isDefeated()) {
+            const defeatStartTurn = boss.getCustomVariable<number>('defeatStartTurn', -1);
+            
+            // If this is the first turn player is defeated, record it
+            if (defeatStartTurn === -1) {
+                boss.setCustomVariable('defeatStartTurn', turn);
+            }
+
+            // Every 8 turns since defeat started
+            const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
+            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 8 === 0) {
+                const postDefeatedSpecialAction: BossAction = {
+                    id: 'soul-licking',
+                    type: ActionType.PostDefeatedAttack,
+                    name: '魂のなめまわし',
+                    description: '体内の魂を直接なめまわして弱らせる',
+                    messages: [
+                        '「特別なプレゼントだヨ...」',
+                        '{boss}が突然自分のお腹を舐め回す...',
+                        'すると、{player}の魂の眼の前に突然巨大な舌が現れ、圧倒するように舐め回し始める！',
+                        '「その苦しむ姿、とても美味しいネ...」',
+                        '{player}はそのまま激しく舐め回され、魂の抵抗力が弱まっていく...',
+                        '「ボクのキモチ、沢山うけとってネ...」',
+                        '{boss}の舌から粘液がどっぷりと流れ、様々な呪いが{player}に染み込んだ！',
+                        '{player}の魂は抵抗することができず、{boss}の意のままにされてしまう...'
+                    ],
+                    onUse: (_boss, player, _turn) => {
+                        player.statusEffects.addEffect(StatusEffectType.Slimed);
+                        player.statusEffects.addEffect(StatusEffectType.Charm);
+                        player.statusEffects.addEffect(StatusEffectType.Weakness);
+                        player.statusEffects.addEffect(StatusEffectType.Poison);
+                        player.statusEffects.addEffect(StatusEffectType.Paralysis);
+                        player.statusEffects.addEffect(StatusEffectType.Slow);
+                        player.statusEffects.addEffect(StatusEffectType.Fear);
+                        player.statusEffects.addEffect(StatusEffectType.Oblivion);
+                        
+                        return [];
+                    },
+                    weight: 1
+                };
+                
+                return postDefeatedSpecialAction;
+            }
+            
             const postDefeatedActions: BossAction[] = [
                 {
                     id: 'soul-energy-drain',
@@ -117,7 +160,6 @@ export const darkGhostData: BossData = {
                         '{boss}が{player}の魂からエネルギーを吸い取っている...',
                         '{player}の魂は{boss}の中で力を失っていく...'
                     ],
-                    statusEffect: StatusEffectType.Exhausted,
                     weight: 1
                 },
                 {

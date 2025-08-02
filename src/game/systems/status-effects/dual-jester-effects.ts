@@ -14,9 +14,9 @@ export const dualJesterEffectsConfigs = new Map<StatusEffectType, StatusEffectCo
             damageReceived: 1.25 // 被ダメージ増加
         },
         messages: {
-            onApplyPlayer: '{target}は偽りの安心感に包まれ、油断してしまった...',
+            onApplyPlayer: '{name}は偽りの安心感に包まれ、油断してしまった...',
             onTickPlayer: '危険が近づいているのに気づかない...',
-            onRemovePlayer: '{target}は現実の危険に気づいた！'
+            onRemovePlayer: '{name}は現実の危険に気づいた！'
         }
     }],
     
@@ -46,9 +46,9 @@ export const dualJesterEffectsConfigs = new Map<StatusEffectType, StatusEffectCo
             }
         },
         messages: {
-            onApplyPlayer: '{target}は躁状態に陥り、行動が不安定になった！',
+            onApplyPlayer: '{name}は躁状態に陥り、行動が不安定になった！',
             onTickPlayer: '躁状態で感情が激しく揺れ動いている...',
-            onRemovePlayer: '{target}の感情が落ち着いた'
+            onRemovePlayer: '{name}の感情が落ち着いた'
         }
     }],
     
@@ -84,9 +84,9 @@ export const dualJesterEffectsConfigs = new Map<StatusEffectType, StatusEffectCo
             accuracy: 0.75, // 混乱による命中率低下
         },
         messages: {
-            onApplyPlayer: '{target}は双極効果に陥り、全ての感覚が混乱した！',
+            onApplyPlayer: '{name}は双極効果に陥り、全ての感覚が混乱した！',
             onTickPlayer: '状態異常の効果が予測不能に変化している...',
-            onRemovePlayer: '{target}の感覚が正常に戻った'
+            onRemovePlayer: '{name}の感覚が正常に戻った'
         }
     }]
 ]);

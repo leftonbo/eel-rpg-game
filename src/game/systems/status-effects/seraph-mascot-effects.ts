@@ -17,7 +17,20 @@ export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfi
         messages: {
             onApplyPlayer: '神聖な光に包まれ、祝福を受けた！',
             onRemovePlayer: '祝福の効果が薄れていく...',
-            onTickPlayer: '祝福の光が{target}を包み込んでいる'
+            onTickPlayer: '祝福の光が{name}を包み込んでいる'
+        }
+    }],
+    
+    [StatusEffectType.HolySlimed, {
+        type: StatusEffectType.HolySlimed,
+        name: '神聖粘液まみれ',
+        description: '攻撃力が低下、拘束解除の成功率が大きく低下',
+        duration: 3,
+        category: 'debuff',
+        isDebuff: true,
+        modifiers: {
+            attackPower: 0.7,
+            struggleRate: 0.4
         }
     }],
     
@@ -36,7 +49,7 @@ export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfi
         messages: {
             onApplyPlayer: '巨大すぎる存在感に圧倒されてしまった！',
             onRemovePlayer: '圧倒感から立ち直った',
-            onTickPlayer: '{target}は圧倒的な存在感に萎縮している...'
+            onTickPlayer: '{name}は圧倒的な存在感に萎縮している...'
         }
     }],
     
@@ -44,7 +57,7 @@ export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfi
         type: StatusEffectType.SalvationState,
         name: '救済状態',
         description: '救済の準備が整った状態。行動が制限されるが、完全な救済を受ける準備ができている',
-        duration: 8,
+        duration: 6,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
@@ -67,7 +80,7 @@ export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfi
         messages: {
             onApplyPlayer: '救済の準備が整った...もう逃れることはできない',
             onRemovePlayer: '救済状態から解放された',
-            onTickPlayer: '{target}は救済の力に包まれ、身動きが取れない...'
+            onTickPlayer: '{name}は救済の力に包まれ、身動きが取れない...'
         }
     }]
 ]);

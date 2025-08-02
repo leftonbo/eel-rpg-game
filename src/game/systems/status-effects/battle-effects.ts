@@ -28,6 +28,26 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
             canAct: false
         }
     }],
+    [StatusEffectType.Shrunk, {
+        type: StatusEffectType.Shrunk,
+        name: '縮小',
+        description: '体が縮んでしまい、あらゆる能力が低下',
+        duration: 3,
+        category: 'debuff',
+        isDebuff: true,
+        modifiers: {
+            attackPower: 0.25,
+            damageReceived: 2.0,
+            struggleRate: 0.1,
+            accuracy: 0.25,
+        },
+        messages: {
+            onApplyPlayer: '{name}は縮小状態になった！体が小さくなり力が出せない！',
+            onApplyBoss: '{name}は縮小状態になった！体が小さくなり力が出せない！',
+            onRemovePlayer: '{name}の縮小状態が元に戻った！',
+            onRemoveBoss: '{name}の縮小状態が元に戻った！'
+        }
+    }],
     [StatusEffectType.Fire, {
         type: StatusEffectType.Fire,
         name: '火だるま',

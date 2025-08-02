@@ -47,8 +47,9 @@ export class UltraSmashStrategy implements SkillStrategy {
         
         const baseDamage = player.getAttackPower();
         const mpDamage = mpConsumed;
-        const totalDamage = baseDamage + mpDamage;
-        
+        const totalDamage = baseDamage * PlayerConstants.ULTRA_SMASH_BASE_DAMAGE_MULTIPLIER
+            + mpDamage * PlayerConstants.ULTRA_SMASH_MP_DAMAGE_MULTIPLIER;
+
         // Add exhaustion effect
         player.statusEffects.addEffect(StatusEffectType.Exhausted);
         

@@ -11,6 +11,7 @@ export const fluffyDragonEffectsConfigs = new Map<StatusEffectType, StatusEffect
         modifiers: {
             struggleRate: 0.7, // 拘束脱出率30%減少
             mpRegenerateRate: 0.7, // MP回復率30%減少
+            debuffChanceModifier: 1.5 // デバフ成功率が1.5倍
         },
         messages: {
             onApplyPlayer: '{name}は眠気に襲われた...',

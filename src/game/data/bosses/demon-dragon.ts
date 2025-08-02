@@ -28,7 +28,7 @@ const demonDragonActions: BossAction[] = [
         type: ActionType.Attack,
         name: '踏みつけ',
         description: '巨大な足で踏みつける強力な攻撃',
-        damageFormula: (user: Boss) => user.attackPower * 1.0,
+        damageFormula: (user: Boss) => user.attackPower * 1.5,
         hitRate: 0.90,
         weight: 30,
         playerStateCondition: 'normal',
@@ -40,9 +40,11 @@ const demonDragonActions: BossAction[] = [
         id: 'dark-magic-bullet',
         type: ActionType.Attack,
         name: '闇の魔法弾',
-        description: '闇の力を込めた魔法弾を放つ',
-        damageFormula: (user: Boss) => user.attackPower * 1.2,
+        description: '闇の力を込めた魔法弾を放つ、暗闇にする可能性がある',
+        damageFormula: (user: Boss) => user.attackPower * 1.1,
         hitRate: 0.85,
+        statusEffect: StatusEffectType.Darkness,
+        statusChance: 0.50,
         weight: 25,
         playerStateCondition: 'normal',
         messages: [
@@ -54,7 +56,7 @@ const demonDragonActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '粘液発射',
         description: '粘着性の粘液を吐きかける',
-        damageFormula: (user: Boss) => user.attackPower * 0.8,
+        damageFormula: (user: Boss) => user.attackPower * 1.0,
         statusEffect: StatusEffectType.Slimed,
         statusChance: 0.75,
         hitRate: 0.80,
@@ -161,8 +163,8 @@ const demonDragonActions: BossAction[] = [
         playerStateCondition: 'normal',
         canUse: (boss: Boss, player: Player, turn: number) => {
             const lastSoulVacuumTurn = boss.getCustomVariable<number>('lastSoulVacuumTurn', -100);
-            // 1ターン目または30ターン経過後に使用可能
-            return (turn === 1 || turn - lastSoulVacuumTurn >= 30) && !player.isEaten() && !player.isRestrained();
+            // 1ターン目または20ターン経過後に使用可能
+            return (turn === 1 || turn - lastSoulVacuumTurn >= 20) && !player.isEaten() && !player.isRestrained();
         },
         onPreUse: (action: BossAction, boss: Boss, player: Player, turn: number): BossAction | null => {
             boss.setCustomVariable('lastSoulVacuumTurn', turn);
