@@ -17,7 +17,7 @@ export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfi
         messages: {
             onApplyPlayer: '神聖な光に包まれ、祝福を受けた！',
             onRemovePlayer: '祝福の効果が薄れていく...',
-            onTickPlayer: '祝福の光が{target}を包み込んでいる'
+            onTickPlayer: '祝福の光が{name}を包み込んでいる'
         }
     }],
     
@@ -49,7 +49,7 @@ export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfi
         messages: {
             onApplyPlayer: '巨大すぎる存在感に圧倒されてしまった！',
             onRemovePlayer: '圧倒感から立ち直った',
-            onTickPlayer: '{target}は圧倒的な存在感に萎縮している...'
+            onTickPlayer: '{name}は圧倒的な存在感に萎縮している...'
         }
     }],
     
@@ -80,7 +80,7 @@ export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfi
         messages: {
             onApplyPlayer: '救済の準備が整った...もう逃れることはできない',
             onRemovePlayer: '救済状態から解放された',
-            onTickPlayer: '{target}は救済の力に包まれ、身動きが取れない...'
+            onTickPlayer: '{name}は救済の力に包まれ、身動きが取れない...'
         }
     }]
 ]);
