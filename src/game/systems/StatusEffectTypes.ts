@@ -109,8 +109,7 @@ export enum StatusEffectType {
     Bipolar = 'bipolar',
     
     // Demon Dragon effects
-    DemonStomach = 'demon-stomach',
-    SoulDrain = 'soul-drain'
+    DemonStomach = 'demon-stomach'
 }
 
 export interface StatusEffect {
