@@ -1909,3 +1909,44 @@ footer svg {
         opacity: 0.8;
     }
 }
+
+/* HolySlimed and Shrunk status effects */
+.status-holy-slimed {
+    background: linear-gradient(45deg, rgba(135, 206, 235, 0.8), rgba(218, 112, 214, 0.8));
+    border-color: #da70d6;
+    color: #ffffff;
+    text-shadow: 0 0 5px rgba(135, 206, 235, 0.8);
+    animation: holy-slime-glow 2s ease-in-out infinite alternate;
+}
+
+.status-shrunk {
+    background: rgba(139, 69, 19, 0.6);
+    border-color: #8b4513;
+    color: #deb887;
+    animation: shrink-pulse 1.5s ease-in-out infinite alternate;
+}
+
+/* HolySlimed and Shrunk animations */
+@keyframes holy-slime-glow {
+    from {
+        box-shadow: 0 0 8px rgba(135, 206, 235, 0.6);
+        filter: hue-rotate(0deg);
+    }
+    to {
+        box-shadow: 0 0 20px rgba(218, 112, 214, 0.9);
+        filter: hue-rotate(15deg);
+    }
+}
+
+@keyframes shrink-pulse {
+    from {
+        transform: scale(1);
+        box-shadow: 0 0 5px rgba(139, 69, 19, 0.5);
+        opacity: 0.8;
+    }
+    to {
+        transform: scale(0.95);
+        box-shadow: 0 0 15px rgba(139, 69, 19, 0.8);
+        opacity: 1;
+    }
+}
