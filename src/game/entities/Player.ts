@@ -1,6 +1,6 @@
 import { StatusEffectType } from '../systems/StatusEffect';
 import { AbilitySystem, AbilityType, Equipment } from '../systems/AbilitySystem';
-import { PlayerSaveManager, PlayerSaveData } from '../systems/PlayerSaveData';
+import { PlayerSaveManager, PlayerSaveData, PlayerSaveDataWithoutVersionTracking } from '../systems/PlayerSaveData';
 import { updatePlayerItems } from '../data/ExtendedItems';
 import { Actor } from './Actor';
 import { SkillRegistry, SkillData } from '../data/skills';
@@ -158,7 +158,7 @@ export class Player extends Actor {
      * プレイヤーデータをローカルストレージに保存
      */
     public saveToStorage(): void {
-        const saveData: PlayerSaveData = {
+        const saveData: PlayerSaveDataWithoutVersionTracking = {
             abilities: this.abilitySystem.exportForSave(),
             equipment: this.equipmentManager.exportEquipment(),
             memorials: this.memorialSystem.exportData(),

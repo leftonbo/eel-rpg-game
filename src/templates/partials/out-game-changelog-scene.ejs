@@ -1,0 +1,127 @@
+<!-- Out Game Changelog Scene -->
+<div id="out-game-changelog-screen" class="game-screen d-none">
+    <div class="container-fluid py-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+                
+                <!-- ページヘッダー -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body text-center py-4">
+                        <h1 class="display-5 mb-3">
+                            📋 更新履歴
+                        </h1>
+                        <p class="lead text-muted mb-0">
+                            ElnalFTBの最新の変更点や新機能を確認できます
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- メインコンテンツカード -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        
+                        <!-- 読み込み中インジケーター -->
+                        <div id="changelog-loading" class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div class="mt-3">
+                                <h5 class="text-muted">更新履歴を読み込み中...</h5>
+                                <p class="text-muted mb-0">しばらくお待ちください</p>
+                            </div>
+                        </div>
+                        
+                        <!-- 更新履歴コンテンツ -->
+                        <div id="changelog-content" class="changelog-container">
+                            <!-- ここに変換されたMarkdownコンテンツが挿入される -->
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <!-- アクションボタン -->
+                <div class="row mt-4">
+                    <div class="col-12 col-md-6 mb-3 mb-md-0">
+                        <button id="changelog-detailed-view-btn" class="btn btn-outline-primary btn-lg w-100">
+                            🔍 詳細表示（モーダル）
+                        </button>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <button id="changelog-back-btn" class="btn btn-secondary btn-lg w-100">
+                            ↩️ 戻る
+                        </button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- カスタムスタイル（更新履歴専用） -->
+<style>
+.changelog-container {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+}
+
+.changelog-container h1 {
+    border-left: 5px solid var(--bs-primary);
+    padding-left: 1rem;
+    margin-bottom: 2rem;
+}
+
+.changelog-container h2 {
+    border-left: 3px solid var(--bs-success);
+    padding-left: 0.75rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.changelog-container .list-group-item {
+    border: none;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.changelog-container .list-group-item:last-child {
+    border-bottom: none;
+}
+
+.changelog-container .badge {
+    font-size: 0.8em;
+    min-width: 20px;
+    text-align: center;
+}
+
+.changelog-container hr {
+    margin: 3rem 0;
+    border-color: rgba(0,0,0,0.2);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .changelog-container h1 {
+        font-size: 1.75rem;
+    }
+    
+    .changelog-container h2 {
+        font-size: 1.5rem;
+    }
+    
+    .changelog-container .list-group-item {
+        padding: 0.5rem 0;
+    }
+}
+
+/* ダークモード対応（将来の拡張用） */
+@media (prefers-color-scheme: dark) {
+    .changelog-container {
+        color: #e9ecef;
+    }
+    
+    .changelog-container .list-group-item {
+        border-bottom-color: rgba(255,255,255,0.1);
+    }
+}
+</style>
