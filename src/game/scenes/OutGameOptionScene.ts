@@ -81,8 +81,7 @@ export class OutGameOptionScene extends BaseOutGameScene {
         this.updateElement('player-explorer-level-display', player.getExplorerLevel().toString());
         
         // 撃破済みボス数
-        const defeatedBossCount = player.memorialSystem.getAllTrophies()
-            .filter(trophy => trophy.type === 'victory').length;
+        const defeatedBossCount = player.memorialSystem.getVictoriousBossIds().length;
         this.updateElement('defeated-boss-count-display', defeatedBossCount.toString());
     }
     

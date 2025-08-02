@@ -132,6 +132,12 @@ body {
     }
 }
 
+/* Disabled Card darkening */
+.card.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 /* Guest Character Attribution */
 .guest-attribution {
     font-size: 0.75rem;

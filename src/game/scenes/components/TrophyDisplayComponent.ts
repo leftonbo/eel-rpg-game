@@ -1,4 +1,6 @@
+import { getBossData } from '@/game/data';
 import { Trophy } from '../../systems/MemorialSystem';
+import { Player } from '@/game/entities/Player';
 
 /**
  * トロフィー表示の共通コンポーネント
@@ -10,13 +12,43 @@ export class TrophyDisplayComponent {
      * @param trophy トロフィーデータ
      * @returns 作成されたトロフィーカード要素
      */
-    static createTrophyCard(trophy: Trophy): HTMLElement {
+    static createTrophyCard(trophy: Trophy, playerExplorerLevel: number): HTMLElement | null {
+        const dateObtained = trophy.dateObtained;
+        
         const trophyCard = document.createElement('div');
         trophyCard.className = 'col-md-6 mb-3';
         
         const typeIcon = this.getTrophyTypeIcon(trophy.type);
+        
+        if (!dateObtained) {
+            const bossData = getBossData(trophy.bossId);
+            if (!bossData) {
+                console.warn(`Boss data not found for ID: ${trophy.bossId}`);
+                return null;
+            }
+            
+            // 対応ボスが未解禁の場合は何も表示しない
+            if (bossData.explorerLevelRequired && playerExplorerLevel < bossData.explorerLevelRequired) {
+                return null;
+            }
+            
+            // 未解禁のトロフィーは「？？？？？」と表示
+            trophyCard.innerHTML = `
+                <div class="card bg-secondary disabled">
+                    <div class="card-body">
+                        <h6 class="card-title d-flex justify-content-between align-items-center text-muted">
+                            ${typeIcon} ？？？？？
+                        </h6>
+                        <p class="card-text small text-muted">？？？？？</p>
+                        <small class="text-muted">${bossData.displayName} からアンロックできる</small>
+                    </div>
+                </div>
+            `;
+            return trophyCard;
+        }
+        
         const typeClass = this.getTrophyTypeBadgeClass(trophy.type);
-        const dateStr = this.formatDate(trophy.dateObtained);
+        const dateStr = this.formatDate(dateObtained);
         
         trophyCard.innerHTML = `
             <div class="card bg-secondary">
@@ -38,12 +70,12 @@ export class TrophyDisplayComponent {
      * トロフィーコレクション全体を更新する
      * @param containerId コンテナ要素のID
      * @param noTrophiesMessageId 空状態メッセージ要素のID
-     * @param trophies トロフィーデータの配列
+     * @param player プレイヤーデータ
      */
     static updateTrophiesCollection(
         containerId: string, 
         noTrophiesMessageId: string, 
-        trophies: Trophy[]
+        player: Player
     ): void {
         const trophiesContainer = document.getElementById(containerId);
         const noTrophiesMessage = document.getElementById(noTrophiesMessageId);
@@ -53,12 +85,12 @@ export class TrophyDisplayComponent {
             return;
         }
         
-        if (trophies.length === 0) {
+        if (player.memorialSystem.getEarnedTrophies().length === 0) {
             this.showEmptyState(trophiesContainer, noTrophiesMessage);
             return;
         }
         
-        this.showTrophiesState(trophiesContainer, noTrophiesMessage, trophies);
+        this.showTrophiesState(trophiesContainer, noTrophiesMessage, player);
     }
 
     /**
@@ -75,12 +107,12 @@ export class TrophyDisplayComponent {
      * トロフィー一覧を表示する
      * @param container トロフィーコンテナ要素
      * @param messageElement メッセージ要素
-     * @param trophies トロフィーデータの配列
+     * @param player プレイヤーデータ
      */
     private static showTrophiesState(
         container: HTMLElement, 
         messageElement: HTMLElement, 
-        trophies: Trophy[]
+        player: Player
     ): void {
         messageElement.style.display = 'none';
         container.innerHTML = '';
@@ -88,8 +120,11 @@ export class TrophyDisplayComponent {
         // DocumentFragmentを使用してパフォーマンスを向上
         const fragment = document.createDocumentFragment();
         
+        const trophies = player.memorialSystem.getAllTrophiesSorted();
+        
         trophies.forEach(trophy => {
-            const trophyCard = this.createTrophyCard(trophy);
+            const trophyCard = this.createTrophyCard(trophy, player.getExplorerLevel());
+            if (!trophyCard) return; // 無効なトロフィーはスキップ
             fragment.appendChild(trophyCard);
         });
         
@@ -131,9 +166,15 @@ export class TrophyDisplayComponent {
      * @param date 日付文字列、Dateオブジェクト、またはタイムスタンプ
      * @returns フォーマットされた日付文字列
      */
-    private static formatDate(date: string | Date | number): string {
+    private static formatDate(date: string | Date | number | null): string {
         try {
+            if (!date) {
+                return '不明';
+            }
+            
             let dateObj: Date;
+            
+            // 日付の型に応じてDateオブジェクトを生成
             if (typeof date === 'string') {
                 dateObj = new Date(date);
             } else if (typeof date === 'number') {
@@ -176,6 +217,7 @@ export class TrophyDisplayComponent {
         const byType: { [key: string]: number } = {};
         let totalExplorerExp = 0;
         let latestTrophy = trophies[0];
+        let latestTrophyDate = new Date(latestTrophy.dateObtained || 0);
 
         trophies.forEach(trophy => {
             // タイプ別カウント
@@ -185,7 +227,7 @@ export class TrophyDisplayComponent {
             totalExplorerExp += trophy.explorerExp;
             
             // 最新トロフィー判定
-            if (new Date(trophy.dateObtained) > new Date(latestTrophy.dateObtained)) {
+            if (trophy.dateObtained && new Date(trophy.dateObtained) > latestTrophyDate) {
                 latestTrophy = trophy;
             }
         });
@@ -216,8 +258,8 @@ export class TrophyDisplayComponent {
      */
     static sortTrophiesByDate(trophies: Trophy[], ascending: boolean = false): Trophy[] {
         return [...trophies].sort((a, b) => {
-            const dateA = new Date(a.dateObtained).getTime();
-            const dateB = new Date(b.dateObtained).getTime();
+            const dateA = new Date(a.dateObtained || 0).getTime();
+            const dateB = new Date(b.dateObtained || 0).getTime();
             return ascending ? dateA - dateB : dateB - dateA;
         });
     }

@@ -63,6 +63,9 @@ export class Player extends Actor {
      * 初期化メソッド
      */
     public lateInitialize(): void {
+        // Initialize MemorialSystem for trophies
+        this.memorialSystem.lateInitialize();
+        
         this.loadFromSave();
         this.initializeDefaultUnlocks();
         this.initializeItems();

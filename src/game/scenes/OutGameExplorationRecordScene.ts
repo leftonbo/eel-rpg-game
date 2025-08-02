@@ -77,8 +77,8 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
         this.updateElement('unlocked-bosses-count', unlockedCount.toString());
         this.updateElement('unlockable-bosses-count', allBossData.length.toString());
         
-        const allTrophies = player.memorialSystem.getAllTrophies();
-        this.updateElement('total-trophies-count', allTrophies.length.toString());
+        const earnedTrophies = player.memorialSystem.getEarnedTrophies();
+        this.updateElement('total-trophies-count', earnedTrophies.length.toString());
         
         const totalExplorerExp = explorerData?.experience || 0;
         this.updateElement('total-explorer-exp', totalExplorerExp.toString());
@@ -87,7 +87,7 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
         this.updateGameProgressionData(player);
         
         // トロフィーコレクションの更新
-        this.updateTrophiesCollection(allTrophies);
+        this.updateTrophiesCollection(player);
     }
     
     /**
@@ -113,11 +113,11 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
     /**
      * TrophyDisplayComponentを使用したトロフィーコレクション表示の更新
      */
-    private updateTrophiesCollection(trophies: Trophy[]): void {
+    private updateTrophiesCollection(player: Player): void {
         TrophyDisplayComponent.updateTrophiesCollection(
             'trophies-collection',
             'no-trophies-message',
-            trophies
+            player
         );
     }
     
