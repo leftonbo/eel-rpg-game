@@ -85,6 +85,45 @@ export const darkGhostData: BossData = {
     actions: darkGhostActions,
     icon: '👻',
     explorerLevelRequired: 0,
+    battleStartMessages: [
+        {
+            speaker: 'player',
+            style: 'default',
+            text: 'あなたは漆黒の森で不気味なスピリット体と遭遇した。'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'ケケケ...おいしそうな魂だネ！'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '闇のおばけは黄色く光る目でこちらを見つめ、陽気に笑っている...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'そのタマシイ、ボクにちょうだい！キミの絶望、とても美味そうダネ！'
+        }
+    ],
+    victoryMessages: [
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'ケケケ...まさかボクが負けるなんて...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'でも、キミの魂の味は忘れないヨ...また会えるといいネ'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '闇のおばけは最後まで陽気に笑いながら、漆黒の森の闇に溶けて消えていった...'
+        }
+    ],
     victoryTrophy: {
         name: '闇夜の羽根',
         description: '闇のおばけが纏っていた神秘的な黒い羽根。触れると仄かに冷たく、夜闇の力が込められている。'

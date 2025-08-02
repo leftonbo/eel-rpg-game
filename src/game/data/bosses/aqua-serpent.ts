@@ -187,6 +187,45 @@ export const aquaSerpentData: BossData = {
     actions: aquaSerpentActions,
     icon: '🐍',
     explorerLevelRequired: 2,
+    battleStartMessages: [
+        {
+            speaker: 'player',
+            style: 'default',
+            text: 'あなたは大海原で神秘的な海蛇型の龍と遭遇した。'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'シャアアア...また新しき命が我が元に...'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: 'アクアサーペントの透明な体が淡く光り、美しくも恐ろしい存在感を放っている...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'その生命力...とても美しい輝きじゃ。我が体内で永遠に輝かせてやろう'
+        }
+    ],
+    victoryMessages: [
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'シャアアア...こんなに強き命があったとは...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'その輝き...我にはまばゆすぎたようじゃ...見事じゃ'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: 'アクアサーペントは敬意を込めて頭を下げると、優雅に大海原の深くへと泳ぎ去っていった...'
+        }
+    ],
     victoryTrophy: {
         name: '透明な鱗',
         description: 'アクアサーペントの美しく透明な鱗。水の中でも光を反射する神秘的な外皮。'

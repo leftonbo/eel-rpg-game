@@ -269,6 +269,45 @@ export const fluffyDragonData: BossData = {
     actions: fluffyDragonActions,
     icon: '🛏️',
     explorerLevelRequired: 7,
+    battleStartMessages: [
+        {
+            speaker: 'player',
+            style: 'default',
+            text: 'あなたは寒冷地でふわふわな毛に覆われた白いドラゴンと遭遇した。'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'ふわぁ...また新しいお客さまが来たの？'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: 'ふわふわドラゴンは暖かそうな白い毛玉のような体で、甘いラベンダーの香りを漂わせている...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'とっても疲れてるみたいね...私のふわふわお腹でゆっくり休んでいきなさい'
+        }
+    ],
+    victoryMessages: [
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'ふわぁ...こんなに強い人がいるなんて...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'でも、とっても立派に戦ったのね...お疲れさま'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: 'ふわふわドラゴンは優しく微笑むと、ふわふわと浮かび上がって雲のように空へと消えていった...'
+        }
+    ],
     victoryTrophy: {
         name: 'ふわふわの毛玉',
         description: 'ふわふわドラゴンの暖かく柔らかい体毛で作られた毛玉。触れるだけで心が安らぐ不思議な力を持っている。'

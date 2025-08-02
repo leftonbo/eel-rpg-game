@@ -90,6 +90,45 @@ export const swampDragonData: BossData = {
     actions: swampDragonActions,
     icon: '🐲',
     explorerLevelRequired: 0,
+    battleStartMessages: [
+        {
+            speaker: 'player',
+            style: 'default',
+            text: 'あなたは沼地の奥で巨大なドラゴンと遭遇した。'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'ふむ...良い匂いだな'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '沼のドラゴンは威厳ある眼差しであなたを見つめている...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'グルル...貴殿、なかなか見どころがある。だが、この沼地は我が縄張りだ'
+        }
+    ],
+    victoryMessages: [
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'グオオオ...まさか、この我が敗れるとは...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'ふむ...貴殿の実力、認めよう。我の負けだ'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '沼のドラゴンは誇り高い戦士として敗北を受け入れ、静かに沼の奥へと引いていった...'
+        }
+    ],
     victoryTrophy: {
         name: '沼竜のたてがみ',
         description: '沼のドラゴンの立派なたてがみ。荒々しい戦いの証として威厳を放っている。'

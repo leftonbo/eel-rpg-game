@@ -170,6 +170,45 @@ export const scorpionCarrierData: BossData = {
     actions: scorpionCarrierActions,
     icon: '🦂',
     explorerLevelRequired: 1,
+    battleStartMessages: [
+        {
+            speaker: 'player',
+            style: 'default',
+            text: 'あなたは砂漠の奥でタイヤの足を持つ巨大なサソリと遭遇した。'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'んー、迷い人のようだな？'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '運び屋のサソリは注射器のような尻尾をゆらゆらと揺らしながらこちらを見つめている...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'おまえの足より、オレの足のほうが早いぞ？安全に運んでやるから、恥ずかしがらずに食べられろ'
+        }
+    ],
+    victoryMessages: [
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'ぐあ...まさか負けるとは...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'しかし、その実力なら一人でも大丈夫そうだな...安心したぞ'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '運び屋のサソリは満足そうに頷くと、タイヤを軋ませながら砂漠の彼方へと去っていった...'
+        }
+    ],
     victoryTrophy: {
         name: 'サソリの機械殻',
         description: '運び屋のサソリの機械化された外殻の一部。タイヤとして機能していた足部分の装甲。'

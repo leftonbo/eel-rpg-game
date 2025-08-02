@@ -234,6 +234,45 @@ export const undergroundWormData: BossData = {
     attackPower: 13,
     icon: '🪨',
     explorerLevelRequired: 5,
+    battleStartMessages: [
+        {
+            speaker: 'player',
+            style: 'default',
+            text: 'あなたは地底深くで巨大なワームと遭遇した。'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'グルルル...また地上の生き物が来たか'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '地底のワームは岩をも砕く強靭な顎を見せつけながら、威嚇するように唸り声を上げている...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'この地底に踏み込んだ以上...我の腹の中で岩と共に眠ってもらおう'
+        }
+    ],
+    victoryMessages: [
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'グルルル...まさかこの身が敗れるとは...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'その力...地底の王たる我をも凌駕するか...見事だ'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '地底のワームは敬意を込めて頭を下げると、地中深くへと潜って姿を消した...'
+        }
+    ],
     actions: undergroundWormActions.concat(undergroundWormDevourActions).concat(undergroundWormPostDefeatedActions),
     customVariables: {
         defeatStartTurn: -1, // 敗北開始ターン

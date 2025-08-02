@@ -175,6 +175,45 @@ export const mechSpiderData: BossData = {
     actions: mechSpiderActions,
     suppressAutoFinishingMove: true,
     icon: '🕷️',
+    battleStartMessages: [
+        {
+            speaker: 'player',
+            style: 'default',
+            text: 'あなたは古代遺跡の奥で不気味な機械グモと対峙した。'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'SYSTEM BOOT... 修理対象を検出しました'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '機械のクモは赤いセンサーライトを点滅させながらこちらを分析している...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'ERROR: 深刻な機械的損傷を確認。REPAIR PROTOCOL INITIATED...'
+        }
+    ],
+    victoryMessages: [
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'ERROR... SYSTEM FAILURE... 修理システム停止...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'WARNING: 自己修復不可能... SHUTDOWN INITIATED...'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '機械のクモは最後の警告音を発すると、静かに機能を停止した...'
+        }
+    ],
     victoryTrophy: {
         name: '機械の合成糸',
         description: '機械のクモが生成する特殊な合成糸。非常に強靭で、古代技術の結晶が込められている。'

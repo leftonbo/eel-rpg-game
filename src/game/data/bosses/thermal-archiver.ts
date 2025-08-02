@@ -259,6 +259,45 @@ export const thermalArchiverData: BossData = {
     actions: thermalArchiverActions,
     icon: '🏭',
     explorerLevelRequired: 8,
+    battleStartMessages: [
+        {
+            speaker: 'player',
+            style: 'default',
+            text: 'あなたは火山地帯の遺跡で謎の機械装置と遭遇した。'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'THERMAL ARCHIVER SYSTEM ACTIVATED... 新たな標本を検出'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: 'サーマル・アーカイバーは赤いセンサーライトを点滅させながら、機械的な動作音を響かせている...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'SPECIMEN COLLECTION PROTOCOL INITIATED... 生体標本として最適な個体を確認'
+        }
+    ],
+    victoryMessages: [
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'CRITICAL ERROR... SYSTEM FAILURE DETECTED...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'ARCHIVING PROCESS ABORTED... EMERGENCY SHUTDOWN INITIATED...'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: 'サーマル・アーカイバーは警告音を鳴らしながら、すべての機能を停止し沈黙した...'
+        }
+    ],
     victoryTrophy: {
         name: '熱処理装置の外装パネル',
         description: 'サーマル・アーカイバーの外装に使われていた耐熱パネル。古代の工業技術が込められ、美しい金属光沢を放っている。'
