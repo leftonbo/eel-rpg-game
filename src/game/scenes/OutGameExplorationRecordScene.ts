@@ -2,7 +2,7 @@ import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
 import { AbilityType, AbilitySystem, AbilityData } from '../systems/AbilitySystem';
 import { getAllBossData } from '../data';
-import { Trophy, MemorialSystem } from '../systems/MemorialSystem';
+import { MemorialSystem } from '../systems/MemorialSystem';
 import { TrophyDisplayComponent } from './components/TrophyDisplayComponent';
 import { Player } from '../entities/Player';
 import { ModalUtils } from '../utils/ModalUtils';

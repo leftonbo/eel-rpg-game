@@ -220,6 +220,11 @@ export class TrophyDisplayComponent {
         let latestTrophyDate = new Date(latestTrophy.dateObtained || 0);
 
         trophies.forEach(trophy => {
+            // 所持判定
+            if (!trophy.dateObtained) {
+                return;
+            }
+            
             // タイプ別カウント
             byType[trophy.type] = (byType[trophy.type] || 0) + 1;
             
@@ -227,8 +232,10 @@ export class TrophyDisplayComponent {
             totalExplorerExp += trophy.explorerExp;
             
             // 最新トロフィー判定
-            if (trophy.dateObtained && new Date(trophy.dateObtained) > latestTrophyDate) {
+            const trophyDate = new Date(trophy.dateObtained);
+            if (trophyDate > latestTrophyDate) {
                 latestTrophy = trophy;
+                latestTrophyDate = trophyDate;
             }
         });
 
