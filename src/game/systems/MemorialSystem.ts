@@ -12,6 +12,8 @@ export enum TrophyType {
  */
 export interface Trophy {
     id: string;
+    bossId: string; // boss ID for reference
+    unlockLevel: number; // level at which the trophy is unlocked
     type: TrophyType; // trophy type for UI display
     name: string;
     description: string;
@@ -93,6 +95,8 @@ export class MemorialSystem {
         const trophyId = MemorialSystem.getTrophyId(bossData, TrophyType.Victory);
         return {
             id: trophyId,
+            bossId: bossData.id,
+            unlockLevel: bossData.explorerLevelRequired || 0,
             type: TrophyType.Victory,
             name: bossData.victoryTrophy?.name || 'Unknown Victory Trophy',
             description: bossData.victoryTrophy?.description || 'No description available.',
@@ -110,6 +114,8 @@ export class MemorialSystem {
         const trophyId = MemorialSystem.getTrophyId(bossData, TrophyType.Defeat);
         return {
             id: trophyId,
+            bossId: bossData.id,
+            unlockLevel: bossData.explorerLevelRequired || 0,
             type: TrophyType.Defeat,
             name: bossData.defeatTrophy?.name || 'Unknown Defeat Trophy',
             description: bossData.defeatTrophy?.description || 'No description available.',
@@ -224,10 +230,18 @@ export class MemorialSystem {
     
     /**
      * 全ての記念品を取得
-     * @return 記念品の配列（取得日時順にソート）
+     * @return 記念品の配列（ボス解禁レベル→ボスID順→勝利or敗北）
      */
     public getAllTrophies(): Trophy[] {
-        return Array.from(this.trophies.values()).sort((a, b) => b.dateObtained - a.dateObtained);
+        return Array.from(this.trophies.values()).sort((a, b) => {
+            if (a.unlockLevel !== b.unlockLevel) {
+                return a.unlockLevel - b.unlockLevel; // ソート: ボス解禁レベル順
+            }
+            if (a.bossId !== b.bossId) {
+                return a.bossId.localeCompare(b.bossId); // ソート: ボスID順
+            }
+            return a.type === TrophyType.Victory ? -1 : 1; // 勝利が先、敗北が後
+        });
     }
     
     /**
