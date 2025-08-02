@@ -183,8 +183,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
     [StatusEffectType.Hypnosis, {
         type: StatusEffectType.Hypnosis,
         name: '催眠',
-        description: '完全な行動不能状態',
-        duration: 15,
+        description: '深い催眠状態、行動できない',
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
