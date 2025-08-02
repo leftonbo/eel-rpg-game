@@ -156,7 +156,7 @@ const seraphMascotProtectionActions: BossAction[] = [
             '{boss}の体内で{player}が聖なる光に包まれる！',
             '{player}の生命力が聖域で吸収されていく...'
         ],
-        damageFormula: (user: Boss) => user.attackPower * 1.8,
+        damageFormula: (user: Boss) => user.attackPower * 1.3,
         weight: 30,
         playerStateCondition: 'eaten'
     },
@@ -170,7 +170,7 @@ const seraphMascotProtectionActions: BossAction[] = [
             '{boss}の体内で神聖な力が{player}を浄化する！',
             '{player}の生命力が聖なる力で削られていく...'
         ],
-        damageFormula: (user: Boss) => user.attackPower * 2.2,
+        damageFormula: (user: Boss) => user.attackPower * 1.5,
         weight: 25,
         playerStateCondition: 'eaten'
     },
@@ -184,7 +184,7 @@ const seraphMascotProtectionActions: BossAction[] = [
             '{boss}は{player}を祝福しながら生命力を吸収する！',
             '{player}は至福の中で力を奪われていく...'
         ],
-        damageFormula: (user: Boss) => user.attackPower * 2.0,
+        damageFormula: (user: Boss) => user.attackPower * 1.0,
         statusEffect: StatusEffectType.Blessed,
         statusChance: 0.60,
         weight: 20,
@@ -200,7 +200,7 @@ const seraphMascotProtectionActions: BossAction[] = [
             '{boss}は{player}を永続的な救済サイクルに組み込む！',
             '{player}は救済の輪の中で循環し続ける...'
         ],
-        damageFormula: (user: Boss) => user.attackPower * 1.5,
+        damageFormula: (user: Boss) => user.attackPower * 1.0,
         statusEffect: StatusEffectType.SalvationState,
         statusChance: 0.70,
         weight: 15,
