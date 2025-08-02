@@ -42,6 +42,10 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
             accuracy: 0.25,
         },
         messages: {
+            onApplyPlayer: '{name}は縮小状態になった！体が小さくなり力が出せない！',
+            onApplyBoss: '{name}は縮小状態になった！体が小さくなり力が出せない！',
+            onRemovePlayer: '{name}の縮小状態が元に戻った！',
+            onRemoveBoss: '{name}の縮小状態が元に戻った！'
         }
     }],
     [StatusEffectType.Fire, {
