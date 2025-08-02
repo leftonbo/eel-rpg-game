@@ -195,13 +195,12 @@ export class OutGameLibraryScene extends BaseOutGameScene {
                 button.classList.add('btn-outline-info');
                 
                 // 未読の場合は未読バッジも表示
-                const unreadBadge = doc.isRead ? '' : '<span class="badge bg-warning text-dark me-2">未読</span>';
+                const unreadBadge = doc.isRead ? '' : '<span class="badge bg-danger text-dark me-2">未読</span>';
                 button.innerHTML = `
                     <div class="d-flex justify-content-between align-items-center">
                         <span>${doc.title}</span>
                         <div>
                             ${unreadBadge}
-                            <span class="badge bg-success">解禁済み</span>
                         </div>
                     </div>
                 `;
@@ -209,11 +208,10 @@ export class OutGameLibraryScene extends BaseOutGameScene {
                 button.disabled = true;
                 button.innerHTML = `
                     <div class="d-flex justify-content-between align-items-center">
-                        <span class="text-muted">${doc.title}</span>
-                        <span class="badge bg-secondary">未解禁</span>
+                        <span class="text-muted">？？？？？</span>
                     </div>
                     <small class="text-muted d-block mt-1">
-                        必要条件: エクスプローラーLv.${doc.requiredExplorerLevel}
+                        🔒️ ${doc.requiredExplorerLevel ? `エクスプローラー Lv. ${doc.requiredExplorerLevel}` : ''}
                         ${doc.requiredBossDefeats ? `, ${this.renderBossRequirements(doc.requiredBossDefeats, 'victory')}` : ''}
                         ${doc.requiredBossLosses ? `, ${this.renderBossRequirements(doc.requiredBossLosses, 'defeat')}` : ''}
                     </small>
