@@ -249,9 +249,9 @@ export class MemorialSystem {
      * @return 敗北したボスのIDの配列
      */
     public getDefeatedBossIds(): string[] {
-        return this.getAllTrophies()
-            .filter(trophy => trophy.type === TrophyType.Defeat)
-            .map(trophy => trophy.id.replace(`${TrophyType.Defeat}-`, ''));
+        return Array.from(this.bossMemorials.values())
+            .filter(memorial => memorial.dateFirstLost)
+            .map(memorial => memorial.bossId);
     }
     
     /**
@@ -259,9 +259,9 @@ export class MemorialSystem {
      * @return 勝利したボスのIDの配列
      */
     public getVictoriousBossIds(): string[] {
-        return this.getAllTrophies()
-            .filter(trophy => trophy.type === TrophyType.Victory)
-            .map(trophy => trophy.id.replace(`${TrophyType.Victory}-`, ''));
+        return Array.from(this.bossMemorials.values())
+            .filter(memorial => memorial.dateFirstWin)
+            .map(memorial => memorial.bossId);
     }
     
     /**
