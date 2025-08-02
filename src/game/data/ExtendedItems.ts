@@ -69,6 +69,7 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
             player.recoverMp(player.maxMp);
             
             // Add energized effect for 3 turns
+            player.statusEffects.removeEffect(StatusEffectType.Exhausted);
             player.statusEffects.addEffect(StatusEffectType.Energized);
             player.itemManager.decrementItemCount('energy-drink');
             return true;
@@ -131,6 +132,7 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
             }
             
             // Add energized effect
+            player.statusEffects.removeEffect(StatusEffectType.Exhausted);
             player.statusEffects.addEffect(StatusEffectType.Energized);
             
             player.itemManager.decrementItemCount('elixir');
