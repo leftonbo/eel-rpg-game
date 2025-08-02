@@ -173,6 +173,7 @@ export const mechSpiderData: BossData = {
     maxHp: 300,
     attackPower: 12,
     actions: mechSpiderActions,
+    suppressAutoFinishingMove: true,
     icon: '🕷️',
     victoryTrophy: {
         name: '機械の合成糸',
@@ -259,6 +260,35 @@ export const mechSpiderData: BossData = {
                 }
             ];
             return postDefeatedActions[Math.floor(Math.random() * postDefeatedActions.length)];
+        }
+        
+        // Custom finishing action
+        if (player.isDoomed()) {
+            const cocoonFinishAction: BossAction = {
+                id: 'cocoon-finish-process',
+                type: ActionType.FinishingMove,
+                name: '縮小プロセス完了',
+                description: '縮小化が完了した対象を体内に取り込み、体内修理装置に縛りつける',
+                messages: [
+                    '{player}は繭の中で完全に小さくなってしまった...',
+                    '機械のクモは繭に噛みつき、中身を{player}ごと吸い上げる！',
+                    '{player}が機械のクモの体内に取り込まれた！',
+                    '機械のクモは体内の{player}を合成糸で拘束し、体内修理装置に縛りつける！',
+                    '修理装置に縛り付けられた{player}は、機械のクモが満足するまで意味のない修理をされ続ける...',
+                ],
+                weight: 1,
+                onUse: (_boss, player, _turn) => {
+                    player.statusEffects.removeEffect(StatusEffectType.Cocoon);
+                    player.statusEffects.removeEffect(StatusEffectType.Doomed);
+                    player.statusEffects.addEffect(StatusEffectType.Dead);
+                    player.statusEffects.addEffect(StatusEffectType.Eaten);
+                    player.statusEffects.addEffect(StatusEffectType.Shrunk, -1);
+                    
+                    return [];
+                }
+            };
+            
+            return cocoonFinishAction;
         }
         
         // State-based action selection
@@ -401,15 +431,4 @@ mechSpiderData.getDialogue = function(situation: 'battle-start' | 'player-restra
     
     const options = dialogues[situation] || dialogues['battle-start'];
     return options[Math.floor(Math.random() * options.length)];
-};
-
-// Special finishing move sequence for cocoon doomed state
-mechSpiderData.finishingMove = function(): string[] {
-    return [
-        '{player}は繭の中で完全に小さくなってしまった...',
-        '機械のクモは繭に噛みつき、中身を{player}ごと吸い上げる！',
-        '{player}が機械のクモの体内に取り込まれた！',
-        '機械のクモは体内の{player}を合成糸で拘束し、体内修理装置に縛りつける！',
-        '修理装置に縛り付けられた{player}は、機械のクモが満足するまで意味のない修理をされ続ける...',
-    ];
 };
