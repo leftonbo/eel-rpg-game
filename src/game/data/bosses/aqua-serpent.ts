@@ -218,7 +218,7 @@ export const aquaSerpentData: BossData = {
             }
         }
 
-        // Track when player becomes defeated and handle 10-turn cycles from that point
+        // Track when player becomes defeated and handle 8-turn cycles from that point
         const defeatStartTurn = boss.getCustomVariable<number>('defeatStartTurn', -1);
         
         if (player.isDefeated()) {
@@ -227,9 +227,9 @@ export const aquaSerpentData: BossData = {
                 boss.setCustomVariable('defeatStartTurn', turn);
             }
             
-            // Every 10 turns since defeat started, show re-consumption cycle
+            // Every 8 turns since defeat started, show re-consumption cycle
             const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
-            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 10 === 0) {
+            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 8 === 0) {
                 return {
                     id: 'reincarnation-predation',
                     type: ActionType.PostDefeatedAttack,
