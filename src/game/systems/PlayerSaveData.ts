@@ -1,6 +1,21 @@
 import { AbilityData, AbilityType } from './AbilitySystem';
 import { MemorialSaveData, MemorialSystem } from './MemorialSystem';
 
+export interface PlayerSaveDataWithoutVersionTracking {
+    abilities: { [key: string]: AbilityData };
+    equipment: {
+        weapon: string;
+        armor: string;
+    };
+    memorials: MemorialSaveData;
+    playerInfo: {
+        name: string;
+        icon: string;
+    };
+    readDocuments: string[];
+    version: number;
+}
+
 export interface PlayerSaveData {
     abilities: { [key: string]: AbilityData };
     equipment: {
@@ -13,20 +28,27 @@ export interface PlayerSaveData {
         icon: string;
     };
     readDocuments: string[]; // Read document IDs for unread badge system
+    lastSavedGameVersion: string; // Last game version when data was saved
     version: number; // For future save data migration
 }
 
 export class PlayerSaveManager {
     private static readonly SAVE_KEY = 'eelfood_player_data';
-    private static readonly CURRENT_VERSION = 6;
+    private static readonly CURRENT_VERSION = 7;
+    
+    // ゲームバージョン（package.jsonから取得するか手動設定）
+    private static readonly GAME_VERSION = '1.0.0';
     
     /**
-     * Save player data to localStorage
+     * Save player data to localStorage (overloaded)
      */
-    static savePlayerData(saveData: PlayerSaveData): void {
+    static savePlayerData(saveData: PlayerSaveData): void;
+    static savePlayerData(saveData: PlayerSaveDataWithoutVersionTracking): void;
+    static savePlayerData(saveData: PlayerSaveData | PlayerSaveDataWithoutVersionTracking): void {
         try {
             const dataWithVersion = {
                 ...saveData,
+                lastSavedGameVersion: this.GAME_VERSION,
                 version: this.CURRENT_VERSION
             };
             localStorage.setItem(this.SAVE_KEY, JSON.stringify(dataWithVersion));
@@ -91,6 +113,7 @@ export class PlayerSaveManager {
                 icon: '🐍'
             },
             readDocuments: [], // Start with no read documents
+            lastSavedGameVersion: this.GAME_VERSION,
             version: this.CURRENT_VERSION
         };
     }
@@ -157,6 +180,15 @@ export class PlayerSaveManager {
                 ...migratedData,
                 readDocuments: [], // Initialize empty read documents array
                 version: 6
+            };
+        }
+
+        // Migration from version 6 to 7: add lastSavedGameVersion field
+        if (migratedData.version === 6) {
+            migratedData = {
+                ...migratedData,
+                lastSavedGameVersion: '1.0.0', // Default to 1.0.0 for existing saves
+                version: 7
             };
         }
         
@@ -236,6 +268,7 @@ export class PlayerSaveManager {
         if (typeof data.playerInfo.name !== 'string') return false;
         if (typeof data.playerInfo.icon !== 'string') return false;
         if (!Array.isArray(data.readDocuments)) return false;
+        if (typeof data.lastSavedGameVersion !== 'string') return false;
         
         // Check abilities structure
         for (const [, ability] of Object.entries(data.abilities)) {
@@ -246,5 +279,39 @@ export class PlayerSaveManager {
         }
         
         return true;
+    }
+    
+    /**
+     * Get current game version
+     */
+    static getCurrentGameVersion(): string {
+        return this.GAME_VERSION;
+    }
+    
+    /**
+     * Check if the game was upgraded since last save
+     */
+    static isGameVersionUpgraded(): boolean {
+        const saveData = this.loadPlayerData();
+        if (!saveData.lastSavedGameVersion) {
+            return true; // Treat missing version as upgrade
+        }
+        return saveData.lastSavedGameVersion !== this.GAME_VERSION;
+    }
+    
+    /**
+     * Get the version from last save
+     */
+    static getLastSavedGameVersion(): string | null {
+        const saveData = this.loadPlayerData();
+        return saveData.lastSavedGameVersion || null;
+    }
+    
+    /**
+     * Update game version in save data without changing other data
+     */
+    static updateGameVersion(): void {
+        const saveData = this.loadPlayerData();
+        this.savePlayerData(saveData);
     }
 }

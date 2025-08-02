@@ -9,6 +9,8 @@ import { OutGamePlayerDetailScene } from './scenes/OutGamePlayerDetailScene';
 import { OutGameExplorationRecordScene } from './scenes/OutGameExplorationRecordScene';
 import { OutGameLibraryScene } from './scenes/OutGameLibraryScene';
 import { OutGameOptionScene } from './scenes/OutGameOptionScene';
+import { OutGameChangelogScene } from './scenes/OutGameChangelogScene';
+import { PlayerSaveManager } from './systems/PlayerSaveData';
 
 /**
  * ゲームの状態を管理する列挙型
@@ -53,7 +55,11 @@ export enum GameState {
     /**
      * アウトゲーム - オプション画面
      */
-    OutGameOption = 'out-game-option'
+    OutGameOption = 'out-game-option',
+    /**
+     * アウトゲーム - 更新履歴画面
+     */
+    OutGameChangelog = 'out-game-changelog'
 }
 
 /**
@@ -75,6 +81,7 @@ export class Game {
     private outGameExplorationRecordScene: OutGameExplorationRecordScene;
     private outGameLibraryScene: OutGameLibraryScene;
     private outGameOptionScene: OutGameOptionScene;
+    private outGameChangelogScene: OutGameChangelogScene;
     
     constructor() {
         // デバッグモード判定 (webpack environment, URL parameters, or localStorage)
@@ -97,6 +104,7 @@ export class Game {
         this.outGameExplorationRecordScene = new OutGameExplorationRecordScene(this);
         this.outGameLibraryScene = new OutGameLibraryScene(this);
         this.outGameOptionScene = new OutGameOptionScene(this);
+        this.outGameChangelogScene = new OutGameChangelogScene(this);
         
         // 非同期読み込みを開始
         this.initAsync();
@@ -145,6 +153,7 @@ export class Game {
         document.getElementById('out-game-exploration-record-screen')?.classList.add('d-none');
         document.getElementById('out-game-library-screen')?.classList.add('d-none');
         document.getElementById('out-game-option-screen')?.classList.add('d-none');
+        document.getElementById('out-game-changelog-screen')?.classList.add('d-none');
         
         // Hide/Show out-game navigation based on scene type
         const outGameNavigation = document.getElementById('out-game-navigation-container');
@@ -211,6 +220,11 @@ export class Game {
                 document.getElementById('out-game-option-screen')?.classList.remove('d-none');
                 this.outGameOptionScene.enter();
                 break;
+                
+            case GameState.OutGameChangelog:
+                document.getElementById('out-game-changelog-screen')?.classList.remove('d-none');
+                this.outGameChangelogScene.enter();
+                break;
         }
     }
 
@@ -222,7 +236,17 @@ export class Game {
     }
     
     startGame(): void {
-        this.setState(GameState.OutGameBossSelect);
+        // Check if game version was upgraded since last save
+        if (PlayerSaveManager.isGameVersionUpgraded()) {
+            console.log('[Game] Game version upgraded, showing changelog');
+            // Update the game version in save data
+            PlayerSaveManager.updateGameVersion();
+            // Show changelog first
+            this.setState(GameState.OutGameChangelog);
+        } else {
+            // Normal flow - go to boss select
+            this.setState(GameState.OutGameBossSelect);
+        }
     }
     
     selectBoss(bossId: string): void {
@@ -277,6 +301,7 @@ export class Game {
                state === GameState.OutGamePlayerDetail ||
                state === GameState.OutGameExplorationRecord ||
                state === GameState.OutGameLibrary ||
-               state === GameState.OutGameOption;
+               state === GameState.OutGameOption ||
+               state === GameState.OutGameChangelog;
     }
 }
