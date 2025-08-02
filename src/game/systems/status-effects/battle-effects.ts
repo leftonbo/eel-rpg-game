@@ -28,6 +28,22 @@ export const battleEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = n
             canAct: false
         }
     }],
+    [StatusEffectType.Shrunk, {
+        type: StatusEffectType.Shrunk,
+        name: '縮小',
+        description: '体が縮んでしまい、あらゆる能力が低下',
+        duration: 3,
+        category: 'debuff',
+        isDebuff: true,
+        modifiers: {
+            attackPower: 0.25,
+            damageReceived: 2.0,
+            struggleRate: 0.1,
+            accuracy: 0.25,
+        },
+        messages: {
+        }
+    }],
     [StatusEffectType.Fire, {
         type: StatusEffectType.Fire,
         name: '火だるま',

@@ -32,6 +32,8 @@ export enum StatusEffectType {
     Defending = 'defending',
     // `Stunned` is for Player / Boss to mark stunned state.
     Stunned = 'stunned',
+    // `Shrunk` is for Player to mark shrunk state.
+    Shrunk = 'shrunk',
     Fire = 'fire',
     Charm = 'charm',
     Slow = 'slow',
