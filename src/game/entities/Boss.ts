@@ -664,7 +664,7 @@ export class Boss extends Actor {
         const messages: string[] = [];
         
         // Apply variance to absorption amount
-        const baseAbsorption = this.calculateActionDamage(action) || Math.floor(player.maxHp * DEFAULT_MAX_HP_ABSORPTION_RATIO);
+        const baseAbsorption = this.calculateActionDamage(action) ?? Math.floor(player.maxHp * DEFAULT_MAX_HP_ABSORPTION_RATIO);
         const accuracyModifier = this.statusEffects.getAccuracyModifier();
         const statusAttackResult = calculateAttackResult(
             baseAbsorption, 
@@ -677,11 +677,13 @@ export class Boss extends Actor {
         );
         const hpAbsorbed = statusAttackResult.damage;
         
-        player.loseMaxHp(hpAbsorbed);
-        messages.push(`${player.name}の最大ヘルスが${hpAbsorbed}奪われた！`);
-        
-        // Boss gains the absorbed max HP
-        this.gainMaxHp(hpAbsorbed);
+        if (hpAbsorbed > 0) {
+            player.loseMaxHp(hpAbsorbed);
+            messages.push(`${player.name}の最大ヘルスが${hpAbsorbed}奪われた！`);
+
+            // Boss gains the absorbed max HP
+            this.gainMaxHp(hpAbsorbed);
+        }
         
         // Absorb MP (also with variance)
         const baseMpDrain = Math.floor(baseAbsorption * DEFAULT_MP_DRAIN_RATIO);
@@ -736,7 +738,7 @@ export class Boss extends Actor {
     
     private executeSkipAction(action: BossAction): string[] {
         // Skip action, just return a message
-        return [action.description || `${this.displayName}は行動できない...`];
+        return [action.description ?? `${this.displayName}は行動できない...`];
     }
     
     private processHpAbsorption(action: BossAction, actualDamage: number): string[] {
