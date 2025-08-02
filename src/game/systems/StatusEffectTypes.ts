@@ -100,6 +100,7 @@ export enum StatusEffectType {
   
     // Seraph Mascot effects
     Blessed = 'blessed',
+    HolySlimed = 'holy-slimed',
     Overwhelmed = 'overwhelmed',
     SalvationState = 'salvation-state',
     

@@ -72,8 +72,7 @@ const seraphMascotContactActions: BossAction[] = [
         description: '大きな翼で優しく抱きしめる',
         messages: [
             '「抱っこしてあげる〜♪」',
-            '{boss}は大きな翼で{player}を包み込む！',
-            '{player}が翼に包まれて動けなくなった！'
+            '{boss}は大きな翼で{player}を包み込む！'
         ],
         weight: 25,
         canUse: (_boss, player, _turn) => {
@@ -92,10 +91,10 @@ const seraphMascotCareActions: BossAction[] = [
         messages: [
             '「不幸を取ってあげるね〜♪」',
             '{boss}は長い舌で{player}を丁寧に舐め回す！',
-            '{player}は救済の粘液でベトベトになった！'
+            '{player}は救済の粘液でベトベトになる...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.3,
-        statusEffect: StatusEffectType.Slimed,
+        statusEffect: StatusEffectType.HolySlimed,
         statusChance: 0.80,
         weight: 35,
         playerStateCondition: 'restrained'
@@ -106,15 +105,28 @@ const seraphMascotCareActions: BossAction[] = [
         name: '救済の準備',
         description: '本格的な救済のため特別な状態にする',
         messages: [
-            '「もっとちゃんと救済してあげなきゃ〜♪」',
-            '{boss}は{player}をより深い救済状態へと導く！',
-            '{player}は救済の準備が整った状態になった！'
+            '「体に染み付く救済をしてあげるよ〜♪」',
+            '{boss}は小さな{player}の体を口にくわえ、激しい神聖の力を注ぎ込む！',
+            '{player}は{boss}の救済の力に圧倒される！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.0,
         statusEffect: StatusEffectType.SalvationState,
         statusChance: 0.90,
         weight: 30,
-        playerStateCondition: 'restrained'
+        playerStateCondition: 'restrained',
+        canUse: (boss: Boss, player: Player, turn: number): boolean => {
+            // 救済状態でない場合のみ使用可能
+            const isInSalvation = player.statusEffects.hasEffect(StatusEffectType.SalvationState);
+            const lastUsed = boss.getCustomVariable<number>('salvationAbilityLastUsed', -1);
+            // 20ターン経過後に使用可能
+            return !isInSalvation && (lastUsed === -1 || turn - lastUsed >= 20);
+        },
+        onPreUse: (_action: BossAction, boss: Boss, _player: Player, turn: number) => {
+            // クールダウン記録
+            boss.setCustomVariable('salvationAbilityLastUsed', turn);
+            // スキル内容の変更はしない
+            return null;
+        }
     },
     {
         id: 'protective-squeeze',
@@ -156,7 +168,7 @@ const seraphMascotProtectionActions: BossAction[] = [
         messages: [
             '「不純なものを取り除いてあげるね〜♪」',
             '{boss}の体内で神聖な力が{player}を浄化する！',
-            '{player}の最大HPが聖なる力で削られていく...'
+            '{player}の生命力が聖なる力で削られていく...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 2.2,
         weight: 25,
@@ -192,7 +204,18 @@ const seraphMascotProtectionActions: BossAction[] = [
         statusEffect: StatusEffectType.SalvationState,
         statusChance: 0.70,
         weight: 15,
-        playerStateCondition: 'eaten'
+        playerStateCondition: 'eaten',
+        canUse: (boss: Boss, _player: Player, turn: number): boolean => {
+            // クールダウンチェック（20ターン）
+            const lastUsed = boss.getCustomVariable<number>('salvationAbilityLastUsed', -1);
+            return lastUsed === -1 || turn - lastUsed >= 20;
+        },
+        onPreUse: (_action: BossAction, boss: Boss, _player: Player, turn: number) => {
+            // クールダウン記録
+            boss.setCustomVariable('salvationAbilityLastUsed', turn);
+            // スキル内容の変更はしない
+            return null;
+        }
     }
 ];
 
@@ -218,7 +241,7 @@ const seraphMascotEternalActions: BossAction[] = [
         description: '過度に保護しようとする',
         messages: [
             '「危ないものから守ってあげなきゃ〜！」',
-            '{boss}は体内の{player}を聖なる力で過度に保護しようとする！',
+            '{boss}は体内の{player}に聖なる力を流し込み、過度に保護しようとする！',
             '何もかもから守ろうとして、自由を奪ってしまう...'
         ],
         statusEffect: StatusEffectType.SalvationState,
@@ -307,15 +330,8 @@ const seraphMascotAIStrategy = (boss: Boss, player: Player, turn: number): BossA
             }
         }
         
-        // 重み付きランダム選択（salvation-cycleのクールダウンチェック付き）
-        const availableActions = protectionActions.filter(action => {
-            if (action.id === 'salvation-cycle') {
-                // クールダウンチェック（20ターン）
-                const lastUsed = boss.getCustomVariable<number>('salvationAbilityLastUsed', -1);
-                return lastUsed === -1 || turn - lastUsed >= 20;
-            }
-            return true;
-        });
+        // 重み付きランダム選択
+        const availableActions = protectionActions.filter(action => action.canUse ? action.canUse(boss, player, turn) : true);
         
         const totalWeight = availableActions.reduce((sum, action) => sum + action.weight, 0);
         let random = Math.random() * totalWeight;
@@ -323,10 +339,6 @@ const seraphMascotAIStrategy = (boss: Boss, player: Player, turn: number): BossA
         for (const action of availableActions) {
             random -= action.weight;
             if (random <= 0) {
-                // salvation-cycle使用時はクールダウン記録
-                if (action.id === 'salvation-cycle') {
-                    boss.setCustomVariable('salvationAbilityLastUsed', turn);
-                }
                 return action;
             }
         }
@@ -344,9 +356,9 @@ const seraphMascotAIStrategy = (boss: Boss, player: Player, turn: number): BossA
                     name: '完全なる保護',
                     description: '体内の聖域で完全に保護する',
                     messages: [
-                        '「もう傷つかないように、ずっと守ってあげる〜♪」',
-                        '{boss}は{player}を体内の聖域へと運ぶ！',
-                        '完全な保護のため、{player}は聖なる胃袋に包まれた！'
+                        '「もう傷つかないように、おなかの聖域で守ってあげる〜♪」',
+                        '{boss}は{player}を長い舌で巻き取り、そのまま飲み込んでしまった！',
+                        '{player}は聖なる胃袋に包まれる...'
                     ],
                     weight: 1
                 };
@@ -367,16 +379,11 @@ const seraphMascotAIStrategy = (boss: Boss, player: Player, turn: number): BossA
     if (player.isRestrained()) {
         const careActions = seraphMascotCareActions;
         
-        // 救済状態でない場合は準備を優先（クールダウンチェック付き）
+        // 救済状態でない場合は準備を優先
         if (!isPlayerInSalvation && Math.random() < 0.6) {
-            const preparationAction = careActions.find(action => action.id === 'salvation-preparation');
+            const preparationAction = careActions.find(action => action.canUse && action.canUse(boss, player, turn) && action.id === 'salvation-preparation');
             if (preparationAction) {
-                // クールダウンチェック（20ターン）
-                const lastUsed = boss.getCustomVariable<number>('salvationAbilityLastUsed', -1);
-                if (lastUsed === -1 || turn - lastUsed >= 20) {
-                    boss.setCustomVariable('salvationAbilityLastUsed', turn);
-                    return preparationAction;
-                }
+                return preparationAction;
             }
         }
         

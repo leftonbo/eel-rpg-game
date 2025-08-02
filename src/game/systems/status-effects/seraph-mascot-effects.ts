@@ -21,6 +21,19 @@ export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfi
         }
     }],
     
+    [StatusEffectType.HolySlimed, {
+        type: StatusEffectType.HolySlimed,
+        name: '神聖粘液まみれ',
+        description: '攻撃力が低下、拘束解除の成功率が大きく低下',
+        duration: 3,
+        category: 'debuff',
+        isDebuff: true,
+        modifiers: {
+            attackPower: 0.7,
+            struggleRate: 0.4
+        }
+    }],
+    
     [StatusEffectType.Overwhelmed, {
         type: StatusEffectType.Overwhelmed,
         name: '圧倒',
