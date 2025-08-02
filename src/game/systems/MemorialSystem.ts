@@ -265,8 +265,7 @@ export class MemorialSystem {
     }
     
     /**
-     * 全てのバトル記録を取得
-     * @return バトル記録の配列
+     * 初期化処理
      */
     public initializeData(): void {
         this.trophies.clear();
