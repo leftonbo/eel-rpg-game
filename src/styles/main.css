@@ -1862,3 +1862,44 @@ footer svg {
     75% { background-position: 50% 0%; }
     100% { background-position: 0% 50%; }
 }
+
+/* Demon Dragon effects */
+.status-demon-stomach {
+    background: linear-gradient(135deg, #4c1d95, #7c2d12, #1f2937);
+    color: #f8fafc;
+    border: 1px solid #7c2d12;
+    animation: demonPulse 2s ease-in-out infinite alternate;
+}
+
+.status-soul-drain {
+    background: linear-gradient(45deg, #1e1b4b, #4c1d95, #6b21a8);
+    color: #e0e7ff;
+    border: 1px solid #4c1d95;
+    animation: soulDrain 1.5s ease-in-out infinite;
+}
+
+@keyframes demonPulse {
+    from { 
+        box-shadow: 0 0 8px rgba(124, 45, 18, 0.6);
+        transform: scale(1);
+    }
+    to { 
+        box-shadow: 0 0 20px rgba(124, 45, 18, 0.9);
+        transform: scale(1.05);
+    }
+}
+
+@keyframes soulDrain {
+    0% { 
+        box-shadow: 0 0 5px rgba(76, 29, 149, 0.5);
+        opacity: 0.8;
+    }
+    50% { 
+        box-shadow: 0 0 15px rgba(76, 29, 149, 0.8);
+        opacity: 1;
+    }
+    100% { 
+        box-shadow: 0 0 5px rgba(76, 29, 149, 0.5);
+        opacity: 0.8;
+    }
+}

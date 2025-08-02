@@ -36,6 +36,7 @@ export interface BossAction {
     statusDuration?: number;
     weight: number; // Probability weight for AI selection
     canUse?: (boss: Boss, player: Player, turn: number) => boolean;
+    onPreUse?: (action: BossAction, boss: Boss, player: Player, turn: number) => BossAction | null; // Pre-use callback to modify action before execution
     onUse?: (boss: Boss, player: Player, turn: number) => string[]; // Custom action callback
     hitRate?: number; // Attack hit rate (default: 95%)
     criticalRate?: number; // Critical hit rate (default: 5%)
@@ -376,6 +377,17 @@ export class Boss extends Actor {
     }
     
     executeAction(action: BossAction, player: Player, turn: number = 0): string[] {
+        // Modify action before execution if onPreUse callback is provided
+        if (action.onPreUse) {
+            // use instance of BossAction to prevent mutation of original action
+            const modifiedAction = action.onPreUse({ ...action }, this, player, turn);
+            // If the action was modified, use the new action
+            // returning null means the action was not modified
+            if (modifiedAction) {
+                action = modifiedAction; // Use the modified action
+            }
+        }
+        
         const messages = this.processActionStart(action, player);
         
         // Check for invincible status first
@@ -652,7 +664,7 @@ export class Boss extends Actor {
         const messages: string[] = [];
         
         // Apply variance to absorption amount
-        const baseAbsorption = this.calculateActionDamage(action) || Math.floor(player.maxHp * DEFAULT_MAX_HP_ABSORPTION_RATIO);
+        const baseAbsorption = this.calculateActionDamage(action) ?? Math.floor(player.maxHp * DEFAULT_MAX_HP_ABSORPTION_RATIO);
         const accuracyModifier = this.statusEffects.getAccuracyModifier();
         const statusAttackResult = calculateAttackResult(
             baseAbsorption, 
@@ -665,11 +677,13 @@ export class Boss extends Actor {
         );
         const hpAbsorbed = statusAttackResult.damage;
         
-        player.loseMaxHp(hpAbsorbed);
-        messages.push(`${player.name}の最大ヘルスが${hpAbsorbed}奪われた！`);
-        
-        // Boss gains the absorbed max HP
-        this.gainMaxHp(hpAbsorbed);
+        if (hpAbsorbed > 0) {
+            player.loseMaxHp(hpAbsorbed);
+            messages.push(`${player.name}の最大ヘルスが${hpAbsorbed}奪われた！`);
+
+            // Boss gains the absorbed max HP
+            this.gainMaxHp(hpAbsorbed);
+        }
         
         // Absorb MP (also with variance)
         const baseMpDrain = Math.floor(baseAbsorption * DEFAULT_MP_DRAIN_RATIO);
@@ -724,7 +738,7 @@ export class Boss extends Actor {
     
     private executeSkipAction(action: BossAction): string[] {
         // Skip action, just return a message
-        return [action.description || `${this.displayName}は行動できない...`];
+        return [action.description ?? `${this.displayName}は行動できない...`];
     }
     
     private processHpAbsorption(action: BossAction, actualDamage: number): string[] {
