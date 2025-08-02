@@ -5,18 +5,19 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
     [StatusEffectType.Paralysis, {
         type: StatusEffectType.Paralysis,
         name: '麻痺',
-        description: '時々行動不能になり、攻撃力が大幅低下',
+        description: '命中率と攻撃力が大幅に低下',
         duration: 20,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
-            attackPower: 0.3
+            attackPower: 0.3,
+            hitRate: 0.3
         }
     }],
     [StatusEffectType.AphrodisiacPoison, {
         type: StatusEffectType.AphrodisiacPoison,
         name: '淫毒',
-        description: '毎ターンMP減少＋魅了効果が蓄積',
+        description: '毎ターンMP減少、拘束解除率が低下',
         duration: 20,
         category: 'debuff',
         isDebuff: true,
@@ -41,7 +42,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
     [StatusEffectType.Drowsiness, {
         type: StatusEffectType.Drowsiness,
         name: 'ねむけ',
-        description: '時々眠ってしまい行動不能、重ねがけで睡眠状態に',
+        description: '攻撃力が低下、重ねがけで睡眠状態に',
         duration: 20,
         category: 'debuff',
         isDebuff: true,
@@ -58,13 +59,13 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
         isDebuff: true,
         modifiers: {
             attackPower: 0.4,
-            damageReceived: 1.3
+            damageReceived: 1.5
         }
     }],
     [StatusEffectType.Infatuation, {
         type: StatusEffectType.Infatuation,
         name: 'メロメロ',
-        description: '魅了の強化版、拘束解除率がさらに低下、MP大幅減少',
+        description: '拘束解除率が大きく低下、MP大幅減少',
         duration: 20,
         category: 'debuff',
         isDebuff: true,
@@ -72,7 +73,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
             struggleRate: 0.2
         },
         onTick: (target: Actor, _effect: StatusEffect) => {
-            const mpLoss = Math.min(target.mp, 3);
+            const mpLoss = Math.min(target.mp, 5);
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
             }
@@ -89,18 +90,18 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
     [StatusEffectType.Confusion, {
         type: StatusEffectType.Confusion,
         name: '混乱',
-        description: '時々間違った行動をとってしまう',
+        description: '攻撃力が大幅に低下',
         duration: 20,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
-            attackPower: 0.6
+            attackPower: 0.1
         }
     }],
     [StatusEffectType.Arousal, {
         type: StatusEffectType.Arousal,
         name: '発情',
-        description: '拘束解除率が大幅低下、判断力が鈍る、MP減少',
+        description: '拘束解除率が大幅低下、MP大幅減少',
         duration: 20,
         category: 'debuff',
         isDebuff: true,
@@ -108,7 +109,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
             struggleRate: 0.25
         },
         onTick: (target: Actor, _effect: StatusEffect) => {
-            const mpLoss = Math.min(target.mp, 2);
+            const mpLoss = Math.min(target.mp, 5);
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
             }
@@ -123,7 +124,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
         isDebuff: true,
         modifiers: {
             attackPower: 0.5,
-            struggleRate: 0.3
+            struggleRate: 0.3,
+            damageReceived: 1.3
         },
         onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 2);
@@ -135,7 +137,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
     [StatusEffectType.MagicSeal, {
         type: StatusEffectType.MagicSeal,
         name: '魔法封印',
-        description: 'MP使用不可、スキルが封印される',
+        description: 'MPを使うスキルが封印される',
         duration: 20,
         category: 'debuff',
         isDebuff: true,
@@ -171,7 +173,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
         isDebuff: true,
         modifiers: {
             attackPower: 0.6,
-            struggleRate: 0.4
+            struggleRate: 0.4,
+            hitRate: 0.5
         },
         onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 2);
@@ -218,7 +221,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
         isDebuff: true,
         modifiers: {
             damageReceived: 1.2,
-            struggleRate: 0.6
+            struggleRate: 0.6,
+            debuffChanceModifier: 3.0
         },
         onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 1);
@@ -235,8 +239,9 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
         category: 'debuff',
         isDebuff: true,
         modifiers: {
-            attackPower: 0.5,
-            struggleRate: 0.4
+            damageReceived: 1.2,
+            struggleRate: 0.4,
+            debuffChanceModifier: 1.2
         },
         onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 2);
@@ -290,7 +295,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
         isDebuff: true,
         modifiers: {
             attackPower: 0.3,
-            struggleRate: 0.1
+            struggleRate: 0.05
         },
         onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 3);
@@ -307,8 +312,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
         category: 'debuff',
         isDebuff: true,
         modifiers: {
-            attackPower: 0.2,
-            struggleRate: 0.15
+            attackPower: 0.1,
+            struggleRate: 0.1
         },
         onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 2);
