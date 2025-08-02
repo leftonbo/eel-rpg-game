@@ -147,6 +147,8 @@ const batVampireActions: BossAction[] = [
             player.statusEffects.removeEffect(StatusEffectType.Doomed);
             // プレイヤーを敗北状態にする
             player.statusEffects.addEffect(StatusEffectType.Dead);
+            // 縮小状態にする
+            player.statusEffects.addEffect(StatusEffectType.Shrunk, -1);
             // 食べられ状態にする (フレーバー)
             player.statusEffects.addEffect(StatusEffectType.Eaten);
             
