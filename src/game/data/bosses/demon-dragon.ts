@@ -33,7 +33,6 @@ const demonDragonActions: BossAction[] = [
         weight: 30,
         playerStateCondition: 'normal',
         messages: [
-            '「グォォォォ...」',
             '{boss}は巨大な足を振り上げ、{player}を踏みつけようとしてきた！'
         ]
     },
@@ -47,7 +46,6 @@ const demonDragonActions: BossAction[] = [
         weight: 25,
         playerStateCondition: 'normal',
         messages: [
-            '「フシュルルル...」',
             '{boss}の口から闇の魔法弾が放たれた！'
         ]
     },
@@ -63,7 +61,6 @@ const demonDragonActions: BossAction[] = [
         weight: 20,
         playerStateCondition: 'normal',
         messages: [
-            '「ペッ！」',
             '{boss}は粘つく液体を{player}に向けて吐いた！'
         ]
     },
@@ -79,7 +76,6 @@ const demonDragonActions: BossAction[] = [
             return !player.isRestrained() && !player.isEaten() && Math.random() < 0.4;
         },
         messages: [
-            '「シュルルル...」',
             '{boss}の長い尻尾が{player}に向かって伸びてくる！'
         ]
     },
@@ -94,7 +90,6 @@ const demonDragonActions: BossAction[] = [
         weight: 35,
         playerStateCondition: 'restrained',
         messages: [
-            '「グルルル...」',
             '{boss}は{player}を尻尾でぎゅうぎゅうと締め付ける！'
         ]
     },
@@ -109,7 +104,6 @@ const demonDragonActions: BossAction[] = [
         weight: 30,
         playerStateCondition: 'restrained',
         messages: [
-            '「ペロペロ...」',
             '{boss}は大きな舌で{player}をべろべろと舐めまわした！'
         ]
     },
@@ -123,7 +117,6 @@ const demonDragonActions: BossAction[] = [
         weight: 25,
         playerStateCondition: 'restrained',
         messages: [
-            '「ゾゾゾ...」',
             '{boss}の体毛が蠢き、{player}の生命力を吸収し始めた！'
         ]
     },
@@ -137,7 +130,6 @@ const demonDragonActions: BossAction[] = [
         weight: 20,
         playerStateCondition: 'restrained',
         messages: [
-            '「見つめていなさい...」',
             '{boss}の瞳が妖艶に光り、{player}は催眠術にかかってしまった！'
         ]
     },
@@ -172,14 +164,42 @@ const demonDragonActions: BossAction[] = [
             // 1ターン目または30ターン経過後に使用可能
             return (turn === 1 || turn - lastSoulVacuumTurn >= 30) && !player.isEaten() && !player.isRestrained();
         },
-        onUse: (boss: Boss, _player: Player, turn: number) => {
+        onPreUse: (action: BossAction, boss: Boss, player: Player, turn: number): BossAction | null => {
             boss.setCustomVariable('lastSoulVacuumTurn', turn);
-            return [];
+            
+            // メッセージ配列は複製したものを使用 (データ書き込み防止)
+            const messages = [...action.messages || []];
+            action.messages = messages;
+
+            // 無敵状態だと失敗する
+            if (player.statusEffects.hasEffect(StatusEffectType.Invincible)) {
+                if (messages) {
+                    messages.push('{player}は無敵状態のため、吸い込まれなかった！');
+                }
+                // EatAttack から変更して効果のない行動とする
+                action.type = ActionType.Attack;
+                return action;
+            }
+            
+            // 防御状態だと失敗する
+            if (player.statusEffects.hasEffect(StatusEffectType.Defending)) {
+                if (messages) {
+                    messages.push('{player}は防御の構えをとっているため、吸い込まれなかった！');
+                }
+                // EatAttack から変更して効果のない行動とする
+                action.type = ActionType.Attack;
+                return action;
+            }
+            
+            // 吸い込まれメッセージ追加
+            if (messages) {
+                messages.push('{player}は抵抗する間もなく{boss}の口の中に吸い込まれてしまった！');
+            }
+            return action;
         },
         messages: [
-            '「魂よ、我が下に来たれ...」',
-            '{boss}は口を大きく開き、強力な吸引力を発生させた！',
-            '{player}は抵抗する間もなく{boss}の口の中に吸い込まれてしまった！'
+            '「生ける魂よ、我が下に来たれ...」',
+            '{boss}は口を大きく開き、強烈な力で魂を吸い込む！'
         ]
     },
 
@@ -189,7 +209,7 @@ const demonDragonActions: BossAction[] = [
         type: ActionType.DevourAttack,
         name: '食道移動',
         description: '食道内を移動しながら最大HPを奪われる',
-        damageFormula: (user: Boss) => user.attackPower * 0.5,
+        damageFormula: (user: Boss) => user.attackPower * 0.8,
         weight: 1,
         playerStateCondition: 'eaten',
         canUse: (boss: Boss, _player: Player, _turn: number) => {
@@ -204,7 +224,7 @@ const demonDragonActions: BossAction[] = [
         type: ActionType.DevourAttack,
         name: '嗉嚢到着',
         description: '嗉嚢に到着、脱出の最後のチャンス',
-        damageFormula: (user: Boss) => user.attackPower * 0.3,
+        damageFormula: (user: Boss) => user.attackPower * 0.5,
         weight: 1,
         playerStateCondition: 'eaten',
         canUse: (boss: Boss, _player: Player, _turn: number) => {
@@ -222,6 +242,7 @@ const demonDragonActions: BossAction[] = [
         type: ActionType.DevourAttack,
         name: '魔の胃袋取り込み',
         description: '不定形の触手が伸び、プレイヤーを魔の胃袋に取り込む',
+        damageFormula: (_user: Boss) => 0,
         weight: 1,
         playerStateCondition: 'eaten',
         canUse: (boss: Boss, _player: Player, _turn: number) => {
@@ -229,8 +250,18 @@ const demonDragonActions: BossAction[] = [
             return eatenTurnCount >= 6;
         },
         onUse: (boss: Boss, player: Player, _turn: number) => {
+            // プレイヤーのHP、最大HPを吸収
+            const hpReduction = player.hp;
+            const maxHpReduction = player.maxHp;
+            player.takeDamage(hpReduction);
+            player.loseMaxHp(maxHpReduction);
+            
+            // ボスの最大HPを増加
+            boss.gainMaxHp(maxHpReduction);
+            boss.heal(hpReduction);
+            
             // プレイヤーを敗北状態にする
-            player.loseMaxHp(player.maxHp);
+            player.statusEffects.removeEffect(StatusEffectType.KnockedOut);
             player.statusEffects.removeEffect(StatusEffectType.Doomed);
             player.statusEffects.addEffect(StatusEffectType.Dead);
             player.statusEffects.addEffect(StatusEffectType.DemonStomach);
@@ -347,7 +378,7 @@ function onPreUseStomachExperience(action: BossAction, boss: Boss, player: Playe
     let regurgitationProgress = boss.getCustomVariable<number>('regurgitationProgress', 0);
     
     // パターン 0 になっている場合、次のパターンに進む
-    if (stomachPattern === 0) {
+    if (stomachPattern === 0 && regurgitationProgress === 0) {
         const patternIndex = boss.getCustomVariable<number>('indexStomachPattern', 0);
         const patternList = boss.getCustomVariable<number[]>('arrayStomachPatterns', []);
         
@@ -359,6 +390,7 @@ function onPreUseStomachExperience(action: BossAction, boss: Boss, player: Playe
             // 次のパターンに進む
             stomachPattern = patternList[patternIndex];
             boss.setCustomVariable('stomachPattern', patternList[patternIndex]);
+            boss.setCustomVariable('indexStomachPattern', patternIndex + 1);
         }
     }
     
@@ -371,14 +403,14 @@ function onPreUseStomachExperience(action: BossAction, boss: Boss, player: Playe
             // 最初: DemonStomach 状態を解除
             player.statusEffects.removeEffect(StatusEffectType.DemonStomach);
             boss.setCustomVariable('regurgitationProgress', regurgitationProgress + 1);
-        } else if (regurgitationProgress < messagesRegurgitation.length - 1) {
+        } else if (regurgitationProgress < messagesRegurgitation.length) {
             // 中間: 吐き戻し進行度を更新
             boss.setCustomVariable('regurgitationProgress', regurgitationProgress + 1);
         } else {
             // 最後: DemonStomach 状態を再度追加
             player.statusEffects.addEffect(StatusEffectType.DemonStomach);
-            // regurgitationProgress をリセット
-            boss.setCustomVariable('regurgitationProgress', 0);
+            // 初期状態に戻すためにリセット
+            initializeStomachExperienceVariables(boss);
         }
         
         return action; // 吐き戻し演出のメッセージを設定して終了
@@ -395,16 +427,26 @@ function onPreUseStomachExperience(action: BossAction, boss: Boss, player: Playe
     if (turnsInStomach === 1) {
         // start メッセージを設定
         action.messages = data.start;
-    } else if (turnsInStomach < 8) {
-        // middle メッセージをランダムに選択
-        const middleMessages = data.middle[Math.floor(Math.random() * data.middle.length)];
-        action.messages = middleMessages;
+        // middle メッセージををシャッフルして再生するために index をシャッフルして保存
+        const middleLength = data.middle.length;
+        let middleIndexList = Array.from({ length: middleLength }, (_, i) => i);
+        middleIndexList = shuffleArray(middleIndexList);
+        boss.setCustomVariable('stomachMiddleList', middleIndexList);
     } else {
-        // end メッセージを設定
-        action.messages = data.end;
-        // 次の胃袋へ
-        boss.setCustomVariable('stomachPattern', 0); // 胃袋パターンをリセット
-        turnsInStomach = 0; // 胃袋内ターン数をリセット
+        // middle メッセージを設定
+        const index = turnsInStomach - 2; // 1ターン目はstart、2+ターン目はmiddle
+        const middleList = boss.getCustomVariable<number[]>('stomachMiddleList', []);
+        if (index < middleList.length) {
+            // 中間メッセージを取得
+            const middleMessages = data.middle[middleList[index]];
+            action.messages = middleMessages;
+        } else {
+            // 中間メッセージ再生後、 end メッセージを設定
+            action.messages = data.end;
+            // 次の胃袋へ
+            boss.setCustomVariable('stomachPattern', 0); // 胃袋パターンをリセット
+            turnsInStomach = 0; // 胃袋内ターン数をリセット
+        }
     }
     
     boss.setCustomVariable('turnsInStomach', turnsInStomach);
@@ -535,10 +577,11 @@ const initializeStomachExperienceVariables = (boss: Boss): void => {
     boss.setCustomVariable('indexStomachPattern', 0);
     boss.setCustomVariable('stomachPattern', 0);
     boss.setCustomVariable('turnsInStomach', 0);
+    boss.setCustomVariable('stomachMiddleList', []); // 中間メッセージリストは初期化
     boss.setCustomVariable('regurgitationProgress', 0);
     
     // 1, 2, 3のパターンをランダムに並び替えて配列に格納
-    const stomachPatterns = [0, 1, 2];
+    let stomachPatterns = [1, 2, 3];
     boss.setCustomVariable('arrayStomachPatterns', shuffleArray(stomachPatterns));
 }
 
@@ -565,8 +608,8 @@ export const demonDragonData: BossData = {
     icon: '🐉',
     explorerLevelRequired: 10,
     victoryTrophy: {
-        name: '魔界竜の漆黒鱗',
-        description: '魔界の竜の美しく禍々しい漆黒の鱗。魔界の力が宿っている。'
+        name: '魔界竜の毛皮',
+        description: '魔界の竜の美しく禍々しい漆黒の毛皮。顔を埋めたくなるほど柔らかい。'
     },
     defeatTrophy: {
         name: '魔界の甘美液',
@@ -585,6 +628,7 @@ export const demonDragonData: BossData = {
         'indexStomachPattern': 0, // 現在の胃袋体験のインデックス
         'stomachPattern': 0, // 現在の胃袋体験のパターン (0-3)
         'turnsInStomach': 0, // 胃袋にいるターン数
+        'stomachMiddleList': [], // 中間メッセージリスト
         'regurgitationProgress': 0 // 吐き戻し演出進行度
     },
 
@@ -626,6 +670,17 @@ export const demonDragonData: BossData = {
                 action.playerStateCondition === 'restrained'
             );
             return selectWeightedAction(restraintActions);
+        }
+        
+        // 拘束ではない状態でKO状態のプレイヤーがいる場合、拘束攻撃を優先
+        if (player.isKnockedOut()) {
+            const restraintAction = demonDragonActions.find(action =>
+                action.id === 'tail-restraint' &&
+                action.canUse && action.canUse(boss, player, turn)
+            );
+            if (restraintAction) {
+                return restraintAction;
+            }
         }
 
         // 通常状態の行動選択
