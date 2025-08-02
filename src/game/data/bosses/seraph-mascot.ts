@@ -237,7 +237,7 @@ const seraphMascotFinishingMove: BossAction = {
     ],
     onUse: (_boss: Boss, player: Player) => {
         // プレイヤーを敗北状態にし、体内での永続的な世話を開始
-        player.statusEffects.removeEffect(StatusEffectType.Doomed)
+        player.statusEffects.removeEffect(StatusEffectType.Doomed);
         player.statusEffects.addEffect(StatusEffectType.Dead);
         player.statusEffects.addEffect(StatusEffectType.Shrunk, -1); // 縮小状態にする
         player.statusEffects.addEffect(StatusEffectType.SalvationState, -1); // 永続的な救済状態
