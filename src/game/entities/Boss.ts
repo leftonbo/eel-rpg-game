@@ -36,6 +36,7 @@ export interface BossAction {
     statusDuration?: number;
     weight: number; // Probability weight for AI selection
     canUse?: (boss: Boss, player: Player, turn: number) => boolean;
+    onPreUse?: (action: BossAction, boss: Boss, player: Player, turn: number) => BossAction | null; // Pre-use callback to modify action before execution
     onUse?: (boss: Boss, player: Player, turn: number) => string[]; // Custom action callback
     hitRate?: number; // Attack hit rate (default: 95%)
     criticalRate?: number; // Critical hit rate (default: 5%)
@@ -376,6 +377,17 @@ export class Boss extends Actor {
     }
     
     executeAction(action: BossAction, player: Player, turn: number = 0): string[] {
+        // Modify action before execution if onPreUse callback is provided
+        if (action.onPreUse) {
+            // use instance of BossAction to prevent mutation of original action
+            const modifiedAction = action.onPreUse({ ...action }, this, player, turn);
+            // If the action was modified, use the new action
+            // returning null means the action was not modified
+            if (modifiedAction) {
+                action = modifiedAction; // Use the modified action
+            }
+        }
+        
         const messages = this.processActionStart(action, player);
         
         // Check for invincible status first
