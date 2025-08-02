@@ -10,7 +10,7 @@
 
 - **ジャンル**: ターン制RPG
 - **プラットフォーム**: ブラウザ（HTML5 + TypeScript）
-- **特徴**: 本格的なボス戦（14体実装済み）、豊富なステータス効果、成長システム、拘束・脱出システム
+- **特徴**: 本格的なボス戦（16体実装済み）、豊富なステータス効果、成長システム、拘束・脱出システム
 - **プレイURL**: https://leftonbo.github.io/eel-rpg-game/
 
 ## ゲームシステム
@@ -162,7 +162,7 @@ eel-rpg-game/
 │   │   │   ├── PlayerProgressionManager.ts  # 成長管理
 │   │   │   └── SkillStrategy.ts             # スキル戦略
 │   │   ├── data/           # ゲームデータ
-│   │   │   ├── bosses/              # ボスデータ（14体・glob import対応）
+│   │   │   ├── bosses/              # ボスデータ（16体・glob import対応）
 │   │   │   ├── documents/           # ストーリードキュメント
 │   │   │   │   └── about-elnal.md
 │   │   │   ├── skills/              # スキルシステム
