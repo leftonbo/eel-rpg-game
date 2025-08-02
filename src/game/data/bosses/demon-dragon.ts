@@ -40,9 +40,11 @@ const demonDragonActions: BossAction[] = [
         id: 'dark-magic-bullet',
         type: ActionType.Attack,
         name: '闇の魔法弾',
-        description: '闇の力を込めた魔法弾を放つ',
-        damageFormula: (user: Boss) => user.attackPower * 1.2,
+        description: '闇の力を込めた魔法弾を放つ、暗闇にする可能性がある',
+        damageFormula: (user: Boss) => user.attackPower * 1.1,
         hitRate: 0.85,
+statusEffect: StatusEffectType.Darkness,
+        statusChance: 0.50,
         weight: 25,
         playerStateCondition: 'normal',
         messages: [
