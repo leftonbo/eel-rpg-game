@@ -311,6 +311,8 @@ const seraphMascotSacredShowerAction: BossAction = {
     type: ActionType.PostDefeatedAttack,
     name: '聖なるシャワー',
     description: '体内で聖なる粘液のシャワーを浴びせる',
+    statusEffect: StatusEffectType.HolySlimed,
+    statusChance: 1.0,
     messages: [
         '「体をキレイにしてあげるね～♪」',
         '{boss}の体内器官から聖なる粘液のシャワーが降り注ぐ！',
