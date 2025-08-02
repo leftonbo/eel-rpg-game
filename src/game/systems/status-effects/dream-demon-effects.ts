@@ -195,7 +195,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
         type: StatusEffectType.Brainwash,
         name: '洗脳',
         description: '永続的な思考支配、解除困難、MP減少',
-        duration: 30,
+        duration: 6,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
