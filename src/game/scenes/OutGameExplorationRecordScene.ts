@@ -2,7 +2,7 @@ import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
 import { AbilityType, AbilitySystem, AbilityData } from '../systems/AbilitySystem';
 import { getAllBossData } from '../data';
-import { Trophy, MemorialSystem } from '../systems/MemorialSystem';
+import { MemorialSystem } from '../systems/MemorialSystem';
 import { TrophyDisplayComponent } from './components/TrophyDisplayComponent';
 import { Player } from '../entities/Player';
 import { ModalUtils } from '../utils/ModalUtils';
@@ -50,21 +50,21 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
         const explorerData = abilityLevels[AbilityType.Explorer];
         
         if (explorerData) {
-            this.updateElement('explorer-level', explorerData.level.toString());
-            this.updateElement('explorer-exp', explorerData.experience.toString());
+            this.updateElement('second-explorer-level', explorerData.level.toString());
+            this.updateElement('second-explorer-exp', explorerData.experience.toString());
             
             // 次レベル要求表示を更新
             if (explorerData.level >= AbilitySystem.MAX_LEVEL) {
                 // 最大レベル: 最大レベルに必要な総経験値を表示
                 const maxLevelRequirement = player.abilitySystem.getRequiredExperienceForLevel(AbilitySystem.MAX_LEVEL);
-                this.updateElement('explorer-next', maxLevelRequirement.toString());
+                this.updateElement('second-explorer-next', maxLevelRequirement.toString());
             } else {
-                this.updateElement('explorer-next', (explorerData.experience + explorerData.experienceToNext).toString());
+                this.updateElement('second-explorer-next', (explorerData.experience + explorerData.experienceToNext).toString());
             }
             
             // プログレスバー更新
-            this.updateAbilityProgressBar('explorer', explorerData, player.abilitySystem);
-            
+            this.updateAbilityProgressBar('second-explorer', explorerData, player.abilitySystem);
+
             // アクセス可能な地形を更新
             this.updateAccessibleTerrains(player.getAccessibleTerrains());
         }
@@ -77,8 +77,8 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
         this.updateElement('unlocked-bosses-count', unlockedCount.toString());
         this.updateElement('unlockable-bosses-count', allBossData.length.toString());
         
-        const allTrophies = player.memorialSystem.getAllTrophies();
-        this.updateElement('total-trophies-count', allTrophies.length.toString());
+        const earnedTrophies = player.memorialSystem.getEarnedTrophies();
+        this.updateElement('total-trophies-count', earnedTrophies.length.toString());
         
         const totalExplorerExp = explorerData?.experience || 0;
         this.updateElement('total-explorer-exp', totalExplorerExp.toString());
@@ -87,7 +87,7 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
         this.updateGameProgressionData(player);
         
         // トロフィーコレクションの更新
-        this.updateTrophiesCollection(allTrophies);
+        this.updateTrophiesCollection(player);
     }
     
     /**
@@ -113,11 +113,11 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
     /**
      * TrophyDisplayComponentを使用したトロフィーコレクション表示の更新
      */
-    private updateTrophiesCollection(trophies: Trophy[]): void {
+    private updateTrophiesCollection(player: Player): void {
         TrophyDisplayComponent.updateTrophiesCollection(
             'trophies-collection',
             'no-trophies-message',
-            trophies
+            player
         );
     }
     
