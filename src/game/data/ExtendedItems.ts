@@ -79,7 +79,7 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
     {
         id: 'adrenaline',
         name: 'アドレナリン注射',
-        description: '次のターンまで無敵になる',
+        description: '3ターンの間、無敵になる',
         requiredLevel: 3,
         abilityType: AbilityType.CraftWork,
         experienceGain: 75,
