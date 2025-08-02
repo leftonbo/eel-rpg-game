@@ -50,21 +50,21 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
         const explorerData = abilityLevels[AbilityType.Explorer];
         
         if (explorerData) {
-            this.updateElement('explorer-level', explorerData.level.toString());
-            this.updateElement('explorer-exp', explorerData.experience.toString());
+            this.updateElement('second-explorer-level', explorerData.level.toString());
+            this.updateElement('second-explorer-exp', explorerData.experience.toString());
             
             // 次レベル要求表示を更新
             if (explorerData.level >= AbilitySystem.MAX_LEVEL) {
                 // 最大レベル: 最大レベルに必要な総経験値を表示
                 const maxLevelRequirement = player.abilitySystem.getRequiredExperienceForLevel(AbilitySystem.MAX_LEVEL);
-                this.updateElement('explorer-next', maxLevelRequirement.toString());
+                this.updateElement('second-explorer-next', maxLevelRequirement.toString());
             } else {
-                this.updateElement('explorer-next', (explorerData.experience + explorerData.experienceToNext).toString());
+                this.updateElement('second-explorer-next', (explorerData.experience + explorerData.experienceToNext).toString());
             }
             
             // プログレスバー更新
-            this.updateAbilityProgressBar('explorer', explorerData, player.abilitySystem);
-            
+            this.updateAbilityProgressBar('second-explorer', explorerData, player.abilitySystem);
+
             // アクセス可能な地形を更新
             this.updateAccessibleTerrains(player.getAccessibleTerrains());
         }
