@@ -163,8 +163,8 @@ const demonDragonActions: BossAction[] = [
         playerStateCondition: 'normal',
         canUse: (boss: Boss, player: Player, turn: number) => {
             const lastSoulVacuumTurn = boss.getCustomVariable<number>('lastSoulVacuumTurn', -100);
-            // 1ターン目または30ターン経過後に使用可能
-            return (turn === 1 || turn - lastSoulVacuumTurn >= 30) && !player.isEaten() && !player.isRestrained();
+            // 1ターン目または20ターン経過後に使用可能
+            return (turn === 1 || turn - lastSoulVacuumTurn >= 20) && !player.isEaten() && !player.isRestrained();
         },
         onPreUse: (action: BossAction, boss: Boss, player: Player, turn: number): BossAction | null => {
             boss.setCustomVariable('lastSoulVacuumTurn', turn);
