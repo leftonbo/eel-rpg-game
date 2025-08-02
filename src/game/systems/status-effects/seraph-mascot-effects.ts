@@ -57,7 +57,7 @@ export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfi
         type: StatusEffectType.SalvationState,
         name: '救済状態',
         description: '救済の準備が整った状態。行動が制限されるが、完全な救済を受ける準備ができている',
-        duration: 8,
+        duration: 6,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
