@@ -325,7 +325,7 @@ export class MemorialSystem {
      * - 勝利/敗北の記念品を適切に設定
      */
     private updateTrophiesFromMemorials(): void {
-        // 各記念品の dataObtained を更新
+        // 各記念品の dateObtained を更新
         for (const trophy of this.trophies.values()) {
             const memorial = this.bossMemorials.get(trophy.bossId);
             if (memorial) {
