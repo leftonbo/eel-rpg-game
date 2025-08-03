@@ -1,6 +1,8 @@
 import { Player } from './entities/Player';
 import { Boss } from './entities/Boss';
 import { getBossData, loadAllBossData } from './data/index';
+import { loadAllChangelogs } from './data/ChangelogLoader';
+import { loadAllDocuments } from './data/DocumentLoader';
 import { TitleScene } from './scenes/TitleScene';
 import { BattleScene } from './scenes/BattleScene';
 import { BattleResultScene, BattleResult } from './scenes/BattleResultScene';
@@ -120,6 +122,14 @@ export class Game {
             await loadAllBossData();
             console.log('[Game][initAsync] All boss data loaded');
             
+            // 更新履歴データを非同期で読み込み
+            await loadAllChangelogs();
+            console.log('[Game][initAsync] All changelog data loaded');
+            
+            // ドキュメントデータを非同期で読み込み
+            await loadAllDocuments();
+            console.log('[Game][initAsync] All document data loaded');
+            
             // プレイヤーの初期化
             this.player.lateInitialize();
             console.log('[Game][initAsync] Player initialized');
@@ -237,9 +247,10 @@ export class Game {
     startGame(): void {
         this.setState(GameState.OutGameBossSelect);
         // Check if changelog should be shown
-        if (this.outGameChangelogScene.shouldShowChangelog(this.player.getLatestChangelogIndex())) {
-            // Show changelog first
-            this.outGameChangelogScene.showChangelogModal();
+        const playerChangelogIndex = this.player.getLatestChangelogIndex();
+        if (this.outGameChangelogScene.shouldShowChangelog(playerChangelogIndex)) {
+            // Show new changelogs modal
+            this.outGameChangelogScene.showNewChangelogsModal(playerChangelogIndex);
         }
     }
     

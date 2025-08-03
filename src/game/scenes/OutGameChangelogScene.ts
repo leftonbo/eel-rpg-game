@@ -1,6 +1,7 @@
 import { BaseOutGameScene } from './BaseOutGameScene';
-import { Game } from '../Game';
+import { Game, GameState } from '../Game';
 import { ChangelogMarkdownRenderer } from '../utils/ChangelogMarkdownRenderer';
+import { getAllChangelogs, getLatestChangelogIndex, getNewChangelogs, isChangelogLoaded } from '../data/ChangelogLoader';
 
 /**
  * アウトゲーム更新履歴シーン
@@ -34,12 +35,24 @@ export class OutGameChangelogScene extends BaseOutGameScene {
     
     /**
      * ChangeLog Modal を表示するべきかチェックする
-     * @param _shownLatest 最新の表示済み更新履歴インデックス
+     * @param shownLatest 最新の表示済み更新履歴インデックス
      */
-    public shouldShowChangelog(_shownLatest: number) {
-        // show if latest changelog index > shownLatest
-        // if shownLatest is -2, it should not show because it's initial save data.
-        return false; // FIXME: Implement logic to check if changelog should be shown.
+    public shouldShowChangelog(shownLatest: number): boolean {
+        // 更新履歴が読み込まれていない場合は表示しない
+        if (!isChangelogLoaded()) {
+            return false;
+        }
+        
+        // 初期セーブデータ（shownLatest = -2）の場合は表示しない
+        if (shownLatest === -2) {
+            return false;
+        }
+        
+        // 最新の更新履歴インデックスを取得
+        const latestIndex = getLatestChangelogIndex();
+        
+        // 最新の更新履歴インデックスが表示済みより大きい場合は表示
+        return latestIndex > shownLatest;
     }
     
     /**
@@ -47,15 +60,23 @@ export class OutGameChangelogScene extends BaseOutGameScene {
      */
     private async loadAndDisplayChangelog(): Promise<void> {
         try {
-            // 更新履歴ファイルを読み込み（開発環境では fetch を使用）
-            const changelogUrl = 'changelog.md'; // public フォルダに配置予定
-            const response = await fetch(changelogUrl);
-            
-            if (!response.ok) {
-                throw new Error(`Failed to load changelog: ${response.status}`);
+            // 更新履歴が読み込まれていない場合はエラー
+            if (!isChangelogLoaded()) {
+                throw new Error('Changelogs are not loaded yet');
             }
             
-            const markdownContent = await response.text();
+            // 全ての更新履歴を取得（新しい順）
+            const allChangelogs = getAllChangelogs();
+            
+            if (allChangelogs.length === 0) {
+                throw new Error('No changelogs available');
+            }
+            
+            // 全ての更新履歴を結合してMarkdownコンテンツを作成
+            const markdownContent = allChangelogs.map(changelog => {
+                return `${changelog.content}\n\n---\n\n`;
+            }).join('');
+            
             this.changelogContent = markdownContent;
             
             // Markdownを HTMLに変換
@@ -167,6 +188,103 @@ export class OutGameChangelogScene extends BaseOutGameScene {
             modalElement.addEventListener('hidden.bs.modal', () => {
                 modalElement.remove();
             });
+        }
+    }
+    
+    /**
+     * 新しい更新履歴をモーダルで表示
+     * @param fromIndex 基準となるインデックス
+     */
+    public async showNewChangelogsModal(fromIndex: number): Promise<void> {
+        try {
+            // 更新履歴が読み込まれていない場合はエラー
+            if (!isChangelogLoaded()) {
+                console.error('[OutGameChangelogScene] Changelogs are not loaded yet');
+                return;
+            }
+            
+            // 新しい更新履歴を取得
+            const newChangelogs = getNewChangelogs(fromIndex);
+            
+            if (newChangelogs.length === 0) {
+                console.log('[OutGameChangelogScene] No new changelogs to show');
+                return;
+            }
+            
+            // 新しい更新履歴のMarkdownコンテンツを作成
+            const markdownContent = newChangelogs.map(changelog => {
+                return `${changelog.content}\n\n---\n\n`;
+            }).join('');
+            
+            const htmlContent = ChangelogMarkdownRenderer.convert(markdownContent);
+            
+            // カスタムモーダルを作成
+            const modalHtml = `
+                <div class="modal fade" id="newChangelogModal" tabindex="-1" aria-labelledby="newChangelogModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title" id="newChangelogModalLabel">
+                                    🎉 新しい更新履歴
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="alert alert-info mb-4" role="alert">
+                                    <h6 class="alert-heading">📋 更新履歴が追加されました！</h6>
+                                    <p class="mb-0">ゲームが更新され、新しい機能や改善点が追加されました。</p>
+                                </div>
+                                ${htmlContent}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+                                <button type="button" class="btn btn-primary" id="gotoChangelogPage">更新履歴ページへ</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 既存のモーダルを削除
+            const existingModal = document.getElementById('newChangelogModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // 新しいモーダルを追加
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            
+            // モーダルを表示
+            const modalElement = document.getElementById('newChangelogModal');
+            if (modalElement) {
+                // Bootstrap modal
+                const modal = new window.bootstrap.Modal(modalElement);
+                modal.show();
+                
+                // 更新履歴ページへのボタンのイベントリスナー
+                const gotoChangelogBtn = document.getElementById('gotoChangelogPage');
+                if (gotoChangelogBtn) {
+                    gotoChangelogBtn.onclick = () => {
+                        modal.hide();
+                        // 更新履歴ページに遷移
+                        this.game.setState(GameState.OutGameChangelog);
+                    };
+                }
+                
+                // プレイヤーの表示済み更新履歴インデックスを更新
+                const latestIndex = getLatestChangelogIndex();
+                const player = this.game.getPlayer();
+                player.updateShownChangelogIndex(latestIndex);
+                player.saveToStorage();
+                
+                // モーダルが閉じられた時にDOMから削除
+                modalElement.addEventListener('hidden.bs.modal', () => {
+                    modalElement.remove();
+                });
+            }
+            
+        } catch (error) {
+            console.error('[OutGameChangelogScene] Failed to show new changelogs modal:', error);
         }
     }
 }
