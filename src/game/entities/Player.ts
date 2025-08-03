@@ -11,6 +11,8 @@ import { PlayerItemManager } from './PlayerItemManager';
 import { PlayerBattleActions } from './PlayerBattleActions';
 import { PlayerProgressionManager } from './PlayerProgressionManager';
 import * as PlayerConstants from './PlayerConstants';
+import { getLatestChangelogIndex } from '../data/ChangelogLoader';
+import { OutGameChangelogScene } from '../scenes/OutGameChangelogScene';
 
 
 export interface SkillResult {
@@ -48,6 +50,9 @@ export class Player extends Actor {
     
     // Library read flag
     public readDocuments: Set<string> = new Set(); // Store read document IDs
+    
+    // Changelog index
+    public shownChangelogIndex: number = -1; // Index of the latest changelog entry shown
 
     constructor() {
         super(DEFAULT_PLAYER_NAME);
@@ -104,6 +109,12 @@ export class Player extends Actor {
         this.loadMemorials(saveData.memorials);
         this.loadPlayerInfo(saveData.playerInfo);
         this.loadReadDocuments(saveData.readDocuments);
+
+        this.shownChangelogIndex = saveData.shownChangelogIndex ?? OutGameChangelogScene.CHANGELOG_INDEX_INITIAL;
+        if (this.shownChangelogIndex === OutGameChangelogScene.CHANGELOG_INDEX_INITIAL) {
+            // set to current latest index
+            this.shownChangelogIndex = getLatestChangelogIndex();
+        }
     }
     
     /**
@@ -167,7 +178,8 @@ export class Player extends Actor {
                 icon: this.icon
             },
             readDocuments: Array.from(this.readDocuments),
-            version: PlayerConstants.SAVE_DATA_VERSION
+            shownChangelogIndex: this.shownChangelogIndex,
+            version: PlayerSaveManager.CURRENT_VERSION
         };
         
         PlayerSaveManager.savePlayerData(saveData);
@@ -587,5 +599,21 @@ export class Player extends Actor {
      */
     public getReadDocuments(): Set<string> {
         return this.readDocuments;
+    }
+    
+    /**
+     * 最新の更新履歴インデックスを取得
+     * @returns 最新の更新履歴インデックス
+     */
+    public getLatestChangelogIndex(): number {
+        return this.shownChangelogIndex;
+    }
+    
+    /**
+     * 更新履歴を表示した際にインデックスを更新
+     * @param index 更新履歴インデックス
+     */
+    public updateShownChangelogIndex(index: number): void {
+        this.shownChangelogIndex = index;
     }
 }

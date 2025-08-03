@@ -1,0 +1,41 @@
+<!-- Out Game Changelog Scene -->
+<div id="out-game-changelog-screen" class="game-screen d-none">
+    <div class="container-fluid py-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+                
+                <!-- ページヘッダー -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body text-center py-4">
+                        <h1 class="display-5 mb-3">
+                            📋 更新履歴
+                        </h1>
+                    </div>
+                </div>
+                
+                <!-- メインコンテンツカード -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        
+                        <!-- 読み込み中インジケーター -->
+                        <div id="changelog-loading" class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div class="mt-3">
+                                <h5 class="text-muted">更新履歴を読み込み中...</h5>
+                                <p class="text-muted mb-0">しばらくお待ちください</p>
+                            </div>
+                        </div>
+                        
+                        <!-- 更新履歴コンテンツ -->
+                        <div id="changelog-content" class="changelog-container">
+                            <!-- ここに変換されたMarkdownコンテンツが挿入される -->
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

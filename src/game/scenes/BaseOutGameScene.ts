@@ -76,6 +76,15 @@ export abstract class BaseOutGameScene {
             });
             optionNavBtn.dataset.listenerAdded = 'true';
         }
+        
+        // 更新履歴
+        const changelogNavBtn = document.getElementById('nav-changelog');
+        if (changelogNavBtn && !changelogNavBtn.dataset.listenerAdded) {
+            changelogNavBtn.addEventListener('click', () => {
+                this.game.setState(GameState.OutGameChangelog);
+            });
+            changelogNavBtn.dataset.listenerAdded = 'true';
+        }
     }
     
     /**
@@ -88,7 +97,8 @@ export abstract class BaseOutGameScene {
             'nav-player-detail', 
             'nav-exploration-record',
             'nav-library',
-            'nav-option'
+            'nav-option',
+            'nav-changelog'
         ];
         
         navButtons.forEach(btnId => {
@@ -128,6 +138,8 @@ export abstract class BaseOutGameScene {
                 return 'nav-library';
             case GameState.OutGameOption:
                 return 'nav-option';
+            case GameState.OutGameChangelog:
+                return 'nav-changelog';
             default:
                 return null;
         }

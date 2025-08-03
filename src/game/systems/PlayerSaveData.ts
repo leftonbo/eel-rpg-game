@@ -1,3 +1,4 @@
+import { OutGameChangelogScene } from '../scenes/OutGameChangelogScene';
 import { AbilityData, AbilityType } from './AbilitySystem';
 import { MemorialSaveData, MemorialSystem } from './MemorialSystem';
 
@@ -13,12 +14,13 @@ export interface PlayerSaveData {
         icon: string;
     };
     readDocuments: string[]; // Read document IDs for unread badge system
+    shownChangelogIndex: number; // Index of the latest changelog entry shown
     version: number; // For future save data migration
 }
 
 export class PlayerSaveManager {
     private static readonly SAVE_KEY = 'eelfood_player_data';
-    private static readonly CURRENT_VERSION = 6;
+    public static readonly CURRENT_VERSION = 7;
     
     /**
      * Save player data to localStorage
@@ -91,6 +93,7 @@ export class PlayerSaveManager {
                 icon: '🐍'
             },
             readDocuments: [], // Start with no read documents
+            shownChangelogIndex: OutGameChangelogScene.CHANGELOG_INDEX_INITIAL,
             version: this.CURRENT_VERSION
         };
     }
@@ -157,6 +160,15 @@ export class PlayerSaveManager {
                 ...migratedData,
                 readDocuments: [], // Initialize empty read documents array
                 version: 6
+            };
+        }
+
+        // Migration from version 6 to 7: add lastSavedGameVersion field
+        if (migratedData.version === 6) {
+            migratedData = {
+                ...migratedData,
+                shownChangelogIndex: OutGameChangelogScene.CHANGELOG_INDEX_NONE, // Initialize to -1 to show first changelog entry on existing saves
+                version: 7
             };
         }
         
