@@ -1,8 +1,7 @@
 import { BaseOutGameScene } from './BaseOutGameScene';
-import { Game, GameState } from '../Game';
+import { Game } from '../Game';
 import { ChangelogMarkdownRenderer } from '../utils/ChangelogMarkdownRenderer';
 import { ModalUtils } from '../utils/ModalUtils';
-import { PlayerSaveManager } from '../systems/PlayerSaveData';
 
 /**
  * アウトゲーム更新履歴シーン
@@ -10,7 +9,6 @@ import { PlayerSaveManager } from '../systems/PlayerSaveData';
  */
 export class OutGameChangelogScene extends BaseOutGameScene {
     private changelogContent: string = '';
-    private isVersionUpgradeNotification: boolean = false;
     
     constructor(game: Game) {
         super(game, 'out-game-changelog');
@@ -22,9 +20,6 @@ export class OutGameChangelogScene extends BaseOutGameScene {
     enter(): void {
         console.log('[OutGameChangelogScene] Entering changelog scene');
         
-        // Check if this is a version upgrade notification
-        this.isVersionUpgradeNotification = this.checkIfVersionUpgradeNotification();
-        
         // 更新履歴画面を表示
         const changelogScreen = document.getElementById('out-game-changelog-screen');
         if (changelogScreen) {
@@ -34,57 +29,8 @@ export class OutGameChangelogScene extends BaseOutGameScene {
         // ナビゲーションバーのアクティブ状態を更新
         this.updateNavigationActiveState();
         
-        // Update page header if this is version upgrade notification
-        this.updatePageHeader();
-        
         // 更新履歴コンテンツを読み込み・表示
         this.loadAndDisplayChangelog();
-        
-        // イベントリスナーを設定
-        this.setupEventListeners();
-    }
-    
-    /**
-     * バージョンアップ通知かどうかを判定
-     */
-    private checkIfVersionUpgradeNotification(): boolean {
-        // 前回の状態がTitle、現在がChangelogの場合はバージョンアップ通知
-        // または、セーブデータの最終バージョンが現在のバージョンと異なる場合
-        const lastSavedVersion = PlayerSaveManager.getLastSavedGameVersion();
-        const currentVersion = PlayerSaveManager.getCurrentGameVersion();
-        
-        return lastSavedVersion !== null && lastSavedVersion !== currentVersion;
-    }
-    
-    /**
-     * ページヘッダーを更新
-     */
-    private updatePageHeader(): void {
-        if (this.isVersionUpgradeNotification) {
-            const headerCard = document.querySelector('#out-game-changelog-screen .card-body');
-            if (headerCard) {
-                const lastVersion = PlayerSaveManager.getLastSavedGameVersion();
-                const currentVersion = PlayerSaveManager.getCurrentGameVersion();
-                
-                headerCard.innerHTML = `
-                    <div class="alert alert-success mb-4" role="alert">
-                        <h4 class="alert-heading">🎉 ゲームが更新されました！</h4>
-                        <p class="mb-2">
-                            ElnalFTBが <code>${lastVersion || '不明'}</code> から <code>${currentVersion}</code> にアップデートされました。
-                        </p>
-                        <p class="mb-0">
-                            新機能や改善点をご確認ください。
-                        </p>
-                    </div>
-                    <h1 class="display-5 mb-3">
-                        📋 更新履歴
-                    </h1>
-                    <p class="lead text-muted mb-0">
-                        ElnalFTBの最新の変更点や新機能を確認できます
-                    </p>
-                `;
-            }
-        }
     }
     
     /**
@@ -165,11 +111,7 @@ export class OutGameChangelogScene extends BaseOutGameScene {
      */
     public async showChangelogModal(): Promise<void> {
         if (!this.changelogContent) {
-            await ModalUtils.showAlert(
-                '更新履歴がまだ読み込まれていません。しばらくお待ちください。',
-                '更新履歴'
-            );
-            return;
+            await this.loadAndDisplayChangelog();
         }
         
         const htmlContent = ChangelogMarkdownRenderer.convert(this.changelogContent);
@@ -208,42 +150,14 @@ export class OutGameChangelogScene extends BaseOutGameScene {
         // モーダルを表示
         const modalElement = document.getElementById('changelogModal');
         if (modalElement) {
-            // @ts-ignore Bootstrap modal
-            const modal = new bootstrap.Modal(modalElement);
+            // Bootstrap modal
+            const modal = new window.bootstrap.Modal(modalElement);
             modal.show();
             
             // モーダルが閉じられた時にDOMから削除
             modalElement.addEventListener('hidden.bs.modal', () => {
                 modalElement.remove();
             });
-        }
-    }
-    
-    /**
-     * イベントリスナーを設定
-     */
-    private setupEventListeners(): void {
-        // 詳細表示ボタン
-        const detailedViewBtn = document.getElementById('changelog-detailed-view-btn');
-        if (detailedViewBtn) {
-            detailedViewBtn.onclick = () => {
-                this.showChangelogModal();
-            };
-        }
-        
-        // 戻るボタン
-        const backBtn = document.getElementById('changelog-back-btn');
-        if (backBtn) {
-            backBtn.onclick = () => {
-                this.game.setState(GameState.OutGameBossSelect);
-            };
-            
-            // バージョンアップ通知の場合はボタンテキストを変更
-            if (this.isVersionUpgradeNotification) {
-                backBtn.innerHTML = '✨ ゲームを開始';
-                backBtn.classList.remove('btn-secondary');
-                backBtn.classList.add('btn-primary');
-            }
         }
     }
 }

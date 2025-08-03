@@ -1,20 +1,6 @@
+import { Game } from '../Game';
 import { AbilityData, AbilityType } from './AbilitySystem';
 import { MemorialSaveData, MemorialSystem } from './MemorialSystem';
-
-export interface PlayerSaveDataWithoutVersionTracking {
-    abilities: { [key: string]: AbilityData };
-    equipment: {
-        weapon: string;
-        armor: string;
-    };
-    memorials: MemorialSaveData;
-    playerInfo: {
-        name: string;
-        icon: string;
-    };
-    readDocuments: string[];
-    version: number;
-}
 
 export interface PlayerSaveData {
     abilities: { [key: string]: AbilityData };
@@ -36,22 +22,12 @@ export class PlayerSaveManager {
     private static readonly SAVE_KEY = 'eelfood_player_data';
     private static readonly CURRENT_VERSION = 7;
     
-    // ゲームバージョン（package.jsonから取得するか手動設定）
-    private static readonly GAME_VERSION = '1.0.0';
-    
     /**
-     * Save player data to localStorage (overloaded)
+     * Save player data to localStorage
      */
-    static savePlayerData(saveData: PlayerSaveData): void;
-    static savePlayerData(saveData: PlayerSaveDataWithoutVersionTracking): void;
-    static savePlayerData(saveData: PlayerSaveData | PlayerSaveDataWithoutVersionTracking): void {
+    static savePlayerData(saveData: PlayerSaveData): void {
         try {
-            const dataWithVersion = {
-                ...saveData,
-                lastSavedGameVersion: this.GAME_VERSION,
-                version: this.CURRENT_VERSION
-            };
-            localStorage.setItem(this.SAVE_KEY, JSON.stringify(dataWithVersion));
+            localStorage.setItem(this.SAVE_KEY, JSON.stringify(saveData));
             console.log('Player data saved successfully');
         } catch (error) {
             console.error('Failed to save player data:', error);
@@ -113,7 +89,7 @@ export class PlayerSaveManager {
                 icon: '🐍'
             },
             readDocuments: [], // Start with no read documents
-            lastSavedGameVersion: this.GAME_VERSION,
+            lastSavedGameVersion: Game.VERSION,
             version: this.CURRENT_VERSION
         };
     }
@@ -187,7 +163,7 @@ export class PlayerSaveManager {
         if (migratedData.version === 6) {
             migratedData = {
                 ...migratedData,
-                lastSavedGameVersion: '1.0.0', // Default to 1.0.0 for existing saves
+                lastSavedGameVersion: '', // Default to empty string
                 version: 7
             };
         }
@@ -268,7 +244,6 @@ export class PlayerSaveManager {
         if (typeof data.playerInfo.name !== 'string') return false;
         if (typeof data.playerInfo.icon !== 'string') return false;
         if (!Array.isArray(data.readDocuments)) return false;
-        if (typeof data.lastSavedGameVersion !== 'string') return false;
         
         // Check abilities structure
         for (const [, ability] of Object.entries(data.abilities)) {
@@ -282,13 +257,6 @@ export class PlayerSaveManager {
     }
     
     /**
-     * Get current game version
-     */
-    static getCurrentGameVersion(): string {
-        return this.GAME_VERSION;
-    }
-    
-    /**
      * Check if the game was upgraded since last save
      */
     static isGameVersionUpgraded(): boolean {
@@ -296,22 +264,14 @@ export class PlayerSaveManager {
         if (!saveData.lastSavedGameVersion) {
             return true; // Treat missing version as upgrade
         }
-        return saveData.lastSavedGameVersion !== this.GAME_VERSION;
+        return saveData.lastSavedGameVersion !== Game.VERSION;
     }
     
     /**
      * Get the version from last save
      */
-    static getLastSavedGameVersion(): string | null {
+    static getLastSavedGameVersion(): string {
         const saveData = this.loadPlayerData();
-        return saveData.lastSavedGameVersion || null;
-    }
-    
-    /**
-     * Update game version in save data without changing other data
-     */
-    static updateGameVersion(): void {
-        const saveData = this.loadPlayerData();
-        this.savePlayerData(saveData);
+        return saveData.lastSavedGameVersion ?? '';
     }
 }

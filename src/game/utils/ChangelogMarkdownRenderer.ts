@@ -20,11 +20,11 @@ export class ChangelogMarkdownRenderer {
             const text = this.renderer.parser?.parseInline(tokens) || '';
             switch (depth) {
                 case 1:
-                    return `<h1 class="display-4 text-primary mb-4 border-bottom border-2 border-primary pb-3">${text}</h1>\n`;
+                    return `<h1 class="h3 display-4 mb-4">${text}</h1>\n`;
                 case 2:
-                    return `<h2 class="h3 text-success mb-3 mt-4">${text}</h2>\n`;
+                    return `<h2 class="h4 mb-3 mt-4">${text}</h2>\n`;
                 case 3:
-                    return `<h3 class="h5 text-secondary mb-2">${text}</h3>\n`;
+                    return `<h3 class="h5 mb-2">${text}</h3>\n`;
                 default:
                     return `<h${depth} class="h6 mb-2">${text}</h${depth}>\n`;
             }
@@ -36,53 +36,27 @@ export class ChangelogMarkdownRenderer {
             return `<p class="mb-3">${text}</p>\n`;
         };
         
-        // リスト: 変更項目リスト（アイコン付き）
+        // リスト
         this.renderer.list = (token) => {
             const body = token.items.map(item => this.renderer.listitem!(item)).join('');
             const tag = token.ordered ? 'ol' : 'ul';
-            const classes = token.ordered ? 'list-group list-group-numbered mb-4' : 'list-group list-group-flush mb-4';
+            const classes = token.ordered ? 'ms-3 mb-3' : 'list-unstyled ms-3 mb-3';
             return `<${tag} class="${classes}">\n${body}</${tag}>\n`;
         };
         
         this.renderer.listitem = (item) => {
             const text = this.renderer.parser?.parse(item.tokens) || '';
-            
-            // テキストに基づいてアイコンとクラスを自動選択
-            let icon = '📝';
-            let badgeClass = 'bg-secondary';
-            
-            if (text.includes('新機能') || text.includes('追加')) {
-                icon = '✨';
-                badgeClass = 'bg-success';
-            } else if (text.includes('修正') || text.includes('バグ') || text.includes('Fix')) {
-                icon = '🐛';
-                badgeClass = 'bg-warning';
-            } else if (text.includes('改善') || text.includes('更新') || text.includes('Update')) {
-                icon = '⚡';
-                badgeClass = 'bg-info';
-            } else if (text.includes('削除') || text.includes('Remove')) {
-                icon = '🗑️';
-                badgeClass = 'bg-danger';
-            } else if (text.includes('変更') || text.includes('Change')) {
-                icon = '🔧';
-                badgeClass = 'bg-primary';
-            }
-            
-            return `<li class="list-group-item d-flex align-items-start">
-                        <span class="badge ${badgeClass} me-2 mt-1">${icon}</span>
-                        <div class="flex-grow-1">${text}</div>
-                    </li>\n`;
+            return `<li class="mb-1">${text}</li>\n`;
         };
         
-        // 強調: 重要な変更点を目立たせる
         this.renderer.strong = ({ tokens }) => {
             const text = this.renderer.parser?.parseInline(tokens) || '';
-            return `<strong class="fw-bold text-warning">${text}</strong>`;
+            return `<strong class="fw-bold">${text}</strong>`;
         };
         
         this.renderer.em = ({ tokens }) => {
             const text = this.renderer.parser?.parseInline(tokens) || '';
-            return `<em class="fst-italic text-muted">${text}</em>`;
+            return `<em class="fst-italic">${text}</em>`;
         };
         
         // 区切り線: バージョン間の区切り
@@ -90,25 +64,19 @@ export class ChangelogMarkdownRenderer {
             return '<hr class="my-5 border-3 border-dark">\n';
         };
         
-        // 引用: 重要な注意事項用
+        // 引用: Bootstrap風blockquote
         this.renderer.blockquote = ({ tokens }) => {
             const quote = this.renderer.parser?.parse(tokens) || '';
-            return `<div class="alert alert-info border-start border-4 border-info mb-4" role="alert">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="bi bi-info-circle-fill me-2"></i>
-                            <strong>重要</strong>
-                        </div>
-                        ${quote}
-                    </div>\n`;
+            return `<blockquote class="blockquote border-start border-3 border-primary ps-3 mb-3 text-muted">\n${quote}</blockquote>\n`;
         };
         
-        // コード: バージョン番号や技術詳細
+        // コード: Bootstrap風スタイリング
         this.renderer.code = ({ text }) => {
-            return `<pre class="bg-dark text-light p-3 rounded border mb-3"><code>${text}</code></pre>\n`;
+            return `<pre class="bg-light p-3 rounded border mb-3"><code class="text-dark">${text}</code></pre>\n`;
         };
         
         this.renderer.codespan = ({ text }) => {
-            return `<code class="bg-light border rounded px-2 py-1 text-dark">${text}</code>`;
+            return `<code class="bg-light px-1 rounded">${text}</code>`;
         };
         
         // リンク: 外部参照リンク

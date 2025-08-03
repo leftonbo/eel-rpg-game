@@ -66,6 +66,8 @@ export enum GameState {
  * ゲームのメインクラス
  */
 export class Game {
+    public static readonly VERSION = '0.10.0'; // ゲームのバージョン
+    
     private currentState: GameState = GameState.Title;
     private player: Player;
     private currentBoss: Boss | null = null;
@@ -236,16 +238,11 @@ export class Game {
     }
     
     startGame(): void {
+        this.setState(GameState.OutGameBossSelect);
         // Check if game version was upgraded since last save
         if (PlayerSaveManager.isGameVersionUpgraded()) {
-            console.log('[Game] Game version upgraded, showing changelog');
-            // Update the game version in save data
-            PlayerSaveManager.updateGameVersion();
             // Show changelog first
-            this.setState(GameState.OutGameChangelog);
-        } else {
-            // Normal flow - go to boss select
-            this.setState(GameState.OutGameBossSelect);
+            this.outGameChangelogScene.showChangelogModal();
         }
     }
     
