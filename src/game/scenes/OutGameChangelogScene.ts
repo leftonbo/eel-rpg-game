@@ -9,6 +9,8 @@ import { getAllChangelogs, getLatestChangelogIndex, getNewChangelogs, isChangelo
  */
 export class OutGameChangelogScene extends BaseOutGameScene {
     private changelogContent: string = '';
+    public static readonly CHANGELOG_INDEX_NONE = -1; // Special value indicating no changelog has been shown yet
+    public static readonly CHANGELOG_INDEX_INITIAL = -2; // Initial value that changelog modal will not show
     
     constructor(game: Game) {
         super(game, 'out-game-changelog');
@@ -42,9 +44,9 @@ export class OutGameChangelogScene extends BaseOutGameScene {
         if (!isChangelogLoaded()) {
             return false;
         }
-        
-        // 初期セーブデータ（shownLatest = -2）の場合は表示しない
-        if (shownLatest === -2) {
+
+        // 初期セーブデータ（shownLatest = CHANGELOG_INDEX_INITIAL）の場合は表示しない
+        if (shownLatest === OutGameChangelogScene.CHANGELOG_INDEX_INITIAL) {
             return false;
         }
         
