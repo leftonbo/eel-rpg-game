@@ -19,7 +19,7 @@ export interface PlayerSaveData {
 
 export class PlayerSaveManager {
     private static readonly SAVE_KEY = 'eelfood_player_data';
-    private static readonly CURRENT_VERSION = 7;
+    public static readonly CURRENT_VERSION = 7;
     
     /**
      * Save player data to localStorage

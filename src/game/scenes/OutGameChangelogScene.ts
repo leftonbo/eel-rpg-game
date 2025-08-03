@@ -271,15 +271,16 @@ export class OutGameChangelogScene extends BaseOutGameScene {
                     };
                 }
                 
-                // プレイヤーの表示済み更新履歴インデックスを更新
-                const latestIndex = getLatestChangelogIndex();
-                const player = this.game.getPlayer();
-                player.updateShownChangelogIndex(latestIndex);
-                player.saveToStorage();
-                
-                // モーダルが閉じられた時にDOMから削除
+                // モーダルが閉じられた時
                 modalElement.addEventListener('hidden.bs.modal', () => {
+                    // DOMから削除
                     modalElement.remove();
+
+                    // プレイヤーの表示済み更新履歴インデックスを更新
+                    const latestIndex = getLatestChangelogIndex();
+                    const player = this.game.getPlayer();
+                    player.updateShownChangelogIndex(latestIndex);
+                    player.saveToStorage();
                 });
             }
             

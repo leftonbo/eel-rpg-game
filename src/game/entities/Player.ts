@@ -11,6 +11,7 @@ import { PlayerItemManager } from './PlayerItemManager';
 import { PlayerBattleActions } from './PlayerBattleActions';
 import { PlayerProgressionManager } from './PlayerProgressionManager';
 import * as PlayerConstants from './PlayerConstants';
+import { getLatestChangelogIndex } from '../data/ChangelogLoader';
 
 
 export interface SkillResult {
@@ -107,6 +108,12 @@ export class Player extends Actor {
         this.loadMemorials(saveData.memorials);
         this.loadPlayerInfo(saveData.playerInfo);
         this.loadReadDocuments(saveData.readDocuments);
+        
+        this.shownChangelogIndex = saveData.shownChangelogIndex ?? -2;
+        if (this.shownChangelogIndex === -2) {
+            // set to current latest index
+            this.shownChangelogIndex = getLatestChangelogIndex();
+        }
     }
     
     /**
@@ -171,7 +178,7 @@ export class Player extends Actor {
             },
             readDocuments: Array.from(this.readDocuments),
             shownChangelogIndex: this.shownChangelogIndex,
-            version: PlayerConstants.SAVE_DATA_VERSION
+            version: PlayerSaveManager.CURRENT_VERSION
         };
         
         PlayerSaveManager.savePlayerData(saveData);
