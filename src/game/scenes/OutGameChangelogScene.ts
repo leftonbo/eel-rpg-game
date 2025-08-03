@@ -1,7 +1,6 @@
 import { BaseOutGameScene } from './BaseOutGameScene';
 import { Game } from '../Game';
 import { ChangelogMarkdownRenderer } from '../utils/ChangelogMarkdownRenderer';
-import { ModalUtils } from '../utils/ModalUtils';
 
 /**
  * アウトゲーム更新履歴シーン
