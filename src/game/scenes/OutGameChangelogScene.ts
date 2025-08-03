@@ -33,6 +33,16 @@ export class OutGameChangelogScene extends BaseOutGameScene {
     }
     
     /**
+     * ChangeLog Modal を表示するべきかチェックする
+     * @param _shownLatest 最新の表示済み更新履歴インデックス
+     */
+    public shouldShowChangelog(_shownLatest: number) {
+        // show if latest changelog index > shownLatest
+        // if shownLatest is -2, it should not show because it's initial save data.
+        return false; // FIXME: Implement logic to check if changelog should be shown.
+    }
+    
+    /**
      * 更新履歴を読み込んで表示
      */
     private async loadAndDisplayChangelog(): Promise<void> {

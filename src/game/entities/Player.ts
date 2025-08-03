@@ -11,7 +11,6 @@ import { PlayerItemManager } from './PlayerItemManager';
 import { PlayerBattleActions } from './PlayerBattleActions';
 import { PlayerProgressionManager } from './PlayerProgressionManager';
 import * as PlayerConstants from './PlayerConstants';
-import { Game } from '../Game';
 
 
 export interface SkillResult {
@@ -49,6 +48,9 @@ export class Player extends Actor {
     
     // Library read flag
     public readDocuments: Set<string> = new Set(); // Store read document IDs
+    
+    // Changelog index
+    public shownChangelogIndex: number = -1; // Index of the latest changelog entry shown
 
     constructor() {
         super(DEFAULT_PLAYER_NAME);
@@ -168,7 +170,7 @@ export class Player extends Actor {
                 icon: this.icon
             },
             readDocuments: Array.from(this.readDocuments),
-            lastSavedGameVersion: Game.VERSION,
+            shownChangelogIndex: this.shownChangelogIndex,
             version: PlayerConstants.SAVE_DATA_VERSION
         };
         
@@ -589,5 +591,21 @@ export class Player extends Actor {
      */
     public getReadDocuments(): Set<string> {
         return this.readDocuments;
+    }
+    
+    /**
+     * 最新の更新履歴インデックスを取得
+     * @returns 最新の更新履歴インデックス
+     */
+    public getLatestChangelogIndex(): number {
+        return this.shownChangelogIndex;
+    }
+    
+    /**
+     * 更新履歴を表示した際にインデックスを更新
+     * @param index 更新履歴インデックス
+     */
+    public updateShownChangelogIndex(index: number): void {
+        this.shownChangelogIndex = index;
     }
 }

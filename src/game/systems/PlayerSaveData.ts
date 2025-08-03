@@ -1,4 +1,3 @@
-import { Game } from '../Game';
 import { AbilityData, AbilityType } from './AbilitySystem';
 import { MemorialSaveData, MemorialSystem } from './MemorialSystem';
 
@@ -14,7 +13,7 @@ export interface PlayerSaveData {
         icon: string;
     };
     readDocuments: string[]; // Read document IDs for unread badge system
-    lastSavedGameVersion: string; // Last game version when data was saved
+    shownChangelogIndex: number; // Index of the latest changelog entry shown
     version: number; // For future save data migration
 }
 
@@ -89,7 +88,7 @@ export class PlayerSaveManager {
                 icon: '🐍'
             },
             readDocuments: [], // Start with no read documents
-            lastSavedGameVersion: Game.VERSION,
+            shownChangelogIndex: -2, // Initial value that changelog modal will not show.
             version: this.CURRENT_VERSION
         };
     }
@@ -163,7 +162,7 @@ export class PlayerSaveManager {
         if (migratedData.version === 6) {
             migratedData = {
                 ...migratedData,
-                lastSavedGameVersion: '', // Default to empty string
+                shownChangelogIndex: -1, // Initialize to -1 to indicate no changelog shown yet
                 version: 7
             };
         }
@@ -254,24 +253,5 @@ export class PlayerSaveManager {
         }
         
         return true;
-    }
-    
-    /**
-     * Check if the game was upgraded since last save
-     */
-    static isGameVersionUpgraded(): boolean {
-        const saveData = this.loadPlayerData();
-        if (!saveData.lastSavedGameVersion) {
-            return true; // Treat missing version as upgrade
-        }
-        return saveData.lastSavedGameVersion !== Game.VERSION;
-    }
-    
-    /**
-     * Get the version from last save
-     */
-    static getLastSavedGameVersion(): string {
-        const saveData = this.loadPlayerData();
-        return saveData.lastSavedGameVersion ?? '';
     }
 }

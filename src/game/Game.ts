@@ -10,7 +10,6 @@ import { OutGameExplorationRecordScene } from './scenes/OutGameExplorationRecord
 import { OutGameLibraryScene } from './scenes/OutGameLibraryScene';
 import { OutGameOptionScene } from './scenes/OutGameOptionScene';
 import { OutGameChangelogScene } from './scenes/OutGameChangelogScene';
-import { PlayerSaveManager } from './systems/PlayerSaveData';
 
 /**
  * ゲームの状態を管理する列挙型
@@ -66,8 +65,6 @@ export enum GameState {
  * ゲームのメインクラス
  */
 export class Game {
-    public static readonly VERSION = '0.10.0'; // ゲームのバージョン
-    
     private currentState: GameState = GameState.Title;
     private player: Player;
     private currentBoss: Boss | null = null;
@@ -239,8 +236,8 @@ export class Game {
     
     startGame(): void {
         this.setState(GameState.OutGameBossSelect);
-        // Check if game version was upgraded since last save
-        if (PlayerSaveManager.isGameVersionUpgraded()) {
+        // Check if changelog should be shown
+        if (this.outGameChangelogScene.shouldShowChangelog(this.player.getLatestChangelogIndex())) {
             // Show changelog first
             this.outGameChangelogScene.showChangelogModal();
         }
