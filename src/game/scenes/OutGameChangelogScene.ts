@@ -146,6 +146,12 @@ export class OutGameChangelogScene extends BaseOutGameScene {
             await this.loadAndDisplayChangelog();
         }
         
+        // モーダルがBootstrapで正しく初期化されているか確認
+        if (!window.bootstrap || typeof window.bootstrap.Modal !== 'function') {
+            console.error('Bootstrap modal is not available. Ensure Bootstrap JS is loaded.');
+            return;
+        }
+        
         const htmlContent = ChangelogMarkdownRenderer.convert(this.changelogContent);
         
         // カスタムモーダルを作成
