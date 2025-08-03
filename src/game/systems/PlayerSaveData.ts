@@ -26,7 +26,11 @@ export class PlayerSaveManager {
      */
     static savePlayerData(saveData: PlayerSaveData): void {
         try {
-            localStorage.setItem(this.SAVE_KEY, JSON.stringify(saveData));
+            const dataWithVersion = {
+                ...saveData,
+                version: this.CURRENT_VERSION
+            };
+            localStorage.setItem(this.SAVE_KEY, JSON.stringify(dataWithVersion));
             console.log('Player data saved successfully');
         } catch (error) {
             console.error('Failed to save player data:', error);
