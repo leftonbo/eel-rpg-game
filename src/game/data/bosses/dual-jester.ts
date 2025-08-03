@@ -481,6 +481,46 @@ const dualJesterAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
     
     // プレイヤーが敗北状態の場合
     if (player.isDefeated()) {
+        const defeatStartTurn = boss.getCustomVariable<number>('defeatStartTurn', -1);
+        
+        // If this is the first turn player is defeated, record it
+        if (defeatStartTurn === -1) {
+            boss.setCustomVariable('defeatStartTurn', turn);
+        }
+
+        // Every 8 turns since defeat started, show special personality revelation event
+        const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
+        if (turnsSinceDefeat > 0 && turnsSinceDefeat % 8 === 0) {
+            return {
+                id: 'personality-revelation-show',
+                type: ActionType.PostDefeatedAttack,
+                name: '本性暴露ショー',
+                description: '一時的に優しい面を見せた後、本性で激しく攻撃する',
+                messages: [
+                    '表の人格：「ごめんね〜、ちょっと痛かったでしょ？」',
+                    '裏の人格：「...フフフ、まだこの程度で済むと思っているのか？」',
+                    '表の人格：「大丈夫、もう痛くしないからね〜♪」',
+                    '{boss}が急に優しい表情になり、{player}をそっと撫でる...',
+                    '表の人格：「ほら、気持ちいいでしょ？」',
+                    '突然、{boss}の顔が反転し、恐ろしい裏の人格が現れる！',
+                    '裏の人格：「嘘だ。これからが本当の地獄だ」',
+                    '巨大な手が{player}を激しく掴み、残酷な笑みを浮かべる！',
+                    '裏の人格：「表の甘い言葉に騙されたな...私の本性を見せてやろう」',
+                    '{player}は激しい恐怖と混乱の状態に陥ってしまった！'
+                ],
+                onUse: (_boss, player, _turn) => {
+                    // 本性暴露による効果を付与
+                    player.statusEffects.addEffect(StatusEffectType.Fear);
+                    player.statusEffects.addEffect(StatusEffectType.Confusion);
+                    player.statusEffects.addEffect(StatusEffectType.Bipolar);
+                    player.statusEffects.addEffect(StatusEffectType.Manic);
+                    
+                    return [];
+                },
+                weight: 1
+            };
+        }
+        
         let postDefeatedTurn = boss.getCustomVariable<number>('postDefeatedTurn', 0);
         postDefeatedTurn++;
         boss.setCustomVariable('postDefeatedTurn', postDefeatedTurn);

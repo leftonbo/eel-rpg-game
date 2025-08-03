@@ -156,6 +156,43 @@ export const seaKrakenData: BossData = {
 
         // If player is defeated, use special post-defeat actions
         if (player.isDefeated()) {
+            const defeatStartTurn = boss.getCustomVariable<number>('defeatStartTurn', -1);
+            
+            // If this is the first turn player is defeated, record it
+            if (defeatStartTurn === -1) {
+                boss.setCustomVariable('defeatStartTurn', turn);
+            }
+
+            // Every 8 turns since defeat started, show special ink production event
+            const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
+            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 8 === 0) {
+                return {
+                    id: 'ink-production-cycle',
+                    type: ActionType.PostDefeatedAttack,
+                    name: 'イカスミ製造工程',
+                    description: '体内でイカスミを製造し、獲物に浴びせかける',
+                    messages: [
+                        '「ゴポポポ...」',
+                        '{boss}の体内でイカスミ製造装置が働き始める！',
+                        'クラーケンが体内の{player}のために新鮮なイカスミを製造している...',
+                        '完成した特濃イカスミが{player}に降り注ぐ！',
+                        '「シュゥゥゥ...最高品質のイカスミを味わえ」',
+                        '{player}は濃厚なイカスミに浸かり、視界と思考が完全に奪われてしまう...',
+                        'イカスミの催眠効果によって{player}は深い魅了状態に陥った！'
+                    ],
+                    onUse: (_boss, player, _turn) => {
+                        // イカスミ関連の状態異常を付与
+                        player.statusEffects.addEffect(StatusEffectType.VisionImpairment);
+                        player.statusEffects.addEffect(StatusEffectType.Charm);
+                        player.statusEffects.addEffect(StatusEffectType.Slimed);
+                        player.statusEffects.addEffect(StatusEffectType.Dizzy);
+                        
+                        return [];
+                    },
+                    weight: 1
+                };
+            }
+            
             const postDefeatedActions: BossAction[] = [
                 {
                     id: 'internal-ink-soak',

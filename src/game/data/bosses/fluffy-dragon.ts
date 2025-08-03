@@ -329,6 +329,44 @@ export const fluffyDragonData: BossData = {
         
         // 敗北後の奥の胃袋攻撃
         if (player.isDefeated()) {
+            const defeatStartTurn = boss.getCustomVariable<number>('defeatStartTurn', -1);
+            
+            // If this is the first turn player is defeated, record it
+            if (defeatStartTurn === -1) {
+                boss.setCustomVariable('defeatStartTurn', turn);
+            }
+
+            // Every 8 turns since defeat started, show special fluffy massage event
+            const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
+            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 8 === 0) {
+                return {
+                    id: 'premium-fluffy-massage',
+                    type: ActionType.PostDefeatedAttack,
+                    name: '極上ふわふわマッサージ',
+                    description: '体内の極上ふわふわでプレイヤーをマッサージする',
+                    messages: [
+                        '「ふわふわ〜♪ 特別なマッサージの時間ですよ」',
+                        '{boss}の体内で最高級のふわふわが{player}を包み始める！',
+                        '普通のふわふわとは比べ物にならない極上の毛が{player}を愛撫する...',
+                        '「ふわふわ〜♪ これが私の特別なふわふわマッサージです」',
+                        '雲よりも柔らかく、綿よりも優しいふわふわが{player}の全身を包み込む！',
+                        '「どうですか？ とっても気持ちいいでしょう？」',
+                        '{player}は極上のふわふわに完全に支配され、睡眠と脱力の状態に陥ってしまった！',
+                        '全身の力が抜けて、{player}は深い眠りに落ちていく...'
+                    ],
+                    onUse: (_boss, player, _turn) => {
+                        // ふわふわマッサージによる効果を付与
+                        player.statusEffects.addEffect(StatusEffectType.Sleep);
+                        player.statusEffects.addEffect(StatusEffectType.Weakness);
+                        player.statusEffects.addEffect(StatusEffectType.Sleepy);
+                        player.statusEffects.addEffect(StatusEffectType.Bliss);
+                        
+                        return [];
+                    },
+                    weight: 1
+                };
+            }
+            
             return deepStomachActions[Math.floor(Math.random() * deepStomachActions.length)];
         }
         

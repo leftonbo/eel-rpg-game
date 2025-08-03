@@ -770,6 +770,66 @@ export const dreamDemonData: BossData = {
         
         // If player is post-defeated, use special post-defeat actions
         if (player.isDefeated()) {
+            const defeatStartTurn = boss.getCustomVariable<number>('defeatStartTurn', -1);
+            
+            // If this is the first turn player is defeated, record it
+            if (defeatStartTurn === -1) {
+                boss.setCustomVariable('defeatStartTurn', turn);
+            }
+
+            // Every 8 turns since defeat started, show special debuff full-course event
+            const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
+            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 8 === 0) {
+                return {
+                    id: 'debuff-full-course',
+                    type: ActionType.PostDefeatedAttack,
+                    name: '状態異常フルコース',
+                    description: '体内で様々な魔法をかけまくり、全ての状態異常を付与する',
+                    messages: [
+                        '「へへへ〜♪ 特別なフルコースの時間ンメェ〜！」',
+                        '{boss}は体内で{player}にたくさんの魔法をかけ始める！',
+                        '魅了魔法！ 麻痺の粉！ 淫毒の吐息！ 脱力の呪文！ 混乱の渦！',
+                        '「もっともっと〜♪」',
+                        '快楽の呪い！ 淫乱の魔法！ あまあま魔法！ とろとろ魔法！ うっとり魔法！',
+                        '「まだまだあるンメェ〜♪」',
+                        '魅惑の術！ 至福の呪文！ 強制催眠！ 洗脳光線！',
+                        '{player}は様々な魔法にかかり、もはや自分が何をされているのかもわからなくなってしまった...'
+                    ],
+                    onUse: (_boss, player, _turn) => {
+                        // ほぼ全ての状態異常を付与
+                        const statusEffects = [
+                            StatusEffectType.Charm,
+                            StatusEffectType.Paralysis, 
+                            StatusEffectType.AphrodisiacPoison,
+                            StatusEffectType.Weakness,
+                            StatusEffectType.Confusion,
+                            StatusEffectType.PleasureFall,
+                            StatusEffectType.Lewdness,
+                            StatusEffectType.Sweet,
+                            StatusEffectType.Melting,
+                            StatusEffectType.Euphoria,
+                            StatusEffectType.Fascination,
+                            StatusEffectType.Bliss,
+                            StatusEffectType.Hypnosis,
+                            StatusEffectType.Brainwash,
+                            StatusEffectType.Infatuation,
+                            StatusEffectType.Arousal,
+                            StatusEffectType.Seduction
+                        ];
+                        
+                        // ランダムに多数の状態異常を付与
+                        statusEffects.forEach(effect => {
+                            if (Math.random() < 0.8) { // 80%の確率で各状態異常を付与
+                                player.statusEffects.addEffect(effect);
+                            }
+                        });
+                        
+                        return [];
+                    },
+                    weight: 1
+                };
+            }
+            
             const postDefeatedActions = [
                 {
                     id: 'dream-eternal-caress',

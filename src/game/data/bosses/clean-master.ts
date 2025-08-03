@@ -1,5 +1,5 @@
 import { BossData, ActionType, BossAction, Boss } from '../../entities/Boss';
-import { StatusEffectType } from '../../systems/StatusEffect';
+import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
 const cleanMasterActions: BossAction[] = [
     // 段階1: 吸引・回収フェーズ（掃除機モード）
@@ -269,6 +269,48 @@ export const cleanMasterData: BossData = {
         
         // Post-defeat状態での特殊行動
         if (player.isDefeated()) {
+            const defeatStartTurn = boss.getCustomVariable<number>('defeatStartTurn', -1);
+            
+            // If this is the first turn player is defeated, record it
+            if (defeatStartTurn === -1) {
+                boss.setCustomVariable('defeatStartTurn', turn);
+            }
+
+            // Every 8 turns since defeat started, show special thorough cleaning cycle
+            const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
+            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 8 === 0) {
+                return {
+                    id: 'thorough-cleaning-cycle',
+                    type: ActionType.PostDefeatedAttack,
+                    name: '徹底清掃サイクル',
+                    description: '体内清掃装置でプレイヤーを徹底的に洗浄→乾燥→仕上げする',
+                    messages: [
+                        '「わあい〜♪ 特別な徹底清掃の時間だよ〜！」',
+                        '{boss}の体内で本格的な清掃装置が起動する！',
+                        '「まず、もう一回洗浄〜♪」',
+                        '高圧洗浄水が{player}を激しく洗い流す！',
+                        '「次は脱水〜♪」',
+                        '遠心分離機が{player}をぐるぐる回転させて水分を飛ばす！',
+                        '「温風乾燥〜♪」',
+                        '暖かい風が{player}を包み込んで完全に乾燥させる！',
+                        '「最後は仕上げのアイロンがけ〜♪」',
+                        'アイロンが{player}をプレスして完璧に仕上げる！',
+                        '「これで完璧〜♪ ...でも、まだ汚れてるかも？」',
+                        '{player}は石鹸と回転の感覚に完全に圧倒されてしまった...'
+                    ],
+                    onUse: (_boss, player, _turn) => {
+                        // 清掃関連の状態異常を付与
+                        player.statusEffects.addEffect(StatusEffectType.Soapy);
+                        player.statusEffects.addEffect(StatusEffectType.Spinning);
+                        player.statusEffects.addEffect(StatusEffectType.Steamy);
+                        player.statusEffects.addEffect(StatusEffectType.Dizzy);
+                        
+                        return [];
+                    },
+                    weight: 1
+                };
+            }
+            
             const postDefeatedActions: BossAction[] = [
                 {
                     id: 'eternal-cleaning-mode',
