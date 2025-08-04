@@ -4,6 +4,11 @@
  */
 
 /**
+ * トーストのタイプを定義する型エイリアス
+ */
+type ToastType = 'success' | 'error' | 'info' | 'warning';
+
+/**
  * トーストユーティリティクラス
  * Bootstrap 5を使用してトースト通知を管理するためのユーティリティクラス
  * 
@@ -35,6 +40,11 @@ export class ToastUtils {
     } as const;
 
     /**
+     * 有効なトーストタイプの定数セット
+     */
+    private static readonly TOAST_TYPES = new Set<ToastType>(['success', 'error', 'info', 'warning'] as const);
+
+    /**
      * トーストのタイプか判定するtype guard関数
      * 
      * @private
@@ -42,9 +52,8 @@ export class ToastUtils {
      * @param {any} value - 判定する値
      * @returns {boolean} トーストタイプの場合true
      */
-    private static isToastType(value: any): value is 'success' | 'error' | 'info' | 'warning' {
-        const toastTypes = new Set(['success', 'error', 'info', 'warning']);
-        return typeof value === 'string' && toastTypes.has(value);
+    private static isToastType(value: any): value is ToastType {
+        return typeof value === 'string' && this.TOAST_TYPES.has(value as ToastType);
     }
 
     /**
@@ -52,10 +61,10 @@ export class ToastUtils {
      * 
      * @static
      * @param {string} message - 表示するメッセージ
-     * @param {'success' | 'error' | 'info' | 'warning'} type - トーストのタイプ
+     * @param {ToastType} type - トーストのタイプ
      * @returns {void}
      */
-    static showToast(message: string, type: 'success' | 'error' | 'info' | 'warning'): void;
+    static showToast(message: string, type: ToastType): void;
 
     /**
      * トースト通知を表示する（新しい使用方法：message + title + type）
@@ -63,10 +72,10 @@ export class ToastUtils {
      * @static
      * @param {string} message - 表示するメッセージ
      * @param {string} title - トーストのカスタムタイトル
-     * @param {'success' | 'error' | 'info' | 'warning'} type - トーストのタイプ
+     * @param {ToastType} type - トーストのタイプ
      * @returns {void}
      */
-    static showToast(message: string, title: string, type: 'success' | 'error' | 'info' | 'warning'): void;
+    static showToast(message: string, title: string, type: ToastType): void;
 
     /**
      * トースト通知を表示する（デフォルト：message のみ）
@@ -82,8 +91,8 @@ export class ToastUtils {
      * 
      * @static
      * @param {string} message - 表示するメッセージ
-     * @param {string | 'success' | 'error' | 'info' | 'warning'} [arg2] - タイトルまたはタイプ
-     * @param {'success' | 'error' | 'info' | 'warning'} [arg3] - タイプ（arg2がタイトルの場合）
+     * @param {string | ToastType} [arg2] - タイトルまたはタイプ
+     * @param {ToastType} [arg3] - タイプ（arg2がタイトルの場合）
      * @returns {void}
      * 
      * @description Bootstrap 5の公式Toast APIを使用してスムーズなアニメーションを実現
@@ -103,24 +112,9 @@ export class ToastUtils {
      * ToastUtils.showToast('接続に失敗しました', 'ネットワーク', 'error');
      * ```
      */
-    static showToast(message: string, arg2?: string | 'success' | 'error' | 'info' | 'warning', arg3?: 'success' | 'error' | 'info' | 'warning'): void {
-        // 引数の解析：明確で保守しやすいロジック
-        let actualTitle: string | undefined;
-        let actualType: 'success' | 'error' | 'info' | 'warning';
-
-        if (arg3) {
-            // 新しい使用方法: showToast(message, title, type)
-            actualTitle = arg2 as string;
-            actualType = arg3;
-        } else if (this.isToastType(arg2)) {
-            // 従来の使用方法: showToast(message, type)
-            actualTitle = undefined;
-            actualType = arg2;
-        } else {
-            // デフォルト: showToast(message) または showToast(message, title)
-            actualTitle = arg2 as string | undefined;
-            actualType = 'info';
-        }
+    static showToast(message: string, arg2?: string | ToastType, arg3?: ToastType): void {
+        // 引数の解析：専用メソッドで明確化
+        const { title: actualTitle, type: actualType } = this.parseArgs(arg2, arg3);
 
         const toastContainer = document.getElementById('toast-container');
         if (!toastContainer) return;
@@ -173,14 +167,33 @@ export class ToastUtils {
     }
 
     /**
+     * 引数を解析してタイトルとタイプを決定する
+     * 
+     * @private
+     * @static
+     * @param {string | ToastType} [arg2] - タイトルまたはタイプ
+     * @param {ToastType} [arg3] - タイプ（arg2がタイトルの場合）
+     * @returns {{ title?: string; type: ToastType }} 解析結果
+     */
+    private static parseArgs(arg2?: string | ToastType, arg3?: ToastType): { title?: string; type: ToastType } {
+        if (arg3 && this.isToastType(arg3)) {
+            return { title: arg2 as string, type: arg3 };
+        }
+        if (this.isToastType(arg2)) {
+            return { title: undefined, type: arg2 };
+        }
+        return { title: arg2 as string | undefined, type: 'info' };
+    }
+
+    /**
      * トーストのタイプに応じたBootstrap背景クラスを取得する
      * 
      * @private
      * @static
-     * @param {string} type - トーストのタイプ
+     * @param {ToastType} type - トーストのタイプ
      * @returns {string} Bootstrapの背景クラス名
      */
-    private static getToastBgClass(type: string): string {
+    private static getToastBgClass(type: ToastType): string {
         switch (type) {
             case 'success': return 'bg-success';
             case 'error': return 'bg-danger';
@@ -195,10 +208,10 @@ export class ToastUtils {
      * 
      * @private
      * @static
-     * @param {string} type - トーストのタイプ
+     * @param {ToastType} type - トーストのタイプ
      * @returns {string} アイコン文字（絵文字）
      */
-    private static getToastIcon(type: string): string {
+    private static getToastIcon(type: ToastType): string {
         switch (type) {
             case 'success': return '✅';
             case 'error': return '❌';
@@ -213,10 +226,10 @@ export class ToastUtils {
      * 
      * @private
      * @static
-     * @param {string} type - トーストのタイプ
+     * @param {ToastType} type - トーストのタイプ
      * @returns {string} 日本語のタイトル
      */
-    private static getToastTitle(type: string): string {
+    private static getToastTitle(type: ToastType): string {
         switch (type) {
             case 'success': return '成功';
             case 'error': return 'エラー';
