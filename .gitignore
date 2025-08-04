@@ -16,11 +16,17 @@ build/
 .env.production.local
 
 # IDE files
-.vscode/
+.vscode/*
 .idea/
 *.swp
 *.swo
 *~
+
+# Share VSCode settings
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
 # OS generated files
 .DS_Store
