@@ -164,7 +164,7 @@ eel-rpg-game/
 │   │   ├── data/           # ゲームデータ
 │   │   │   ├── bosses/              # ボスデータ（16体・glob import対応）
 │   │   │   ├── documents/           # ストーリードキュメント
-│   │   │   │   └── about-elnal.md
+│   │   │   │   └── character-elnal.md
 │   │   │   ├── skills/              # スキルシステム
 │   │   │   │   ├── agility.ts
 │   │   │   │   ├── combat.ts
