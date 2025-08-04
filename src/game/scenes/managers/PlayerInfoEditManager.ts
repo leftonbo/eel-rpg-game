@@ -1,7 +1,7 @@
 import { Game } from '../../Game';
 import { getIconsByCategory, PlayerIcon } from '../../data/PlayerIcons';
 import { DEFAULT_PLAYER_NAME, DEFAULT_PLAYER_ICON } from '../../entities/Player';
-import { ModalUtils } from '../../utils/ModalUtils';
+import { ToastType, ToastUtils } from '../../utils/ToastUtils';
 import type { BootstrapModal } from '../../types/bootstrap';
 
 export class PlayerInfoEditManager {
@@ -186,12 +186,12 @@ export class PlayerInfoEditManager {
      */
     private validatePlayerName(name: string): boolean {
         if (!name) {
-            ModalUtils.showToast('名前を入力してください', 'error');
+            ToastUtils.showToast('名前を入力してください', '名前変更エラー', ToastType.Error);
             return false;
         }
         
         if (name.length > 32) {
-            ModalUtils.showToast('名前は32文字以内で入力してください', 'error');
+            ToastUtils.showToast('名前は32文字以内で入力してください', '名前変更エラー', ToastType.Error);
             return false;
         }
         
@@ -223,7 +223,7 @@ export class PlayerInfoEditManager {
             ? `${changedItems.join('と')}を変更しました` 
             : '変更はありませんでした';
         
-        ModalUtils.showToast(changeMessage, 'success');
+        ToastUtils.showToast(changeMessage, 'プレイヤー情報更新', ToastType.Success);
     }
 
     /**
@@ -250,7 +250,7 @@ export class PlayerInfoEditManager {
             this.showIconCategory(activeCategory);
         }
 
-        ModalUtils.showToast('プレイヤー情報を初期状態にリセットしました', 'info');
+        ToastUtils.showToast('プレイヤー情報を初期状態にリセットしました', 'プレイヤー情報リセット', ToastType.Info);
     }
 
     /**

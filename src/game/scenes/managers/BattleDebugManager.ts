@@ -2,6 +2,7 @@ import { Player } from '../../entities/Player';
 import { Boss } from '../../entities/Boss';
 import { StatusEffect, StatusEffectType } from '../../systems/StatusEffect';
 import { ModalUtils } from '../../utils/ModalUtils';
+import { ToastType, ToastUtils } from '../../utils/ToastUtils';
 import type { BootstrapModal } from '../../types/bootstrap';
 
 /**
@@ -128,11 +129,11 @@ export class BattleDebugManager {
                 boss.hp = Math.min(boss.hp, boss.maxHp);
             }
             
-            ModalUtils.showToast('変更が適用されました！', 'success');
+            ToastUtils.showToast('変更が適用されました！', 'デバッグ変更', ToastType.Success);
             
         } catch (error) {
             console.error('Error applying debug changes:', error);
-            ModalUtils.showToast('変更の適用中にエラーが発生しました', 'error');
+            ToastUtils.showToast('変更の適用中にエラーが発生しました', 'デバッグ変更', ToastType.Error);
         }
     }
     
