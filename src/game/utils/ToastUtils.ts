@@ -6,7 +6,12 @@
 /**
  * トーストのタイプを定義する型エイリアス
  */
-type ToastType = 'success' | 'error' | 'info' | 'warning';
+export enum ToastType {
+    Success = 'success',
+    Error = 'error',
+    Info = 'info',
+    Warning = 'warning',
+}
 
 /**
  * トーストユーティリティクラス
@@ -17,16 +22,13 @@ type ToastType = 'success' | 'error' | 'info' | 'warning';
  * 
  * @example
  * ```typescript
- * // 基本的な情報メッセージ
- * ToastUtils.showToast('処理を開始しました');
- * 
  * // 従来の使用方法（message + type）
- * ToastUtils.showToast('保存しました！', 'success');
- * ToastUtils.showToast('エラーが発生しました', 'error');
+ * ToastUtils.showToast('保存しました！', ToastType.Success);
+ * ToastUtils.showToast('エラーが発生しました', ToastType.Error);
  * 
  * // 新しい使用方法（message + title + type）
- * ToastUtils.showToast('データを更新しました', 'データベース', 'success');
- * ToastUtils.showToast('接続に失敗しました', 'ネットワーク', 'error');
+ * ToastUtils.showToast('データを更新しました', 'データベース', ToastType.Success);
+ * ToastUtils.showToast('接続に失敗しました', 'ネットワーク', ToastType.Error);
  * ```
  */
 export class ToastUtils {
@@ -38,23 +40,6 @@ export class ToastUtils {
         /** トースト自動消去時間（ミリ秒） */
         TOAST_AUTO_HIDE: 4000,
     } as const;
-
-    /**
-     * 有効なトーストタイプの定数セット
-     */
-    private static readonly TOAST_TYPES = new Set<ToastType>(['success', 'error', 'info', 'warning'] as const);
-
-    /**
-     * トーストのタイプか判定するtype guard関数
-     * 
-     * @private
-     * @static
-     * @param {any} value - 判定する値
-     * @returns {boolean} トーストタイプの場合true
-     */
-    private static isToastType(value: any): value is ToastType {
-        return typeof value === 'string' && this.TOAST_TYPES.has(value as ToastType);
-    }
 
     /**
      * トースト通知を表示する（従来の使用方法：message + type）
@@ -78,20 +63,11 @@ export class ToastUtils {
     static showToast(message: string, title: string, type: ToastType): void;
 
     /**
-     * トースト通知を表示する（デフォルト：message のみ）
-     * 
-     * @static
-     * @param {string} message - 表示するメッセージ
-     * @returns {void}
-     */
-    static showToast(message: string): void;
-
-    /**
      * トースト通知を表示する（Bootstrap 5公式API使用）
      * 
      * @static
      * @param {string} message - 表示するメッセージ
-     * @param {string | ToastType} [arg2] - タイトルまたはタイプ
+     * @param {ToastType} [arg2] - タイトルまたはタイプ
      * @param {ToastType} [arg3] - タイプ（arg2がタイトルの場合）
      * @returns {void}
      * 
@@ -112,7 +88,7 @@ export class ToastUtils {
      * ToastUtils.showToast('接続に失敗しました', 'ネットワーク', 'error');
      * ```
      */
-    static showToast(message: string, arg2?: string | ToastType, arg3?: ToastType): void {
+    static showToast(message: string, arg2: string | ToastType, arg3?: ToastType): void {
         // 引数の解析：専用メソッドで明確化
         const { title: actualTitle, type: actualType } = this.parseArgs(arg2, arg3);
 
@@ -175,14 +151,20 @@ export class ToastUtils {
      * @param {ToastType} [arg3] - タイプ（arg2がタイトルの場合）
      * @returns {{ title?: string; type: ToastType }} 解析結果
      */
-    private static parseArgs(arg2?: string | ToastType, arg3?: ToastType): { title?: string; type: ToastType } {
-        if (arg3 && this.isToastType(arg3)) {
-            return { title: arg2 as string, type: arg3 };
+    private static parseArgs(arg2: string | ToastType, arg3?: ToastType): { title?: string; type: ToastType } {
+        if (typeof arg2 === 'string') {
+            // arg2がタイトルの場合
+            return {
+                title: arg2,
+                type: arg3 || ToastType.Info // タイプが指定されていない場合はデフォルトの情報タイプを使用
+            };
+        } else {
+            // arg2がタイプの場合
+            return {
+                title: undefined, // タイトルはなし
+                type: arg2 // タイプをそのまま使用
+            };
         }
-        if (this.isToastType(arg2)) {
-            return { title: undefined, type: arg2 };
-        }
-        return { title: arg2 as string | undefined, type: 'info' };
     }
 
     /**

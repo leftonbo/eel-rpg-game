@@ -5,7 +5,7 @@ import { getAllBossData } from '../data';
 import { MemorialSystem } from '../systems/MemorialSystem';
 import { TrophyDisplayComponent } from './components/TrophyDisplayComponent';
 import { Player } from '../entities/Player';
-import { ToastUtils } from '../utils/ToastUtils';
+import { ToastType, ToastUtils } from '../utils/ToastUtils';
 
 // 拡張されたアビリティデータ型（experienceToNextを含む）
 interface ExtendedAbilityData extends AbilityData {
@@ -193,7 +193,7 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
             this.updateGameProgressionScoreBar(progressDetails.ratio);
         } catch (error) {
             console.error('Failed to update progress data:', error);
-            ToastUtils.showToast('進行度表示の更新に失敗しました', 'エラー', 'error');
+            ToastUtils.showToast('進行度表示の更新に失敗しました', 'エラー', ToastType.Error);
         }
     }
     

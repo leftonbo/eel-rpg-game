@@ -2,7 +2,7 @@ import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
 import { PlayerSaveManager } from '../systems/PlayerSaveData';
 import { ModalUtils } from '../utils/ModalUtils';
-import { ToastUtils } from '../utils/ToastUtils';
+import { ToastType, ToastUtils } from '../utils/ToastUtils';
 
 export class OutGameOptionScene extends BaseOutGameScene {
     constructor(game: Game) {
@@ -105,8 +105,8 @@ export class OutGameOptionScene extends BaseOutGameScene {
                         PlayerSaveManager.importSaveDataJson(jsonData);
                         
                         // 成功メッセージ
-                        ToastUtils.showToast('セーブデータのインポートが完了しました', 'success');
-                        
+                        ToastUtils.showToast('セーブデータのインポートが完了しました', 'インポート完了', ToastType.Success);
+
                         // 画面更新
                         this.updateOptionScreen();
                         
@@ -114,7 +114,7 @@ export class OutGameOptionScene extends BaseOutGameScene {
                         this.game.reboot();
                     } catch (error) {
                         console.error('Save data import failed:', error);
-                        ToastUtils.showToast('セーブデータのインポートに失敗しました', 'error');
+                        ToastUtils.showToast('セーブデータのインポートに失敗しました', 'インポート失敗', ToastType.Error);
                     }
                 };
                 reader.readAsText(file);
@@ -139,11 +139,11 @@ export class OutGameOptionScene extends BaseOutGameScene {
             a.click();
             URL.revokeObjectURL(url);
             
-            ToastUtils.showToast('セーブデータをエクスポートしました', 'success');
+            ToastUtils.showToast('セーブデータをエクスポートしました', 'エクスポート完了', ToastType.Success);
             
         } catch (error) {
             console.error('Save data export failed:', error);
-            ToastUtils.showToast('セーブデータのエクスポートに失敗しました', 'error');
+            ToastUtils.showToast('セーブデータのエクスポートに失敗しました', 'エクスポート失敗', ToastType.Error);
         }
     }
     
@@ -155,7 +155,7 @@ export class OutGameOptionScene extends BaseOutGameScene {
         if (confirmed) {
             try {
                 PlayerSaveManager.clearSaveData();
-                ToastUtils.showToast('セーブデータを削除しました', 'success');
+                ToastUtils.showToast('セーブデータを削除しました', 'セーブデータ削除完了', ToastType.Success);
                 
                 // 画面更新
                 this.updateOptionScreen();
@@ -167,7 +167,7 @@ export class OutGameOptionScene extends BaseOutGameScene {
                 this.game.reboot();
             } catch (error) {
                 console.error('Save data clear failed:', error);
-                ToastUtils.showToast('セーブデータの削除に失敗しました', 'error');
+                ToastUtils.showToast('セーブデータの削除に失敗しました', 'セーブデータ削除失敗', ToastType.Error);
             }
         }
     }
@@ -177,7 +177,7 @@ export class OutGameOptionScene extends BaseOutGameScene {
      */
     private handleDebugModeToggle(enabled: boolean): void {
         localStorage.setItem('debug_mode', enabled.toString());
-        ToastUtils.showToast(`デバッグモードを${enabled ? '有効' : '無効'}にしました`, 'info');
+        ToastUtils.showToast(`デバッグモードを${enabled ? '有効' : '無効'}にしました`, 'デバッグモード', ToastType.Info);
         
         // 設定反映のためページリロードを提示
         if (confirm('設定を反映するためにページをリロードしますか？')) {

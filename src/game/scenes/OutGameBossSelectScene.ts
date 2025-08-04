@@ -1,7 +1,7 @@
 import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
 import { getBossData } from '../data';
-import { ToastUtils } from '../utils/ToastUtils';
+import { ToastType, ToastUtils } from '../utils/ToastUtils';
 import type { BootstrapModal } from '../types/bootstrap';
 import { BossCardManager } from './managers/BossCardManager';
 import { DOMUpdater } from './utils/DOMUpdater';
@@ -159,7 +159,7 @@ export class OutGameBossSelectScene extends BaseOutGameScene {
                 const errorMessage = error instanceof Error ? error.message : '不明なエラーが発生しました';
                 ToastUtils.showToast(
                     `ボスデータの読み込みに失敗しました: ${errorMessage}`,
-                    'error'
+                    ToastType.Error
                 );
                 
                 // モーダルを再表示
