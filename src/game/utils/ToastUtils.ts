@@ -177,10 +177,10 @@ export class ToastUtils {
      */
     private static getToastBgClass(type: ToastType): string {
         switch (type) {
-            case 'success': return 'bg-success';
-            case 'error': return 'bg-danger';
-            case 'warning': return 'bg-warning';
-            case 'info':
+            case ToastType.Success: return 'bg-success';
+            case ToastType.Error: return 'bg-danger';
+            case ToastType.Warning: return 'bg-warning';
+            case ToastType.Info:
             default: return 'bg-info';
         }
     }
@@ -195,10 +195,10 @@ export class ToastUtils {
      */
     private static getToastIcon(type: ToastType): string {
         switch (type) {
-            case 'success': return '✅';
-            case 'error': return '❌';
-            case 'warning': return '⚠️';
-            case 'info':
+            case ToastType.Success: return '✅';
+            case ToastType.Error: return '❌';
+            case ToastType.Warning: return '⚠️';
+            case ToastType.Info:
             default: return 'ℹ️';
         }
     }
@@ -213,10 +213,10 @@ export class ToastUtils {
      */
     private static getToastTitle(type: ToastType): string {
         switch (type) {
-            case 'success': return '成功';
-            case 'error': return 'エラー';
-            case 'warning': return '警告';
-            case 'info':
+            case ToastType.Success: return '成功';
+            case ToastType.Error: return 'エラー';
+            case ToastType.Warning: return '警告';
+            case ToastType.Info:
             default: return '情報';
         }
     }
