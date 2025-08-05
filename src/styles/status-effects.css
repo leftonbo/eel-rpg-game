@@ -308,6 +308,21 @@
     animation: steam-wave 2s ease-in-out infinite;
 }
 
+/* Dark Ghost Status Effects */
+.status-fear {
+    background: rgba(75, 0, 130, 0.7);
+    border-color: #4b0082;
+    color: #dda0dd;
+    animation: fear-tremble 1.2s ease-in-out infinite;
+}
+
+.status-oblivion {
+    background: rgba(105, 105, 105, 0.8);
+    border-color: #696969;
+    color: #c0c0c0;
+    animation: memory-fade 3s ease-in-out infinite alternate;
+}
+
 /* Bat Vampire Status Effects */
 .status-darkness {
     background: rgba(0, 0, 0, 0.8);
@@ -785,6 +800,34 @@
     50% {
         opacity: 0.7;
         box-shadow: 0 0 15px rgba(255, 205, 210, 0.8);
+    }
+}
+
+/* Dark Ghost Animations */
+@keyframes fear-tremble {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-1px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(1px);
+    }
+}
+
+@keyframes memory-fade {
+    0% {
+        opacity: 0.8;
+        box-shadow: 0 0 5px rgba(105, 105, 105, 0.5);
+    }
+    50% {
+        opacity: 0.4;
+        box-shadow: 0 0 2px rgba(105, 105, 105, 0.3);
+    }
+    100% {
+        opacity: 0.8;
+        box-shadow: 0 0 5px rgba(105, 105, 105, 0.5);
     }
 }
 
