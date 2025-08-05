@@ -1,7 +1,7 @@
 import { StatusEffectType } from '../systems/StatusEffect';
 import { AbilitySystem, AbilityType, Equipment } from '../systems/AbilitySystem';
 import { PlayerSaveManager, PlayerSaveData } from '../systems/PlayerSaveData';
-import { updatePlayerItems } from '../data/ExtendedItems';
+import { updatePlayerItems } from '../data/PlayerItems';
 import { Actor } from './Actor';
 import { SkillRegistry, SkillData } from '../data/skills';
 import { MemorialSystem } from '../systems/MemorialSystem';

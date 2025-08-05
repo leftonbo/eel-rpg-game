@@ -1,5 +1,3 @@
-import { Player } from "../entities/Player";
-
 export enum AbilityType {
     Combat = 'combat',
     Toughness = 'toughness',
@@ -22,16 +20,6 @@ export interface Equipment {
     hpBonus?: number;
     requiredLevel: number;
     abilityType: AbilityType;
-}
-
-export interface ExtendedItem {
-    id: string;
-    name: string;
-    description: string;
-    baseCount: number;
-    requiredLevel: number;
-    experienceGain: number;
-    use: (player: Player) => boolean;
 }
 
 export class AbilitySystem {

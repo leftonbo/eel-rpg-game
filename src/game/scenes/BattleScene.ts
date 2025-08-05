@@ -9,6 +9,7 @@ import { BattleActionManager } from './managers/BattleActionManager';
 import { BattleDebugManager } from './managers/BattleDebugManager';
 import { BattleMessageComponent } from './components/BattleMessageComponent';
 import { BattleEventHandler, EventCallbacks } from './utils/BattleEventHandler';
+import { PLAYER_ITEMS } from '../data/PlayerItems';
 
 /**
  * 戦闘画面を定義するクラス
@@ -197,19 +198,16 @@ export class BattleScene {
     private setupDynamicItemEventListeners(): void {
         if (!this.player) return;
         
-        // Import EXTENDED_ITEMS and setup listeners for dynamic buttons
-        import('../data/ExtendedItems').then(({ EXTENDED_ITEMS }) => {
-            EXTENDED_ITEMS.forEach(itemData => {
-                // Skip items that already have static buttons
-                if (['heal-potion', 'adrenaline', 'energy-drink'].includes(itemData.id)) {
-                    return;
-                }
-                
-                const itemCount = this.player!.getItemCount(itemData.id);
-                if (itemCount > 0) {
-                    this.eventHandler.addDynamicItemListener(itemData.id, () => this.useItem(itemData.id));
-                }
-            });
+        PLAYER_ITEMS.forEach(itemData => {
+            // Skip items that already have static buttons
+            if (['heal-potion', 'adrenaline', 'energy-drink'].includes(itemData.id)) {
+                return;
+            }
+            
+            const itemCount = this.player!.getItemCount(itemData.id);
+            if (itemCount > 0) {
+                this.eventHandler.addDynamicItemListener(itemData.id, () => this.useItem(itemData.id));
+            }
         });
     }
     
