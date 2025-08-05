@@ -218,7 +218,7 @@ export const cleanMasterData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'ピピッ！汚れを発見しました〜♪ 清掃を開始します〜！'
+            text: '「ピピッ！汚れを発見しました〜♪ 清掃を開始します〜！」'
         },
         {
             speaker: 'boss',
@@ -228,19 +228,19 @@ export const cleanMasterData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'スキャン結果：汚れレベル87%です〜！完璧になるまで清掃しちゃいます〜♪'
+            text: '「スキャン結果：汚れレベル87%です〜！完璧になるまで清掃しちゃいます〜♪」'
         }
     ],
     victoryMessages: [
         {
             speaker: 'boss',
             style: 'talk',
-            text: '清掃道具が壊れちゃった...でも、キミはとてもキレイになったね〜♪',
+            text: '「清掃道具が壊れちゃった...でも、キミはとてもキレイになったね〜♪」',
         },
         {
             speaker: 'boss',
             style: 'talk',
-            text: '次回はもっと徹底的に清掃してあげます〜'
+            text: '「次回はもっと徹底的に清掃してあげます〜」'
         },
         {
             speaker: 'boss',
