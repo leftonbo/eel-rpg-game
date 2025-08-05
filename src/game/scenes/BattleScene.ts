@@ -9,7 +9,7 @@ import { BattleActionManager } from './managers/BattleActionManager';
 import { BattleDebugManager } from './managers/BattleDebugManager';
 import { BattleMessageComponent } from './components/BattleMessageComponent';
 import { BattleEventHandler, EventCallbacks } from './utils/BattleEventHandler';
-import { PLAYER_ITEMS } from '../data/ExtendedItems';
+import { PLAYER_ITEMS } from '../data/PlayerItems';
 
 /**
  * 戦闘画面を定義するクラス

@@ -1,7 +1,7 @@
 import { Player } from '../../entities/Player';
 import { Boss } from '../../entities/Boss';
 import { StatusEffect, StatusEffectType } from '../../systems/StatusEffect';
-import { PLAYER_ITEMS } from '@/game/data/ExtendedItems';
+import { PLAYER_ITEMS } from '@/game/data/PlayerItems';
 
 /**
  * バトル画面のUI更新を管理するクラス
