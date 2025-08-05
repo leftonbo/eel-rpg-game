@@ -62,6 +62,7 @@ export interface BossData {
     id: string;
     name: string;
     displayName: string;
+    icon: string;
     description: string;
     questNote: string;
     maxHp: number;
@@ -69,11 +70,14 @@ export interface BossData {
     actions: BossAction[];
     personality?: string[];
     aiStrategy?: (boss: Boss, player: Player, turn: number) => BossAction;
+    /** @deprecated 現在は使用していません - 行動メッセージや battleStartMessages を使用してください */
     getDialogue?: (situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') => string;
+    /** 自動とどめ攻撃のメッセージ */
     finishingMove?: () => string[];
-    suppressAutoFinishingMove?: boolean; // 自動とどめ攻撃を抑制し、AI戦略でカスタムとどめ攻撃を処理
-    icon: string;
-    guestCharacterInfo?: BossGuestCharacterInfo; // ゲストキャラクター情報（制作者名、元キャラ名など）
+    /** 自動とどめ攻撃を抑制し、AI戦略でカスタムとどめ攻撃を処理 */
+    suppressAutoFinishingMove?: boolean;
+    /** ゲストキャラクター情報（制作者名、元キャラ名など） */
+    guestCharacterInfo?: BossGuestCharacterInfo;
     /** 戦闘開始時のメッセージ進行 */
     battleStartMessages?: MessageData[];
     /** 戦闘勝利時のメッセージ進行 */
