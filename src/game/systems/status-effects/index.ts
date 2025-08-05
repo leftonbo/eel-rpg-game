@@ -7,6 +7,13 @@ import { fluffyDragonEffectsConfigs } from './fluffy-dragon-effects';
 import { seraphMascotEffectsConfigs } from './seraph-mascot-effects';
 import { dualJesterEffectsConfigs } from './dual-jester-effects';
 import { demonDragonEffectsConfigs } from './demon-dragon-effects';
+import { scorpionCarrierEffectsConfigs } from './scorpion-carrier-effects';
+import { mikanDragonEffectsConfigs } from './mikan-dragon-effects';
+import { seaKrakenEffectsConfigs } from './sea-kraken-effects';
+import { aquaSerpentEffectsConfigs } from './aqua-serpent-effects';
+import { cleanMasterEffectsConfigs } from './clean-master-effects';
+import { darkGhostEffectsConfigs } from './dark-ghost-effects';
+import { undergroundWormEffectsConfigs } from './underground-worm-effects';
 
 // Aggregate all status effect configurations
 export const createStatusEffectConfigs = (): Map<StatusEffectType, StatusEffectConfig> => {
@@ -49,6 +56,41 @@ export const createStatusEffectConfigs = (): Map<StatusEffectType, StatusEffectC
 
     // Add demon dragon effects
     demonDragonEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add scorpion carrier effects
+    scorpionCarrierEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add mikan dragon effects
+    mikanDragonEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add sea kraken effects
+    seaKrakenEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add aqua serpent effects
+    aquaSerpentEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add clean master effects
+    cleanMasterEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add dark ghost effects
+    darkGhostEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add underground worm effects
+    undergroundWormEffectsConfigs.forEach(config => {
         allConfigs.set(config.type, config);
     });
 

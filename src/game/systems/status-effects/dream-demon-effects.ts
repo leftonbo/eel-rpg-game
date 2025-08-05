@@ -321,5 +321,17 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
                 target.loseMp(mpLoss);
             }
         }
+    },
+    {
+        type: StatusEffectType.DreamControl,
+        name: '夢操作',
+        description: '夢の世界に閉じ込められ、完全に支配されている',
+        duration: -1, // Permanent while sleeping
+        category: 'debuff',
+        isDebuff: true,
+        modifiers: {
+            canAct: false,
+            canUseSkills: false
+        }
     }
 ];
