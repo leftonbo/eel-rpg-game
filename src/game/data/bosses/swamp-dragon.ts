@@ -99,7 +99,7 @@ export const swampDragonData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'ふむ...良い匂いだな'
+            text: '「グルル...獲物のニオイ...」'
         },
         {
             speaker: 'boss',
@@ -109,19 +109,19 @@ export const swampDragonData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'グルル...貴殿、なかなか見どころがある。だが、この沼地は我が縄張りだ'
+            text: '「この沼地はオイラの縄張り！オマエを食べちゃうゾ！」'
         }
     ],
     victoryMessages: [
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'グオオオ...まさか、この我が敗れるとは...'
+            text: '「グオオオ...！オマエは強いな！」'
         },
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'ふむ...貴殿の実力、認めよう。我の負けだ'
+            text: '「オイラ、負けた...」'
         },
         {
             speaker: 'boss',
@@ -137,14 +137,6 @@ export const swampDragonData: BossData = {
         name: '沼のような粘液',
         description: '沼のドラゴンの体内から採取した、底なし沼のようにネバネバした粘液。沼地の神秘的な力が宿っている。'
     },
-    personality: [
-        'ふむ...良い匂いだな',
-        'グルル...なかなか',
-        'ガオー...逃がさん',
-        'ウォォォ...',
-        'グルルル...',
-        'この匂い...悪くない'
-    ],
     customVariables: {
         defeatStartTurn: -1,
         fireBreathCooldown: 0,
@@ -434,42 +426,4 @@ swampDragonData.finishingMove = function() {
         '{boss}は{player}を体内の奥深くに送り込む！',
         '{player}は体内奥深くに閉じ込められ、{boss}が満足するまで体力を吸収され続けることになった...'
     ];
-};
-
-// Override dialogue for personality
-swampDragonData.getDialogue = function(situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') {
-    const dialogues: Record<string, string[]> = {
-        'battle-start': [
-            'ふむ...良い匂いだな',
-            'グルル...貴殿、なかなか',
-            'ウォォォ...面白い'
-        ],
-        'player-restrained': [
-            'グルル...動くなよ',
-            '捕らえたぞ',
-            'ガオー...おとなしくしろ'
-        ],
-        'player-eaten': [
-            'むむ...悪くない',
-            'グルルル...',
-            'ゆっくり味わうとしよう'
-        ],
-        'player-escapes': [
-            'ちっ...逃げたか',
-            'ガオー！次はそうはいかん',
-            'グルル...なかなかやるな'
-        ],
-        'low-hp': [
-            'グオオオ...まだだ！',
-            'この程度では倒れん',
-            'ウォォォ...まだまだ！'
-        ],
-        'victory': [
-            'ふむ...満足だ',
-            'また獲物を待つとしよう'
-        ]
-    };
-    
-    const options = dialogues[situation] || dialogues['battle-start'];
-    return options[Math.floor(Math.random() * options.length)];
 };
