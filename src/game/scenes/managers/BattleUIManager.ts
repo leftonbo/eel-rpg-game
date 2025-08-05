@@ -1,6 +1,7 @@
 import { Player } from '../../entities/Player';
 import { Boss } from '../../entities/Boss';
 import { StatusEffect, StatusEffectType } from '../../systems/StatusEffect';
+import { PLAYER_ITEMS } from '@/game/data/ExtendedItems';
 
 /**
  * バトル画面のUI更新を管理するクラス
@@ -221,48 +222,46 @@ export class BattleUIManager {
         }
         
         // Update other extended items dynamically
-        this.updateExtendedItemButtons(player);
+        this.updateItemButtons(player);
     }
     
     /**
-     * 拡張アイテムボタン更新
+     * アイテムボタン更新
      */
-    private updateExtendedItemButtons(player: Player): void {
+    private updateItemButtons(player: Player): void {
         // Import EXTENDED_ITEMS for dynamic button creation
-        import('../../data/ExtendedItems').then(({ EXTENDED_ITEMS }) => {
-            const itemPanel = document.getElementById('item-panel');
-            if (!itemPanel) return;
+        const itemPanel = document.getElementById('item-panel');
+        if (!itemPanel) return;
+        
+        const itemGrid = itemPanel.querySelector('.d-grid');
+        if (!itemGrid) return;
+        
+        // Remove dynamically created buttons (not static ones)
+        const dynamicButtons = itemGrid.querySelectorAll('[data-dynamic-item]');
+        dynamicButtons.forEach(btn => btn.remove());
+        
+        // Add buttons for extended items that are unlocked and not already shown
+        PLAYER_ITEMS.forEach(itemData => {
+            // Skip items that already have static buttons
+            if (['heal-potion', 'adrenaline', 'energy-drink'].includes(itemData.id)) {
+                return;
+            }
             
-            const itemGrid = itemPanel.querySelector('.d-grid');
-            if (!itemGrid) return;
-            
-            // Remove dynamically created buttons (not static ones)
-            const dynamicButtons = itemGrid.querySelectorAll('[data-dynamic-item]');
-            dynamicButtons.forEach(btn => btn.remove());
-            
-            // Add buttons for extended items that are unlocked and not already shown
-            EXTENDED_ITEMS.forEach(itemData => {
-                // Skip items that already have static buttons
-                if (['heal-potion', 'adrenaline', 'energy-drink'].includes(itemData.id)) {
-                    return;
-                }
+            const itemCount = player.getItemCount(itemData.id);
+            if (itemCount > 0) {
+                const button = document.createElement('button');
+                button.id = `${itemData.id}-btn`;
+                button.className = 'btn btn-outline-success';
+                button.setAttribute('data-dynamic-item', 'true');
+                button.innerHTML = `💊 ${itemData.name} (${itemCount})`;
+                button.title = itemData.description;
                 
-                const itemCount = player.getItemCount(itemData.id);
-                if (itemCount > 0) {
-                    const button = document.createElement('button');
-                    button.id = `${itemData.id}-btn`;
-                    button.className = 'btn btn-outline-success';
-                    button.setAttribute('data-dynamic-item', 'true');
-                    button.innerHTML = `💊 ${itemData.name} (${itemCount})`;
-                    button.title = itemData.description;
-                    
-                    // Insert before the back button
-                    const backBtn = document.getElementById('item-back-btn');
-                    if (backBtn) {
-                        itemGrid.insertBefore(button, backBtn);
-                    }
+                // Insert before the back button
+                const backBtn = document.getElementById('item-back-btn');
+                if (backBtn) {
+                    itemGrid.insertBefore(button, backBtn);
                 }
-            });
+            }
         });
     }
     

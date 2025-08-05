@@ -2,7 +2,7 @@ import { AbilityType } from '../systems/AbilitySystem';
 import { StatusEffectType, StatusEffectManager } from '../systems/StatusEffect';
 import { Player } from '../entities/Player';
 
-export interface ExtendedItemData {
+export interface PlayerItemData {
     id: string;
     name: string;
     description: string;
@@ -13,7 +13,7 @@ export interface ExtendedItemData {
     use: (player: Player) => boolean;
 }
 
-export const EXTENDED_ITEMS: ExtendedItemData[] = [
+export const PLAYER_ITEMS: PlayerItemData[] = [
     // Healing Potion (base item, enhanced by CraftWork level)
     {
         id: 'heal-potion',
@@ -196,7 +196,7 @@ export const EXTENDED_ITEMS: ExtendedItemData[] = [
  * Update player items based on ability levels
  */
 export function updatePlayerItems(player: Player): void {
-    EXTENDED_ITEMS.forEach(itemData => {
+    PLAYER_ITEMS.forEach(itemData => {
         const currentCount = itemData.getCount(player);
         
         // Update item in player's inventory
