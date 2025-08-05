@@ -229,7 +229,6 @@ export class BattleUIManager {
      * アイテムボタン更新
      */
     private updateItemButtons(player: Player): void {
-        // Import EXTENDED_ITEMS for dynamic button creation
         const itemPanel = document.getElementById('item-panel');
         if (!itemPanel) return;
         
@@ -240,7 +239,7 @@ export class BattleUIManager {
         const dynamicButtons = itemGrid.querySelectorAll('[data-dynamic-item]');
         dynamicButtons.forEach(btn => btn.remove());
         
-        // Add buttons for extended items that are unlocked and not already shown
+        // Add buttons for player items that are unlocked and not already shown
         PLAYER_ITEMS.forEach(itemData => {
             // Skip items that already have static buttons
             if (['heal-potion', 'adrenaline', 'energy-drink'].includes(itemData.id)) {
