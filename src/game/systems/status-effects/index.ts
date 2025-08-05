@@ -13,47 +13,44 @@ export const createStatusEffectConfigs = (): Map<StatusEffectType, StatusEffectC
     const allConfigs = new Map<StatusEffectType, StatusEffectConfig>();
 
     // Add core states
-    for (const [key, config] of coreStatesConfigs) {
-        allConfigs.set(key, config);
-    }
+    coreStatesConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
 
     // Add battle effects
-    for (const [key, config] of battleEffectsConfigs) {
-        allConfigs.set(key, config);
-    }
+    battleEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
 
     // Add dream demon effects
-    for (const [key, config] of dreamDemonEffectsConfigs) {
-        allConfigs.set(key, config);
-    }
+    dreamDemonEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
 
     // Add bat vampire effects
-    for (const [key, config] of batVampireEffectsConfigs) {
-        allConfigs.set(key, config);
-    }
+    batVampireEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
 
     // Add fluffy dragon effects
-    for (const [key, config] of fluffyDragonEffectsConfigs) {
-        allConfigs.set(key, config);
-    }
+    fluffyDragonEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
 
     // Add seraph mascot effects
-    for (const [key, config] of seraphMascotEffectsConfigs) {
-        allConfigs.set(key, config);
-    }
+    seraphMascotEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
 
     // Add dual jester effects
-    for (const [key, config] of dualJesterEffectsConfigs) {
-        allConfigs.set(key, config);
-    }
+    dualJesterEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
 
     // Add demon dragon effects
-    for (const [key, config] of demonDragonEffectsConfigs) {
-        allConfigs.set(key, config);
-    }
+    demonDragonEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
 
     return allConfigs;
 };
-
-// Export the individual config groups for potential future use
-export { coreStatesConfigs, battleEffectsConfigs, dreamDemonEffectsConfigs, batVampireEffectsConfigs, fluffyDragonEffectsConfigs, seraphMascotEffectsConfigs, dualJesterEffectsConfigs, demonDragonEffectsConfigs };
