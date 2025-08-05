@@ -1,6 +1,10 @@
 import { BossData, ActionType, BossAction, Boss } from '../../entities/Boss';
 import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
+// Swamp Dragon
+// 沼竜ヌリグ
+// Reference document: /docs/bosses/swamp-dragon.md
+
 const swampDragonActions: BossAction[] = [
     {
         id: 'claw-attack',

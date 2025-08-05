@@ -1,6 +1,10 @@
 import { BossData, ActionType, BossAction, Boss } from '../../entities/Boss';
 import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
+// Dream Demon
+// 夢魔ちゃん
+// Reference document: /docs/bosses/dream-demon.md
+
 const dreamDemonActions: BossAction[] = [
     // Basic attack
     {

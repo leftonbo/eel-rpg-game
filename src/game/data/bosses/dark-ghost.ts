@@ -1,6 +1,9 @@
 import { BossData, ActionType, BossAction, Boss } from '../../entities/Boss';
 import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
+// Dark Ghost
+// Reference document: /docs/bosses/dark-ghost.md
+
 const darkGhostActions: BossAction[] = [
     {
         id: 'shadow-claw',

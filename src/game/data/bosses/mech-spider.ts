@@ -1,6 +1,9 @@
 import { BossData, ActionType, BossAction, Boss } from '../../entities/Boss';
 import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
+// MechSpider
+// Reference document: /docs/bosses/mech-spider.md
+
 const mechSpiderActions: BossAction[] = [
     // Normal state actions
     {
