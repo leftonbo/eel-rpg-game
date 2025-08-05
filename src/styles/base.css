@@ -1,0 +1,77 @@
+/* Base Styles - Variables, Typography, and Fundamental Elements */
+
+/* Custom Color Definitions */
+:root {
+    /* Primary Game Colors */
+    --game-primary: #2563eb;
+    --game-primary-hover: #1e40af;
+    --game-secondary: #64748b;
+    --game-secondary-hover: #475569;
+    --game-success: #16a34a;
+    --game-success-hover: #15803d;
+    --game-danger: #dc2626;
+    --game-danger-hover: #b91c1c;
+    --game-warning: #d97706;
+    --game-warning-hover: #b45309;
+    --game-info: #0891b2;
+    --game-info-hover: #0e7490;
+
+    /* Status Card Backgrounds */
+    --player-status-bg: #1e3a8a;
+    --boss-status-bg: #991b1b;
+    --battle-log-bg: #0f172a;
+    --action-panel-bg: #374151;
+
+    /* Text Colors */
+    --status-text: #e2e8f0;
+    --status-text-secondary: #94a3b8;
+    --log-text: #cbd5e1;
+
+    /* Card Border Colors */
+    --card-border: #475569;
+    --card-border-highlight: #64748b;
+
+    /* Battle Layout */
+    --battle-log-offset: 300px;
+}
+
+/* Hidden elements for unlock system */
+.unlocked-hidden {
+    display: none !important;
+}
+
+/* Base Body Styles */
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Game Title */
+.game-title {
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+    background: linear-gradient(45deg, #ffd700, #ffed4e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: bold;
+}
+
+/* Layout utility classes */
+.max-width-600 {
+    max-width: 600px;
+}
+
+.max-height-400 {
+    max-height: 400px;
+}
+
+.max-height-300 {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.d-none-important {
+    display: none !important;
+}
