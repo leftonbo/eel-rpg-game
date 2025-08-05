@@ -1,0 +1,404 @@
+/* Component Styles - Buttons, Cards, Progress Bars, Skills, UI Elements */
+
+/* Progress Bars */
+.progress {
+    height: 0.75rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: width 0.5s ease;
+}
+
+.progress-bar {
+    transition: width 0.5s ease;
+}
+
+/* Custom Button Styles */
+.btn {
+    transition: all 0.2s ease;
+    border-width: 1px;
+    font-weight: 500;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* Primary Button */
+.btn-primary {
+    background-color: var(--game-primary) !important;
+    border-color: var(--game-primary) !important;
+    color: white !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--game-primary-hover) !important;
+    border-color: var(--game-primary-hover) !important;
+}
+
+/* Secondary Button */
+.btn-secondary {
+    background-color: var(--game-secondary) !important;
+    border-color: var(--game-secondary) !important;
+    color: white !important;
+}
+
+.btn-secondary:hover {
+    background-color: var(--game-secondary-hover) !important;
+    border-color: var(--game-secondary-hover) !important;
+}
+
+/* Success Button */
+.btn-success {
+    background-color: var(--game-success) !important;
+    border-color: var(--game-success) !important;
+    color: white !important;
+}
+
+.btn-success:hover {
+    background-color: var(--game-success-hover) !important;
+    border-color: var(--game-success-hover) !important;
+}
+
+/* Danger Button */
+.btn-danger {
+    background-color: var(--game-danger) !important;
+    border-color: var(--game-danger) !important;
+    color: white !important;
+}
+
+.btn-danger:hover {
+    background-color: var(--game-danger-hover) !important;
+    border-color: var(--game-danger-hover) !important;
+}
+
+/* Warning Button */
+.btn-warning {
+    background-color: var(--game-warning) !important;
+    border-color: var(--game-warning) !important;
+    color: white !important;
+}
+
+.btn-warning:hover {
+    background-color: var(--game-warning-hover) !important;
+    border-color: var(--game-warning-hover) !important;
+}
+
+/* Info Button */
+.btn-info {
+    background-color: var(--game-info) !important;
+    border-color: var(--game-info) !important;
+    color: white !important;
+}
+
+.btn-info:hover {
+    background-color: var(--game-info-hover) !important;
+    border-color: var(--game-info-hover) !important;
+}
+
+/* Purple Button for Dream Demon */
+.btn-purple {
+    background-color: #8b5cf6 !important;
+    border-color: #8b5cf6 !important;
+    color: white !important;
+}
+
+.btn-purple:hover {
+    background-color: #7c3aed !important;
+    border-color: #7c3aed !important;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+/* Outline Button Styles */
+.btn-outline-danger {
+    color: var(--game-danger) !important;
+    border-color: var(--game-danger) !important;
+    background: rgba(220, 38, 38, 0.1);
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--game-danger) !important;
+    color: white !important;
+}
+
+.btn-outline-success {
+    color: var(--game-success) !important;
+    border-color: var(--game-success) !important;
+    background: rgba(22, 163, 74, 0.1);
+}
+
+.btn-outline-success:hover {
+    background-color: var(--game-success) !important;
+    color: white !important;
+}
+
+.btn-outline-warning {
+    color: var(--game-warning) !important;
+    border-color: var(--game-warning) !important;
+    background: rgba(217, 119, 6, 0.1);
+}
+
+.btn-outline-warning:hover {
+    background-color: var(--game-warning) !important;
+    color: white !important;
+}
+
+.btn-outline-info {
+    color: var(--game-info) !important;
+    border-color: var(--game-info) !important;
+    background: rgba(8, 145, 178, 0.1);
+}
+
+.btn-outline-info:hover {
+    background-color: var(--game-info) !important;
+    color: white !important;
+}
+
+.btn-outline-secondary {
+    color: var(--game-secondary) !important;
+    border-color: var(--game-secondary) !important;
+    background: rgba(100, 116, 139, 0.1);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--game-secondary) !important;
+    color: white !important;
+}
+
+/* Action Buttons */
+#action-buttons .btn {
+    font-weight: bold;
+    padding: 0.75rem 1rem;
+}
+
+#action-buttons .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Disabled skill buttons - using higher specificity instead of !important */
+#skill-panel .btn.disabled,
+#skill-panel .btn:disabled,
+#special-actions .btn.disabled,
+#special-actions .btn:disabled,
+#action-buttons .btn.disabled,
+#action-buttons .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    transform: none;
+    filter: grayscale(50%);
+    background-color: rgba(100, 116, 139, 0.3);
+    border-color: rgba(100, 116, 139, 0.5);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+#skill-panel .btn.disabled:hover,
+#skill-panel .btn:disabled:hover,
+#special-actions .btn.disabled:hover,
+#special-actions .btn:disabled:hover,
+#action-buttons .btn.disabled:hover,
+#action-buttons .btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
+    background-color: rgba(100, 116, 139, 0.3);
+    border-color: rgba(100, 116, 139, 0.5);
+}
+
+/* Status Card Styles */
+.card.bg-primary {
+    background-color: var(--player-status-bg) !important;
+    border: 1px solid var(--card-border);
+    color: var(--status-text) !important;
+}
+
+.card.bg-danger {
+    background-color: var(--boss-status-bg) !important;
+    border: 1px solid var(--card-border);
+    color: var(--status-text) !important;
+}
+
+.card.bg-dark {
+    background-color: var(--battle-log-bg) !important;
+    border: 1px solid var(--card-border);
+    color: var(--log-text) !important;
+}
+
+.card.bg-secondary {
+    background-color: var(--action-panel-bg) !important;
+    border: 1px solid var(--card-border);
+    color: var(--status-text) !important;
+}
+
+/* Card Header Text Colors */
+.card-header h5,
+.card-header h6 {
+    color: var(--status-text) !important;
+    font-weight: 600;
+}
+
+/* Skills Display Styles */
+.skills-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.skill-item {
+    border: 1px solid var(--card-border) !important;
+    background: rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+    padding: 0.75rem !important;
+}
+
+.skill-item:hover {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: var(--card-border-highlight) !important;
+}
+
+/* Skill Header Layout */
+.skill-header {
+    min-height: auto;
+}
+
+.skill-info {
+    min-width: 0; /* Allow text to wrap properly */
+}
+
+.skill-name {
+    color: var(--status-text);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem !important;
+    line-height: 1.2;
+}
+
+.skill-description {
+    color: var(--status-text-secondary) !important;
+    font-size: 0.875rem;
+    line-height: 1.3;
+    margin-bottom: 0 !important;
+    word-wrap: break-word;
+}
+
+.skill-meta {
+    min-width: 80px;
+    max-width: 120px;
+}
+
+.skill-cost {
+    color: var(--status-text-secondary) !important;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-top: 0.25rem;
+}
+
+.skill-item .badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+    font-weight: 500;
+}
+
+/* Category-specific skill colors */
+.skill-item.combat {
+    border-left: 4px solid var(--game-danger);
+}
+
+.skill-item.defense {
+    border-left: 4px solid var(--game-primary);
+}
+
+.skill-item.support {
+    border-left: 4px solid var(--game-success);
+}
+
+.skill-item.passive {
+    border-left: 4px solid var(--game-info);
+}
+
+/* Skill Details */
+.skill-details {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--card-border);
+}
+
+.skill-stats {
+    color: var(--status-text-secondary) !important;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem !important;
+}
+
+.skill-unlock-condition {
+    color: var(--status-text-secondary) !important;
+    font-size: 0.75rem;
+    font-style: italic;
+    margin-bottom: 0 !important;
+}
+
+/* Skills tab specific styles */
+#skills-panel .col-md-6 {
+    padding: 0 0.5rem;
+}
+
+#skills-panel h6 {
+    color: var(--status-text);
+    border-bottom: 2px solid var(--card-border);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Scrollbar styles for skills list */
+.skills-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.skills-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+}
+
+.skills-list::-webkit-scrollbar-thumb {
+    background: var(--game-secondary);
+    border-radius: 3px;
+}
+
+.skills-list::-webkit-scrollbar-thumb:hover {
+    background: var(--game-secondary-hover);
+}
+
+/* Empty state styles */
+#active-skills-list .text-muted,
+#passive-skills-list .text-muted {
+    text-align: center;
+    padding: 2rem;
+    font-style: italic;
+    color: var(--status-text-secondary) !important;
+}
+
+/* Footer Styles */
+footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+footer .text-muted {
+    color: #94a3b8 !important;
+}
+
+footer a {
+    color: #94a3b8 !important;
+    transition: color 0.2s ease;
+}
+
+footer a:hover {
+    color: #e2e8f0 !important;
+    text-decoration: none !important;
+}
+
+footer svg {
+    vertical-align: middle;
+}

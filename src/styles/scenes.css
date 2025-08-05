@@ -1,0 +1,131 @@
+/* Scene-Specific Styles - Title, Boss Selection, Scene Transitions */
+
+/* Scene Management */
+.scene {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Boss Cards */
+.boss-card {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 2px solid transparent;
+    position: relative;
+}
+
+.boss-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    border-color: #fff;
+}
+
+.boss-card.selected {
+    border-color: #007bff;
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+}
+
+/* Boss Status Container */
+.boss-status-container {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 10;
+    display: flex;
+    gap: 4px;
+}
+
+/* Boss Status Badge */
+.boss-status-badge {
+    min-width: 32px;
+    min-height: 32px;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.boss-status-badge.victory {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #8b4513;
+    border: 2px solid #ffa500;
+    animation: trophy-glow 2s ease-in-out infinite alternate;
+}
+
+.boss-status-badge.defeat {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: #ffffff;
+    border: 2px solid #343a40;
+}
+
+.boss-status-badge:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes trophy-glow {
+    from {
+        box-shadow: 0 2px 6px rgba(255, 215, 0, 0.4);
+    }
+    to {
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.7);
+    }
+}
+
+/* Disabled Card darkening */
+.card.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Guest Character Attribution */
+.guest-attribution {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-top: 0.5rem;
+    text-align: center;
+    font-style: italic;
+}
+
+/* Battle Result Screen Styles */
+#battle-result-screen {
+    overflow-y: auto;
+}
+
+#battle-result-screen .card {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+#battle-result-screen .card-body {
+    max-height: calc(90vh - 2rem);
+    overflow-y: auto;
+    padding: 2rem;
+}
+
+/* Battle result scrollbar styling */
+#battle-result-screen .card-body::-webkit-scrollbar,
+.battle-result-section::-webkit-scrollbar {
+    width: 6px;
+}
+
+#battle-result-screen .card-body::-webkit-scrollbar-track,
+.battle-result-section::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+#battle-result-screen .card-body::-webkit-scrollbar-thumb,
+.battle-result-section::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+#battle-result-screen .card-body::-webkit-scrollbar-thumb:hover,
+.battle-result-section::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
