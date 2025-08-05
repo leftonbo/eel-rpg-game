@@ -1,8 +1,8 @@
 import { Actor } from '@/game/entities/Actor';
 import { StatusEffectType, StatusEffectConfig, StatusEffect } from '../StatusEffectTypes';
 
-export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = new Map([
-    [StatusEffectType.Paralysis, {
+export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
+    {
         type: StatusEffectType.Paralysis,
         name: '麻痺',
         description: '命中率と攻撃力が大幅に低下',
@@ -11,10 +11,10 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
         isDebuff: true,
         modifiers: {
             attackPower: 0.3,
-            hitRate: 0.3
+            accuracy: 0.3
         }
-    }],
-    [StatusEffectType.AphrodisiacPoison, {
+    },
+    {
         type: StatusEffectType.AphrodisiacPoison,
         name: '淫毒',
         description: '毎ターンMP減少、拘束解除率が低下',
@@ -38,8 +38,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
             onRemovePlayer: '{name}は淫毒から回復した',
             onRemoveBoss: '{name}は淫毒から回復した'
         }
-    }],
-    [StatusEffectType.Drowsiness, {
+    },
+    {
         type: StatusEffectType.Drowsiness,
         name: 'ねむけ',
         description: '攻撃力が低下、重ねがけで睡眠状態に',
@@ -49,8 +49,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
         modifiers: {
             attackPower: 0.7
         }
-    }],
-    [StatusEffectType.Weakness, {
+    },
+    {
         type: StatusEffectType.Weakness,
         name: '脱力',
         description: '攻撃力と防御力が大幅低下',
@@ -61,8 +61,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
             attackPower: 0.4,
             damageReceived: 1.5
         }
-    }],
-    [StatusEffectType.Infatuation, {
+    },
+    {
         type: StatusEffectType.Infatuation,
         name: 'メロメロ',
         description: '拘束解除率が大きく低下、MP大幅減少',
@@ -86,8 +86,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
             onRemovePlayer: '{name}はメロメロ状態から回復した',
             onRemoveBoss: '{name}はメロメロ状態から回復した'
         }
-    }],
-    [StatusEffectType.Confusion, {
+    },
+    {
         type: StatusEffectType.Confusion,
         name: '混乱',
         description: '攻撃力が大幅に低下',
@@ -97,8 +97,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
         modifiers: {
             attackPower: 0.1
         }
-    }],
-    [StatusEffectType.Arousal, {
+    },
+    {
         type: StatusEffectType.Arousal,
         name: '発情',
         description: '拘束解除率が大幅低下、MP大幅減少',
@@ -114,8 +114,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
                 target.loseMp(mpLoss);
             }
         }
-    }],
-    [StatusEffectType.Seduction, {
+    },
+    {
         type: StatusEffectType.Seduction,
         name: '悩殺',
         description: '複合デバフ、様々な能力が低下、MP減少',
@@ -133,8 +133,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
                 target.loseMp(mpLoss);
             }
         }
-    }],
-    [StatusEffectType.MagicSeal, {
+    },
+    {
         type: StatusEffectType.MagicSeal,
         name: '魔法封印',
         description: 'MPを使うスキルが封印される',
@@ -144,8 +144,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
         modifiers: {
             canUseSkills: false
         }
-    }],
-    [StatusEffectType.PleasureFall, {
+    },
+    {
         type: StatusEffectType.PleasureFall,
         name: '快楽堕ち',
         description: '重篤なデバフ複合状態、全能力が大幅低下、MP大幅減少',
@@ -163,8 +163,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
                 target.loseMp(mpLoss);
             }
         }
-    }],
-    [StatusEffectType.Lewdness, {
+    },
+    {
         type: StatusEffectType.Lewdness,
         name: '淫乱',
         description: '行動が不安定になり、時々行動不能、MP減少',
@@ -174,7 +174,7 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
         modifiers: {
             attackPower: 0.6,
             struggleRate: 0.4,
-            hitRate: 0.5
+            accuracy: 0.5
         },
         onTick: (target: Actor, _effect: StatusEffect) => {
             const mpLoss = Math.min(target.mp, 2);
@@ -182,8 +182,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
                 target.loseMp(mpLoss);
             }
         }
-    }],
-    [StatusEffectType.Hypnosis, {
+    },
+    {
         type: StatusEffectType.Hypnosis,
         name: '催眠',
         description: '深い催眠状態、行動できない',
@@ -193,8 +193,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
         modifiers: {
             canAct: false
         }
-    }],
-    [StatusEffectType.Brainwash, {
+    },
+    {
         type: StatusEffectType.Brainwash,
         name: '洗脳',
         description: '永続的な思考支配、解除困難、MP減少',
@@ -211,8 +211,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
                 target.loseMp(mpLoss);
             }
         }
-    }],
-    [StatusEffectType.Sweet, {
+    },
+    {
         type: StatusEffectType.Sweet,
         name: 'あまあま',
         description: '幸福状態でデバフに無抵抗、MP減少',
@@ -230,8 +230,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
                 target.loseMp(mpLoss);
             }
         }
-    }],
-    [StatusEffectType.Melting, {
+    },
+    {
         type: StatusEffectType.Melting,
         name: 'とろとろ',
         description: '意識がとろけて抵抗力低下、MP減少',
@@ -249,8 +249,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
                 target.loseMp(mpLoss);
             }
         }
-    }],
-    [StatusEffectType.Euphoria, {
+    },
+    {
         type: StatusEffectType.Euphoria,
         name: 'うっとり',
         description: '恍惚状態で判断力低下、MP減少',
@@ -267,8 +267,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
                 target.loseMp(mpLoss);
             }
         }
-    }],
-    [StatusEffectType.Fascination, {
+    },
+    {
         type: StatusEffectType.Fascination,
         name: '魅惑',
         description: '深い魅惑状態、行動意欲低下、MP減少',
@@ -285,8 +285,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
                 target.loseMp(mpLoss);
             }
         }
-    }],
-    [StatusEffectType.Bliss, {
+    },
+    {
         type: StatusEffectType.Bliss,
         name: '至福',
         description: '至福の陶酔状態、抵抗不能、MP減少',
@@ -303,8 +303,8 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
                 target.loseMp(mpLoss);
             }
         }
-    }],
-    [StatusEffectType.Enchantment, {
+    },
+    {
         type: StatusEffectType.Enchantment,
         name: '魅了術',
         description: '強力な魅了魔法の効果、完全支配、MP減少',
@@ -321,5 +321,17 @@ export const dreamDemonEffectsConfigs: Map<StatusEffectType, StatusEffectConfig>
                 target.loseMp(mpLoss);
             }
         }
-    }]
-]);
+    },
+    {
+        type: StatusEffectType.DreamControl,
+        name: '夢操作',
+        description: '夢の世界に閉じ込められ、完全に支配されている',
+        duration: -1, // Permanent while sleeping
+        category: 'debuff',
+        isDebuff: true,
+        modifiers: {
+            canAct: false,
+            canUseSkills: false
+        }
+    }
+];

@@ -1,8 +1,8 @@
 import { StatusEffectType, StatusEffectConfig } from '../StatusEffectTypes';
 
 // Bat Vampire status effect configurations
-export const batVampireEffectsConfigs = new Map<StatusEffectType, StatusEffectConfig>([
-    [StatusEffectType.Darkness, {
+export const batVampireEffectsConfigs: StatusEffectConfig[] = [
+    {
         type: StatusEffectType.Darkness,
         name: '暗闇',
         description: '視界が奪われ、攻撃の命中率が大幅に低下する',
@@ -18,5 +18,5 @@ export const batVampireEffectsConfigs = new Map<StatusEffectType, StatusEffectCo
             onRemovePlayer: '{name}の視界が回復した。',
             onRemoveBoss: '{name}の視界が回復した。'
         }
-    }]
-]);
+    }
+];

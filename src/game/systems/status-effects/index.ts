@@ -7,53 +7,92 @@ import { fluffyDragonEffectsConfigs } from './fluffy-dragon-effects';
 import { seraphMascotEffectsConfigs } from './seraph-mascot-effects';
 import { dualJesterEffectsConfigs } from './dual-jester-effects';
 import { demonDragonEffectsConfigs } from './demon-dragon-effects';
+import { scorpionCarrierEffectsConfigs } from './scorpion-carrier-effects';
+import { mikanDragonEffectsConfigs } from './mikan-dragon-effects';
+import { seaKrakenEffectsConfigs } from './sea-kraken-effects';
+import { aquaSerpentEffectsConfigs } from './aqua-serpent-effects';
+import { cleanMasterEffectsConfigs } from './clean-master-effects';
+import { darkGhostEffectsConfigs } from './dark-ghost-effects';
+import { undergroundWormEffectsConfigs } from './underground-worm-effects';
 
 // Aggregate all status effect configurations
 export const createStatusEffectConfigs = (): Map<StatusEffectType, StatusEffectConfig> => {
     const allConfigs = new Map<StatusEffectType, StatusEffectConfig>();
 
     // Add core states
-    for (const [key, config] of coreStatesConfigs) {
-        allConfigs.set(key, config);
-    }
+    coreStatesConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
 
     // Add battle effects
-    for (const [key, config] of battleEffectsConfigs) {
-        allConfigs.set(key, config);
-    }
+    battleEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
 
     // Add dream demon effects
-    for (const [key, config] of dreamDemonEffectsConfigs) {
-        allConfigs.set(key, config);
-    }
+    dreamDemonEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
 
     // Add bat vampire effects
-    for (const [key, config] of batVampireEffectsConfigs) {
-        allConfigs.set(key, config);
-    }
+    batVampireEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
 
     // Add fluffy dragon effects
-    for (const [key, config] of fluffyDragonEffectsConfigs) {
-        allConfigs.set(key, config);
-    }
+    fluffyDragonEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
 
     // Add seraph mascot effects
-    for (const [key, config] of seraphMascotEffectsConfigs) {
-        allConfigs.set(key, config);
-    }
+    seraphMascotEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
 
     // Add dual jester effects
-    for (const [key, config] of dualJesterEffectsConfigs) {
-        allConfigs.set(key, config);
-    }
+    dualJesterEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
 
     // Add demon dragon effects
-    for (const [key, config] of demonDragonEffectsConfigs) {
-        allConfigs.set(key, config);
-    }
+    demonDragonEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add scorpion carrier effects
+    scorpionCarrierEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add mikan dragon effects
+    mikanDragonEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add sea kraken effects
+    seaKrakenEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add aqua serpent effects
+    aquaSerpentEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add clean master effects
+    cleanMasterEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add dark ghost effects
+    darkGhostEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add underground worm effects
+    undergroundWormEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
 
     return allConfigs;
 };
-
-// Export the individual config groups for potential future use
-export { coreStatesConfigs, battleEffectsConfigs, dreamDemonEffectsConfigs, batVampireEffectsConfigs, fluffyDragonEffectsConfigs, seraphMascotEffectsConfigs, dualJesterEffectsConfigs, demonDragonEffectsConfigs };

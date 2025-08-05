@@ -1,8 +1,8 @@
 import { Actor } from '@/game/entities/Actor';
 import { StatusEffectType, StatusEffectConfig, ActionPriority, StatusEffect } from '../StatusEffectTypes';
 
-export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new Map([
-    [StatusEffectType.Dead, {
+export const coreStatesConfigs: StatusEffectConfig[] = [
+    {
         type: StatusEffectType.Dead,
         name: '再起不能',
         description: 'これ以上抵抗できない',
@@ -13,8 +13,8 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
             canAct: false,
             actionPriority: ActionPriority.CannotAct
         }
-    }],
-    [StatusEffectType.Doomed, {
+    },
+    {
         type: StatusEffectType.Doomed,
         name: '再起不能',
         description: 'これ以上抵抗できない',
@@ -25,8 +25,8 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
             canAct: false,
             actionPriority: ActionPriority.CannotAct
         }
-    }],
-    [StatusEffectType.KnockedOut, {
+    },
+    {
         type: StatusEffectType.KnockedOut,
         name: '行動不能',
         description: '5ターンの間行動できない',
@@ -37,8 +37,8 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
             canAct: false,
             actionPriority: ActionPriority.CannotAct
         }
-    }],
-    [StatusEffectType.Exhausted, {
+    },
+    {
         type: StatusEffectType.Exhausted,
         name: '疲れ果て',
         description: 'スキル使用不可、攻撃力半減、受けるダメージ1.5倍、もがく成功率半減',
@@ -51,8 +51,8 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
             struggleRate: 0.5, // Struggle success rate halved
             canUseSkills: false
         }
-    }],
-    [StatusEffectType.Restrained, {
+    },
+    {
         type: StatusEffectType.Restrained,
         name: '拘束',
         description: '行動が制限される',
@@ -68,8 +68,8 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
             onRemovePlayer: '{name}は拘束から逃れた！',
             onRemoveBoss: '{name}は拘束から逃れた！'
         }
-    }],
-    [StatusEffectType.Cocoon, {
+    },
+    {
         type: StatusEffectType.Cocoon,
         name: '繭状態',
         description: '合成糸で包まれ縮小液によって体が縮小されている',
@@ -94,8 +94,8 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
             onRemovePlayer: '{name}は繭から脱出した！',
             onRemoveBoss: '{name}は繭から脱出した！'
         }
-    }],
-    [StatusEffectType.Eaten, {
+    },
+    {
         type: StatusEffectType.Eaten,
         name: '食べられ',
         description: '最大HPが毎ターン減少、MP回復阻止',
@@ -111,5 +111,5 @@ export const coreStatesConfigs: Map<StatusEffectType, StatusEffectConfig> = new 
             onRemovePlayer: '{name}は何とか脱出した！',
             onRemoveBoss: '{name}は脱出した！'
         }
-    }]
-]);
+    }
+];

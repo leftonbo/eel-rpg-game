@@ -1,8 +1,8 @@
 import { StatusEffectType, StatusEffectConfig } from '../StatusEffectTypes';
 import { Actor } from '../../entities/Actor';
 
-export const dualJesterEffectsConfigs = new Map<StatusEffectType, StatusEffectConfig>([
-    [StatusEffectType.FalseSecurity, {
+export const dualJesterEffectsConfigs: StatusEffectConfig[] = [
+    {
         type: StatusEffectType.FalseSecurity,
         name: '偽りの安心',
         description: '道化師の演技に騙され、危険察知能力が大幅に低下。命中率-30%、被ダメージ+25%',
@@ -18,9 +18,8 @@ export const dualJesterEffectsConfigs = new Map<StatusEffectType, StatusEffectCo
             onTickPlayer: '危険が近づいているのに気づかない...',
             onRemovePlayer: '{name}は現実の危険に気づいた！'
         }
-    }],
-    
-    [StatusEffectType.Manic, {
+    },
+    {
         type: StatusEffectType.Manic,
         name: '躁状態',
         description: '躁状態により攻撃力+50%だが、防御力-30%・命中率-20%。時々自傷や状態変化が発生',
@@ -50,9 +49,8 @@ export const dualJesterEffectsConfigs = new Map<StatusEffectType, StatusEffectCo
             onTickPlayer: '躁状態で感情が激しく揺れ動いている...',
             onRemovePlayer: '{name}の感情が落ち着いた'
         }
-    }],
-    
-    [StatusEffectType.Bipolar, {
+    },
+    {
         type: StatusEffectType.Bipolar,
         name: '双極効果',
         description: '双面の狂気により感覚が混乱。毒や火だるまが回復効果に変化することがある（命中率-25%）',
@@ -88,5 +86,5 @@ export const dualJesterEffectsConfigs = new Map<StatusEffectType, StatusEffectCo
             onTickPlayer: '状態異常の効果が予測不能に変化している...',
             onRemovePlayer: '{name}の感覚が正常に戻った'
         }
-    }]
-]);
+    }
+];

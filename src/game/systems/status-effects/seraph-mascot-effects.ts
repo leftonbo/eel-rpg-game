@@ -1,8 +1,8 @@
 import { Actor } from '@/game/entities/Actor';
 import { StatusEffectType, StatusEffectConfig, StatusEffect } from '../StatusEffectTypes';
 
-export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfig> = new Map([
-    [StatusEffectType.Blessed, {
+export const seraphMascotEffectsConfigs: StatusEffectConfig[] = [
+    {
         type: StatusEffectType.Blessed,
         name: '祝福',
         description: 'ダメージが2倍になるが、状態異常に対する耐性が向上する',
@@ -19,9 +19,8 @@ export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfi
             onRemovePlayer: '祝福の効果が薄れていく...',
             onTickPlayer: '祝福の光が{name}を包み込んでいる'
         }
-    }],
-    
-    [StatusEffectType.HolySlimed, {
+    },
+    {
         type: StatusEffectType.HolySlimed,
         name: '神聖粘液まみれ',
         description: '攻撃力が低下、拘束解除の成功率が大きく低下',
@@ -32,9 +31,8 @@ export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfi
             attackPower: 0.7,
             struggleRate: 0.4
         }
-    }],
-    
-    [StatusEffectType.Overwhelmed, {
+    },
+    {
         type: StatusEffectType.Overwhelmed,
         name: '圧倒',
         description: '巨大すぎる存在感に圧倒され、命中率と行動精度が大幅に低下する',
@@ -51,9 +49,8 @@ export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfi
             onRemovePlayer: '圧倒感から立ち直った',
             onTickPlayer: '{name}は圧倒的な存在感に萎縮している...'
         }
-    }],
-    
-    [StatusEffectType.SalvationState, {
+    },
+    {
         type: StatusEffectType.SalvationState,
         name: '救済状態',
         description: '救済の準備が整った状態。行動が制限されるが、完全な救済を受ける準備ができている',
@@ -63,8 +60,8 @@ export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfi
         modifiers: {
             canAct: false,        // 行動不能
             canUseSkills: false,  // スキル使用不可
-            struggleRate: 0.2,     // もがく成功率大幅低下
-            hpRecoveryRate: 0.0,   // 毎ターンHP回復効果無効化
+            struggleRate: 0.2,    // もがく成功率大幅低下
+            hpRegenerateRate: 0.0 // 毎ターンHP回復効果無効化
         },
         onApply: (_target: Actor) => {
             // 救済状態では、HP回復効果が無効化される
@@ -82,5 +79,5 @@ export const seraphMascotEffectsConfigs: Map<StatusEffectType, StatusEffectConfi
             onRemovePlayer: '救済状態から解放された',
             onTickPlayer: '{name}は救済の力に包まれ、身動きが取れない...'
         }
-    }]
-]);
+    }
+];

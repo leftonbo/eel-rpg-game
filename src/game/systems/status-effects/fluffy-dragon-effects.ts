@@ -1,7 +1,7 @@
 import { StatusEffectType, StatusEffectConfig } from '../StatusEffectTypes';
 
-export const fluffyDragonEffectsConfigs = new Map<StatusEffectType, StatusEffectConfig>([
-    [StatusEffectType.Sleepy, {
+export const fluffyDragonEffectsConfigs: StatusEffectConfig[] = [
+    {
         type: StatusEffectType.Sleepy,
         name: '眠気',
         description: 'MP回復率と拘束脱出率が減少し、眠りに落ちやすくなる',
@@ -21,5 +21,5 @@ export const fluffyDragonEffectsConfigs = new Map<StatusEffectType, StatusEffect
             onTickPlayer: '', // ダメージなしなので空文字
             onTickBoss: ''
         }
-    }]
-]);
+    }
+];
