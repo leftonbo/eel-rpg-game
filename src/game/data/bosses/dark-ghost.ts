@@ -94,7 +94,7 @@ export const darkGhostData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'ケケケ...おいしそうな魂だネ！'
+            text: '「ケケケ...おいしそうな魂だネ！」'
         },
         {
             speaker: 'boss',
@@ -104,19 +104,19 @@ export const darkGhostData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'そのタマシイ、ボクにちょうだい！キミの絶望、とても美味そうダネ！'
+            text: '「そのタマシイ、ボクにちょうだい！キミの絶望、とても美味そうダネ！」'
         }
     ],
     victoryMessages: [
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'ケケケ...まさかボクが負けるなんて...'
+            text: '「ケケケ...まさかボクが負けるなんて...」'
         },
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'でも、キミの魂の味は忘れないヨ...また会えるといいネ'
+            text: '「でも、キミの魂の味は忘れないヨ...また会えるといいネ」'
         },
         {
             speaker: 'boss',
@@ -130,7 +130,7 @@ export const darkGhostData: BossData = {
     },
     defeatTrophy: {
         name: '影のエッセンス',
-        description: '闇のおばけの体内から滲み出る影の精髄。この世ならざる闇の力を秘めた貴重な物質。'
+        description: '闇のおばけの体内で生成される、獲物の魂を閉じ込めるための人魂型のエッセンス。この世ならざる闇の力を秘めた貴重な物質。'
     },
     personality: [
         'ケケケ...いい魂の匂いがする',
