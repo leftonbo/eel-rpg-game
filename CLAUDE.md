@@ -126,10 +126,11 @@ interface PlayerSaveData {
 #### テンプレートシステム（EJS）
 
 - **src/templates/**: EJSテンプレートファイル（HTML自動生成）
-- **ability-card.ejs**: アビリティカードコンポーネント
+- **components/**: 再利用可能コンポーネント（ability-card.ejs, modal-base.ejs）
+- **partials/**: シーン別パーシャル（battle-*.ejs, out-game-*.ejs, player-*.ejs等）
 - **action-buttons.ejs**: アクションボタンの統一コンポーネント
-- **modal-base.ejs**: モーダルの基本構造
 - **vite.config.ts**: Vite設定、EJSプラグイン統合
+- 25以上のEJSテンプレートによる完全なHTML自動生成システム
 
 ### ゲームバランス調整
 
@@ -138,14 +139,14 @@ interface PlayerSaveData {
 - アビリティ: 6種類（Combat, Toughness, Endurance, Agility, CraftWork, Explorer）
 - 装備: 武器4段階（素手→ナイフ→剣→大剣）、防具4段階（裸→服→軽装甲→重装甲）
 - 現在のボス（16体）:
-  - 基本エリア: 沼のドラゴン(HP400), 闇のおばけ(HP150), 機械のクモ(HP180)
-  - 砂漠: スコーピオンキャリア(HP260)
-  - 海: 海のクラーケン(HP350), アクアサーペント(HP350)
-  - ゲスト: ドリームデーモン(HP240)
-  - ジャングル: みかんドラゴン(HP320)
-  - 遺跡: クリーンマスター(HP280), 蝙蝠のヴァンパイア(HP310), 地下のワーム(HP380), サーマル・アーカイバー(HP580)
-  - 天使エリア: ふわふわドラゴン(HP200), セラフマスコット(HP380)
-  - 双頭道化師: デュアルジェスター(HP360)
+  - 基本エリア: 沼のドラゴン(HP400), 闇のおばけ(HP250), 機械のクモ(HP300)
+  - 砂漠: スコーピオンキャリア(HP450)
+  - 海: 海のクラーケン(HP720), アクアサーペント(HP750)
+  - ゲスト: ドリームデーモン(HP320)
+  - ジャングル: みかんドラゴン(HP640)
+  - 遺跡: クリーンマスター(HP580), 蝙蝠のヴァンパイア(HP640), 地下のワーム(HP800), サーマル・アーカイバー(HP580)
+  - 天使エリア: ふわふわドラゴン(HP600), セラフマスコット(HP1200)
+  - 双頭道化師: デュアルジェスター(HP970)
   - 魔界エリア: 魔界の竜(HP2600)
 - コミット時はgitmojiと日本語メッセージを使用
 
@@ -342,8 +343,7 @@ requiredBossLosses: ["boss-id3"]
 
 #### 実装されているドキュメント
 
-- **welcome-document.md**: エルナルの冒険日記第1章（初期ボス紹介）
-- **defeat-reflection.md**: 敗北から学ぶこと（初敗北時の気持ち）
+- **character-elnal.md**: エルナルについて（主人公の基本情報、特徴、背景）
 
 #### 新ドキュメント追加手順
 
@@ -360,4 +360,4 @@ requiredBossLosses: ["boss-id3"]
 - **ドキュメント**: 新ストーリードキュメント追加時は src/game/data/documents/ にマークダウン形式で作成し、フロントマターで表示条件を設定
 - **コミット**: 必ず gitmoji + 日本語メッセージ + Co-Authored-By を含める
 - **品質チェック**: 編集後は npm run typecheck && npm run test && npm run build を実行して確認
-- **スキルシステム**: Combat、Toughness、Endurance、Agilityスキルは data/skills/ に実装済み、CraftWork・Explorerは未実装
+- **スキルシステム**: Combat、Toughness、Endurance、Agilityスキルは data/skills/ に実装済み、CraftWork・Explorerスキルも定義済み（AbilitySystemで利用可能）
