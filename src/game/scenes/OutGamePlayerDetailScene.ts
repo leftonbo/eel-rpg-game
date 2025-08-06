@@ -18,6 +18,16 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
     private static readonly PROGRESS_BAR_WARNING = 'progress-bar bg-warning progress-bar-striped progress-bar-animated';
     private static readonly PROGRESS_BAR_INFO = 'progress-bar bg-info';
     
+    // アビリティ設定（統合マッピング）
+    private static readonly ABILITY_CONFIG = {
+        [AbilityType.Combat]: { name: 'コンバット' },
+        [AbilityType.Toughness]: { name: 'タフネス' },
+        [AbilityType.CraftWork]: { name: 'クラフトワーク' },
+        [AbilityType.Endurance]: { name: 'エンデュランス' },
+        [AbilityType.Agility]: { name: 'アジリティ' },
+        [AbilityType.Explorer]: { name: 'エクスプローラー' }
+    };
+    
     private playerInfoEditManager: PlayerInfoEditManager; // Used in custom events
     
     constructor(game: Game) {
@@ -295,7 +305,7 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
         }
         
         // 各アビリティのデバッグボタン
-        const abilityTypes = ['combat', 'toughness', 'craftwork', 'endurance', 'agility', 'explorer'];
+        const abilityTypes = Object.values(AbilityType);
         
         abilityTypes.forEach(abilityType => {
             const button = document.getElementById(`debug-${abilityType}-btn`);
@@ -328,26 +338,8 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
                         return;
                     }
                     
-                    try {
-                        // 各アビリティを個別に変更（トースト表示なし）
-                        abilityTypes.forEach(abilityType => {
-                            this.changeAbilityLevel(abilityType, newLevel, false);
-                        });
-                        
-                        // 一括変更の成功トーストを1つだけ表示
-                        ToastUtils.showToast(
-                            `全てのアビリティを レベル ${newLevel} に変更しました`,
-                            'デバッグ機能',
-                            ToastType.Success
-                        );
-                    } catch (error) {
-                        console.error('Failed to change all ability levels:', error);
-                        ToastUtils.showToast(
-                            '一括レベル変更に失敗しました',
-                            'エラー',
-                            ToastType.Error
-                        );
-                    }
+                    // 一括変更専用メソッドを使用
+                    this.changeAllAbilityLevels(newLevel);
                 }
             });
         }
@@ -375,18 +367,61 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
         const player = this.game.getPlayer();
         const abilityLevels = player.getAbilityLevels();
         
-        Object.keys(abilityLevels).forEach(abilityType => {
+        // Use canonical list of ability types for consistent mapping
+        Object.values(AbilityType).forEach((abilityType) => {
             const input = document.getElementById(`debug-${abilityType.toLowerCase()}-level`) as HTMLInputElement;
-            if (input) {
+            if (input && abilityLevels[abilityType]) {
                 input.value = abilityLevels[abilityType].level.toString();
             }
         });
     }
     
     /**
+     * 全アビリティのレベルを一括変更（パフォーマンス最適化版）
+     */
+    private changeAllAbilityLevels(newLevel: number): void {
+        if (newLevel < 0 || newLevel > AbilitySystem.MAX_LEVEL) {
+            ToastUtils.showToast(
+                `レベルは0から${AbilitySystem.MAX_LEVEL}の間で設定してください`,
+                '無効な値',
+                ToastType.Error
+            );
+            return;
+        }
+        
+        const player = this.game.getPlayer();
+        const requiredExp = player.abilitySystem.getRequiredExperienceForLevel(newLevel);
+        
+        try {
+            // 全アビリティを一度に変更
+            Object.values(AbilityType).forEach(abilityType => {
+                player.abilitySystem.setAbilityExperience(abilityType, requiredExp);
+            });
+            
+            // 処理完了後に一度だけ更新処理を実行
+            this.updatePlayerDetails();
+            player.saveToStorage();
+            
+            // 成功トーストを表示
+            ToastUtils.showToast(
+                `全てのアビリティを レベル ${newLevel} に変更しました`,
+                'デバッグ機能',
+                ToastType.Success
+            );
+        } catch (error) {
+            console.error('Failed to change all ability levels:', error);
+            ToastUtils.showToast(
+                '一括レベル変更に失敗しました',
+                'エラー',
+                ToastType.Error
+            );
+        }
+    }
+    
+    /**
      * アビリティレベルを変更
      */
-    private changeAbilityLevel(abilityType: string, newLevel: number, showToast: boolean = true): void {
+    private changeAbilityLevel(abilityType: AbilityType, newLevel: number, showToast: boolean = true): void {
         if (newLevel < 0 || newLevel > AbilitySystem.MAX_LEVEL) {
             if (showToast) {
                 ToastUtils.showToast(
@@ -398,28 +433,7 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
             return;
         }
         
-        // 文字列からAbilityTypeへのマッピング
-        const abilityTypeMapping: { [key: string]: AbilityType } = {
-            'combat': AbilityType.Combat,
-            'toughness': AbilityType.Toughness,
-            'craftwork': AbilityType.CraftWork,
-            'endurance': AbilityType.Endurance,
-            'agility': AbilityType.Agility,
-            'explorer': AbilityType.Explorer
-        };
-        
-        // アビリティ名のマッピング（日本語表示用）
-        const abilityNameMapping: { [key: string]: string } = {
-            'combat': 'コンバット',
-            'toughness': 'タフネス',
-            'craftwork': 'クラフトワーク',
-            'endurance': 'エンデュランス',
-            'agility': 'アジリティ',
-            'explorer': 'エクスプローラー'
-        };
-        
-        const abilityTypeValue = abilityTypeMapping[abilityType];
-        if (!abilityTypeValue) {
+        if (!OutGamePlayerDetailScene.ABILITY_CONFIG[abilityType]) {
             console.error(`Unknown ability type: ${abilityType}`);
             if (showToast) {
                 ToastUtils.showToast(
@@ -436,7 +450,7 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
         try {
             // 新しいレベルに必要な経験値を設定
             const requiredExp = player.abilitySystem.getRequiredExperienceForLevel(newLevel);
-            player.abilitySystem.setAbilityExperience(abilityTypeValue, requiredExp);
+            player.abilitySystem.setAbilityExperience(abilityType, requiredExp);
             
             // プレイヤー詳細を再更新
             this.updatePlayerDetails();
@@ -446,7 +460,7 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
             
             // 成功トーストを表示
             if (showToast) {
-                const abilityName = abilityNameMapping[abilityType] || abilityType;
+                const abilityName = OutGamePlayerDetailScene.ABILITY_CONFIG[abilityType].name;
                 ToastUtils.showToast(
                     `${abilityName} を レベル ${newLevel} に変更しました`,
                     'デバッグ機能',
@@ -456,7 +470,7 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
         } catch (error) {
             console.error('Failed to change ability level:', error);
             if (showToast) {
-                const abilityName = abilityNameMapping[abilityType] || abilityType;
+                const abilityName = OutGamePlayerDetailScene.ABILITY_CONFIG[abilityType].name;
                 ToastUtils.showToast(
                     `${abilityName} のレベル変更に失敗しました`,
                     'エラー',
