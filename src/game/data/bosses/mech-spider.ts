@@ -248,10 +248,10 @@ export const mechSpiderData: BossData = {
                     description: '修理が完了したか生命体を検査し続ける',
                     messages: [
                         '{boss}の体内修理装置の拘束が緩んだ途端、{player}の体が狭い透明の部屋に押し込まれる！',
-                        'REPAIR INSPECTION PROTOCOL...',
+                        '「REPAIR INSPECTION PROTOCOL...」',
                         '{boss}の体内スキャン装置が動き出し、透明の壁越しに{player}の修理完了を検査している...',
-                        'ERROR: REPAIR REQUIRED PARTS DETECTED',
-                        'RESTARTING REPAIR SYSTEM...',
+                        '「ERROR: REPAIR REQUIRED PARTS DETECTED」',
+                        '「RESTARTING REPAIR SYSTEM...」',
                         '{boss}の体内修理装置が再起動し、{player}の体を合成糸で再び拘束し始める！',
                         '{player}の体が再び体内修理装置の内部へと戻っていく...'
                     ],
@@ -268,7 +268,7 @@ export const mechSpiderData: BossData = {
                     name: '体内修理装置起動',
                     description: '体内の修理装置で生命体に栄養剤を注入する',
                     messages: [
-                        'REPAIR SYSTEM ACTIVE...',
+                        '「REPAIR SYSTEM ACTIVE...」',
                         '{boss}の体内修理装置が{player}に栄養剤を注入している...',
                         '修理装置に拘束されて動けない{player}は、栄養剤を飲まされ続ける...'
                     ],
@@ -280,7 +280,7 @@ export const mechSpiderData: BossData = {
                     name: '体内マッサージ処理',
                     description: '体内の機械腕で生命体をマッサージする',
                     messages: [
-                        'MASSAGE PROTOCOL INITIATED...',
+                        '「MASSAGE PROTOCOL INITIATED...」',
                         '{boss}の体内マッサージ機が{player}の体を挟み込む...',
                         '{player}は機械的なマッサージを受けている...'
                     ],
@@ -292,7 +292,7 @@ export const mechSpiderData: BossData = {
                     name: '無意味な修理作業',
                     description: '意味のない修理作業を生命体に施し続ける',
                     messages: [
-                        'PROCESSING REPAIR SEQUENCE...',
+                        '「PROCESSING REPAIR SEQUENCE...」',
                         '{boss}の体内修理装置が{player}にがらくたのようなパーツを接着しようとする...',
                         'しかし、糊でくっつけられたパーツはすぐに外れてしまう...'
                     ],
@@ -304,7 +304,7 @@ export const mechSpiderData: BossData = {
                     name: '体内拘束システム',
                     description: '体内の拘束システムで生命体を固定し続ける',
                     messages: [
-                        'RESTRAINT SYSTEM ACTIVE...',
+                        '「RESTRAINT SYSTEM ACTIVE...」',
                         '{boss}の体内拘束システムが、合成糸で{player}を何重にも固定している...',
                         '{player}は機械的な拘束から逃れられない...'
                     ],

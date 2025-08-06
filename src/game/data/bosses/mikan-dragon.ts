@@ -129,7 +129,7 @@ export const mikanDragonData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'あら、いらっしゃい♪ 甘い匂いに誘われて来たのかしら？'
+            text: '「あら、いらっしゃい♪ 甘い匂いに誘われて来たのかしら？」'
         },
         {
             speaker: 'boss',
@@ -139,19 +139,19 @@ export const mikanDragonData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'とっても美味しい蜜柑汁で満たしてあげるわね♪ 私のお腹で甘〜くなりましょう？'
+            text: '「とっても美味しい蜜柑汁で満たしてあげるわね♪ 私のお腹で甘〜くなりましょう？」'
         }
     ],
     victoryMessages: [
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'あら〜、こんなに強い方だったのね...'
+            text: '「あら〜、こんなに強い方だったのね...」'
         },
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'でも楽しい戦いだったわ♪ また遊びに来てくださいね'
+            text: '「でも楽しい戦いだったわ♪ また遊びに来てくださいね」'
         },
         {
             speaker: 'boss',

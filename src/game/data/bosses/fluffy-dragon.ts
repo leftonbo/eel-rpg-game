@@ -13,7 +13,7 @@ const fluffyDragonActions: BossAction[] = [
         weight: 20,
         playerStateCondition: 'normal',
         messages: [
-            'ふわふわ〜♪ やさしくしてあげるね',
+            '「ふわふわ〜♪ やさしくしてあげるね」',
             '{boss}はふわふわの毛で{player}を優しく包み込むように攻撃した'
         ]
     },
@@ -27,7 +27,7 @@ const fluffyDragonActions: BossAction[] = [
         weight: 15,
         playerStateCondition: 'normal',
         messages: [
-            'ぽふぽふ〜♪ 毛玉攻撃だよ',
+            '「ぽふぽふ〜♪ 毛玉攻撃だよ」',
             '{boss}はふわふわの毛玉を{player}に向けて飛ばした！'
         ]
     },
@@ -44,7 +44,7 @@ const fluffyDragonActions: BossAction[] = [
         statusChance: 0.85,
         weight: 30,
         messages: [
-            'ふわ〜♪ いい香りのブレスをどうぞ',
+            '「ふわ〜♪ いい香りのブレスをどうぞ」',
             '{boss}はラベンダーの香りがする甘いブレスを吐いた',
             '{player}は心地よい香りに包まれている...'
         ],
@@ -77,7 +77,7 @@ const fluffyDragonActions: BossAction[] = [
         statusChance: 0.80,
         weight: 25,
         messages: [
-            'ふわふわ〜♪ 心地よいオーラだよ',
+            '「ふわふわ〜♪ 心地よいオーラだよ」',
             '{boss}のふわふわの毛から心地よいオーラが漂ってきた',
             '{player}は心地よさで力が抜けていく...'
         ]
@@ -92,7 +92,7 @@ const fluffyDragonActions: BossAction[] = [
         weight: 20,
         hitRate: 0.85,
         messages: [
-            'ふわふわ〜♪ ぎゅーってしてあげる',
+            '「ふわふわ〜♪ ぎゅーってしてあげる」',
             '{boss}はふわふわの毛で{player}を優しく包み込もうとしてきた！',
             '{player}はふわふわの毛に包まれて身動きが取れなくなった...'
         ],
@@ -115,7 +115,7 @@ const fluffyDragonActions: BossAction[] = [
         description: '暴力的でない優しい方法で丸呑みにする',
         weight: 1,
         messages: [
-            'ふわふわ〜♪ お腹の中で暖かくしてあげる',
+            '「ふわふわ〜♪ お腹の中で暖かくしてあげる」',
             '{boss}は{player}を優しく口に含んで...',
             'ごくん...',
             '{player}は{boss}のふわふわな胃袋に包まれた...'
@@ -132,7 +132,7 @@ const fluffyDragonActions: BossAction[] = [
         weight: 30,
         playerStateCondition: 'restrained',
         messages: [
-            'ふわふわ〜♪ 気持ちよくしてあげる',
+            '「ふわふわ〜♪ 気持ちよくしてあげる」',
             '{boss}はふわふわの毛で{player}を優しくマッサージした',
             '{player}は心地よいマッサージに身を委ねている...'
         ]
@@ -148,7 +148,7 @@ const fluffyDragonActions: BossAction[] = [
         weight: 25,
         playerStateCondition: 'restrained',
         messages: [
-            'ふわふわ〜♪ 暖かくて眠くなるでしょ？',
+            '「ふわふわ〜♪ 暖かくて眠くなるでしょ？」',
             '{boss}は{player}を暖かく包み込んだ',
             '{player}は暖かさで眠気に襲われている...'
         ]
@@ -164,7 +164,7 @@ const fluffyStomachActions: BossAction[] = [
         damageFormula: (user: Boss) => user.attackPower * 1.5,
         description: 'ふわふわな胃袋の毛による優しい圧迫攻撃',
         messages: [
-            'ふわふわ〜♪ お腹の中でも気持ちよくしてあげる',
+            '「ふわふわ〜♪ お腹の中でも気持ちよくしてあげる」',
             '{boss}のふわふわな胃袋が{player}を優しくマッサージしている...',
             '{player}は胃袋の毛に包まれながら生気を吸い取られている...'
         ],
@@ -177,7 +177,7 @@ const fluffyStomachActions: BossAction[] = [
         damageFormula: (user: Boss) => user.attackPower * 1.8,
         description: '眠りを誘う特殊な空気を送り込む',
         messages: [
-            'ふわふわ〜♪ もっと眠くなる空気をどうぞ',
+            '「ふわふわ〜♪ もっと眠くなる空気をどうぞ」',
             '{boss}は胃袋の中に眠りを誘う甘い空気を送り込んだ...',
             '{player}は甘い空気に包まれながら最大HPを奪われていく...'
         ],
@@ -190,7 +190,7 @@ const fluffyStomachActions: BossAction[] = [
         damageFormula: (user: Boss) => user.attackPower * 1.6,
         description: '体温による心地よい包み込み攻撃',
         messages: [
-            'ふわふわ〜♪ ずっと暖かくしてあげる',
+            '「ふわふわ〜♪ ずっと暖かくしてあげる」',
             '{boss}の胃袋が{player}を温かく包み込んでいる...',
             '{player}は心地よい温かさの中で力を失っていく...'
         ],
@@ -206,7 +206,7 @@ const deepStomachActions: BossAction[] = [
         name: '粘液による夢操作',
         description: '粘液に包まれながら丸呑みされる夢を見続ける',
         messages: [
-            'ふわふわ〜♪ いい夢を見せてあげる',
+            '「ふわふわ〜♪ いい夢を見せてあげる」',
             '{boss}の奥の胃袋で{player}は粘液に包まれている...',
             '{player}は丸呑みされる夢を何度も見続けている...',
             '{player}の意識は{boss}の夢の世界に囚われている...'
@@ -220,7 +220,7 @@ const deepStomachActions: BossAction[] = [
         name: '深い眠りの維持',
         description: '目覚めを阻止する強制睡眠',
         messages: [
-            'ふわふわ〜♪ ずっと眠っていてね',
+            '「ふわふわ〜♪ ずっと眠っていてね」',
             '{boss}は{player}を深い眠りに閉じ込めている...',
             '{player}は目覚めることができない...',
             '{player}の魂は{boss}の中で永遠に眠り続ける...'
@@ -234,7 +234,7 @@ const deepStomachActions: BossAction[] = [
         name: '胃液愛撫',
         description: 'ねっとりした粘液による包み込み',
         messages: [
-            'ふわふわ〜♪ ねっとり包んであげる',
+            '「ふわふわ〜♪ ねっとり包んであげる」',
             '{boss}の粘液が{player}をねっとりと包み込んでいる...',
             '{player}は粘液に愛撫されながら意識を失っていく...',
             '{player}の心は{boss}の胃袋に完全に支配されている...'
@@ -248,7 +248,7 @@ const deepStomachActions: BossAction[] = [
         name: '永遠の安らぎ',
         description: '完全な支配状態での至福演出',
         messages: [
-            'ふわふわ〜♪ もう何も心配いらないよ',
+            '「ふわふわ〜♪ もう何も心配いらないよ」',
             '{boss}は{player}を永遠の安らぎで包んでいる...',
             '{player}は完全に安らかな表情を浮かべている...',
             '{player}は{boss}の一部として永遠に過ごすことになった...'
@@ -278,7 +278,7 @@ export const fluffyDragonData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'ふわぁ...また新しいお客さまが来たの？'
+            text: '「ふわぁ...また新しいお客さまが来たの？」'
         },
         {
             speaker: 'boss',
@@ -288,19 +288,19 @@ export const fluffyDragonData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'とっても疲れてるみたいね...私のふわふわお腹でゆっくり休んでいきなさい'
+            text: '「とっても疲れてるみたいね...私のふわふわお腹でゆっくり休んでいきなさい」'
         }
     ],
     victoryMessages: [
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'ふわぁ...こんなに強い人がいるなんて...'
+            text: '「ふわぁ...こんなに強い人がいるなんて...」'
         },
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'でも、とっても立派に戦ったのね...お疲れさま'
+            text: '「でも、とっても立派に戦ったのね...お疲れさま」'
         },
         {
             speaker: 'boss',
@@ -317,12 +317,12 @@ export const fluffyDragonData: BossData = {
         description: 'ふわふわドラゴンの眠りのブレスから抽出したラベンダーの香りがする魔法のエッセンス。深い眠りを誘う力を秘めている。'
     },
     personality: [
-        'ふわふわ〜♪ 一緒に眠りましょう',
-        'とても心地よいでしょう？',
-        'そのまま眠ってしまいなさい...',
-        'ふわふわのお腹で暖かくしてあげる',
-        'もう何も心配いらないよ',
-        '永遠に一緒にいましょうね'
+        '「ふわふわ〜♪ 一緒に眠りましょう」',
+        '「とても心地よいでしょう？」',
+        '「そのまま眠ってしまいなさい...」',
+        '「ふわふわのお腹で暖かくしてあげる」',
+        '「もう何も心配いらないよ」',
+        '「永遠に一緒にいましょうね」'
     ],
     aiStrategy: (boss, player, turn) => {
         // Fluffy Dragon AI Strategy - 段階的な眠り誘発戦略
@@ -383,7 +383,7 @@ export const fluffyDragonData: BossData = {
                 name: '奥の胃袋への移送',
                 description: 'ふわふわ胃袋から本物の胃袋へ移動させる',
                 messages: [
-                    'ふわふわ〜♪ より奥で休んでもらいましょう',
+                    '「ふわふわ〜♪ より奥で休んでもらいましょう」',
                     '{player}は完全に眠りに落ち、{boss}のより奥の胃袋に送られていく...',
                     'そこはねっとりした粘液に満ちた本物の胃袋だった...',
                     '{boss}が起きている限り、{player}は目覚めることができない...'
@@ -476,7 +476,7 @@ export const fluffyDragonData: BossData = {
         return [
             '{boss}は力尽きた{player}を奥の胃袋で完全に消化してしまった...',
             '{boss}はお腹をさすりながら満足げな表情を浮かべる',
-            'ふわふわ〜♪ とても美味しかったです',
+            '「ふわふわ〜♪ とても美味しかったです」',
             '{player}は{boss}の一部となって永遠にふわふわの夢の中で過ごすことになった...'
         ];
     },
@@ -485,42 +485,42 @@ export const fluffyDragonData: BossData = {
     getDialogue: function(situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') {
         const dialogues: Record<string, string[]> = {
             'battle-start': [
-                'ふわふわ〜♪ ようこそ寒冷地へ',
-                'とても疲れているように見えますね',
-                '一緒に眠って休みませんか？',
-                'ラベンダーの香りでリラックスしましょう'
+                '「ふわふわ〜♪ ようこそ寒冷地へ」',
+                '「とても疲れているように見えますね」',
+                '「一緒に眠って休みませんか？」',
+                '「ラベンダーの香りでリラックスしましょう」'
             ],
             'player-restrained': [
-                'ふわふわ〜♪ 気持ちいいでしょう？',
-                'そのままふわふわに包まれていてね',
-                'もう何も心配いりませんよ',
-                '温かくて眠くなってきますね',
-                'ずっとこうしていましょう'
+                '「ふわふわ〜♪ 気持ちいいでしょう？」',
+                '「そのままふわふわに包まれていてね」',
+                '「もう何も心配いりませんよ」',
+                '「温かくて眠くなってきますね」',
+                '「ずっとこうしていましょう」'
             ],
             'player-eaten': [
-                'ふわふわ〜♪ お腹の中は暖かいでしょう？',
-                'ゆっくり休んでいてくださいね',
-                'もう寒くありませんよ',
-                'このまま永遠に一緒にいましょう',
-                'ふわふわの夢を見させてあげます'
+                '「ふわふわ〜♪ お腹の中は暖かいでしょう？」',
+                '「ゆっくり休んでいてくださいね」',
+                '「もう寒くありませんよ」',
+                '「このまま永遠に一緒にいましょう」',
+                '「ふわふわの夢を見させてあげます」'
             ],
             'player-escapes': [
-                'あら...まだ眠くないのですか？',
-                'でももうすぐ眠くなりますよ',
-                '逃げても寒いだけですよ',
-                'ふわふわのところに戻っておいで'
+                '「あら...まだ眠くないのですか？」',
+                '「でももうすぐ眠くなりますよ」',
+                '「逃げても寒いだけですよ」',
+                '「ふわふわのところに戻っておいで」'
             ],
             'low-hp': [
-                'ふわふわ〜♪ まだまだ元気です',
-                'もっとふわふわにしてあげますね',
-                '一緒に眠りの世界へ行きましょう',
-                'ラベンダーの香りはまだまだありますよ'
+                '「ふわふわ〜♪ まだまだ元気です」',
+                '「もっとふわふわにしてあげますね」',
+                '「一緒に眠りの世界へ行きましょう」',
+                '「ラベンダーの香りはまだまだありますよ」'
             ],
             'victory': [
-                'ふわふわ〜♪ いい夢を見てくださいね',
-                '永遠に暖かくしてあげます',
-                'とても美味しかったです',
-                'ずっと一緒にいましょうね'
+                '「ふわふわ〜♪ いい夢を見てくださいね」',
+                '「永遠に暖かくしてあげます」',
+                '「とても美味しかったです」',
+                '「ずっと一緒にいましょうね」'
             ]
         };
         
