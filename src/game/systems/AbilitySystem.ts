@@ -95,6 +95,22 @@ export class AbilitySystem {
     }
     
     /**
+     * Set experience directly for an ability (for debug purposes)
+     */
+    setAbilityExperience(abilityType: AbilityType, experience: number): void {
+        const ability = this.abilities.get(abilityType);
+        if (!ability) {
+            throw new Error(`Ability ${abilityType} not found`);
+        }
+        
+        ability.experience = Math.max(0, experience); // Ensure non-negative
+        
+        // Recalculate level based on total experience
+        const newLevel = this.calculateLevelFromExperience(ability.experience);
+        ability.level = Math.min(newLevel, AbilitySystem.MAX_LEVEL); // Cap at max level
+    }
+    
+    /**
      * Get experience needed for next level
      */
     getExperienceToNextLevel(abilityType: AbilityType): number {

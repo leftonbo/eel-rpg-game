@@ -1,10 +1,11 @@
 import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
-import { AbilitySystem, AbilityData } from '../systems/AbilitySystem';
+import { AbilitySystem, AbilityData, AbilityType } from '../systems/AbilitySystem';
 import { EquipmentSelectorComponent } from './components/EquipmentSelectorComponent';
 import { SkillDisplayComponent } from './components/SkillDisplayComponent';
 import { Player } from '@/game/entities/Player';
 import { PlayerInfoEditManager } from './managers/PlayerInfoEditManager';
+import { ToastUtils, ToastType } from '../utils/ToastUtils';
 
 // 拡張されたアビリティデータ型（experienceToNextを含む）
 interface ExtendedAbilityData extends AbilityData {
@@ -43,6 +44,9 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
             });
         }
         
+        // デバッグコントロールのイベントリスナーを設定
+        this.initDebugControls();
+        
         // プレイヤー詳細モーダルの更新イベント
         document.addEventListener('updatePlayerSummary', () => {
             this.updatePlayerDetails();
@@ -60,6 +64,9 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
         
         // プレイヤー詳細情報を更新
         this.updatePlayerDetails();
+        
+        // デバッグモード時はデバッグコントロールを表示
+        this.updateDebugControlsVisibility();
     }
     
     /**
@@ -276,6 +283,186 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
         const element = document.getElementById(id);
         if (element) {
             element.textContent = value;
+        }
+    }
+    
+    /**
+     * デバッグコントロールの初期化
+     */
+    private initDebugControls(): void {
+        if (!this.game.isDebugMode()) {
+            return;
+        }
+        
+        // 各アビリティのデバッグボタン
+        const abilityTypes = ['combat', 'toughness', 'craftwork', 'endurance', 'agility', 'explorer'];
+        
+        abilityTypes.forEach(abilityType => {
+            const button = document.getElementById(`debug-${abilityType}-btn`);
+            if (button) {
+                button.addEventListener('click', () => {
+                    const input = document.getElementById(`debug-${abilityType}-level`) as HTMLInputElement;
+                    if (input) {
+                        const newLevel = parseInt(input.value, 10);
+                        this.changeAbilityLevel(abilityType, newLevel);
+                    }
+                });
+            }
+        });
+        
+        // 一括設定ボタン
+        const allButton = document.getElementById('debug-all-btn');
+        if (allButton) {
+            allButton.addEventListener('click', () => {
+                const input = document.getElementById('debug-all-level') as HTMLInputElement;
+                if (input) {
+                    const newLevel = parseInt(input.value, 10);
+                    
+                    // バリデーション
+                    if (newLevel < 0 || newLevel > AbilitySystem.MAX_LEVEL) {
+                        ToastUtils.showToast(
+                            `レベルは0から${AbilitySystem.MAX_LEVEL}の間で設定してください`,
+                            '無効な値',
+                            ToastType.Error
+                        );
+                        return;
+                    }
+                    
+                    try {
+                        // 各アビリティを個別に変更（トースト表示なし）
+                        abilityTypes.forEach(abilityType => {
+                            this.changeAbilityLevel(abilityType, newLevel, false);
+                        });
+                        
+                        // 一括変更の成功トーストを1つだけ表示
+                        ToastUtils.showToast(
+                            `全てのアビリティを レベル ${newLevel} に変更しました`,
+                            'デバッグ機能',
+                            ToastType.Success
+                        );
+                    } catch (error) {
+                        console.error('Failed to change all ability levels:', error);
+                        ToastUtils.showToast(
+                            '一括レベル変更に失敗しました',
+                            'エラー',
+                            ToastType.Error
+                        );
+                    }
+                }
+            });
+        }
+    }
+    
+    /**
+     * デバッグコントロールの表示状態を更新
+     */
+    private updateDebugControlsVisibility(): void {
+        const debugControls = document.getElementById('debug-controls-skills');
+        if (!debugControls) return;
+        
+        if (this.game.isDebugMode()) {
+            debugControls.classList.remove('d-none');
+            this.syncDebugInputs();
+        } else {
+            debugControls.classList.add('d-none');
+        }
+    }
+    
+    /**
+     * デバッグ入力フィールドを現在のアビリティレベルと同期
+     */
+    private syncDebugInputs(): void {
+        const player = this.game.getPlayer();
+        const abilityLevels = player.getAbilityLevels();
+        
+        Object.keys(abilityLevels).forEach(abilityType => {
+            const input = document.getElementById(`debug-${abilityType.toLowerCase()}-level`) as HTMLInputElement;
+            if (input) {
+                input.value = abilityLevels[abilityType].level.toString();
+            }
+        });
+    }
+    
+    /**
+     * アビリティレベルを変更
+     */
+    private changeAbilityLevel(abilityType: string, newLevel: number, showToast: boolean = true): void {
+        if (newLevel < 0 || newLevel > AbilitySystem.MAX_LEVEL) {
+            if (showToast) {
+                ToastUtils.showToast(
+                    `レベルは0から${AbilitySystem.MAX_LEVEL}の間で設定してください`,
+                    '無効な値',
+                    ToastType.Error
+                );
+            }
+            return;
+        }
+        
+        // 文字列からAbilityTypeへのマッピング
+        const abilityTypeMapping: { [key: string]: AbilityType } = {
+            'combat': AbilityType.Combat,
+            'toughness': AbilityType.Toughness,
+            'craftwork': AbilityType.CraftWork,
+            'endurance': AbilityType.Endurance,
+            'agility': AbilityType.Agility,
+            'explorer': AbilityType.Explorer
+        };
+        
+        // アビリティ名のマッピング（日本語表示用）
+        const abilityNameMapping: { [key: string]: string } = {
+            'combat': 'コンバット',
+            'toughness': 'タフネス',
+            'craftwork': 'クラフトワーク',
+            'endurance': 'エンデュランス',
+            'agility': 'アジリティ',
+            'explorer': 'エクスプローラー'
+        };
+        
+        const abilityTypeValue = abilityTypeMapping[abilityType];
+        if (!abilityTypeValue) {
+            console.error(`Unknown ability type: ${abilityType}`);
+            if (showToast) {
+                ToastUtils.showToast(
+                    `不明なアビリティ: ${abilityType}`,
+                    'エラー',
+                    ToastType.Error
+                );
+            }
+            return;
+        }
+        
+        const player = this.game.getPlayer();
+        
+        try {
+            // 新しいレベルに必要な経験値を設定
+            const requiredExp = player.abilitySystem.getRequiredExperienceForLevel(newLevel);
+            player.abilitySystem.setAbilityExperience(abilityTypeValue, requiredExp);
+            
+            // プレイヤー詳細を再更新
+            this.updatePlayerDetails();
+            
+            // セーブデータを保存
+            player.saveToStorage();
+            
+            // 成功トーストを表示
+            if (showToast) {
+                const abilityName = abilityNameMapping[abilityType] || abilityType;
+                ToastUtils.showToast(
+                    `${abilityName} を レベル ${newLevel} に変更しました`,
+                    'デバッグ機能',
+                    ToastType.Success
+                );
+            }
+        } catch (error) {
+            console.error('Failed to change ability level:', error);
+            if (showToast) {
+                const abilityName = abilityNameMapping[abilityType] || abilityType;
+                ToastUtils.showToast(
+                    `${abilityName} のレベル変更に失敗しました`,
+                    'エラー',
+                    ToastType.Error
+                );
+            }
         }
     }
 }
