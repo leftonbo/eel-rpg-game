@@ -40,7 +40,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **StatusEffectManager**: 状態異常の統一管理（火だるま、魅了、拘束など）
 - **MemorialSystem.ts**: 戦闘記録・統計システム
 - **PlayerSaveData.ts**: セーブデータ永続化システム（localStorage使用）
-- **ModalUtils.ts**: トースト表示・モーダル表示・操作ユーティリティ
+- **ModalUtils.ts**: モーダル表示・操作ユーティリティ
+- **ToastUtils.ts**: トースト表示ユーティリティ
 
 ### データ駆動型ボス設計
 
@@ -205,14 +206,14 @@ interface PlayerSaveData {
 
 ## 開発方針（最重要）
 
-### ModalUtils の使用方針
+### ModalUtils と ToastUtils の使用方針
 
-ブラウザ標準のダイアログ（`alert()`, `confirm()`, `prompt()`）は使用せず、必ずModalUtilsクラスのメソッドを使用すること。
+ブラウザ標準のダイアログ（`alert()`, `confirm()`, `prompt()`）は使用せず、必ずModalUtilsクラス・ToastUtilsクラスのメソッドを使用すること。
 
 - **`alert()` の代替**: `ModalUtils.showAlert(message, title?)` を使用
 - **`confirm()` の代替**: `ModalUtils.showConfirm(message, title?)` を使用  
 - **`prompt()` の代替**: `ModalUtils.showPrompt(message, defaultValue?, title?, inputType?)` を使用
-- **通知表示**: `ModalUtils.showToast(message, title?, type?)` を使用
+- **通知表示**: `ToastUtils.showToast(message, title?, type?)` を使用
 
 **理由**:
 - Bootstrap 5のモーダルシステムとの統一感
@@ -231,7 +232,7 @@ const name = prompt('名前を入力してください');
 await ModalUtils.showAlert('保存しました');
 const result = await ModalUtils.showConfirm('削除しますか？');
 const name = await ModalUtils.showPrompt('名前を入力してください');
-ModalUtils.showToast('データを更新しました', 'データベース', 'success');
+ToastUtils.showToast('データを更新しました', 'データベース', 'success');
 ```
 
 ### git コミット方針
