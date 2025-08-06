@@ -120,6 +120,45 @@ export const mikanDragonData: BossData = {
     actions: mikanDragonActions,
     icon: '🍊',
     explorerLevelRequired: 4,
+    battleStartMessages: [
+        {
+            speaker: 'player',
+            style: 'default',
+            text: 'あなたは蜜柑畑で甘い香りを放つ美しいドラゴンと遭遇した。'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'あら、いらっしゃい♪ 甘い匂いに誘われて来たのかしら？'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '蜜柑ドラゴンは柑橘系の爽やかな香りを漂わせながら、愛らしい笑顔を見せている...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'とっても美味しい蜜柑汁で満たしてあげるわね♪ 私のお腹で甘〜くなりましょう？'
+        }
+    ],
+    victoryMessages: [
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'あら〜、こんなに強い方だったのね...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'でも楽しい戦いだったわ♪ また遊びに来てくださいね'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '蜜柑ドラゴンは愛らしく手を振ると、甘い香りを残して蜜柑畑の奥へと去っていった...'
+        }
+    ],
     victoryTrophy: {
         name: '蜜柑の皮',
         description: '蜜柑ドラゴンの外皮。柑橘系の爽やかな香りとドラゴンの威厳を併せ持つ。'
@@ -141,6 +180,43 @@ export const mikanDragonData: BossData = {
 
         // If player is defeated, use special post-defeat actions
         if (player.isDefeated()) {
+            const defeatStartTurn = boss.getCustomVariable<number>('defeatStartTurn', -1);
+            
+            // If this is the first turn player is defeated, record it
+            if (defeatStartTurn === -1) {
+                boss.setCustomVariable('defeatStartTurn', turn);
+            }
+
+            // Every 8 turns since defeat started, show special citrus juice production event
+            const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
+            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 8 === 0) {
+                return {
+                    id: 'citrus-juice-production',
+                    type: ActionType.PostDefeatedAttack,
+                    name: '蜜柑ジュース製造',
+                    description: '体内でプレイヤーを蜜柑ジュースに変換する過程を進める',
+                    messages: [
+                        '「フルルル...特別な蜜柑ジュースの時間よ」',
+                        '{boss}の体内で特殊な蜜柑汁の製造装置が稼働し始める！',
+                        '甘酸っぱい蜜柑汁が{player}の体に染み込んでいく...',
+                        '「フルルル...あなたも美味しい蜜柑ジュースになりつつあるのよ」',
+                        '{player}の体が徐々に蜜柑の汁のような粘液質に変化していく！',
+                        '「これで私の特製蜜柑ジュースの完成ね...フルルル」',
+                        '{player}は濃厚な蜜柑の汁に浸かり、魅了と粘液状態に包まれてしまった！'
+                    ],
+                    onUse: (_boss, player, _turn) => {
+                        // 蜜柑ジュース関連の状態異常を付与
+                        player.statusEffects.addEffect(StatusEffectType.Slimed);
+                        player.statusEffects.addEffect(StatusEffectType.Charm);
+                        player.statusEffects.addEffect(StatusEffectType.Sweet);
+                        player.statusEffects.addEffect(StatusEffectType.Lethargy);
+                        
+                        return [];
+                    },
+                    weight: 1
+                };
+            }
+            
             const postDefeatedActions: BossAction[] = [
                 {
                     id: 'citrus-cultivation',

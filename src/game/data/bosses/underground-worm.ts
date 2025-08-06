@@ -234,6 +234,45 @@ export const undergroundWormData: BossData = {
     attackPower: 13,
     icon: '🪨',
     explorerLevelRequired: 5,
+    battleStartMessages: [
+        {
+            speaker: 'player',
+            style: 'default',
+            text: 'あなたは地底深くで巨大なワームと遭遇した。'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'グルルル...また地上の生き物が来たか'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '地底のワームは岩をも砕く強靭な顎を見せつけながら、威嚇するように唸り声を上げている...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'この地底に踏み込んだ以上...我の腹の中で岩と共に眠ってもらおう'
+        }
+    ],
+    victoryMessages: [
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'グルルル...まさかこの身が敗れるとは...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'その力...地底の王たる我をも凌駕するか...見事だ'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '地底のワームは敬意を込めて頭を下げると、地中深くへと潜って姿を消した...'
+        }
+    ],
     actions: undergroundWormActions.concat(undergroundWormDevourActions).concat(undergroundWormPostDefeatedActions),
     customVariables: {
         defeatStartTurn: -1, // 敗北開始ターン
@@ -251,17 +290,19 @@ export const undergroundWormData: BossData = {
             }
             
             const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
-            // 10 ターンごとに特殊演出
-            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 10 === 0) {
+            // 8 ターンごとに特殊演出
+            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 8 === 0) {
                 return {
                     id: 'reincarnation-predation',
                     type: ActionType.PostDefeatedAttack,
                     name: '再石化',
                     description: '石化解除されそうになった獲物を再び石化させる',
                     messages: [
-                        `{player}の石化が緩み、体が少しずつ動くようになる...`,
+                        '{player}の石化が緩み、体が少しずつ動くようになる...',
+                        '体を動かすと、{boss}がそれに気づいたのか、胃袋がうごめき始める...',
                         '突如、{boss}の胃袋が大量の胃液を放出し、{player}を包み込む！',
-                        '{player}は再び石化の状態に戻されてしまった...'
+                        '{player}はその胃液を浴びせられ、再び石化の状態に戻っていく...',
+                        '{player}が再び完全石化すると、{boss}の胃袋は{player}の体を元の位置に戻し、静かに安息を与える...',
                     ],
                     weight: 1
                 };

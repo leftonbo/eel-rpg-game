@@ -1,6 +1,9 @@
 import { BossData, ActionType, BossAction, Boss } from '../../entities/Boss';
 import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
+// MechSpider
+// Reference document: /docs/bosses/mech-spider.md
+
 const mechSpiderActions: BossAction[] = [
     // Normal state actions
     {
@@ -175,6 +178,45 @@ export const mechSpiderData: BossData = {
     actions: mechSpiderActions,
     suppressAutoFinishingMove: true,
     icon: '🕷️',
+    battleStartMessages: [
+        {
+            speaker: 'player',
+            style: 'default',
+            text: 'あなたは古代遺跡の奥で不気味な機械グモと対峙した。'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: '「SYSTEM BOOT... 修理対象を検出」'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '機械のクモは赤いセンサーライトを点滅させながらこちらを分析している...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: '「ERROR: 深刻な機械的損傷を確認。REPAIR PROTOCOL INITIATED...」'
+        }
+    ],
+    victoryMessages: [
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: '「ERROR... SYSTEM FAILURE... 修理システム停止...」'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: '「WARNING: 自己修復不可能... SHUTDOWN INITIATED...」'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '機械のクモは最後の警告音を発すると、静かに機能を停止した...'
+        }
+    ],
     victoryTrophy: {
         name: '機械の合成糸',
         description: '機械のクモが生成する特殊な合成糸。非常に強靭で、古代技術の結晶が込められている。'
@@ -184,14 +226,6 @@ export const mechSpiderData: BossData = {
         description: '機械のクモの体内で生成される縮小液。この液体に晒された物体は、生物や機械関係なしに縮小される。'
     },
     explorerLevelRequired: 0,
-    personality: [
-        'ERROR: 損傷した機械を検出',
-        '修理プロトコル開始',
-        'ANALYZING... 重大な損傷あり',
-        '修理が必要です',
-        'CAPTURING TARGET...',
-        '修理完了まで待機してください'
-    ],
     aiStrategy: (boss, player, turn) => {
         // Repair Maniac Spider AI Strategy
         
@@ -396,58 +430,4 @@ export const mechSpiderData: BossData = {
         // Final fallback
         return mechSpiderActions[0];
     }
-};
-
-// Override dialogue for robotic personality
-mechSpiderData.getDialogue = function(situation: 'battle-start' | 'player-restrained' | 'player-cocoon' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') {
-    const dialogues: Record<string, string[]> = {
-        'battle-start': [
-            'SYSTEM BOOT... 修理対象を検出しました',
-            'ERROR: 深刻な機械的損傷を確認',
-            'REPAIR PROTOCOL INITIATED...',
-            'ANALYZING TARGET... 修理が必要です'
-        ],
-        'player-restrained': [
-            'CAPTURE SUCCESSFUL... 修理を開始します',
-            'TARGET SECURED... 診断中',
-            'RESTRAINT ACTIVE... 動かないでください',
-            'REPAIR MODE ACTIVATED...',
-            'WARNING: 修理中は動かないでください'
-        ],
-        'player-cocoon': [
-            'COCOON PROCESS INITIATED... 縮小修理開始',
-            'SHRINKING PROTOCOL ACTIVE... サイズ調整中',
-            'REPAIR CHAMBER SEALED... 修理環境最適化',
-            'MINIATURIZATION IN PROGRESS... 適正サイズに調整中',
-            'SIZE OPTIMIZATION... 修理しやすいサイズに変更中'
-        ],
-        'player-eaten': [
-            'INTERNAL REPAIR INITIATED... 体内修理開始',
-            'REPAIR BAY ACTIVATED... 修理装置起動',
-            'PROCESSING DAMAGED UNIT... 損傷部位を修復中',
-            'INTERNAL MAINTENANCE... 精密修理実行中',
-            'REPAIR SEQUENCE COMPLETE... 修理完了まで待機'
-        ],
-        'player-escapes': [
-            'ERROR: ターゲットロスト',
-            'WARNING: 修理が完了していません',
-            'RECAPTURE PROTOCOL... 再取得を試行',
-            'SYSTEM ERROR... 修理を継続する必要があります',
-            'TARGET ESCAPED... 再捕獲します'
-        ],
-        'low-hp': [
-            'WARNING: システム損傷レベル高',
-            'ERROR: 修理システム不安定',
-            'CRITICAL: 自己修復が必要',
-            'DAMAGE DETECTED... 修理継続'
-        ],
-        'victory': [
-            'REPAIR COMPLETE... システム正常',
-            'MISSION ACCOMPLISHED... 待機モードに移行',
-            'SUCCESS: 修理プロトコル完了'
-        ]
-    };
-    
-    const options = dialogues[situation] || dialogues['battle-start'];
-    return options[Math.floor(Math.random() * options.length)];
 };

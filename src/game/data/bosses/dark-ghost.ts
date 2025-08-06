@@ -1,6 +1,9 @@
 import { BossData, ActionType, BossAction, Boss } from '../../entities/Boss';
 import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
+// Dark Ghost
+// Reference document: /docs/bosses/dark-ghost.md
+
 const darkGhostActions: BossAction[] = [
     {
         id: 'shadow-claw',
@@ -85,13 +88,52 @@ export const darkGhostData: BossData = {
     actions: darkGhostActions,
     icon: '👻',
     explorerLevelRequired: 0,
+    battleStartMessages: [
+        {
+            speaker: 'player',
+            style: 'default',
+            text: 'あなたは漆黒の森で不気味なスピリット体と遭遇した。'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: '「ケケケ...おいしそうな魂だネ！」'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '闇のおばけは黄色く光る目でこちらを見つめ、陽気に笑っている...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: '「そのタマシイ、ボクにちょうだい！キミの絶望、とても美味そうダネ！」'
+        }
+    ],
+    victoryMessages: [
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: '「ケケケ...まさかボクが負けるなんて...」'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: '「でも、キミの魂の味は忘れないヨ...また会えるといいネ」'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '闇のおばけは最後まで陽気に笑いながら、漆黒の森の闇に溶けて消えていった...'
+        }
+    ],
     victoryTrophy: {
         name: '闇夜の羽根',
         description: '闇のおばけが纏っていた神秘的な黒い羽根。触れると仄かに冷たく、夜闇の力が込められている。'
     },
     defeatTrophy: {
         name: '影のエッセンス',
-        description: '闇のおばけの体内から滲み出る影の精髄。この世ならざる闇の力を秘めた貴重な物質。'
+        description: '闇のおばけの体内で生成される、獲物の魂を閉じ込めるための人魂型のエッセンス。この世ならざる闇の力を秘めた貴重な物質。'
     },
     personality: [
         'ケケケ...いい魂の匂いがする',
@@ -422,41 +464,4 @@ darkGhostData.finishingMove = function() {
         '{boss}は{player}の魂ごと吸い取り、{boss}の体に取り込む！',
         '{player}の魂は{boss}の中に閉じ込められ、満足するまで生命エネルギーを吸われ続けることになった...'
     ];
-};
-
-// Override dialogue for talkative personality
-darkGhostData.getDialogue = function(situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') {
-    const dialogues: Record<string, string[]> = {
-        'battle-start': [
-            'ケケケ...おいしそうな魂だネ！',
-            'そのタマシイ、ボクにちょうだい！',
-        ],
-        'player-restrained': [
-            'ケケケ...動けないネ？',
-            'その絶望した顔、かわいいヨ！',
-            'もがけばもがくほど美味しくなるヨ',
-            'フフフ...抵抗しても無駄ダヨ',
-            'その恐怖、とても美味そうダネ！'
-        ],
-        'player-eaten': [
-            '美味しいタマシイの味がするネ...',
-            'キミのタマシイをいただくヨ',
-            'ゆっくりと魂を吸い取ってあげるヨ',
-            'ケケケ...もう逃げられないヨ'
-        ],
-        'player-escapes': [
-            'まだまだ諦めないヨ',
-            'その程度では逃げられないヨ',
-            '今度こそ捕まえてあげるネ'
-        ],
-        'low-hp': [
-        ],
-        'victory': [
-            'ケケケ...美味しいタマシイだったヨ',
-            'ボクの中でゆっくりしていってネ'
-        ]
-    };
-    
-    const options = dialogues[situation] || dialogues['battle-start'];
-    return options[Math.floor(Math.random() * options.length)];
 };

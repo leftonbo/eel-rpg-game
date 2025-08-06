@@ -170,6 +170,45 @@ export const scorpionCarrierData: BossData = {
     actions: scorpionCarrierActions,
     icon: '🦂',
     explorerLevelRequired: 1,
+    battleStartMessages: [
+        {
+            speaker: 'player',
+            style: 'default',
+            text: 'あなたは砂漠の奥でタイヤの足を持つ巨大なサソリと遭遇した。'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'んー、迷い人のようだな？'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '運び屋のサソリは注射器のような尻尾をゆらゆらと揺らしながらこちらを見つめている...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'おまえの足より、オレの足のほうが早いぞ？安全に運んでやるから、恥ずかしがらずに食べられろ'
+        }
+    ],
+    victoryMessages: [
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'ぐあ...まさか負けるとは...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'しかし、その実力なら一人でも大丈夫そうだな...安心したぞ'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '運び屋のサソリは満足そうに頷くと、タイヤを軋ませながら砂漠の彼方へと去っていった...'
+        }
+    ],
     victoryTrophy: {
         name: 'サソリの機械殻',
         description: '運び屋のサソリの機械化された外殻の一部。タイヤとして機能していた足部分の装甲。'
@@ -189,6 +228,43 @@ export const scorpionCarrierData: BossData = {
         
         // If player is post-defeated, use special post-defeat actions
         if (player.isDefeated()) {
+            const defeatStartTurn = boss.getCustomVariable<number>('defeatStartTurn', -1);
+            
+            // If this is the first turn player is defeated, record it
+            if (defeatStartTurn === -1) {
+                boss.setCustomVariable('defeatStartTurn', turn);
+            }
+
+            // Every 8 turns since defeat started, show special poison injection event
+            const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
+            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 8 === 0) {
+                return {
+                    id: 'poison-inspection',
+                    type: ActionType.PostDefeatedAttack,
+                    name: '毒液検査',
+                    description: '体内の毒袋から採取した濃縮毒液を検査のため注射する',
+                    messages: [
+                        '「そろそろ毒の効き具合を検査してみるか」',
+                        '{boss}の体内機構が作動し、毒袋から濃縮された毒液を採取する！',
+                        '体内に保管されていた最も強力な毒液が{player}に注射される！',
+                        '「これで運搬時の品質が保たれるな」',
+                        '{player}は複数の毒の効果に苦しむが、サソリの薬剤によって死ぬことはない...',
+                        '体内で毒液と薬剤が混合され、{player}の抵抗力が完全に奪われてしまう！'
+                    ],
+                    onUse: (_boss, player, _turn) => {
+                        // 複数の毒系状態異常を付与
+                        player.statusEffects.addEffect(StatusEffectType.ScorpionPoison);
+                        player.statusEffects.addEffect(StatusEffectType.Poison);
+                        player.statusEffects.addEffect(StatusEffectType.Weakness);
+                        player.statusEffects.addEffect(StatusEffectType.Paralysis);
+                        player.statusEffects.addEffect(StatusEffectType.Anesthesia);
+                        
+                        return [];
+                    },
+                    weight: 1
+                };
+            }
+            
             const postDefeatedActions: BossAction[] = [
                 {
                     id: 'internal-transport',

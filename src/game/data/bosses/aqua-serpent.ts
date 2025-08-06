@@ -7,6 +7,9 @@ const aquaSerpentActions: BossAction[] = [
         type: ActionType.Attack,
         name: '水圧ブレス',
         description: '口から高圧水流を発射',
+        messages: [
+            '{boss}が口から高圧の水流を{player}に向けて発射する！'
+        ],
         damageFormula: (user: Boss) => user.attackPower * 1.1,
         weight: 35,
         playerStateCondition: 'normal',
@@ -19,6 +22,9 @@ const aquaSerpentActions: BossAction[] = [
         type: ActionType.Attack,
         name: '津波の一撃',
         description: '尻尾で水を巻き上げて叩きつける',
+        messages: [
+            '{boss}が巨大な尻尾で海水を巻き上げ、津波のような一撃を{player}に放つ！'
+        ],
         damageFormula: (user: Boss) => user.attackPower * 1.6,
         weight: 25,
         playerStateCondition: 'normal',
@@ -32,6 +38,10 @@ const aquaSerpentActions: BossAction[] = [
         type: ActionType.Attack,
         name: '渦潮スラム',
         description: '長い体をうねらせて全身で攻撃',
+        messages: [
+            '{boss}が長い体をうねらせ、渦潮のような螺旋攻撃を仕掛けてくる！',
+            '{player}は激しい渦に巻き込まれて目を回している...'
+        ],
         damageFormula: (user: Boss) => user.attackPower * 1.3,
         weight: 30,
         playerStateCondition: 'normal',
@@ -85,7 +95,6 @@ const aquaSerpentActions: BossAction[] = [
         name: '深海のキス',
         description: '拘束中の獲物をキスして体力を吸収',
         messages: [
-            '「シャアアア...」',
             '{boss}が{player}を口づけで包み込み、体力を吸収している...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.4,
@@ -99,7 +108,6 @@ const aquaSerpentActions: BossAction[] = [
         name: '締めつけ',
         description: '拘束中の獲物を体で締めつける',
         messages: [
-            '「シャアアア...」',
             '{boss}が{player}をゆっくりと締めつけている...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.0,
@@ -187,6 +195,45 @@ export const aquaSerpentData: BossData = {
     actions: aquaSerpentActions,
     icon: '🐍',
     explorerLevelRequired: 2,
+    battleStartMessages: [
+        {
+            speaker: 'player',
+            style: 'default',
+            text: 'あなたは大海原で神秘的な海蛇型の龍と遭遇した。'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: '「シャアアア...また新しき命が我が元に...」'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: 'アクアサーペントの透明な体が淡く光り、美しくも恐ろしい存在感を放っている...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: '「その生命力...とても美しい輝きじゃ。我が体内で永遠に輝かせてやろう」'
+        }
+    ],
+    victoryMessages: [
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: '「シャアアア...こんなに強き命があったとは...」'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: '「その輝き...我にはまばゆすぎたようじゃ...見事じゃ」'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: 'アクアサーペントは敬意を込めて頭を下げると、優雅に大海原の深くへと泳ぎ去っていった...'
+        }
+    ],
     victoryTrophy: {
         name: '透明な鱗',
         description: 'アクアサーペントの美しく透明な鱗。水の中でも光を反射する神秘的な外皮。'
@@ -196,12 +243,12 @@ export const aquaSerpentData: BossData = {
         description: 'アクアサーペントの体内を循環していた純粋な生命の水。治癒力を持つと言われる。'
     },
     personality: [
-        'シャアアア...美しい生命力だ',
-        'この海の奥深くで...待っていた',
-        'シャアアア...逃がさない',
-        'お前の生命力を...いただこう',
-        'シャアアア...美味しそうだ',
-        '透明な体内で...ゆっくりと味わおう'
+        'シャアアア...美しい生命力じゃ',
+        'この海の奥深くで...待ち望んでいた',
+        'シャアアア...逃がしはせぬぞ',
+        'お主の生命力を...いただこう',
+        'シャアアア...美味しそうじゃ',
+        '透明な体内で...ゆっくり味わってやろう',
     ],
     customVariables: {
         hasUsedSpecialMove: false,
@@ -237,8 +284,9 @@ export const aquaSerpentData: BossData = {
                     description: '尻尾まで運ばれた獲物を再び口に運んで飲み込む',
                     messages: [
                         '「シャアアア...」',
-                        '{boss}が{player}を尻尾から吐き出した！',
-                        'しかし、すぐに大きな口で{player}を咥え、再び飲み込んでいく！',
+                        '体内の端まで通過させられた{player}が、{boss}の尻尾から顔を出す！',
+                        '「まだ飽き足りないじゃろう？もう一度、我の体内を楽しませてあげよう」',
+                        '{boss}は大きな口で{player}を尻尾ごと咥え、再び飲み込んでいく！',
                         '{player}は再び透明な体内に閉じ込められてしまった...'
                     ],
                     weight: 1
@@ -330,7 +378,7 @@ export const aquaSerpentData: BossData = {
                         name: '丸呑み',
                         description: '拘束した獲物を丸呑みする',
                         messages: [
-                            '「シャアアア...」',
+                            '「シャアアア...一呑みにしてやる」',
                             '{boss}が大きな口を開け、{player}をゆっくりと丸呑みにする！',
                             '{player}は透明な体内に閉じ込められてしまった...'
                         ],
@@ -359,7 +407,7 @@ export const aquaSerpentData: BossData = {
                         name: '丸呑み',
                         description: '獲物を丸呑みする',
                         messages: [
-                            '「シャアアア...」',
+                            '「シャアアア...一呑みにしてやる」',
                             '{boss}が大きな口を開け、{player}をゆっくりと丸呑みにする！',
                             '{player}は透明な体内に閉じ込められてしまった...'
                         ],
@@ -438,47 +486,9 @@ export const aquaSerpentData: BossData = {
 // Add finishing move for doomed player
 aquaSerpentData.finishingMove = function() {
     return [
-        '「シャアアア...」',
+        '「シャアアア...どうやら力尽きたようじゃのう」',
         '{boss}は{player}を体内の奥深くへと運んでいく...',
+        '「我とともに海の底を旅しよう。心配は無用じゃ、我が暗闇を照らしてくれよう」',
         '{player}はアクアサーペントの透明な体内で、美しい深海の光景を眺めながら永遠に過ごすことになった...'
     ];
-};
-
-// Override dialogue for personality
-aquaSerpentData.getDialogue = function(situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') {
-    const DEFAULT_DIALOGUE_SITUATION = 'battle-start';
-    const dialogues: Record<string, string[]> = {
-        'battle-start': [
-            'シャアアア...美しい生命力だ',
-            'この海の奥深くで...待っていた',
-            'シャアアア...お前の生命力を頂こう'
-        ],
-        'player-restrained': [
-            'シャアアア...逃げられない',
-            '私の抱擁から逃れることはできない',
-            'シャアアア...おとなしくするのだ'
-        ],
-        'player-eaten': [
-            'シャアアア...美味しそうだ',
-            '透明な体内で...ゆっくりと味わおう',
-            'シャアアア...生命力が溢れている'
-        ],
-        'player-escapes': [
-            'シャアアア...逃がさない',
-            '次は必ず捕らえてやる',
-            'シャアアア...なかなかやるな'
-        ],
-        'low-hp': [
-            'シャアアア...まだ終わらない！',
-            'この海の力を侮るな',
-            'シャアアア...まだまだ！'
-        ],
-        'victory': [
-            'シャアアア...満足だ',
-            'また新しい獲物を待つとしよう'
-        ]
-    };
-
-    const options = dialogues[situation] || dialogues[DEFAULT_DIALOGUE_SITUATION];
-    return options[Math.floor(Math.random() * options.length)];
 };

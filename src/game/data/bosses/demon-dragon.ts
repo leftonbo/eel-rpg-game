@@ -609,6 +609,45 @@ export const demonDragonData: BossData = {
     actions: demonDragonActions,
     icon: '🐉',
     explorerLevelRequired: 10,
+    battleStartMessages: [
+        {
+            speaker: 'player',
+            style: 'default',
+            text: 'あなたは魔に蝕まれた地で巨大な魔界の竜と遭遇した。'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'ほう...久々に見る生き物だな'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '魔界の竜は真紫の体毛を輝かせながら、威圧的な存在感を放っている...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'その身を我が魔の胃袋で至福に満たしてやろう。最も幸せな夢を見せてやる'
+        }
+    ],
+    victoryMessages: [
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'ぐおおお...まさかこの身が敗れるとは...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'その力...魔界の力すらも凌駕するとは...見事だ'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: '魔界の竜は敬意を込めて頭を下げると、魔界の彼方へと消えていった...'
+        }
+    ],
     victoryTrophy: {
         name: '魔界竜の毛皮',
         description: '魔界の竜の美しく禍々しい漆黒の毛皮。顔を埋めたくなるほど柔らかい。'

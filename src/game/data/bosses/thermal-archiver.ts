@@ -259,6 +259,45 @@ export const thermalArchiverData: BossData = {
     actions: thermalArchiverActions,
     icon: '🏭',
     explorerLevelRequired: 8,
+    battleStartMessages: [
+        {
+            speaker: 'player',
+            style: 'default',
+            text: 'あなたは火山地帯の遺跡で謎の機械装置と遭遇した。'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'THERMAL ARCHIVER SYSTEM ACTIVATED... 新たな標本を検出'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: 'サーマル・アーカイバーは赤いセンサーライトを点滅させながら、機械的な動作音を響かせている...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'SPECIMEN COLLECTION PROTOCOL INITIATED... 生体標本として最適な個体を確認'
+        }
+    ],
+    victoryMessages: [
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'CRITICAL ERROR... SYSTEM FAILURE DETECTED...'
+        },
+        {
+            speaker: 'boss',
+            style: 'talk',
+            text: 'ARCHIVING PROCESS ABORTED... EMERGENCY SHUTDOWN INITIATED...'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: 'サーマル・アーカイバーは警告音を鳴らしながら、すべての機能を停止し沈黙した...'
+        }
+    ],
     victoryTrophy: {
         name: '熱処理装置の外装パネル',
         description: 'サーマル・アーカイバーの外装に使われていた耐熱パネル。古代の工業技術が込められ、美しい金属光沢を放っている。'
@@ -293,6 +332,49 @@ export const thermalArchiverData: BossData = {
 
         // If player is defeated, use post-defeat archive actions
         if (player.isDefeated()) {
+            const defeatStartTurn = boss.getCustomVariable<number>('defeatStartTurn', -1);
+            
+            // If this is the first turn player is defeated, record it
+            if (defeatStartTurn === -1) {
+                boss.setCustomVariable('defeatStartTurn', turn);
+            }
+
+            // Every 8 turns since defeat started, show special specimen optimization event
+            const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
+            if (turnsSinceDefeat > 0 && turnsSinceDefeat % 8 === 0) {
+                return {
+                    id: 'specimen-optimization-protocol',
+                    type: ActionType.PostDefeatedAttack,
+                    name: '標本最適化処理',
+                    description: 'アーカイブシステムがプレイヤーの保存状態を最適化する',
+                    messages: [
+                        '[OPTIMIZE] 標本最適化プロトコル開始...',
+                        '{boss}の体内で高度なアーカイブシステムが稼働し始める！',
+                        '[SCAN] 標本状態: 詳細解析中...',
+                        '体内の保管環境が{player}に合わせて完璧に調整される...',
+                        '[ADJUST] 温度: 37.5°C、湿度: 72%、圧力: 最適化',
+                        '[PROCESS] 保存液成分調整中...',
+                        '特殊な保存液が{player}を包み込み、長期保存に最適な状態にする！',
+                        '[UPDATE] 標本データベース更新中...',
+                        '[COMPLETE] 最適化処理完了、標本品質: S級',
+                        '{player}はシステム負荷と保存液の効果で意識が朦朧としてしまった...'
+                    ],
+                    onUse: (boss, player, _turn) => {
+                        // 標本最適化による効果を付与
+                        player.statusEffects.addEffect(StatusEffectType.Weakness);
+                        player.statusEffects.addEffect(StatusEffectType.Slimed);
+                        player.statusEffects.addEffect(StatusEffectType.Dizzy);
+                        
+                        // システム負荷増加
+                        const currentLoad = boss.getCustomVariable<number>('systemLoad') || 0;
+                        boss.setCustomVariable('systemLoad', Math.min(100, currentLoad + 25));
+                        
+                        return [];
+                    },
+                    weight: 1
+                };
+            }
+            
             const postDefeatedActions = thermalArchiverPostDefeatedActions;
             const totalWeight = postDefeatedActions.reduce((sum, action) => sum + action.weight, 0);
             let random = Math.random() * totalWeight;
