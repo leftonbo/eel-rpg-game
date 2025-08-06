@@ -771,6 +771,7 @@ export const dreamDemonData: BossData = {
     maxHp: 320,
     attackPower: 10,
     actions: dreamDemonActions,
+    suppressAutoFinishingMove: true,
     icon: '😈',
     explorerLevelRequired: 3,
     battleStartMessages: [
@@ -836,66 +837,6 @@ export const dreamDemonData: BossData = {
     ],
     aiStrategy: (boss, player, turn) => {
         // Dream Demon AI Strategy - Focus on debuff stacking and strategic restraint
-        
-        // If player is eaten, use random stomach attacks
-        if (player.isEaten()) {
-            const stomachAttacks = [
-                {
-                    id: 'stomach-wall-pressure',
-                    type: ActionType.DevourAttack,
-                    name: '胃壁圧迫',
-                    damageFormula: (user: Boss) => user.attackPower * 1.8,
-                    description: '胃壁で獲物を圧迫して生気を搾り取る',
-                    messages: [
-                        '「おなかの中でぎゅ〜っとしてやるンメェ〜♪」',
-                        '{boss}の胃壁が{player}を優しく圧迫してきた...',
-                        '{player}は胃壁に包まれながら生気を吸い取られている...'
-                    ],
-                    weight: 1
-                },
-                {
-                    id: 'digestive-fluid-caress',
-                    type: ActionType.DevourAttack,
-                    name: '消化液愛撫',
-                    damageFormula: (user: Boss) => user.attackPower * 2.0,
-                    description: '特殊な消化液で獲物を愛撫しながら消化する',
-                    messages: [
-                        '「あまあま〜な消化液でとろとろにしてやるンメェ〜♪」',
-                        '{boss}の甘い消化液が{player}を包み込んだ...',
-                        '{player}は消化液に愛撫されながら生気が溶けていく...'
-                    ],
-                    weight: 1
-                },
-                {
-                    id: 'stomach-massage',
-                    type: ActionType.DevourAttack,
-                    name: '胃内マッサージ',
-                    damageFormula: (user: Boss) => user.attackPower * 1.6,
-                    description: '胃の内側から優しくマッサージして生気を吸収',
-                    messages: [
-                        '「もみもみ〜♪ 気持ちよくしてあげるンメェ〜」',
-                        '{boss}は胃の中で{player}を優しくマッサージしている...',
-                        '{player}は心地よいマッサージを受けながら生気を奪われている...'
-                    ],
-                    weight: 1
-                },
-                {
-                    id: 'direct-life-absorption',
-                    type: ActionType.DevourAttack,
-                    name: '生気直接吸収',
-                    damageFormula: (user: Boss) => user.attackPower * 2.2,
-                    description: '体内で直接生気を吸い取る',
-                    messages: [
-                        '「ちゅーちゅー♪ 生気をいっぱい吸っちゃうンメェ〜」',
-                        '{boss}は{player}の生気を直接ちゅーちゅーと吸い取り始めた...',
-                        '{player}は生気を根こそぎ吸い取られて意識が朦朧としている...'
-                    ],
-                    weight: 1
-                }
-            ];
-            
-            return stomachAttacks[Math.floor(Math.random() * stomachAttacks.length)];
-        }
         
         // If player is post-defeated, use special post-defeat actions
         if (player.isDefeated()) {
@@ -1032,6 +973,155 @@ export const dreamDemonData: BossData = {
                 }
             ];
             return postDefeatedActions[Math.floor(Math.random() * postDefeatedActions.length)];
+        }
+        
+        // If player is eaten, use random stomach attacks
+        if (player.isEaten()) {
+            // If player is doomed (Max HP is 0 or below), use finishing stomach attacks
+            if (player.isDoomed()) {
+                return {
+                    id: 'finish-eternal-sleep',
+                    type: ActionType.FinishingMove,
+                    name: '永遠の眠り',
+                    description: '獲物を永遠の眠りへと導く',
+                    messages: [
+                        '{player}は{boss}の体内で力尽き、もはや動くことはできない...',
+                        '{boss}はお腹をさすりながら満足げな表情を浮かべる',
+                        '「けぷっ、おいしかったンメェ〜」',
+                        '{player}はゆりかごのように動く{boss}の胃袋の中で、永遠の眠りに落ちていく...',
+                        '「おやすみンメェ〜、そして夢の中で一生遊んであげるンメェ～♪」'
+                    ],
+                    weight: 1,
+                    onUse: (_boss, player, _turn) => {
+                        player.statusEffects.removeEffect(StatusEffectType.Doomed);
+                        player.statusEffects.addEffect(StatusEffectType.Dead);
+                        player.statusEffects.addEffect(StatusEffectType.Sleep, -1);
+                        
+                        return [];
+                    }
+                };
+            }
+            
+            const stomachAttacks = [
+                {
+                    id: 'stomach-wall-pressure',
+                    type: ActionType.DevourAttack,
+                    name: '胃壁圧迫',
+                    damageFormula: (user: Boss) => user.attackPower * 1.8,
+                    description: '胃壁で獲物を圧迫して生気を搾り取る',
+                    messages: [
+                        '「おなかの中でぎゅ〜っとしてやるンメェ〜♪」',
+                        '{boss}の胃壁が{player}を優しく圧迫してきた...',
+                        '{player}は胃壁に包まれながら生気を吸い取られている...'
+                    ],
+                    weight: 1
+                },
+                {
+                    id: 'digestive-fluid-caress',
+                    type: ActionType.DevourAttack,
+                    name: '消化液愛撫',
+                    damageFormula: (user: Boss) => user.attackPower * 2.0,
+                    description: '特殊な消化液で獲物を愛撫しながら消化する',
+                    messages: [
+                        '「あまあま〜な消化液でとろとろにしてやるンメェ〜♪」',
+                        '{boss}の甘い消化液が{player}を包み込んだ...',
+                        '{player}は消化液に愛撫されながら生気が溶けていく...'
+                    ],
+                    weight: 1
+                },
+                {
+                    id: 'stomach-massage',
+                    type: ActionType.DevourAttack,
+                    name: '胃内マッサージ',
+                    damageFormula: (user: Boss) => user.attackPower * 1.6,
+                    description: '胃の内側から優しくマッサージして生気を吸収',
+                    messages: [
+                        '「もみもみ〜♪ 気持ちよくしてあげるンメェ〜」',
+                        '{boss}は胃の中で{player}を優しくマッサージしている...',
+                        '{player}は心地よいマッサージを受けながら生気を奪われている...'
+                    ],
+                    weight: 1
+                },
+                {
+                    id: 'direct-life-absorption',
+                    type: ActionType.DevourAttack,
+                    name: '生気直接吸収',
+                    damageFormula: (user: Boss) => user.attackPower * 2.2,
+                    description: '体内で直接生気を吸い取る',
+                    messages: [
+                        '「ちゅーちゅー♪ 生気をいっぱい吸っちゃうンメェ〜」',
+                        '{boss}は{player}の生気を直接ちゅーちゅーと吸い取り始めた...',
+                        '{player}は生気を根こそぎ吸い取られて意識が朦朧としている...'
+                    ],
+                    weight: 1
+                }
+            ];
+
+            return stomachAttacks[Math.floor(Math.random() * stomachAttacks.length)];
+        }
+
+        // Strategic actions based on player state
+        if (player.isDoomed()) {
+            // Max HP is 0 or below: always eat with special messages
+            return {
+                id: 'slow-swallow-critical',
+                type: ActionType.EatAttack,
+                name: 'ゆっくり丸呑み',
+                description: '弱り切った獲物をゆっくりと丸呑みにする',
+                messages: [
+                    '{boss}はクスクスと笑い始めた...',
+                    '{player}は生気を吸い取られすぎて動けなくなってしまった...',
+                    '{boss}はゆっくりと{player}に近づいてくる...',
+                    '{boss}は動けなくなった{player}をゆっくりと口に含んでいく......',
+                    'ごっくん......',
+                    '{player}は{boss}のお腹の中に取り込まれてしまった...'
+                ],
+                weight: 1
+            };
+        }
+        
+        // If player is knocked out, use special slow swallow actions
+        if (player.isKnockedOut()) {
+            if (player.isRestrained()) {
+                // Restrained + Knocked Out: 70% chance to eat
+                if (Math.random() < 0.7) {
+                    return {
+                        id: 'slow-swallow-restrained',
+                        type: ActionType.EatAttack,
+                        name: 'ゆっくり丸呑み',
+                        description: '拘束した獲物をゆっくりと丸呑みにする',
+                        messages: [
+                            '{boss}はクスクスと笑い始めた...',
+                            '{boss}はゆっくりと{player}に近づいてくる...',
+                            '{boss}は{player}をゆっくりと口に含んでいく......',
+                            'ごっくん......'
+                        ],
+                        weight: 1
+                    };
+                }
+            } else {
+                // Normal + Knocked Out: 60% chance to restrain, 15% to eat directly
+                const random = Math.random();
+                if (random < 0.6) {
+                    const restraintActions = dreamDemonActions.filter(action =>
+                        action.type === ActionType.RestraintAttack
+                    );
+                    return restraintActions[Math.floor(Math.random() * restraintActions.length)];
+                } else if (random < 0.75) {
+                    return {
+                        id: 'slow-swallow-defenseless',
+                        type: ActionType.EatAttack,
+                        name: 'ゆっくり丸呑み',
+                        description: '無防備な獲物をゆっくりと丸呑みにする',
+                        messages: [
+                            '{boss}はクスクスと笑い始めた...',
+                            '{boss}は{player}をゆっくりと口に含んでいく......',
+                            'ごっくん......'
+                        ],
+                        weight: 1
+                    };
+                }
+            }
         }
         
         // If player is sleeping, use random dream attacks
@@ -1192,69 +1282,6 @@ export const dreamDemonData: BossData = {
             );
             if (sleepActions.length > 0 && Math.random() < 0.8) {
                 return sleepActions[Math.floor(Math.random() * sleepActions.length)];
-            }
-        }
-        
-        // Strategic actions based on player state
-        if (player.isDoomed()) {
-            // Max HP is 0 or below: always eat with special messages
-            return {
-                id: 'slow-swallow-critical',
-                type: ActionType.EatAttack,
-                name: 'ゆっくり丸呑み',
-                description: '弱り切った獲物をゆっくりと丸呑みにする',
-                messages: [
-                    '{boss}はクスクスと笑い始めた...',
-                    '{player}は生気を吸い取られすぎて動けなくなってしまった...',
-                    '{boss}はゆっくりと{player}に近づいてくる...',
-                    '{boss}は動けなくなった{player}をゆっくりと口に含んでいく......',
-                    'ごっくん......',
-                    '{player}は{boss}のお腹の中に取り込まれてしまった...'
-                ],
-                weight: 1
-            };
-        }
-        
-        if (player.isKnockedOut()) {
-            if (player.isRestrained()) {
-                // Restrained + Knocked Out: 70% chance to eat
-                if (Math.random() < 0.7) {
-                    return {
-                        id: 'slow-swallow-restrained',
-                        type: ActionType.EatAttack,
-                        name: 'ゆっくり丸呑み',
-                        description: '拘束した獲物をゆっくりと丸呑みにする',
-                        messages: [
-                            '{boss}はクスクスと笑い始めた...',
-                            '{boss}はゆっくりと{player}に近づいてくる...',
-                            '{boss}は{player}をゆっくりと口に含んでいく......',
-                            'ごっくん......'
-                        ],
-                        weight: 1
-                    };
-                }
-            } else {
-                // Normal + Knocked Out: 60% chance to restrain, 15% to eat directly
-                const random = Math.random();
-                if (random < 0.6) {
-                    const restraintActions = dreamDemonActions.filter(action => 
-                        action.type === ActionType.RestraintAttack
-                    );
-                    return restraintActions[Math.floor(Math.random() * restraintActions.length)];
-                } else if (random < 0.75) {
-                    return {
-                        id: 'slow-swallow-defenseless',
-                        type: ActionType.EatAttack,
-                        name: 'ゆっくり丸呑み',
-                        description: '無防備な獲物をゆっくりと丸呑みにする',
-                        messages: [
-                            '{boss}はクスクスと笑い始めた...',
-                            '{boss}は{player}をゆっくりと口に含んでいく......',
-                            'ごっくん......'
-                        ],
-                        weight: 1
-                    };
-                }
             }
         }
         
@@ -1439,14 +1466,4 @@ dreamDemonData.getDialogue = function(situation: 'battle-start' | 'player-restra
     
     const options = dialogues[situation] || dialogues['battle-start'];
     return options[Math.floor(Math.random() * options.length)];
-};
-
-// Add finishing move for final victory
-dreamDemonData.finishingMove = function() {
-    return [
-        '{boss}は力尽きた{player}を完全に消化してしまった...',
-        '{boss}はお腹をさすりながら満足げな表情を浮かべる',
-        '「けぷっ、おいしかったンメェ〜」',
-        '{player}は{boss}の一部となって永遠に夢の世界に残ることになった...'
-    ];
 };
