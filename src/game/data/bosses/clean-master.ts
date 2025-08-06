@@ -235,7 +235,7 @@ export const cleanMasterData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: '「清掃道具が壊れちゃった...でも、キミはとてもキレイになったね〜♪」',
+            text: '「清掃道具が壊れちゃった...でも、キミはとてもキレイになったね〜♪」'
         },
         {
             speaker: 'boss',
