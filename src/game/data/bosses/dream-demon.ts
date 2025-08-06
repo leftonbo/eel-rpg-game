@@ -203,7 +203,12 @@ const dreamDemonActions: BossAction[] = [
             // Use when player has multiple debuffs
             return player.statusEffects.getDebuffLevel() >= 5;
         },
-        messages: ['{boss}は強力な催眠波動を放った！', '{player}の意識が朦朧としてきた...']
+        messages: [
+            'へへへ〜、本気の催眠術を見せてやるンメェ〜♪',
+            'あたいの催眠波動でとろとろにしてやるンメェ〜',
+            '{boss}は強力な催眠波動を放った！',
+            '{player}の意識が朦朧としてきた...'
+        ]
     },
     {
         id: 'brainwash-beam',
@@ -217,7 +222,12 @@ const dreamDemonActions: BossAction[] = [
             // Use when player is severely debuffed
             return player.statusEffects.getDebuffLevel() >= 7;
         },
-        messages: ['{boss}は邪悪な光線を{player}に向けた...', '{player}の思考が侵食されていく...']
+        messages: [
+            'うふふ〜、あたいの洗脳光線の威力を味わうンメェ〜♪',
+            'これで完全にあたいの奴隷になるンメェ〜！',
+            '{boss}は邪悪な光線を{player}に向けた...',
+            '{player}の思考が侵食されていく...'
+        ]
     },
     {
         id: 'sweet-magic',
@@ -227,7 +237,12 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Sweet,
         statusChance: 0.85,
         weight: 20,
-        messages: ['{boss}は甘い魔法をかけた', '{player}は幸せな気分になった...']
+        messages: [
+            'あまあま〜♪ 特製の甘い魔法をかけてやるンメェ〜',
+            'これで頭の中が砂糖だらけになるンメェ〜♪',
+            '{boss}は甘い魔法をかけた',
+            '{player}は幸せな気分になった...'
+        ]
     },
     {
         id: 'melting-magic',
@@ -237,7 +252,12 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Melting,
         statusChance: 0.85,
         weight: 20,
-        messages: ['{boss}はとろける魔法をかけた', '{player}の意識がとろけていく...']
+        messages: [
+            'とろとろ〜♪ 脳みそをとろけさせてやるンメェ〜',
+            'あたいの魔法でぐちゃぐちゃになっちゃえンメェ〜♪',
+            '{boss}はとろける魔法をかけた',
+            '{player}の意識がとろけていく...'
+        ]
     },
     {
         id: 'euphoria-magic',
@@ -247,7 +267,12 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Euphoria,
         statusChance: 0.80,
         weight: 18,
-        messages: ['{boss}は恍惚の魔法をかけた', '{player}はうっとりとした表情になった...']
+        messages: [
+            'うっとり〜♪ あたいの魔法で夢心地になるンメェ〜',
+            '気持ちよすぎて現実が分からなくなるンメェ〜♪',
+            '{boss}は恍惚の魔法をかけた',
+            '{player}はうっとりとした表情になった...'
+        ]
     },
     {
         id: 'fascination-art',
@@ -257,7 +282,12 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Fascination,
         statusChance: 0.85,
         weight: 20,
-        messages: ['{boss}は魅惑の術を唱えた', '{player}は深い魅惑に囚われた...']
+        messages: [
+            'へへ〜♪ あたいの魅惑の術にかかっちゃえンメェ〜',
+            'もうあたいの虜になっちゃったンメェ〜♪',
+            '{boss}は魅惑の術を唱えた',
+            '{player}は深い魅惑に囚われた...'
+        ]
     },
     {
         id: 'bliss-spell',
@@ -267,7 +297,12 @@ const dreamDemonActions: BossAction[] = [
         statusEffect: StatusEffectType.Bliss,
         statusChance: 0.75,
         weight: 15,
-        messages: ['{boss}は至福の呪文を唱えた', '{player}は至福の表情を浮かべた...']
+        messages: [
+            'しふく〜♪ 極上の幸せをくれてやるンメェ〜',
+            'あまりの気持ちよさに抵抗なんて忘れちゃうンメェ〜♪',
+            '{boss}は至福の呪文を唱えた',
+            '{player}は至福の表情を浮かべた...'
+        ]
     },
     {
         id: 'enchantment-technique',
@@ -281,7 +316,12 @@ const dreamDemonActions: BossAction[] = [
             // Use when player has multiple debuffs
             return player.statusEffects.getDebuffLevel() >= 6;
         },
-        messages: ['{boss}は強力な魅了術を発動した', '{player}は完全に魅了されてしまった...']
+        messages: [
+            'うふふ〜、最強の魅了術を見せてやるンメェ〜♪',
+            'これであんたは完全にあたいのペットンメェ〜！',
+            '{boss}は強力な魅了術を発動した',
+            '{player}は完全に魅了されてしまった...'
+        ]
     },
     
     // Restraint attacks
@@ -409,7 +449,12 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.85,
         weight: 25,
         playerStateCondition: 'restrained',
-        messages: ['{boss}は{player}に激しく体を押し付けてきた', '{player}は息ができないほど密着されている...']
+        messages: [
+            'ぎゅぎゅ〜♪ 激しくぺったんこしてやるンメェ〜',
+            'あたいの体で完全に包んであげるンメェ〜♪',
+            '{boss}は{player}に激しく体を押し付けてきた',
+            '{player}は息ができないほど密着されている...'
+        ]
     },
     {
         id: 'intense-shaking',
@@ -421,7 +466,12 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.90,
         weight: 23,
         playerStateCondition: 'restrained',
-        messages: ['{boss}は{player}を激しく揺さぶった', '{player}の理性が揺らいでいく...']
+        messages: [
+            'ゆさゆさ〜♪ 激しく揺さぶって理性を飛ばしてやるンメェ〜',
+            'あたいのリズムで完全に狂わせてやるンメェ〜♪',
+            '{boss}は{player}を激しく揺さぶった',
+            '{player}の理性が揺らいでいく...'
+        ]
     },
     {
         id: 'sensual-movement',
@@ -433,7 +483,12 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.95,
         weight: 26,
         playerStateCondition: 'restrained',
-        messages: ['{boss}は官能的な動きを見せつけてきた', '{player}は目が離せなくなっている...']
+        messages: [
+            'くねくね〜♪ あたいの官能的な動きに見とれちゃえンメェ〜',
+            'どうンメェ〜？あたいの魅力にノックアウトされたンメェ〜♪',
+            '{boss}は官能的な動きを見せつけてきた',
+            '{player}は目が離せなくなっている...'
+        ]
     },
     {
         id: 'intense-caress',
@@ -445,7 +500,12 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.88,
         weight: 24,
         playerStateCondition: 'restrained',
-        messages: ['{boss}は{player}を激しく愛撫してきた', '{player}の感覚がとろけていく...']
+        messages: [
+            'あいぶ〜♪ 激しく愛撫してとろとろにしてやるンメェ〜',
+            'あたいの技術で完全にメロメロになっちゃえンメェ〜♪',
+            '{boss}は{player}を激しく愛撫してきた',
+            '{player}の感覚がとろけていく...'
+        ]
     },
     {
         id: 'pressure-attack',
@@ -457,7 +517,12 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.85,
         weight: 22,
         playerStateCondition: 'restrained',
-        messages: ['{boss}は{player}に全体重をかけて圧迫してきた', '{player}は恍惚の表情を浮かべている...']
+        messages: [
+            'あつりょく〜♪ 全体重でぎゅぎゅってしてやるンメェ〜',
+            'あたいの重みで完全に支配されちゃえンメェ〜♪',
+            '{boss}は{player}に全体重をかけて圧迫してきた',
+            '{player}は恍惚の表情を浮かべている...'
+        ]
     },
     
     // All debuff restraint versions
@@ -471,7 +536,12 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.98,
         weight: 20,
         playerStateCondition: 'restrained',
-        messages: ['{boss}は{player}を見つめながら強力な魅了をかけた', '{player}の意思が完全に奪われていく...']
+        messages: [
+            'みりょう〜♪ 至近距離で強力な魅了をかけてやるンメェ〜',
+            'もう逃げられないンメェ〜、完全にあたいのものンメェ〜♪',
+            '{boss}は{player}を見つめながら強力な魅了をかけた',
+            '{player}の意思が完全に奪われていく...'
+        ]
     },
     {
         id: 'restraint-paralysis',
@@ -483,7 +553,12 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.95,
         weight: 18,
         playerStateCondition: 'restrained',
-        messages: ['{boss}は{player}の神経を痺れさせた', '{player}の体が完全に痺れてしまった...']
+        messages: [
+            'しびしび〜♪ 神経を完全に痺れさせてやるンメェ〜',
+            'もう指一本動かせないンメェ〜♪ざまあみろンメェ〜',
+            '{boss}は{player}の神経を痺れさせた',
+            '{player}の体が完全に痺れてしまった...'
+        ]
     },
     {
         id: 'restraint-aphrodisiac',
@@ -495,7 +570,12 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.98,
         weight: 22,
         playerStateCondition: 'restrained',
-        messages: ['{boss}は{player}に直接淫毒を注入した', '{player}の体が激しく火照っていく...']
+        messages: [
+            'いんどく〜♪ 直接注入で完全に中毒にしてやるンメェ〜',
+            'あたいの毒で体の奥からとろけちゃえンメェ〜♪',
+            '{boss}は{player}に直接淫毒を注入した',
+            '{player}の体が激しく火照っていく...'
+        ]
     },
     {
         id: 'restraint-sleep-induction',
@@ -507,7 +587,12 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.95,
         weight: 19,
         playerStateCondition: 'restrained',
-        messages: ['{boss}は{player}の意識を朦朧とさせた', '{player}の意識がだんだん遠のいていく...']
+        messages: [
+            'ねむねむ〜♪ 強制睡眠で意識を飛ばしてやるンメェ〜',
+            'もう起きられないンメェ〜♪あたいの夢の中で永遠に過ごすンメェ〜',
+            '{boss}は{player}の意識を朦朧とさせた',
+            '{player}の意識がだんだん遠のいていく...'
+        ]
     },
     {
         id: 'restraint-weakness',
@@ -519,7 +604,12 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.98,
         weight: 21,
         playerStateCondition: 'restrained',
-        messages: ['{boss}は{player}の力を吸い取った', '{player}の体から力が完全に抜けていく...']
+        messages: [
+            'だつりょく〜♪ 力を全部吸い取ってやるンメェ〜',
+            'あたいのものになった今、もう抵抗なんてできないンメェ〜♪',
+            '{boss}は{player}の力を吸い取った',
+            '{player}の体から力が完全に抜けていく...'
+        ]
     },
     {
         id: 'restraint-confusion',
@@ -531,7 +621,12 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.95,
         weight: 18,
         playerStateCondition: 'restrained',
-        messages: ['{boss}は{player}の思考を混乱させた', '{player}は何が何だかわからなくなっている...']
+        messages: [
+            'こんらん〜♪ 思考をぐちゃぐちゃにしてやるンメェ〜',
+            'もう何が何だかわからないンメェ〜♪あたいだけが現実ンメェ〜',
+            '{boss}は{player}の思考を混乱させた',
+            '{player}は何が何だかわからなくなっている...'
+        ]
     },
     {
         id: 'restraint-magic-seal',
@@ -543,7 +638,12 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.98,
         weight: 17,
         playerStateCondition: 'restrained',
-        messages: ['{boss}は{player}の魔力を封印した', '{player}の魔法が使えなくなった...']
+        messages: [
+            'ふういん〜♪ 魔法を完全に封印してやるンメェ〜',
+            'もう魔法なんて使えないンメェ〜♪物理攻撃しかできないンメェ〜',
+            '{boss}は{player}の魔力を封印した',
+            '{player}の魔法が使えなくなった...'
+        ]
     },
     {
         id: 'restraint-melting',
@@ -555,7 +655,12 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.95,
         weight: 22,
         playerStateCondition: 'restrained',
-        messages: ['{boss}は{player}の意識をとろけさせた', '{player}の思考が液体のようにとろけていく...']
+        messages: [
+            'とろとろ〜♪ 意識をドロドロに溶かしてやるンメェ〜',
+            'もう固体じゃないンメェ〜♪完全に液状化しちゃえンメェ〜',
+            '{boss}は{player}の意識をとろけさせた',
+            '{player}の思考が液体のようにとろけていく...'
+        ]
     },
     {
         id: 'restraint-euphoria',
@@ -567,7 +672,12 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.92,
         weight: 19,
         playerStateCondition: 'restrained',
-        messages: ['{boss}は{player}を恍惚状態にした', '{player}はうっとりと夢見心地になっている...']
+        messages: [
+            'うっとり〜♪ 恍惚で現実を忘れさせてやるンメェ〜',
+            'もう夢と現実の区別がつかないンメェ〜♪あたいの世界で永遠に過ごすンメェ〜',
+            '{boss}は{player}を恍惚状態にした',
+            '{player}はうっとりと夢見心地になっている...'
+        ]
     },
     {
         id: 'restraint-sweet',
@@ -579,7 +689,12 @@ const dreamDemonActions: BossAction[] = [
         statusChance: 0.95,
         weight: 20,
         playerStateCondition: 'restrained',
-        messages: ['{boss}は{player}に甘い幸福感を与えた', '{player}は幸せそうな表情を浮かべている...']
+        messages: [
+            'あまあま〜♪ 甘い幸せで精神を暴りんぼ〜にしてやるンメェ〜',
+            'この幸せから逃げられないンメェ〜♪ずっとあたいのものンメェ〜',
+            '{boss}は{player}に甘い幸福感を与えた',
+            '{player}は幸せそうな表情を浮かべている...'
+        ]
     },
     {
         id: 'restraint-hypnosis',
@@ -594,7 +709,12 @@ const dreamDemonActions: BossAction[] = [
         canUse: (_boss, player, _turn) => {
             return player.statusEffects.getDebuffLevel() >= 8;
         },
-        messages: ['{boss}は{player}に強制催眠をかけた', '{player}の意識が完全に支配された...']
+        messages: [
+            'さいみん〜♪ 強制催眠で完全に支配してやるンメェ〜',
+            'もうあたいの操り人形ンメェ〜♪意識を完全に乗っ取ったンメェ〜',
+            '{boss}は{player}に強制催眠をかけた',
+            '{player}の意識が完全に支配された...'
+        ]
     },
     {
         id: 'restraint-brainwash',
@@ -609,7 +729,12 @@ const dreamDemonActions: BossAction[] = [
         canUse: (_boss, player, _turn) => {
             return player.statusEffects.getDebuffLevel() >= 10;
         },
-        messages: ['{boss}は{player}の思考を洗脳した', '{player}の心が完全に支配されてしまった...']
+        messages: [
+            'せんのう〜♪ 思考を完全に洗い流してやるンメェ〜',
+            'もう完全にあたいの奴隷ンメェ〜♪自分の意志なんて存在しないンメェ〜',
+            '{boss}は{player}の思考を洗脳した',
+            '{player}の心が完全に支配されてしまった...'
+        ]
     },
     
     // Sleep-inducing attacks (restraint-only, after 7 turns restrained)
