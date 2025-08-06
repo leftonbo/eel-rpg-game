@@ -446,7 +446,7 @@ export const batVampireData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'ようこそ、我が城へ...君のような美しい獲物は久々だ'
+            text: '「ようこそ、我が城へ...君のような美しい獲物は久々だ」'
         },
         {
             speaker: 'boss',
@@ -456,19 +456,19 @@ export const batVampireData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'その美しい血の香り...是非とも味わわせてもらおう。君は最高のペットになるだろう'
+            text: '「その美しい血の香り...是非とも味わわせてもらおう。君は最高のペットになるだろう」'
         }
     ],
     victoryMessages: [
         {
             speaker: 'boss',
             style: 'talk',
-            text: '素晴らしい...実に素晴らしい戦いぶりだった'
+            text: '「素晴らしい...実に素晴らしい戦いぶりだった」'
         },
         {
             speaker: 'boss',
             style: 'talk',
-            text: '君のような強者に敗れるのなら...本望だ。見事、見事だよ'
+            text: '「君のような強者に敗れるのなら...本望だ。見事、見事だよ」'
         },
         {
             speaker: 'boss',
