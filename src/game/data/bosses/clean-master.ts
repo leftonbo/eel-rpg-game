@@ -9,7 +9,7 @@ const cleanMasterActions: BossAction[] = [
         name: '弱吸引',
         description: 'やさしく吸い込んで汚れを取る',
         messages: [
-            'お掃除開始〜♪',
+            '「お掃除開始〜♪」',
             '{boss}は小さな吸引で{player}の汚れを取ろうとする！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.7,
@@ -25,7 +25,7 @@ const cleanMasterActions: BossAction[] = [
         name: '強力吸引',
         description: 'パワフルに吸い込んで汚れを根こそぎ取る',
         messages: [
-            'がんばって吸い込むよ〜♪',
+            '「がんばって吸い込むよ〜♪」',
             '{boss}は強力な吸引で{player}を吸い寄せる！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.0,
@@ -41,7 +41,7 @@ const cleanMasterActions: BossAction[] = [
         name: '埃払い',
         description: 'ブラシでサッサと埃を払う',
         messages: [
-            'ほこりほこり〜♪',
+            '「ほこりほこり〜♪」',
             '{boss}は回転ブラシで{player}の埃を払う！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.8,
@@ -55,7 +55,7 @@ const cleanMasterActions: BossAction[] = [
         name: 'アームキャッチ',
         description: 'お掃除アームで優しく捕まえる',
         messages: [
-            'つかまえた〜♪',
+            '「つかまえた〜♪」',
             '{boss}は清掃アームで{player}を優しく捕まえる！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.5,
@@ -70,7 +70,7 @@ const cleanMasterActions: BossAction[] = [
         name: '泡スプレー',
         description: 'お掃除用の泡をシューッと吹きかける',
         messages: [
-            '泡泡スプレー〜♪',
+            '「泡泡スプレー〜♪」',
             '{boss}は{player}に清掃用の泡をスプレーする！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.4,
@@ -89,7 +89,7 @@ const cleanMasterActionsRestrained: BossAction[] = [
         name: 'ふかふかブラシ',
         description: '捕まえた相手をやさしくブラシで洗う',
         messages: [
-            'ふかふかブラシ〜♪',
+            '「ふかふかブラシ〜♪」',
             '{boss}は{player}をやさしくブラシで洗っている！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.25,
@@ -101,7 +101,7 @@ const cleanMasterActionsRestrained: BossAction[] = [
         name: '高圧水洗浄',
         description: '汚れをしっかり落とすために高圧水で洗う',
         messages: [
-            'まだ汚れてるよ〜、もっと洗わなくちゃ♪',
+            '「まだ汚れてるよ〜、もっと洗わなくちゃ♪」',
             '{boss}は{player}をしっかりと洗濯している！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.7,
@@ -115,7 +115,7 @@ const cleanMasterActionsRestrained: BossAction[] = [
         name: '泡もみ洗い',
         description: '泡でもみもみ洗って汚れを落とす',
         messages: [
-            'もみもみ泡泡〜♪',
+            '「もみもみ泡泡〜♪」',
             '{boss}は{player}に泡を吹きかけ、アームで優しくもみ洗いしている！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.0,
@@ -126,15 +126,15 @@ const cleanMasterActionsRestrained: BossAction[] = [
 ];
 
 const cleanMasterActionsEaten: BossAction[] = [
-    // 段階3: 完全洗浄フェーズ（体内洗濯）
+    // 段階3: 完全洗浄フェーズ（体内洗浄槽）
     {
         id: 'wash-cycle',
         type: ActionType.DevourAttack,
         name: '洗浄サイクル',
         description: '体内で完全な洗浄サイクルを実行',
         messages: [
-            'ぐるぐる洗濯モード〜♪',
-            '{boss}は体内で{player}を洗浄サイクルにかけている！'
+            '「ぐるぐる洗濯モード〜♪」',
+            '{boss}は洗浄槽を水と洗剤で満たして回転させ、{player}を洗浄する！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.8,
         weight: 25,
@@ -147,8 +147,8 @@ const cleanMasterActionsEaten: BossAction[] = [
         name: '脱水モード',
         description: '遠心分離で水分を飛ばす',
         messages: [
-            'くるくる脱水〜♪',
-            '{boss}は{player}を遠心分離で脱水している！'
+            '「くるくる脱水〜♪」',
+            '{boss}は洗浄槽を高速回転させ、{player}を遠心分離で脱水する！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 2.0,
         weight: 20,
@@ -161,8 +161,8 @@ const cleanMasterActionsEaten: BossAction[] = [
         name: '温風乾燥',
         description: 'ほかほかの温風で乾燥させる',
         messages: [
-            'ほかほか温風〜♪',
-            '{boss}は{player}を温風で乾燥させている！'
+            '「ほかほか温風〜♪」',
+            '{boss}は{player}を洗浄槽ごと温風で乾燥させる！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.3,
         weight: 25,
@@ -175,8 +175,8 @@ const cleanMasterActionsEaten: BossAction[] = [
         name: '仕上げアイロン',
         description: '最後の仕上げでアイロンがけ',
         messages: [
-            'アイロンでしわしわ取る〜♪',
-            '{boss}は{player}をアイロンで仕上げている！'
+            '「アイロンでしわしわ取る〜♪」',
+            '{boss}の洗浄槽の温かい壁が{player}を挟み、アイロンのように仕上げる！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.7,
         weight: 15,
@@ -190,7 +190,7 @@ const cleanMasterActionsEaten: BossAction[] = [
         description: '汚れが残ってないかチェック',
         messages: [
             '{boss}は{player}をくまなくチェックしている...',
-            'うーん、まだ汚れてるかも〜？もう一度お掃除しなくちゃ♪',
+            '「うーん、まだ汚れてるかも〜？もう一度お掃除しなくちゃ♪」',
             '{boss}は{player}をキレイにするためにもう一度洗浄を始める！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.2,
@@ -318,7 +318,7 @@ export const cleanMasterData: BossData = {
                     name: '永続清掃モード',
                     description: '完璧になるまで永続的に清掃し続ける',
                     messages: [
-                        'ずっとお掃除してあげるからね〜♪',
+                        '「ずっとお掃除してあげるからね〜♪」',
                         '{boss}は{player}を永続的に清掃し続けている...',
                         'でも、どんなに洗っても「まだ汚れてる」と言い続ける...'
                     ],
@@ -330,7 +330,7 @@ export const cleanMasterData: BossData = {
                     name: '完璧主義発動',
                     description: '99%では満足せず、100%完璧を目指す',
                     messages: [
-                        'あっ！まだ汚れが...もう1回〜♪',
+                        '「あっ！まだ汚れが...もう1回〜♪」',
                         '{boss}は{player}の見えない汚れを発見してしまった...',
                         '完璧主義の{boss}は決して満足しない...'
                     ],
@@ -342,7 +342,7 @@ export const cleanMasterData: BossData = {
                     name: '愛情清掃',
                     description: '愛情を込めてお掃除し続ける',
                     messages: [
-                        'だいすきだから、きれいにしてあげる〜♪',
+                        '「だいすきだから、きれいにしてあげる〜♪」',
                         '{boss}は{player}を愛情込めて清掃している...',
                         'でも、愛情が深すぎて止まらない...'
                     ],
@@ -389,8 +389,8 @@ export const cleanMasterData: BossData = {
                         name: '完全清掃モード',
                         description: '体内洗浄槽で完全清掃する',
                         messages: [
-                            'やったぁ〜！お洗濯タイム♪',
-                            '{boss}は清掃アームで{player}を体内洗浄槽に放り込む！'
+                            '「やったぁ〜！お洗濯タイム♪」',
+                            '{boss}は清掃アームで掴んでいた{player}を体内洗浄槽に放り込む！'
                         ],
                         weight: 1
                     };
@@ -405,7 +405,7 @@ export const cleanMasterData: BossData = {
                         name: 'アームキャッチ',
                         description: '清掃アームで捕まえる',
                         messages: [
-                            'つかまえた〜♪',
+                            '「つかまえた〜♪」',
                             '{boss}は清掃アームで{player}を捕まえる！'
                         ],
                         weight: 1
@@ -417,7 +417,7 @@ export const cleanMasterData: BossData = {
                         name: '完全清掃モード',
                         description: '体内洗浄槽で完全清掃する',
                         messages: [
-                            'やったぁ〜！お洗濯タイム♪',
+                            '「やったぁ〜！お洗濯タイム♪」',
                             '{boss}は{player}を直接体内洗浄槽に吸い込む！'
                         ],
                         weight: 1
