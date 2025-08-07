@@ -158,7 +158,7 @@ export class OutGameLibraryScene extends BaseOutGameScene {
         return bossIds.map(bossId => {
             try {
                 const bossData = getBossData(bossId);
-                return `${bossData.name}${type === 'defeat' ? '敗北' : '撃破'}`;
+                return `${bossData.displayName}${type === 'defeat' ? '敗北' : '撃破'}`;
             } catch (error) {
                 console.error(`Error fetching boss data for ID "${bossId}":`, error);
                 return `${bossId}${type === 'defeat' ? '敗北' : '撃破'}(データ不明)`;
