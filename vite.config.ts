@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       ViteEjsPlugin({
-        title: 'ElnalFTB - Turn-based RPG'
+        title: 'ElnalFTE - Turn-based RPG'
       }, {
         ejs: {
           views: [
