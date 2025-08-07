@@ -144,6 +144,17 @@ export class BossModalComponent {
             modalQuestNote.textContent = bossData.questNote;
         }
         
+        // ボスの外観
+        const modalAppearance = document.getElementById('modal-boss-appearance');
+        if (modalAppearance) {
+            if (bossData.appearanceNote) {
+                modalAppearance.classList.remove('d-none');
+                modalAppearance.innerHTML = `<p>特徴: ${bossData.appearanceNote}</p>`;
+            } else {
+                modalAppearance.classList.add('d-none');
+            }
+        }
+        
         // ゲストキャラクター情報
         const modalGuestInfo = document.getElementById('modal-boss-guest-info');
         if (modalGuestInfo) {
