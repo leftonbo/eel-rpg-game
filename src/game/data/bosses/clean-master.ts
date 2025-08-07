@@ -255,8 +255,8 @@ export const cleanMasterData: BossData = {
         description: 'クリーンマスターが使用していた高性能清掃ブラシ。あらゆる汚れを落とす超技術。'
     },
     defeatTrophy: {
-        name: '清掃プログラム',
-        description: 'クリーンマスターの中枢に組み込まれていた清掃AIプログラム。完璧な清掃理論が記録されている。'
+        name: '生物用洗浄液',
+        description: 'クリーンマスターが使用していた特殊な生物用洗浄液。汚れを根こそぎ落とす強力な成分が含まれている。飲むと美味しくない。'
     },
     personality: [
         'お掃除、お掃除〜♪',
