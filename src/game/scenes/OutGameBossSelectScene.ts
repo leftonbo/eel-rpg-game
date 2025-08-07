@@ -121,12 +121,6 @@ export class OutGameBossSelectScene extends BaseOutGameScene {
             `;
         }
         
-        // ボスの外観
-        const modalAppearance = document.getElementById('modal-boss-appearance');
-        if (modalAppearance) {
-            modalAppearance.textContent = bossData.appearanceNote || '外観情報はありません';
-        }
-        
         // クエスト説明文風テキスト
         const modalQuestNote = document.getElementById('modal-boss-quest-note');
         if (modalQuestNote) {

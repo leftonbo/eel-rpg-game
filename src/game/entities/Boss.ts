@@ -69,8 +69,6 @@ export interface BossData {
     icon: string;
     /** ボスの短文説明 */
     description: string;
-    /** ボス外観説明文 */
-    appearanceNote?: string;
     /** ボス選択時のクエスト風テキスト表示 */
     questNote: string;
     /** ボスの最大HP */
