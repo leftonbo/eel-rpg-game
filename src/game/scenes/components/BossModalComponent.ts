@@ -149,7 +149,11 @@ export class BossModalComponent {
         if (modalAppearance) {
             if (bossData.appearanceNote) {
                 modalAppearance.classList.remove('d-none');
-                modalAppearance.innerHTML = `<small class="text-muted">特徴: ${bossData.appearanceNote}</small>`;
+                modalAppearance.textContent = ''; // Clear previous content
+                const small = document.createElement('small');
+                small.className = 'text-muted';
+                small.textContent = `特徴: ${bossData.appearanceNote}`;
+                modalAppearance.appendChild(small);
             } else {
                 modalAppearance.classList.add('d-none');
             }
@@ -160,7 +164,11 @@ export class BossModalComponent {
         if (modalGuestInfo) {
             if (bossData.guestCharacterInfo) {
                 const characterName = bossData.guestCharacterInfo.characterName || 'Guest Character';
-                modalGuestInfo.innerHTML = `<small class="text-muted">${characterName} created by ${bossData.guestCharacterInfo.creator}</small>`;
+                modalGuestInfo.textContent = ''; // Clear previous content
+                const small = document.createElement('small');
+                small.className = 'text-muted';
+                small.textContent = `${characterName} created by ${bossData.guestCharacterInfo.creator}`;
+                modalGuestInfo.appendChild(small);
                 modalGuestInfo.classList.remove('d-none');
             } else {
                 modalGuestInfo.classList.add('d-none');
