@@ -211,7 +211,6 @@ const deepStomachActions: BossAction[] = [
             '{player}は丸呑みされる夢を何度も見続けている...',
             '{player}の意識は{boss}の夢の世界に囚われている...'
         ],
-        statusEffect: StatusEffectType.Sleep,
         weight: 1
     },
     {
