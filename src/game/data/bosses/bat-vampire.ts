@@ -437,6 +437,7 @@ export const batVampireData: BossData = {
     displayName: '蝙蝠のヴァンパイア',
     description: `古城に住む蝙蝠の獣人`,
     questNote: 'あなたの元に奇妙な招待状が届いた。そこには「君の成果を称える宴に招待する」とだけ書かれたメッセージと、古城の地図が添えられていた。あなたはその城へ向かうことにした...',
+    appearanceNote: '蝙蝠獣人、ヴァンパイア',
     battleStartMessages: [
         {
             speaker: 'player',

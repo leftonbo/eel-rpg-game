@@ -263,6 +263,7 @@ export const fluffyDragonData: BossData = {
     displayName: 'ふわふわドラゴン',
     description: '寒冷地に住む真っ白でふわふわな毛に覆われたドラゴン',
     questNote: `寒冷地の奥地で、旅人たちが突然姿を消す事件が続発している。生存者の証言によると、白くてふわふわな毛に覆われた巨大なドラゴンが現れ、甘いラベンダーの香りと共に人々を眠らせて連れ去っているという。このふわふわドラゴンを討伐し、行方不明者たちを救出せよ。`,
+    appearanceNote: 'ドラゴン、真っ白な体毛、ベージュの蛇腹、ベージュの体内、ふわふわの尻尾、青い瞳、優しい表情',
     maxHp: 600,
     attackPower: 14,
     actions: fluffyDragonActions,

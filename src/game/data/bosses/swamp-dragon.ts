@@ -89,6 +89,7 @@ export const swampDragonData: BossData = {
     displayName: '沼のドラゴン',
     description: '沼地に生息するドラゴン',
     questNote: `沼地に生息する焼け茶色のドラゴンが、通りかかる旅人を襲い続けている。そのドラゴンを討伐し、平和を取り戻すことがあなたの任務だ。`,
+    appearanceNote: 'ドラゴン、焼け茶色の体毛、薄茶色の蛇腹、長い尻尾、薄紫の瞳、焦げ緑色のたてがみ、薄緑色の角、ピンクの体内',
     maxHp: 400,
     attackPower: 24,
     actions: swampDragonActions,

@@ -165,6 +165,7 @@ export const scorpionCarrierData: BossData = {
     displayName: '運び屋のサソリ',
     description: `砂漠や荒れ地を漂う巨大なサソリ`,
     questNote: '砂漠を通る商人から報告によると、砂漠には巨大なサソリが生息しているという。足がタイヤになっていて、巨大な注射器のような尻尾を持つ、半機械のような見た目をしている。さまよう人間を様々な方法で捕まえては丸呑みし、その者が望む（と勝手に考える）場所へと運ぶという。',
+    appearanceNote: 'サソリ、半機械、濃い赤の甲殻、タイヤの足、注射器のようなサソリの尻尾、半機械',
     maxHp: 580,
     attackPower: 22,
     actions: scorpionCarrierActions,
