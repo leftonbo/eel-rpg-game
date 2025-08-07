@@ -149,7 +149,7 @@ export class BossModalComponent {
         if (modalAppearance) {
             if (bossData.appearanceNote) {
                 modalAppearance.classList.remove('d-none');
-                modalAppearance.innerHTML = `<p>特徴: ${bossData.appearanceNote}</p>`;
+                modalAppearance.innerHTML = `<small class="text-muted">特徴: ${bossData.appearanceNote}</small>`;
             } else {
                 modalAppearance.classList.add('d-none');
             }
