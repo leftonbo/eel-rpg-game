@@ -110,7 +110,10 @@ export class BattleScene {
             onApplyDebugChanges: () => this.applyDebugChanges(),
             onAddPlayerStatus: () => this.showAddStatusEffectDialog('player'),
             onAddBossStatus: () => this.showAddStatusEffectDialog('boss'),
-            onAddCustomVar: () => this.showAddCustomVarDialog()
+            onAddCustomVar: () => this.showAddCustomVarDialog(),
+            
+            // Boss Info
+            onShowBossInfo: () => this.showBossInfoModal()
         };
         
         this.eventHandler = new BattleEventHandler(callbacks);
@@ -634,6 +637,15 @@ export class BattleScene {
     private async showAddCustomVarDialog(): Promise<void> {
         if (this.debugManager && this.boss) {
             await this.debugManager.showAddCustomVarDialog(this.boss);
+        }
+    }
+    
+    /**
+     * ボス情報モーダルを表示
+     */
+    private showBossInfoModal(): void {
+        if (this.uiManager && this.boss) {
+            this.uiManager.showBossInfoModal(this.boss);
         }
     }
 }

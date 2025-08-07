@@ -30,6 +30,9 @@ export interface EventCallbacks {
     onAddPlayerStatus: () => void;
     onAddBossStatus: () => void;
     onAddCustomVar: () => void;
+    
+    // Boss Info
+    onShowBossInfo: () => void;
 }
 
 /**
@@ -55,6 +58,7 @@ export class BattleEventHandler {
         this.setupSpecialActionListeners();
         this.setupBattleEndListeners();
         this.setupDebugListeners();
+        this.setupBossInfoListeners();
     }
     
     /**
@@ -130,6 +134,13 @@ export class BattleEventHandler {
      */
     addOmamoriListener(callback: () => void): void {
         this.addEventListenerSafely('omamori-special-btn', 'click', callback);
+    }
+    
+    /**
+     * ボス情報関連のイベントリスナーを設定
+     */
+    private setupBossInfoListeners(): void {
+        this.addEventListenerSafely('boss-info-btn', 'click', this.callbacks.onShowBossInfo);
     }
     
     /**
