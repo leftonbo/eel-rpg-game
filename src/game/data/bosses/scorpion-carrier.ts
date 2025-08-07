@@ -179,7 +179,7 @@ export const scorpionCarrierData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'んー、迷い人のようだな？'
+            text: '「んー、迷い人のようだな？」'
         },
         {
             speaker: 'boss',
@@ -189,19 +189,19 @@ export const scorpionCarrierData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'おまえの足より、オレの足のほうが早いぞ？安全に運んでやるから、恥ずかしがらずに食べられろ'
+            text: '「おまえの足より、オレの足のほうが早いぞ？安全に運んでやるから、恥ずかしがらずに食べられろ」'
         }
     ],
     victoryMessages: [
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'ぐあ...まさか負けるとは...'
+            text: '「ぐあ...まさか負けるとは...」'
         },
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'しかし、その実力なら一人でも大丈夫そうだな...安心したぞ'
+            text: '「しかし、その実力なら一人でも大丈夫そうだな...安心したぞ」'
         },
         {
             speaker: 'boss',
