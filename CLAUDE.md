@@ -361,3 +361,8 @@ requiredBossLosses: ["boss-id3"]
 - **コミット**: 必ず gitmoji + 日本語メッセージ + Co-Authored-By を含める
 - **品質チェック**: 編集後は npm run typecheck && npm run test && npm run build を実行して確認
 - **スキルシステム**: Combat、Toughness、Endurance、Agilityスキルは data/skills/ に実装済み、CraftWork・Explorerスキルも定義済み（AbilitySystemで利用可能）
+
+## キャラクター設定について
+
+- **エルナル**: [src/game/data/documents/character-elnal.md](src/game/data/documents/character-elnal.md) に詳細設定
+- **ボス設定**: [docs/bosses/README.md](docs/bosses/README.md) ディレクトリに各ボスの設定ファイル
