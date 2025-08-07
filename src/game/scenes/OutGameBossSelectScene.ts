@@ -100,17 +100,12 @@ export class OutGameBossSelectScene extends BaseOutGameScene {
             modalTitle.textContent = bossData.displayName;
         }
         
-        // モーダル説明
+        // 一言概要
         const modalDescription = document.getElementById('modal-boss-description');
         if (modalDescription) {
             modalDescription.textContent = bossData.description;
         }
-        
-        const modalQuestNote = document.getElementById('modal-boss-quest-note');
-        if (modalQuestNote) {
-            modalQuestNote.textContent = bossData.questNote;
-        }
-        
+
         // モーダル統計情報
         const modalStats = document.getElementById('modal-boss-stats');
         if (modalStats) {
@@ -124,6 +119,18 @@ export class OutGameBossSelectScene extends BaseOutGameScene {
                     </div>
                 </div>
             `;
+        }
+        
+        // ボスの外観
+        const modalAppearance = document.getElementById('modal-boss-appearance');
+        if (modalAppearance) {
+            modalAppearance.textContent = bossData.appearanceNote || '外観情報はありません';
+        }
+        
+        // クエスト説明文風テキスト
+        const modalQuestNote = document.getElementById('modal-boss-quest-note');
+        if (modalQuestNote) {
+            modalQuestNote.textContent = bossData.questNote;
         }
         
         // ゲストキャラクター情報
