@@ -6,6 +6,13 @@
 
 **➤ [ゲームをプレイする](https://leftonbo.github.io/eel-rpg-game/)**
 
+## キャラクター設定
+
+- **エルナル**（主人公）
+  - 設定資料: **[Notion](https://tonbonotion01.notion.site/mycharacter-elnal)**
+- **各種ボス設定**
+  - **[ボス資料集](docs/bosses/README.md)** - 全ボスの詳細情報
+
 ## ゲーム概要
 
 - **ジャンル**: ターン制RPG
@@ -42,11 +49,6 @@
 - **装備システム**
   - **武器**: 攻撃力強化（素手→ナイフ→剣→大剣）
   - **防具**: HP強化（裸→服→軽装甲→重装甲）
-
-## キャラクター設定
-
-- **エルナル**（主人公）
-  - 設定資料: [Notion](https://tonbonotion01.notion.site/mycharacter-elnal)
 
 ## 開発環境
 
@@ -242,7 +244,6 @@ eel-rpg-game/
 ## 📖 ドキュメント
 
 - **[ボス作成ガイド](docs/boss-creation-guide.md)** - 新ボス追加のための詳細ガイド
-- **[ボス資料集](docs/bosses/README.md)** - 全ボスの詳細情報
 - **[プロジェクト支援ドキュメント](CLAUDE.md)** - AI開発支援用設定
 
 ## 🔧 **ゲーム開発について**
