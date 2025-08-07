@@ -470,7 +470,7 @@ const dualJesterFinishMove: BossAction = {
         
         return [];
     }
-}
+};
 
 // AI戦略: 二面性とフェーズ管理
 const dualJesterAIStrategy = (boss: Boss, player: Player, turn: number): BossAction => {

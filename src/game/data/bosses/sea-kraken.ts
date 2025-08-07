@@ -122,7 +122,7 @@ export const seaKrakenData: BossData = {
         {
             speaker: 'boss',
             style: 'default',
-            text: '海のクラーケンは悔しそうに触手を丸めると、海の底へと戻っていった...'
+            text: '海のクラーケンは悔しそうに触手を丸めると、海へと戻っていった...'
         }
     ],
     victoryTrophy: {
@@ -157,7 +157,7 @@ export const seaKrakenData: BossData = {
             const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
             if (turnsSinceDefeat > 0 && turnsSinceDefeat % 8 === 0) {
                 return {
-                    id: '',
+                    id: 'ink-circulation',
                     type: ActionType.PostDefeatedAttack,
                     name: 'イカスミ循環',
                     description: '獲物にイカスミを注入しながら獲物の生気を吸い尽くす',
