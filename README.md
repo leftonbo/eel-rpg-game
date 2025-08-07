@@ -10,7 +10,7 @@
 
 - **ジャンル**: ターン制RPG
 - **プラットフォーム**: ブラウザ（HTML5 + TypeScript）
-- **特徴**: 本格的なボス戦（16体実装済み）、豊富なステータス効果、成長システム、拘束・脱出システム
+- **特徴**: 本格的なボス戦（16体実装済み）、豊富なステータス効果（65種類）、成長システム、拘束・脱出システム
 - **プレイURL**: https://leftonbo.github.io/eel-rpg-game/
 
 ## ゲームシステム
@@ -27,7 +27,7 @@
   - **拘束・脱出**: もがく/じっとするの選択、脱出成功でボス3ターン気絶
   - **食べられ状態**: HP0+拘束時発生、最大HP吸収によるゲームオーバー
   - **戦闘不能**: HP0で5ターン行動不能後50%回復
-  - **状態異常**: 火だるま、毒、魅了、拘束など30種類以上の効果
+  - **状態異常**: 火だるま、毒、魅了、拘束など65種類の効果
 
 ### 🌟 **成長システム**
 
@@ -127,6 +127,14 @@ eel-rpg-game/
 │   │   │       ├── fluffy-dragon-effects.ts
 │   │   │       ├── bat-vampire-effects.ts
 │   │   │       ├── seraph-mascot-effects.ts
+│   │   │       ├── aqua-serpent-effects.ts
+│   │   │       ├── clean-master-effects.ts
+│   │   │       ├── dark-ghost-effects.ts
+│   │   │       ├── demon-dragon-effects.ts
+│   │   │       ├── mikan-dragon-effects.ts
+│   │   │       ├── scorpion-carrier-effects.ts
+│   │   │       ├── sea-kraken-effects.ts
+│   │   │       ├── underground-worm-effects.ts
 │   │   │       └── index.ts
 │   │   ├── scenes/         # ゲームシーン
 │   │   │   ├── BaseOutGameScene.ts  # アウトゲーム基底クラス
@@ -135,18 +143,22 @@ eel-rpg-game/
 │   │   │   ├── OutGamePlayerDetailScene.ts    # プレイヤー詳細画面
 │   │   │   ├── OutGameLibraryScene.ts         # ライブラリ画面
 │   │   │   ├── OutGameExplorationRecordScene.ts # 探索記録画面
+│   │   │   ├── OutGameChangelogScene.ts       # 更新履歴画面
 │   │   │   ├── OutGameOptionScene.ts          # オプション画面
 │   │   │   ├── BattleScene.ts       # 戦闘画面
 │   │   │   ├── BattleResultScene.ts # 戦闘結果画面
 │   │   │   ├── components/          # UIコンポーネント
+│   │   │   │   ├── BattleMessageComponent.ts
+│   │   │   │   ├── BossModalComponent.ts
 │   │   │   │   ├── EquipmentSelectorComponent.ts
 │   │   │   │   ├── SkillDisplayComponent.ts
 │   │   │   │   └── TrophyDisplayComponent.ts
 │   │   │   ├── managers/            # シーン管理クラス
+│   │   │   │   ├── BattleActionManager.ts
+│   │   │   │   ├── BattleDebugManager.ts
+│   │   │   │   ├── BattleUIManager.ts
 │   │   │   │   ├── BossCardManager.ts
-│   │   │   │   ├── PlayerInfoEditManager.ts
-│   │   │   │   ├── PlayerModalManager.ts
-│   │   │   │   └── SaveDataManager.ts
+│   │   │   │   └── PlayerInfoEditManager.ts
 │   │   │   └── utils/               # シーンユーティリティ
 │   │   │       ├── AbilityNameResolver.ts
 │   │   │       ├── DOMUpdater.ts

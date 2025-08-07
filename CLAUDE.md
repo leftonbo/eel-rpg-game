@@ -118,7 +118,6 @@ interface PlayerSaveData {
 
 #### PlayerManagerクラス群の分離
 
-- **PlayerModalManager**: プレイヤー詳細モーダル管理（タブ切り替え、表示制御）
 - **PlayerEquipmentManager**: 装備システム管理（武器・防具の装備変更、ボーナス計算）
 - **PlayerItemManager**: アイテム管理（使用、効果適用、個数管理）
 - **PlayerBattleActions**: 戦闘行動管理（攻撃、防御、スキル使用）
