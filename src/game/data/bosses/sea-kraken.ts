@@ -100,39 +100,29 @@ export const seaKrakenData: BossData = {
         {
             speaker: 'player',
             style: 'default',
-            text: 'あなたは深海で巨大なクラーケンと対峙した。'
+            text: 'あなたは海岸で巨大なクラーケンと対峙した。'
         },
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'グルグル...また小さな獲物が来たのじゃ'
+            text: 'グルグル...'
         },
         {
             speaker: 'boss',
             style: 'default',
             text: '海のクラーケンは巨大な触手をゆらゆらと動かしながらこちらを見下ろしている...'
-        },
-        {
-            speaker: 'boss',
-            style: 'talk',
-            text: 'この深海でわしに挑むとは...勇敢じゃが愚かよのう'
         }
     ],
     victoryMessages: [
         {
-            speaker: 'boss',
-            style: 'talk',
-            text: 'グルグル...まさか小さな者にこの身が敗れるとは...'
-        },
-        {
-            speaker: 'boss',
-            style: 'talk',
-            text: 'よもや...これほどの実力者であったとは...参ったのじゃ'
+            speaker: 'player',
+            style: 'default',
+            text: '巨大なクラーケンを倒した！'
         },
         {
             speaker: 'boss',
             style: 'default',
-            text: '海のクラーケンは悔しそうに触手を丸めると、深海の暗闇へと沈んでいった...'
+            text: '海のクラーケンは悔しそうに触手を丸めると、海へと戻っていった...'
         }
     ],
     victoryTrophy: {
@@ -167,18 +157,15 @@ export const seaKrakenData: BossData = {
             const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
             if (turnsSinceDefeat > 0 && turnsSinceDefeat % 8 === 0) {
                 return {
-                    id: 'ink-production-cycle',
+                    id: 'ink-circulation',
                     type: ActionType.PostDefeatedAttack,
-                    name: 'イカスミ製造工程',
-                    description: '体内でイカスミを製造し、獲物に浴びせかける',
+                    name: 'イカスミ循環',
+                    description: '獲物にイカスミを注入しながら獲物の生気を吸い尽くす',
                     messages: [
-                        '「ゴポポポ...」',
-                        '{boss}の体内でイカスミ製造装置が働き始める！',
-                        'クラーケンが体内の{player}のために新鮮なイカスミを製造している...',
-                        '完成した特濃イカスミが{player}に降り注ぐ！',
-                        '「シュゥゥゥ...最高品質のイカスミを味わえ」',
-                        '{player}は濃厚なイカスミに浸かり、視界と思考が完全に奪われてしまう...',
-                        'イカスミの催眠効果によって{player}は深い魅了状態に陥った！'
+                        '「ゴポポポ...ゴポポポ！」',
+                        '{boss}の胃袋の吸盤が{player}の口に吸い付き、大量のイカスミを注入する！',
+                        '同時に、{player}の体に吸い付いた吸盤が激しく動き、エネルギーを吸い出していく！',
+                        '激しいイカスミ注入とエネルギー吸収が繰り返され、{player}の体は中も外もイカスミのように真っ黒になっていく...'
                     ],
                     onUse: (_boss, player, _turn) => {
                         // イカスミ関連の状態異常を付与

@@ -617,35 +617,25 @@ export const demonDragonData: BossData = {
         },
         {
             speaker: 'boss',
-            style: 'talk',
-            text: 'ほう...久々に見る生き物だな'
-        },
-        {
-            speaker: 'boss',
             style: 'default',
             text: '魔界の竜は真紫の体毛を輝かせながら、威圧的な存在感を放っている...'
-        },
-        {
-            speaker: 'boss',
-            style: 'talk',
-            text: 'その身を我が魔の胃袋で至福に満たしてやろう。最も幸せな夢を見せてやる'
         }
     ],
     victoryMessages: [
         {
-            speaker: 'boss',
-            style: 'talk',
-            text: 'ぐおおお...まさかこの身が敗れるとは...'
-        },
-        {
-            speaker: 'boss',
-            style: 'talk',
-            text: 'その力...魔界の力すらも凌駕するとは...見事だ'
+            speaker: 'player',
+            style: 'default',
+            text: '魔界の竜を倒すことに成功した！'
         },
         {
             speaker: 'boss',
             style: 'default',
-            text: '魔界の竜は敬意を込めて頭を下げると、魔界の彼方へと消えていった...'
+            text: '魔界の竜は低く唸り声を上げ、その身を震わせる...'
+        },
+        {
+            speaker: 'boss',
+            style: 'default',
+            text: 'やがて竜は敬意を込めるように頭を下げ、真紫の体毛を輝かせながら魔界の彼方へと消えていった...'
         }
     ],
     victoryTrophy: {
@@ -656,12 +646,6 @@ export const demonDragonData: BossData = {
         name: '魔界の甘美液',
         description: '魔界の竜の体内から採取した甘美な体液。至福の記憶が込められている。'
     },
-    personality: [
-        'フシュルルル...新しい魂の香りがする...',
-        'その魂、美味しそうだな...',
-        '魔の胃袋で永遠に幸せにしてやろう...',
-        'もがけばもがくほど美味しくなるぞ...'
-    ],
     customVariables: {
         'lastSoulVacuumTurn': -100, // ソウルバキュームの最後の使用ターン
         'eatenTurnCount': 0, // 食べられ状態のターン数

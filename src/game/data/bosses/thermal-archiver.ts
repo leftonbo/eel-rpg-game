@@ -9,8 +9,8 @@ const thermalArchiverActions: BossAction[] = [
         name: '生体スキャン',
         description: '対象の生体データを収集する',
         messages: [
-            'ピピピ...',
-            '[SCAN] 生体データ取得中...',
+            '「ピピピ...」',
+            '「[SCAN] 生体データ取得中...」',
             '機械的なスキャンレーザーが{player}を照射した'
         ],
         damageFormula: (user: Boss) => {
@@ -28,8 +28,8 @@ const thermalArchiverActions: BossAction[] = [
         name: '保存準備処理',
         description: '標本保存のための前処理を行う',
         messages: [
-            'シュルルル...',
-            '[PREP] 保存処理開始...',
+            '「シュルルル...」',
+            '「[PREP] 保存処理開始...」',
             '{player}の体に特殊な保存液が噴霧された'
         ],
         damageFormula: (user: Boss) => {
@@ -48,8 +48,8 @@ const thermalArchiverActions: BossAction[] = [
         name: '環境調整',
         description: '最適保管温度への調整処理',
         messages: [
-            'ゴォォォ...',
-            '[TEMP] 温度調整中...',
+            '「ゴォォォ...」',
+            '「[TEMP] 温度調整中...」',
             '周囲の温度と湿度が機械的に調整されている'
         ],
         damageFormula: (user: Boss) => user.attackPower * 0.6,
@@ -65,8 +65,8 @@ const thermalArchiverActions: BossAction[] = [
         name: '保管チャンバー',
         description: '標本を保管チャンバーに格納する',
         messages: [
-            'カチカチ...',
-            '[SECURE] 標本確保開始...',
+            '「カチカチ...」',
+            '「[SECURE] 標本確保開始...」',
             '機械的なアームが{player}を保管チャンバーに運び込もうとする！'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.2,
@@ -90,8 +90,8 @@ const thermalArchiverActions: BossAction[] = [
         name: '標本収納',
         description: '貴重な標本を体内アーカイブに安全に格納する',
         messages: [
-            'ウィーン...',
-            '[ARCHIVE] 標本格納実行中...',
+            '「ウィーン...」',
+            '「[ARCHIVE] 標本格納実行中...」',
             '{boss}の保管庫が開き、{player}を内部のアーカイブシステムに収納した！'
         ],
         weight: 15,
@@ -115,8 +115,8 @@ const thermalArchiverActions: BossAction[] = [
         name: '環境制御',
         description: '保管中の標本に最適な環境を提供する',
         messages: [
-            'ヒューン...',
-            '[CLIMATE] 湿度調整: 65%',
+            '「ヒューン...」',
+            '「[CLIMATE] 湿度調整: 65%」',
             '保管チャンバー内の環境が{player}に最適化されている'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.1,
@@ -129,8 +129,8 @@ const thermalArchiverActions: BossAction[] = [
         name: '圧縮調整',
         description: '標本を適切なサイズに調整する',
         messages: [
-            'プシュー...',
-            '[ADJUST] サイズ最適化中...',
+            '「プシュー...」',
+            '「[ADJUST] サイズ最適化中...」',
             '保管チャンバーが{player}を管理しやすいサイズに調整している'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.5,
@@ -147,8 +147,8 @@ const thermalArchiverDevourActions: BossAction[] = [
         name: 'アーカイブ保守',
         description: '保管された標本の環境を維持する',
         messages: [
-            'ウィーン...',
-            '[MAINTAIN] 保管環境維持中...',
+            '「ウィーン...」',
+            '「[MAINTAIN] 保管環境維持中...」',
             '{boss}の体内アーカイブシステムが{player}の保管状態を最適化している'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.3,
@@ -160,8 +160,8 @@ const thermalArchiverDevourActions: BossAction[] = [
         name: '温度調節',
         description: '標本保存に最適な温度を維持する',
         messages: [
-            'シュルルル...',
-            '[TEMP] 標本保存温度: 37°C',
+            '「シュルルル...」',
+            '「[TEMP] 標本保存温度: 37°C」',
             '{boss}の体内で温度調整液が{player}の周囲を循環している'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.2,
@@ -173,8 +173,8 @@ const thermalArchiverDevourActions: BossAction[] = [
         name: '栄養供給',
         description: '標本の長期保存のため栄養を供給する',
         messages: [
-            'ゴクゴク...',
-            '[SUPPLY] 栄養補給実行中...',
+            '「ゴクゴク...」',
+            '「[SUPPLY] 栄養補給実行中...」',
             '{boss}の体内から栄養液が{player}に供給されている'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.0,
@@ -187,8 +187,8 @@ const thermalArchiverDevourActions: BossAction[] = [
         name: '保存液循環',
         description: '特殊な保存液で標本を包み込む',
         messages: [
-            'ブクブク...',
-            '[PRESERVE] 保存液循環中...',
+            '「ブクブク...」',
+            '「[PRESERVE] 保存液循環中...」',
             '{boss}の体内で保存液が{player}を優しく包み込んでいる'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.4,
@@ -204,8 +204,8 @@ const thermalArchiverPostDefeatedActions: BossAction[] = [
         name: '永続アーカイブ',
         description: '貴重な標本として永続的に保管する',
         messages: [
-            'ウィーン...',
-            '[ARCHIVE] 永続保管モード開始...',
+            '「ウィーン...」',
+            '「[ARCHIVE] 永続保管モード開始...」',
             '{player}は{boss}の体内アーカイブで貴重な標本として大切に保管され続ける...'
         ],
         weight: 30
@@ -216,8 +216,8 @@ const thermalArchiverPostDefeatedActions: BossAction[] = [
         name: '標本カタログ化',
         description: '標本データをアーカイブシステムに登録する',
         messages: [
-            'ピピピ...',
-            '[CATALOG] 標本データ登録中...',
+            '「ピピピ...」',
+            '「[CATALOG] 標本データ登録中...」',
             '{player}の生体データが{boss}のアーカイブに永続的に記録されている...'
         ],
         weight: 25
@@ -228,8 +228,8 @@ const thermalArchiverPostDefeatedActions: BossAction[] = [
         name: '品質保証',
         description: '標本の品質を継続的に監視する',
         messages: [
-            'ブーン...',
-            '[QUALITY] 品質監視システム作動中...',
+            '「ブーン...」',
+            '「[QUALITY] 品質監視システム作動中...」',
             '{boss}の品質管理システムが{player}の保管状態を継続監視している...'
         ],
         weight: 20
@@ -240,8 +240,8 @@ const thermalArchiverPostDefeatedActions: BossAction[] = [
         name: '環境最適化',
         description: '標本に最適な保管環境を提供し続ける',
         messages: [
-            'ヒューン...',
-            '[OPTIMIZE] 環境最適化継続中...',
+            '「ヒューン...」',
+            '「[OPTIMIZE] 環境最適化継続中...」',
             '{player}は{boss}の体内で理想的な保管環境に包まれ続けている...'
         ],
         weight: 25
@@ -268,7 +268,7 @@ export const thermalArchiverData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'THERMAL ARCHIVER SYSTEM ACTIVATED... 新たな標本を検出'
+            text: '「THERMAL ARCHIVER SYSTEM ACTIVATED... 新たな標本を検出」'
         },
         {
             speaker: 'boss',
@@ -278,19 +278,19 @@ export const thermalArchiverData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'SPECIMEN COLLECTION PROTOCOL INITIATED... 生体標本として最適な個体を確認'
+            text: '「SPECIMEN COLLECTION PROTOCOL INITIATED... 生体標本として最適な個体を確認」'
         }
     ],
     victoryMessages: [
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'CRITICAL ERROR... SYSTEM FAILURE DETECTED...'
+            text: '「CRITICAL ERROR... SYSTEM FAILURE DETECTED...」'
         },
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'ARCHIVING PROCESS ABORTED... EMERGENCY SHUTDOWN INITIATED...'
+            text: '「ARCHIVING PROCESS ABORTED... EMERGENCY SHUTDOWN INITIATED...」'
         },
         {
             speaker: 'boss',
@@ -348,15 +348,15 @@ export const thermalArchiverData: BossData = {
                     name: '標本最適化処理',
                     description: 'アーカイブシステムがプレイヤーの保存状態を最適化する',
                     messages: [
-                        '[OPTIMIZE] 標本最適化プロトコル開始...',
+                        '「[OPTIMIZE] 標本最適化プロトコル開始...」',
                         '{boss}の体内で高度なアーカイブシステムが稼働し始める！',
-                        '[SCAN] 標本状態: 詳細解析中...',
+                        '「[SCAN] 標本状態: 詳細解析中...」',
                         '体内の保管環境が{player}に合わせて完璧に調整される...',
-                        '[ADJUST] 温度: 37.5°C、湿度: 72%、圧力: 最適化',
-                        '[PROCESS] 保存液成分調整中...',
+                        '「[ADJUST] 温度: 37.5°C、湿度: 72%、圧力: 最適化」',
+                        '「[PROCESS] 保存液成分調整中...」',
                         '特殊な保存液が{player}を包み込み、長期保存に最適な状態にする！',
-                        '[UPDATE] 標本データベース更新中...',
-                        '[COMPLETE] 最適化処理完了、標本品質: S級',
+                        '「[UPDATE] 標本データベース更新中...」',
+                        '「[COMPLETE] 最適化処理完了、標本品質: S級」',
                         '{player}はシステム負荷と保存液の効果で意識が朦朧としてしまった...'
                     ],
                     onUse: (boss, player, _turn) => {
@@ -502,10 +502,10 @@ export const thermalArchiverData: BossData = {
 // Add finishing move for doomed player
 thermalArchiverData.finishingMove = function() {
     return [
-        '[COMPLETE] アーカイブ処理完了...',
+        '「[COMPLETE] アーカイブ処理完了...」',
         '{boss}は{player}を体内の特別なアーカイブチャンバーに格納する！',
         '{player}は最適な保管環境で貴重な標本として永続的に保管されることになった...',
-        '[STATUS] 新規標本登録完了、品質: 最高級'
+        '「[STATUS] 新規標本登録完了、品質: 最高級」'
     ];
 };
 

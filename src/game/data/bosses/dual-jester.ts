@@ -167,9 +167,9 @@ const dualJesterPhase2Actions: BossAction[] = [
         description: '表裏が入れ替わりながらの体当たり',
         messages: [
             '「一緒に遊ぼう♪」',
-            '「死ね」',
-            '「楽しいね〜♪」',
             '「苦しめ」',
+            '「楽しいね〜♪」',
+            '「恐れろ」',
             '{boss}が表情を高速で切り替えながら突進してくる！',
             '{player}は人格の急変に混乱しながら攻撃を受けた！',
             '「どっちが本当？...両方とも本当さ」'
@@ -448,6 +448,30 @@ const dualJesterEternalActions: BossAction[] = [
     }
 ];
 
+// カスタムフィニッシュムーブ
+const dualJesterFinishMove: BossAction = {
+    id: 'plushified-finish',
+    type: ActionType.FinishingMove,
+    name: 'ぬいぐるみ化',
+    description: '体内で力尽きた{player}をぬいぐるみの姿に変える',
+    messages: [
+        '胃液に包まれ、生命力を奪われた{player}はぬいぐるみの姿に変えられてしまった！',
+        '「だいすき〜♪ ずっと一緒にいようね〜♪」',
+        '「君の望む完璧な玩具にしてやろう」',
+        '{player}は体内の奥に運ばれ、まるでおもちゃ箱のような空間に閉じ込められる...',
+        '「そこが{boss}の新しいお家だよ～♪」',
+        'ぬいぐるみになってしまった{player}は、体内のおもちゃ箱の中で静かに眠る...'
+    ],
+    weight: 1,
+    onUse: (_boss: Boss, player: Player, _turn: number) => {
+        player.statusEffects.removeEffect(StatusEffectType.Doomed);
+        player.statusEffects.addEffect(StatusEffectType.Dead);
+        player.statusEffects.addEffect(StatusEffectType.Plushified, -1);
+        
+        return [];
+    }
+};
+
 // AI戦略: 二面性とフェーズ管理
 const dualJesterAIStrategy = (boss: Boss, player: Player, turn: number): BossAction => {
     const bossHpPercentage = boss.getHpPercentage();
@@ -477,7 +501,6 @@ const dualJesterAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
     }
     
     boss.setCustomVariable('currentPhase', isPhase2 ? 2 : 1);
-    boss.setCustomVariable('currentTurn', turn);
     
     // プレイヤーが敗北状態の場合
     if (player.isDefeated()) {
@@ -492,28 +515,23 @@ const dualJesterAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
         const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
         if (turnsSinceDefeat > 0 && turnsSinceDefeat % 8 === 0) {
             return {
-                id: 'personality-revelation-show',
+                id: 'devour-recurring',
                 type: ActionType.PostDefeatedAttack,
-                name: '本性暴露ショー',
-                description: '一時的に優しい面を見せた後、本性で激しく攻撃する',
+                name: 'もう一度の捕食',
+                description: '裏人格の分身がぬいぐるみの獲物を再び飲み込む',
                 messages: [
-                    '表の人格：「ごめんね〜、ちょっと痛かったでしょ？」',
-                    '裏の人格：「...フフフ、まだこの程度で済むと思っているのか？」',
-                    '表の人格：「大丈夫、もう痛くしないからね〜♪」',
-                    '{boss}が急に優しい表情になり、{player}をそっと撫でる...',
-                    '表の人格：「ほら、気持ちいいでしょ？」',
-                    '突然、{boss}の顔が反転し、恐ろしい裏の人格が現れる！',
-                    '裏の人格：「嘘だ。これからが本当の地獄だ」',
-                    '巨大な手が{player}を激しく掴み、残酷な笑みを浮かべる！',
-                    '裏の人格：「表の甘い言葉に騙されたな...私の本性を見せてやろう」',
-                    '{player}は激しい恐怖と混乱の状態に陥ってしまった！'
+                    '裏の人格がぬいぐるみの{player}を巨大な口で咥える！',
+                    '「いきなりで驚いたかい？でも、これが私の遊び方だ」',
+                    'リボンのような長い舌が{player}の全身を執拗に舐め回す！',
+                    '「この味...何度味わっても飽きることがない」',
+                    '舌に巻かれた{player}がそのまま分身の喉奥へと運ばれていき、飲み込まれる...',
+                    '{player}は体内を落ちていくかと思うと、再び同じおもちゃ箱の空間へ戻ってきた...',
+                    '「戻ってきたな？さあ、また一緒に遊ぼうではないか」'
                 ],
                 onUse: (_boss, player, _turn) => {
-                    // 本性暴露による効果を付与
+                    // べろべろになめられた
                     player.statusEffects.addEffect(StatusEffectType.Fear);
-                    player.statusEffects.addEffect(StatusEffectType.Confusion);
-                    player.statusEffects.addEffect(StatusEffectType.Bipolar);
-                    player.statusEffects.addEffect(StatusEffectType.Manic);
+                    player.statusEffects.addEffect(StatusEffectType.Slimed);
                     
                     return [];
                 },
@@ -549,6 +567,11 @@ const dualJesterAIStrategy = (boss: Boss, player: Player, turn: number): BossAct
     
     // プレイヤーが食べられた状態
     if (player.isEaten()) {
+        // 再起不能状態であればフィニッシュムーブ
+        if (player.isDoomed()) {
+            return dualJesterFinishMove;
+        }
+        
         const devourActions = dualJesterDevourActions;
         const totalWeight = devourActions.reduce((sum, action) => sum + action.weight, 0);
         let random = Math.random() * totalWeight;
@@ -640,6 +663,7 @@ export const dualJesterData: BossData = {
         .concat(dualJesterPhase2Actions)
         .concat(dualJesterDevourActions)
         .concat(dualJesterEternalActions),
+    suppressAutoFinishingMove: true,
     icon: '🎭',
     explorerLevelRequired: 9,
     
@@ -652,7 +676,7 @@ export const dualJesterData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'わーい！新しいお友達だ〜♪ 一緒に遊ぼうよ〜！'
+            text: '「わーい！新しいお友達だ〜♪ 一緒に遊ぼうよ〜！」'
         },
         {
             speaker: 'boss',
@@ -662,7 +686,7 @@ export const dualJesterData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'ねぇねぇ、どんな遊びがしたい？ 僕はどんな遊びでも知ってるよ〜♪'
+            text: '「ねぇねぇ、どんな遊びがしたい？ 僕はどんな遊びでも知ってるよ〜♪」'
         }
     ],
     
@@ -670,12 +694,12 @@ export const dualJesterData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'あ〜あ、疲れちゃった...でも楽しかったよ♪',
+            text: '「あ〜あ、疲れちゃった...でも楽しかったよ♪」',
         },
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'また遊ぼうね！今度はもっと、もっと楽しい遊びをしようね〜♪'
+            text: '「また遊ぼうね！今度はもっと、もっと楽しい遊びをしようね〜♪」'
         },
         {
             speaker: 'boss',
@@ -709,23 +733,9 @@ export const dualJesterData: BossData = {
     customVariables: {
         hasTransformed: false,       // 第2フェーズへの変身フラグ
         currentPhase: 1,             // 現在のフェーズ (1: 表の顔, 2: 裏の顔)
-        currentTurn: 0,              // 現在ターン数
         postDefeatedTurn: 0,         // 敗北後ターン数
         dualPersonalityMode: false   // 二重人格モード
     }
-};
-
-// フィニッシュムーブの実装
-dualJesterData.finishingMove = function(): string[] {
-    return [
-        '胃液に包まれ、生命力を奪われた{player}はぬいぐるみの姿に変えられてしまった！',
-        '「だいすき〜♪ ずっと一緒にいようね〜♪」',
-        '「...ついに完璧な玩具を手に入れた」',
-        '{player}は体内の奥に運ばれ、まるでおもちゃ箱のような空間に閉じ込められる...',
-        '「そこが{boss}の新しいお家だよ～♪」',
-        '「私が遊び相手になってあげよう...飽きるまでずっと一緒だ」',
-        '体内のおもちゃ箱に閉じ込められた{boss}は、双面の道化師の玩具として遊ばれ続けることになった...'
-    ];
 };
 
 // 状況別台詞システム

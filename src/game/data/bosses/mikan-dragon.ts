@@ -129,7 +129,7 @@ export const mikanDragonData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'あら、いらっしゃい♪ 甘い匂いに誘われて来たのかしら？'
+            text: '「あら、いらっしゃい♪ 甘い匂いに誘われて来たのかしら？」'
         },
         {
             speaker: 'boss',
@@ -139,19 +139,19 @@ export const mikanDragonData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'とっても美味しい蜜柑汁で満たしてあげるわね♪ 私のお腹で甘〜くなりましょう？'
+            text: '「とっても美味しい蜜柑汁で満たしてあげるわね♪ 私のお腹で甘〜くなりましょう？」'
         }
     ],
     victoryMessages: [
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'あら〜、こんなに強い方だったのね...'
+            text: '「あら〜、こんなに強い方だったのね...」'
         },
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'でも楽しい戦いだったわ♪ また遊びに来てくださいね'
+            text: '「でも楽しい戦いだったわ♪ また遊びに来てくださいね」'
         },
         {
             speaker: 'boss',
@@ -191,22 +191,20 @@ export const mikanDragonData: BossData = {
             const turnsSinceDefeat = turn - boss.getCustomVariable<number>('defeatStartTurn', turn);
             if (turnsSinceDefeat > 0 && turnsSinceDefeat % 8 === 0) {
                 return {
-                    id: 'citrus-juice-production',
+                    id: 'citrus-juice-from-daylight',
                     type: ActionType.PostDefeatedAttack,
-                    name: '蜜柑ジュース製造',
-                    description: '体内でプレイヤーを蜜柑ジュースに変換する過程を進める',
+                    name: '光合成ジュース生成',
+                    description: '日向ぼっこの光合成で大量の蜜柑を生成し、獲物に飲ませる',
                     messages: [
-                        '「フルルル...特別な蜜柑ジュースの時間よ」',
-                        '{boss}の体内で特殊な蜜柑汁の製造装置が稼働し始める！',
-                        '甘酸っぱい蜜柑汁が{player}の体に染み込んでいく...',
-                        '「フルルル...あなたも美味しい蜜柑ジュースになりつつあるのよ」',
-                        '{player}の体が徐々に蜜柑の汁のような粘液質に変化していく！',
-                        '「これで私の特製蜜柑ジュースの完成ね...フルルル」',
-                        '{player}は濃厚な蜜柑の汁に浸かり、魅了と粘液状態に包まれてしまった！'
+                        '「フルルル... 太陽の光でたくさんの蜜柑汁を作ってあげるわ♪」',
+                        '{boss}は体を横にし、日向ぼっこを始める...',
+                        '{boss}の体は光合成を始め、体内にぼこぼこと体液が生成される音が響く...',
+                        '「さあ、貴方も召し上がれ♪」',
+                        '{player}の口に入った体内触手から、濃厚な蜜柑の汁がどくどくと注がれていく！',
+                        '{player}のお腹は濃厚な蜜柑の汁に浸かり、あまあまな感情に包まれてしまった！'
                     ],
                     onUse: (_boss, player, _turn) => {
                         // 蜜柑ジュース関連の状態異常を付与
-                        player.statusEffects.addEffect(StatusEffectType.Slimed);
                         player.statusEffects.addEffect(StatusEffectType.Charm);
                         player.statusEffects.addEffect(StatusEffectType.Sweet);
                         player.statusEffects.addEffect(StatusEffectType.Lethargy);
@@ -225,8 +223,8 @@ export const mikanDragonData: BossData = {
                     description: '獲物の体を蜜柑の汁で満たし、培養し続ける',
                     messages: [
                         '「フルルル...」',
-                        '{boss}の体内で蜜柑の汁が{player}を培養している...',
-                        '{player}の体は徐々に蜜柑ドラゴンの幼体のような姿に変わっていく...'
+                        '{boss}の体内に満たされた蜜柑の汁が{player}を培養している...',
+                        '蜜柑の汁に包まれた{player}は、蜜柑ドラゴンの幼体になったような感覚を覚える...',
                     ],
                     statusEffect: StatusEffectType.Charm,
                     weight: 1
@@ -251,8 +249,8 @@ export const mikanDragonData: BossData = {
                     description: '蜜柑の汁を注入して獲物を同族化させる',
                     messages: [
                         '「フルルル...」',
-                        '{boss}が{player}に大量の蜜柑汁を注入している...',
-                        '{player}の体は蜜柑ドラゴンの幼体へと変化している...'
+                        '{boss}の体内触手が{player}の口に入り、蜜柑汁を注入している...',
+                        '蜜柑汁を飲まされた{player}は、母親にあやされる子どものような感覚を覚える...',
                     ],
                     statusEffect: StatusEffectType.Charm,
                     weight: 1
