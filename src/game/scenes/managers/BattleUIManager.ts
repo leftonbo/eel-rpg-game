@@ -2,6 +2,7 @@ import { Player } from '../../entities/Player';
 import { Boss } from '../../entities/Boss';
 import { StatusEffect, StatusEffectType } from '../../systems/StatusEffect';
 import { PLAYER_ITEMS } from '@/game/data/PlayerItems';
+import { BossModalComponent } from '../components/BossModalComponent';
 
 /**
  * バトル画面のUI更新を管理するクラス
@@ -33,8 +34,12 @@ export class BattleUIManager {
     private adrenalineCount: HTMLElement | null = null;
     private energyDrinkCount: HTMLElement | null = null;
     
+    // Boss Modal
+    private bossModalComponent: BossModalComponent;
+    
     constructor() {
         this.initializeUIElements();
+        this.bossModalComponent = BossModalComponent.getInstance();
     }
     
     /**
@@ -293,5 +298,15 @@ export class BattleUIManager {
             omamoriBtn.title = '特殊状態を解除し、HPを満回復する';
             omamoriContainer.appendChild(omamoriBtn);
         }
+    }
+    
+    /**
+     * バトル画面からボス情報モーダルを表示
+     */
+    showBossInfoModal(boss: Boss): void {
+        // 情報表示モードでボスモーダルを表示
+        this.bossModalComponent.show(boss.id, {
+            mode: 'info'
+        });
     }
 }
