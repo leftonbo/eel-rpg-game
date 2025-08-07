@@ -110,6 +110,7 @@ export enum StatusEffectType {
     FalseSecurity = 'false-security',
     Manic = 'manic',
     Bipolar = 'bipolar',
+    Plushified = 'plushified',
     
     // Demon Dragon effects
     DemonStomach = 'demon-stomach'

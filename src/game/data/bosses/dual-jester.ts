@@ -466,7 +466,7 @@ const dualJesterFinishMove: BossAction = {
     onUse: (_boss: Boss, player: Player, _turn: number) => {
         player.statusEffects.removeEffect(StatusEffectType.Doomed);
         player.statusEffects.addEffect(StatusEffectType.Dead);
-        // TODO: ぬいぐるみ化の効果を適用
+        player.statusEffects.addEffect(StatusEffectType.Plushified, -1);
         
         return [];
     }

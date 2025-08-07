@@ -1,4 +1,4 @@
-import { StatusEffectType, StatusEffectConfig } from '../StatusEffectTypes';
+import { StatusEffectType, StatusEffectConfig, ActionPriority } from '../StatusEffectTypes';
 import { Actor } from '../../entities/Actor';
 
 export const dualJesterEffectsConfigs: StatusEffectConfig[] = [
@@ -85,6 +85,23 @@ export const dualJesterEffectsConfigs: StatusEffectConfig[] = [
             onApplyPlayer: '{name}は双極効果に陥り、全ての感覚が混乱した！',
             onTickPlayer: '状態異常の効果が予測不能に変化している...',
             onRemovePlayer: '{name}の感覚が正常に戻った'
+        }
+    },
+    {
+        type: StatusEffectType.Plushified,
+        name: 'ぬいぐるみ化',
+        description: '体がぬいぐるみに変化して動けない',
+        duration: 6,
+        category: 'debuff',
+        isDebuff: true,
+        modifiers: {
+            canAct: false, // 行動完全不可
+            actionPriority: ActionPriority.CannotAct // 行動優先度を最低に設定
+        },
+        messages: {
+            onApplyPlayer: '{name}の体がぬいぐるみに変化してしまった！',
+            onTickPlayer: 'ぬいぐるみの体では何もできない...',
+            onRemovePlayer: '{name}はぬいぐるみの体から解放された！'
         }
     }
 ];
