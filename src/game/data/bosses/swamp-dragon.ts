@@ -95,6 +95,10 @@ export const swampDragonData: BossData = {
     actions: swampDragonActions,
     icon: '🐲',
     explorerLevelRequired: 0,
+    guestCharacterInfo: {
+        creator: 'LefTonbo',
+        characterName: '沼竜ヌリグ'
+    },
     battleStartMessages: [
         {
             speaker: 'player',

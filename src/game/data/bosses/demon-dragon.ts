@@ -610,6 +610,10 @@ export const demonDragonData: BossData = {
     actions: demonDragonActions,
     icon: '🐉',
     explorerLevelRequired: 10,
+    guestCharacterInfo: {
+        creator: 'LefTonbo',
+        characterName: '魔竜アルグルス'
+    },
     battleStartMessages: [
         {
             speaker: 'player',
