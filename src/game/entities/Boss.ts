@@ -59,16 +59,27 @@ export interface TrophyData {
 }
 
 export interface BossData {
+    /** ボスの一意な識別子 */
     id: string;
+    /** @deprecated 現在は使用していません - 表示名は displayName を使用してください */
     name: string;
+    /** ボスの表示名 */
     displayName: string;
+    /** ボスのアイコン */
     icon: string;
+    /** ボスの短文説明 */
     description: string;
+    /** ボス選択時のクエスト風テキスト表示 */
     questNote: string;
+    /** ボスの最大HP */
     maxHp: number;
+    /** ボスの基礎攻撃力 */
     attackPower: number;
+    /** ボスの行動リスト */
     actions: BossAction[];
+    /** ボスの性格や特徴 */
     personality?: string[];
+    /** AI戦略関数 */
     aiStrategy?: (boss: Boss, player: Player, turn: number) => BossAction;
     /** @deprecated 現在は使用していません - 行動メッセージや battleStartMessages を使用してください */
     getDialogue?: (situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') => string;
