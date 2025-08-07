@@ -266,6 +266,7 @@ export const fluffyDragonData: BossData = {
     maxHp: 600,
     attackPower: 14,
     actions: fluffyDragonActions,
+    suppressAutoFinishingMove: true,
     icon: '🛏️',
     explorerLevelRequired: 7,
     battleStartMessages: [
@@ -341,21 +342,18 @@ export const fluffyDragonData: BossData = {
                 return {
                     id: 'premium-fluffy-massage',
                     type: ActionType.PostDefeatedAttack,
-                    name: '極上ふわふわマッサージ',
-                    description: '体内の極上ふわふわでプレイヤーをマッサージする',
+                    name: '被食夢マッサージ',
+                    description: '本物の胃袋を激しく動かすことで獲物に食べられる夢を見せる',
                     messages: [
-                        '「ふわふわ〜♪ 特別なマッサージの時間ですよ」',
-                        '{boss}の体内で最高級のふわふわが{player}を包み始める！',
-                        '普通のふわふわとは比べ物にならない極上の毛が{player}を愛撫する...',
-                        '「ふわふわ〜♪ これが私の特別なふわふわマッサージです」',
-                        '雲よりも柔らかく、綿よりも優しいふわふわが{player}の全身を包み込む！',
-                        '「どうですか？ とっても気持ちいいでしょう？」',
-                        '{player}は極上のふわふわに完全に支配され、睡眠と脱力の状態に陥ってしまった！',
-                        '全身の力が抜けて、{player}は深い眠りに落ちていく...'
+                        '「折角奥の胃袋に居るんだから、楽しい夢でも見せてあげる」',
+                        '{boss}のねっとり胃袋が{player}の体を締め付ける！',
+                        '「夢の中で食べられて、とろとろにしてあげる」',
+                        '胃袋が激しく{player}の体を揉み込み、粘液が{player}の体を包み込む！',
+                        '{player}は胃袋の動きに合わせて、まるで食べられているかのような夢を見始める...',
+                        '「どんな子に食べられたか、後で教えてちょうだいね」',
                     ],
                     onUse: (_boss, player, _turn) => {
                         // ふわふわマッサージによる効果を付与
-                        player.statusEffects.addEffect(StatusEffectType.Sleep);
                         player.statusEffects.addEffect(StatusEffectType.Weakness);
                         player.statusEffects.addEffect(StatusEffectType.Sleepy);
                         player.statusEffects.addEffect(StatusEffectType.Bliss);
@@ -371,24 +369,33 @@ export const fluffyDragonData: BossData = {
         
         // 食べられ状態でのふわふわ胃袋攻撃
         if (player.isEaten()) {
+            // 再起不能状態（最大HP=0）の時の特殊とどめ攻撃
+            if (player.isDoomed()) {
+                return {
+                    id: 'deep-stomach-transfer',
+                    type: ActionType.FinishingMove,
+                    name: '奥の胃袋への移送',
+                    description: 'ふわふわ胃袋から本物の胃袋へ移動させる',
+                    messages: [
+                        '「ふわふわ〜♪ より奥で休んでもらいましょう」',
+                        '{player}は完全に眠りに落ち、{boss}のより奥の胃袋に送られていく...',
+                        'そこはねっとりした粘液に満ちた本物の胃袋だった...',
+                        '{player}をしまい込んだ胃袋が、やさしく体を揉み込むように動き出す！',
+                        '粘液と胃袋が{player}のエネルギーを吸い取り、永久的な眠りへと誘う...',
+                        '{boss}が起きている限り、{player}は目覚めることができない...'
+                    ],
+                    weight: 1,
+                    onUse: (_boss, player, _turn) => {
+                        player.statusEffects.removeEffect(StatusEffectType.Doomed);
+                        player.statusEffects.addEffect(StatusEffectType.Dead);
+                        player.statusEffects.addEffect(StatusEffectType.Sleep, -1);
+                        
+                        return [];
+                    }
+                };
+            }
+            
             return fluffyStomachActions[Math.floor(Math.random() * fluffyStomachActions.length)];
-        }
-        
-        // 再起不能状態（最大HP=0）の時の特殊とどめ攻撃
-        if (player.maxHp <= 0) {
-            return {
-                id: 'deep-stomach-transfer',
-                type: ActionType.EatAttack,
-                name: '奥の胃袋への移送',
-                description: 'ふわふわ胃袋から本物の胃袋へ移動させる',
-                messages: [
-                    '「ふわふわ〜♪ より奥で休んでもらいましょう」',
-                    '{player}は完全に眠りに落ち、{boss}のより奥の胃袋に送られていく...',
-                    'そこはねっとりした粘液に満ちた本物の胃袋だった...',
-                    '{boss}が起きている限り、{player}は目覚めることができない...'
-                ],
-                weight: 1
-            };
         }
         
         // 戦略的行動判定
@@ -468,16 +475,6 @@ export const fluffyDragonData: BossData = {
         }
         
         return availableActions[0] || fluffyDragonActions[0];
-    },
-    
-    // カスタムフィニッシュムーブ
-    finishingMove: function() {
-        return [
-            '{boss}は力尽きた{player}を奥の胃袋で完全に消化してしまった...',
-            '{boss}はお腹をさすりながら満足げな表情を浮かべる',
-            '「ふわふわ〜♪ とても美味しかったです」',
-            '{player}は{boss}の一部となって永遠にふわふわの夢の中で過ごすことになった...'
-        ];
     },
     
     // 状況別台詞
