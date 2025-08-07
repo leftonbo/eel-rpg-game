@@ -385,6 +385,15 @@
     animation: bipolarShift 3s ease-in-out infinite;
 }
 
+.status-plushified {
+    background: linear-gradient(45deg, rgba(255, 182, 255, 0.8), rgba(173, 216, 230, 0.8));
+    border: 2px solid #ff6bff;
+    color: #ffffff;
+    text-shadow: 0 0 3px rgba(255, 182, 255, 0.7);
+    font-weight: bold;
+    animation: plushified-bounce 2.5s ease-in-out infinite;
+}
+
 /* Demon Dragon effects */
 .status-demon-stomach {
     background: linear-gradient(135deg, #4c1d95, #7c2d12, #1f2937);
@@ -949,5 +958,25 @@
         transform: scale(0.95);
         box-shadow: 0 0 15px rgba(139, 69, 19, 0.8);
         opacity: 1;
+    }
+}
+
+/* Plushified animation */
+@keyframes plushified-bounce {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+        box-shadow: 0 0 8px rgba(255, 182, 255, 0.6);
+    }
+    25% {
+        transform: scale(1.02) rotate(-1deg);
+        box-shadow: 0 0 15px rgba(173, 216, 230, 0.8);
+    }
+    50% {
+        transform: scale(1.05) rotate(0deg);
+        box-shadow: 0 0 20px rgba(255, 182, 255, 0.9);
+    }
+    75% {
+        transform: scale(1.02) rotate(1deg);
+        box-shadow: 0 0 15px rgba(173, 216, 230, 0.8);
     }
 }
