@@ -144,12 +144,31 @@ export class BossModalComponent {
             modalQuestNote.textContent = bossData.questNote;
         }
         
+        // ボスの外観
+        const modalAppearance = document.getElementById('modal-boss-appearance');
+        if (modalAppearance) {
+            if (bossData.appearanceNote) {
+                modalAppearance.classList.remove('d-none');
+                modalAppearance.textContent = ''; // Clear previous content
+                const small = document.createElement('small');
+                small.className = 'text-muted';
+                small.textContent = `特徴: ${bossData.appearanceNote}`;
+                modalAppearance.appendChild(small);
+            } else {
+                modalAppearance.classList.add('d-none');
+            }
+        }
+        
         // ゲストキャラクター情報
         const modalGuestInfo = document.getElementById('modal-boss-guest-info');
         if (modalGuestInfo) {
             if (bossData.guestCharacterInfo) {
                 const characterName = bossData.guestCharacterInfo.characterName || 'Guest Character';
-                modalGuestInfo.innerHTML = `<small class="text-muted">${characterName} created by ${bossData.guestCharacterInfo.creator}</small>`;
+                modalGuestInfo.textContent = ''; // Clear previous content
+                const small = document.createElement('small');
+                small.className = 'text-muted';
+                small.textContent = `${characterName} created by ${bossData.guestCharacterInfo.creator}`;
+                modalGuestInfo.appendChild(small);
                 modalGuestInfo.classList.remove('d-none');
             } else {
                 modalGuestInfo.classList.add('d-none');

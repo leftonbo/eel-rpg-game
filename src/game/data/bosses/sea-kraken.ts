@@ -91,6 +91,7 @@ export const seaKrakenData: BossData = {
     displayName: '海のクラーケン',
     description: '深海に生息する巨大な紫色のイカ',
     questNote: `深海に生息する紫色の体と触手を持つ巨大イカが、海岸に現れて生き物をなんでも飲み込んでいる。その強力な吸引力とイカスミの催眠効果で多くの犠牲者を出している。このクラーケンを討伐し、海の平和を取り戻すことがあなたの任務だ。`,
+    appearanceNote: 'クラーケン、イカ、青紫色の体、長い触手、イカスミを吐く',
     maxHp: 640,
     attackPower: 16,
     actions: seaKrakenActions,

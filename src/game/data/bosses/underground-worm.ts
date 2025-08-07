@@ -230,6 +230,7 @@ export const undergroundWormData: BossData = {
     displayName: '地底のワーム',
     description: '地底深くに住む巨大な虫',
     questNote: '地底深くの洞窟に巨大なワームが住み着いている。硬い岩も飲み込む強靭な顎を持つ危険な生物を討伐し、地下世界の平和を取り戻すことがあなたの任務だ。',
+    appearanceNote: '巨大ミミズ、岩石のような硬い外殻、鉱物の結晶で覆われた体、長い体',
     maxHp: 800,
     attackPower: 13,
     icon: '🪨',

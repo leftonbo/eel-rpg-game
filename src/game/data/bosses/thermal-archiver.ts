@@ -254,6 +254,7 @@ export const thermalArchiverData: BossData = {
     displayName: 'サーマル・アーカイバー',
     description: '自動生体標本保管装置',
     questNote: '火山地帯の遺跡で発見された謎の機械装置。生物を「標本」として収集・保管する機能を持つようだが、その目的は不明。調査のため、この装置を停止させることがあなたの任務だ。',
+    appearanceNote: '機械、工業的、赤いセンサーライト、熱を発する多数のパイプと冷却ファン、露出する配線、噴出する蒸気、保管庫、温度調整液',
     maxHp: 580,
     attackPower: 17,
     actions: thermalArchiverActions,

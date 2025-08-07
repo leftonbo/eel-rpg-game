@@ -770,6 +770,7 @@ export const dreamDemonData: BossData = {
     displayName: '夢の淫魔',
     description: '夢を操る小さな淫魔',
     questNote: `最近、冒険者たちが奇妙な夢にうなされて目覚めないという事件が多発している。調査によると、夢の世界に小さな淫魔が現れ、甘い誘惑で冒険者たちを虜にしているという。この夢魔を討伐し、被害者たちを救出せよ。`,
+    appearanceNote: 'マスコット、羊悪魔、浮遊、薄紫の体、紫の胸もふ、長い耳、長い尻尾、首のベル、魔法使いの帽子と杖',
     maxHp: 320,
     attackPower: 10,
     actions: dreamDemonActions,

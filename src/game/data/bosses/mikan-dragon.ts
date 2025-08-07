@@ -115,6 +115,7 @@ export const mikanDragonData: BossData = {
     displayName: '蜜柑ドラゴン',
     description: '蜜柑の香りを放つ甘いドラゴン',
     questNote: `蜜柑畑に現れた美しいドラゴンが、通りかかる旅人を甘い香りで誘い込んでいるという。その蜜柑ドラゴンを調査し、対処することがあなたの任務だ。`,
+    appearanceNote: 'ドラゴン、黄緑色の鱗、薄黄色の葉模様の蛇腹、黄色い触角、長い尻尾、蜜柑の皮のような4枚の翼、体内が見えるお腹の窓、蜜柑の中身のようなオレンジの体内',
     maxHp: 450,
     attackPower: 18,
     actions: mikanDragonActions,

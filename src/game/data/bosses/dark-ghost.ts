@@ -83,6 +83,7 @@ export const darkGhostData: BossData = {
     displayName: '闇のおばけ',
     description: '漆黒の森に潜むおばけ',
     questNote: `漆黒の森に向かう冒険者たちが行方不明になっている。目撃情報によると、そこには奇妙な生命体が徘徊しているという…。あなたの任務はその生命体を調査し、討伐することだ。`,
+    appearanceNote: '漆黒の羽、暗紫色の布を被った幽霊のような体、球体、浮遊、赤い目、陽気な笑顔、影の触手、紫の舌',
     maxHp: 250,
     attackPower: 18,
     actions: darkGhostActions,
@@ -102,7 +103,7 @@ export const darkGhostData: BossData = {
         {
             speaker: 'boss',
             style: 'default',
-            text: '闇のおばけは黄色く光る目でこちらを見つめ、陽気に笑っている...'
+            text: '闇のおばけは赤く光る目でこちらを見つめ、陽気に笑っている...'
         },
         {
             speaker: 'boss',
