@@ -75,7 +75,7 @@ const demonDragonActions: BossAction[] = [
         hitRate: 0.70,
         playerStateCondition: 'normal',
         canUse: (_boss, player, _turn) => {
-            return !player.isRestrained() && !player.isEaten() && Math.random() < 0.4;
+            return !player.isRestrained() && !player.isEaten() && (player.isKnockedOut() || Math.random() < 0.4);
         },
         messages: [
             '{boss}の長い尻尾が{player}に向かって伸びてくる！'
@@ -149,7 +149,7 @@ const demonDragonActions: BossAction[] = [
             '「グオオオ...」',
             '{boss}は動けなくなった{player}を大きな口に含んでいく...',
             'ゴクン...',
-            '{player}は{boss}の体内に取り込まれてしまった！'
+            '{player}は{boss}に丸呑みにされてしまった！'
         ]
     },
 
@@ -608,6 +608,7 @@ export const demonDragonData: BossData = {
     maxHp: 2600,
     attackPower: 22,
     actions: demonDragonActions,
+    suppressAutoFinishingMove: true,
     icon: '🐉',
     explorerLevelRequired: 10,
     guestCharacterInfo: {
@@ -674,6 +675,11 @@ export const demonDragonData: BossData = {
             const eatenAction = selectEatenAction(boss, player, turn);
             if (eatenAction) return eatenAction;
         }
+        else
+        {
+            // 食べられ状態ではない場合カウンターリセット
+            boss.setCustomVariable('eatenTurnCount', 0);
+        }
 
         // ソウルバキューム特殊技の優先判定
         const soulVacuumAction = demonDragonActions.find(action =>
@@ -689,7 +695,6 @@ export const demonDragonData: BossData = {
                 action.id === 'swallow-whole'
             );
             if (swallowAction) {
-                boss.setCustomVariable('eatenTurnCount', 0);
                 return swallowAction;
             }
         }
