@@ -12,7 +12,7 @@ import { PlayerBattleActions } from './PlayerBattleActions';
 import { PlayerProgressionManager } from './PlayerProgressionManager';
 import * as PlayerConstants from './PlayerConstants';
 import { getLatestChangelogIndex } from '../data/ChangelogLoader';
-import { OutGameChangelogScene } from '../scenes/OutGameChangelogScene';
+import { ChangelogConstants } from '../constants/ChangelogConstants';
 
 
 export interface SkillResult {
@@ -110,8 +110,8 @@ export class Player extends Actor {
         this.loadPlayerInfo(saveData.playerInfo);
         this.loadReadDocuments(saveData.readDocuments);
 
-        this.shownChangelogIndex = saveData.shownChangelogIndex ?? OutGameChangelogScene.CHANGELOG_INDEX_INITIAL;
-        if (this.shownChangelogIndex === OutGameChangelogScene.CHANGELOG_INDEX_INITIAL) {
+        this.shownChangelogIndex = saveData.shownChangelogIndex ?? ChangelogConstants.CHANGELOG_INDEX_INITIAL;
+        if (this.shownChangelogIndex === ChangelogConstants.CHANGELOG_INDEX_INITIAL) {
             // set to current latest index
             this.shownChangelogIndex = getLatestChangelogIndex();
         }

@@ -1,4 +1,5 @@
-import { Game, GameState } from '../Game';
+import { IGameContext } from '../interfaces/IGameContext';
+import { GameState } from '../types/GameState';
 import { getUnreadCountForPlayer } from '../data/DocumentLoader';
 
 /**
@@ -6,10 +7,10 @@ import { getUnreadCountForPlayer } from '../data/DocumentLoader';
  * 共通のナビゲーション機能とフッター表示を提供
  */
 export abstract class BaseOutGameScene {
-    protected game: Game;
+    protected game: IGameContext;
     protected sceneId: string;
     
-    constructor(game: Game, sceneId: string) {
+    constructor(game: IGameContext, sceneId: string) {
         this.game = game;
         this.sceneId = sceneId;
         this.init();

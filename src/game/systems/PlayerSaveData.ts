@@ -1,4 +1,4 @@
-import { OutGameChangelogScene } from '../scenes/OutGameChangelogScene';
+import { ChangelogConstants } from '../constants/ChangelogConstants';
 import { AbilityData, AbilityType } from './AbilitySystem';
 import { MemorialSaveData, MemorialSystem } from './MemorialSystem';
 
@@ -93,7 +93,7 @@ export class PlayerSaveManager {
                 icon: '🐍'
             },
             readDocuments: [], // Start with no read documents
-            shownChangelogIndex: OutGameChangelogScene.CHANGELOG_INDEX_INITIAL,
+            shownChangelogIndex: ChangelogConstants.CHANGELOG_INDEX_INITIAL,
             version: this.CURRENT_VERSION
         };
     }
@@ -167,7 +167,7 @@ export class PlayerSaveManager {
         if (migratedData.version === 6) {
             migratedData = {
                 ...migratedData,
-                shownChangelogIndex: OutGameChangelogScene.CHANGELOG_INDEX_NONE, // Initialize to -1 to show first changelog entry on existing saves
+                shownChangelogIndex: ChangelogConstants.CHANGELOG_INDEX_NONE, // Initialize to -1 to show first changelog entry on existing saves
                 version: 7
             };
         }
