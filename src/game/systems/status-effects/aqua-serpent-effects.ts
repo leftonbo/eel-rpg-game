@@ -5,7 +5,7 @@ export const aquaSerpentEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.WaterSoaked,
         name: '水浸し',
         description: '水で濡れて防御力が低下',
-        duration: 3,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
@@ -16,7 +16,7 @@ export const aquaSerpentEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.Dizzy,
         name: '目眩',
         description: 'ふらつきで攻撃の命中率が低下',
-        duration: 2,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         modifiers: {

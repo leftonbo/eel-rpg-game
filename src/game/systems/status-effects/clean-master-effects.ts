@@ -6,7 +6,7 @@ export const cleanMasterEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.Soapy,
         name: '泡まみれ',
         description: '石鹸の泡で滑りやすくなり、命中率が低下',
-        duration: 3,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
@@ -30,7 +30,7 @@ export const cleanMasterEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.Steamy,
         name: '蒸し暑い',
         description: '温風で蒸し暑くなり、毎ターン軽微ダメージ',
-        duration: 3,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         stackable: true,

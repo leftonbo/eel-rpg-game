@@ -24,7 +24,7 @@ export const seraphMascotEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.HolySlimed,
         name: '神聖粘液まみれ',
         description: '攻撃力が低下、拘束解除の成功率が大きく低下',
-        duration: 3,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         modifiers: {

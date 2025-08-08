@@ -5,7 +5,7 @@ export const darkGhostEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.Fear,
         name: '恐怖',
         description: '恐怖により受けるダメージが1.5倍になる',
-        duration: 3,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         modifiers: {

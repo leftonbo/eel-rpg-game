@@ -17,7 +17,7 @@ export const scorpionCarrierEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.ScorpionPoison,
         name: 'サソリ毒',
         description: '毎ターン最大HPの1/10のダメージを受ける',
-        duration: 3,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         stackable: true,
@@ -38,7 +38,7 @@ export const scorpionCarrierEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.Weakening,
         name: '脱力剤',
         description: '体力が奪われ、受けるダメージが1.5倍になる',
-        duration: 3,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         modifiers: {

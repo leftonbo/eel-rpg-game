@@ -32,7 +32,7 @@ export const battleEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.Shrunk,
         name: '縮小',
         description: '体が縮んでしまい、あらゆる能力が低下',
-        duration: 3,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
@@ -52,7 +52,7 @@ export const battleEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.Fire,
         name: '火だるま',
         description: '毎ターンHPが減少',
-        duration: 2,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         stackable: true,
@@ -74,7 +74,7 @@ export const battleEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.Charm,
         name: '魅了',
         description: 'もがくの成功率が低下',
-        duration: 3,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
@@ -85,7 +85,7 @@ export const battleEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.Slow,
         name: '鈍足',
         description: '攻撃力が半減',
-        duration: 2,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
@@ -96,7 +96,7 @@ export const battleEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.Poison,
         name: '毒',
         description: '毎ターンHPが減少',
-        duration: 3,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         stackable: true,
@@ -140,7 +140,7 @@ export const battleEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.Slimed,
         name: '粘液まみれ',
         description: '拘束解除の成功率が半減',
-        duration: 3,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         modifiers: {

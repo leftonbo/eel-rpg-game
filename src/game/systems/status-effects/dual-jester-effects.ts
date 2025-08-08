@@ -6,7 +6,7 @@ export const dualJesterEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.FalseSecurity,
         name: '偽りの安心',
         description: '道化師の演技に騙され、危険察知能力が大幅に低下。命中率-30%、被ダメージ+25%',
-        duration: 2,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
@@ -54,7 +54,7 @@ export const dualJesterEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.Bipolar,
         name: '双極効果',
         description: '双面の狂気により感覚が混乱。毒や火だるまが回復効果に変化することがある（命中率-25%）',
-        duration: 3,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         onTick: (target: Actor) => {

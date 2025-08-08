@@ -6,7 +6,7 @@ export const batVampireEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.Darkness,
         name: '暗闇',
         description: '視界が奪われ、攻撃の命中率が大幅に低下する',
-        duration: 3,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
