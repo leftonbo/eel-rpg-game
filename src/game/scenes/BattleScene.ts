@@ -355,7 +355,10 @@ export class BattleScene {
             };
             const itemDisplayName = itemDisplayNames[itemName] || itemName;
             
-            this.battleStats.craftworkExperience += 10;
+            // Get experience gain from the item data instead of hardcoded value
+            const item = this.player.itemManager.getItem(itemName);
+            const experienceGain = item?.experienceGain || 10; // fallback to 10 if not found
+            this.battleStats.craftworkExperience += experienceGain;
             this.messageComponent.addBattleLogMessage(`${this.player.name}は${itemDisplayName}を使った！`, 'heal', 'player');
             
             this.actionManager.hideItemPanel();
