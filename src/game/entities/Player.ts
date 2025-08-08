@@ -452,6 +452,7 @@ export class Player extends Actor {
         // Basic checks
         if (this.statusEffects.isExhausted()) return false;
         if (!this.statusEffects.canAct()) return false;
+        if (!this.statusEffects.canUseSkills()) return false;
         
         // Special state checks
         if (this.isDefeated() || this.statusEffects.isDoomed() || this.statusEffects.isSleeping()) {
