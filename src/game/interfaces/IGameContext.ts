@@ -3,7 +3,7 @@ import { Player } from '../entities/Player';
 
 /**
  * BaseOutGameSceneで必要なGameのインターフェース
- * 循環参照を避けるために最小限のメソッドのみを定義
+ * 循環参照を避けるために必要なメソッドを定義
  */
 export interface IGameContext {
     /**
@@ -20,4 +20,19 @@ export interface IGameContext {
      * プレイヤーオブジェクトを取得する
      */
     getPlayer(): Player;
+    
+    /**
+     * ボス選択処理
+     */
+    selectBoss(bossId: string): void;
+    
+    /**
+     * デバッグモード判定
+     */
+    isDebugMode(): boolean;
+    
+    /**
+     * ゲーム再起動
+     */
+    reboot(): void;
 }
