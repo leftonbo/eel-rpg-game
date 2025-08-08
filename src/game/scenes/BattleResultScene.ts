@@ -298,9 +298,9 @@ export function calculateBattleResult(
     
     const experienceGained: { [key: string]: number } = {
         [AbilityType.Combat]: damageDealt * 4,
-        [AbilityType.Toughness]: damageTaken * 2,
+        [AbilityType.Toughness]: damageTaken * 4,
         [AbilityType.CraftWork]: craftworkExperience,
-        [AbilityType.Endurance]: mpSpent * 4,
+        [AbilityType.Endurance]: mpSpent * 5,
         [AbilityType.Agility]: agilityExperience,
         [AbilityType.Explorer]: explorerExperience
     };

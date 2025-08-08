@@ -51,13 +51,13 @@ export const STAY_STILL_HEAL_RATE = 0.05;
 export const STAY_STILL_MP_RECOVERY_RATE = 0.25;
 
 /** 脱出成功時のアジリティ経験値 */
-export const AGILITY_EXP_SUCCESS_ESCAPE = 50;
+export const AGILITY_EXP_SUCCESS_ESCAPE = 100;
 
 /** 脱出失敗時のアジリティ経験値 */
-export const AGILITY_EXP_FAILED_ESCAPE = 100;
+export const AGILITY_EXP_FAILED_ESCAPE = 200;
 
 /** 強化脱出失敗時のアジリティ経験値 */
-export const AGILITY_EXP_ENHANCED_FAILED_ESCAPE = 400;
+export const AGILITY_EXP_ENHANCED_FAILED_ESCAPE = 800;
 
 /** 再生パッシブの回復量計算用除数（最大HP÷50） */
 export const REGENERATION_HEAL_DIVISOR = 50;

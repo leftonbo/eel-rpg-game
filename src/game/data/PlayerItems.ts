@@ -21,7 +21,7 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
         description: 'ヘルスを80%回復し、状態異常を解除する',
         requiredLevel: 0,
         abilityType: AbilityType.CraftWork,
-        experienceGain: 50,
+        experienceGain: 20,
         getCount: (player: Player) => {
             const baseCount = 5;
             const craftworkLevel = player.abilitySystem.getAbility(AbilityType.CraftWork)?.level || 0;
@@ -52,7 +52,7 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
         description: '3ターンの間、MPが常に満タンになる',
         requiredLevel: 1,
         abilityType: AbilityType.CraftWork,
-        experienceGain: 75,
+        experienceGain: 80,
         getCount: (player: Player) => {
             const craftworkLevel = player.abilitySystem.getAbility(AbilityType.CraftWork)?.level || 0;
             if (craftworkLevel < 1) return 0;
@@ -83,7 +83,7 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
         description: '3ターンの間、無敵になる',
         requiredLevel: 3,
         abilityType: AbilityType.CraftWork,
-        experienceGain: 75,
+        experienceGain: 150,
         getCount: (player: Player) => {
             const craftworkLevel = player.abilitySystem.getAbility(AbilityType.CraftWork)?.level || 0;
             if (craftworkLevel < 3) return 0;
@@ -109,7 +109,7 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
         description: 'HPを100%回復し、状態異常を解除、元気ドリンクの効果を得る',
         requiredLevel: 5,
         abilityType: AbilityType.CraftWork,
-        experienceGain: 150,
+        experienceGain: 400,
         getCount: (player: Player) => {
             const craftworkLevel = player.abilitySystem.getAbility(AbilityType.CraftWork)?.level || 0;
             if (craftworkLevel < 5) return 0;
@@ -147,7 +147,7 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
         description: '行動不能状態・拘束中・食べられ中にのみ使える。即座にそれらの状態を解除し、HPを100%回復し、状態異常を解除',
         requiredLevel: 7,
         abilityType: AbilityType.CraftWork,
-        experienceGain: 200,
+        experienceGain: 1000,
         getCount: (player: Player) => {
             const craftworkLevel = player.abilitySystem.getAbility(AbilityType.CraftWork)?.level || 0;
             if (craftworkLevel < 7) return 0;
