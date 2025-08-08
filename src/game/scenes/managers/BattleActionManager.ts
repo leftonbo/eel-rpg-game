@@ -152,18 +152,19 @@ export class BattleActionManager {
         const struggleSkillSpecialBtn = document.getElementById('struggle-skill-special-btn');
         if (struggleSkillSpecialBtn) {
             const isStruggleUnlocked = player.hasSkill('struggle');
-            const canUseSkill = player.statusEffects.canAct() &&
-                               !player.statusEffects.isExhausted() && 
-                               !player.statusEffects.isKnockedOut() &&
-                               !player.statusEffects.isDoomed() &&
-                               !player.statusEffects.isDead();
+            const canShowSkill = player.statusEffects.canAct() &&
+                                !player.statusEffects.isKnockedOut() &&
+                                !player.statusEffects.isDoomed() &&
+                                !player.statusEffects.isDead();
+            
+            const canUseStruggle = this.canUseSkillById(player, 'struggle', playerTurn);
             
             // Hide if skill is not unlocked or cannot be used
-            if (!isStruggleUnlocked || !canUseSkill) {
+            if (!isStruggleUnlocked || !canShowSkill) {
                 struggleSkillSpecialBtn.style.display = 'none';
             } else {
                 struggleSkillSpecialBtn.style.display = 'block';
-                struggleSkillSpecialBtn.classList.toggle('disabled', !playerTurn);
+                struggleSkillSpecialBtn.classList.toggle('disabled', !playerTurn || !canUseStruggle);
             }
         }
         
