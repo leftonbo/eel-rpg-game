@@ -1,7 +1,9 @@
 import { BaseOutGameScene } from './BaseOutGameScene';
-import { Game, GameState } from '../Game';
+import { IGameContext } from '../interfaces/IGameContext';
+import { GameState } from '../types/GameState';
 import { ChangelogMarkdownRenderer } from '../utils/ChangelogMarkdownRenderer';
 import { getAllChangelogs, getLatestChangelogIndex, getNewChangelogs, isChangelogLoaded } from '../data/ChangelogLoader';
+import { ChangelogConstants } from '../constants/ChangelogConstants';
 
 /**
  * アウトゲーム更新履歴シーン
@@ -9,10 +11,10 @@ import { getAllChangelogs, getLatestChangelogIndex, getNewChangelogs, isChangelo
  */
 export class OutGameChangelogScene extends BaseOutGameScene {
     private changelogContent: string = '';
-    public static readonly CHANGELOG_INDEX_NONE = -1; // Special value indicating no changelog has been shown yet
-    public static readonly CHANGELOG_INDEX_INITIAL = -2; // Initial value that changelog modal will not show
+    public static readonly CHANGELOG_INDEX_NONE = ChangelogConstants.CHANGELOG_INDEX_NONE;
+    public static readonly CHANGELOG_INDEX_INITIAL = ChangelogConstants.CHANGELOG_INDEX_INITIAL;
     
-    constructor(game: Game) {
+    constructor(game: IGameContext) {
         super(game, 'out-game-changelog');
     }
     
