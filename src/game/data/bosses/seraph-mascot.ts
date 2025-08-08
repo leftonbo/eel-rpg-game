@@ -91,7 +91,7 @@ const seraphMascotCareActions: BossAction[] = [
         messages: [
             '「不幸を取ってあげるね〜♪」',
             '{boss}は長い舌で{player}を丁寧に舐め回す！',
-            '{player}は救済の粘液でベトベトになる...'
+            '{player}は水色に輝く救済の粘液でベトベトになる...'
         ],
         damageFormula: (user: Boss) => user.attackPower * 1.3,
         statusEffect: StatusEffectType.HolySlimed,
@@ -315,8 +315,8 @@ const seraphMascotSacredShowerAction: BossAction = {
     statusChance: 1.0,
     messages: [
         '「体をキレイにしてあげるね～♪」',
-        '{boss}の体内器官から聖なる粘液のシャワーが降り注ぐ！',
-        '{player}はその聖なる粘液に包まれ、心地よい感覚に浸る...',
+        '{boss}の体内器官から水色に輝く聖なる粘液のシャワーが降り注ぐ！',
+        '{player}は聖なる粘液に包まれ、心地よい感覚に浸る...',
         '「もみ洗いもしてあげるよ～♪」',
         '{boss}の体内器官が聖なる粘液を出しながら、優しく{player}を揉み洗いする！',
         '{player}は粘液ごと体をもみくちゃにされ、意識がぼうっとしていく...',
@@ -508,7 +508,7 @@ export const seraphMascotData: BossData = {
     displayName: 'セラフィムマスコット',
     description: '善意溢れる巨大天使マスコット',
     questNote: '天空の彼方から、巨大な天使のような存在が降り、その圧倒的な大きさで街を荒らしているそうだ。それは「救済」と称して、善意に満ちた瞳で人々を「救済」しているそうだが、被害は甚大である。あなたの任務はその天使のような存在を討伐し、街を救うことだ。',
-    appearanceNote: 'マスコット、天使、巨大、純白の体に金色のアクセント、6枚の純白な翼、善意に満ちた瞳、柔らかくて大きな天使の輪',
+    appearanceNote: 'マスコット、天使、巨大、純白の体に金色のアクセント、6枚の純白な翼、善意に満ちた瞳、柔らかくて大きな天使の輪、純白の体内、長い舌',
     maxHp: 1200,
     attackPower: 32,
     actions: seraphMascotContactActions
@@ -528,7 +528,7 @@ export const seraphMascotData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'わあ〜♪ また救済が必要な子を見つけたよ〜！'
+            text: '「わあ〜♪ また救済が必要な子を見つけたよ〜！」'
         },
         {
             speaker: 'boss',
@@ -538,7 +538,7 @@ export const seraphMascotData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'だいじょうぶだよ〜♪ お姉さんがぜーんぶ救済してあげるからね〜♪'
+            text: '「だいじょうぶだよ〜♪ お姉さんがぜーんぶ救済してあげるからね〜♪」'
         }
     ],
     
@@ -546,12 +546,12 @@ export const seraphMascotData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'あれ〜？もう救済おわっちゃったの？',
+            text: '「あれ〜？もう救済おわっちゃったの？」',
         },
         {
             speaker: 'boss',
             style: 'talk',
-            text: 'きみ、とっても強いね〜♪ でもまた困ったことがあったら呼んでね〜！'
+            text: '「きみ、とっても強いね〜♪ でもまた困ったことがあったら呼んでね〜！」'
         },
         {
             speaker: 'boss',
@@ -567,7 +567,7 @@ export const seraphMascotData: BossData = {
     },
     defeatTrophy: {
         name: '救済の雫',
-        description: 'セラフィムマスコットの体内で生成された神秘的な体液。救済への純粋な想いが結晶化したもので、永遠の愛と保護を象徴している。'
+        description: 'セラフィムマスコットの体内で生成された、水色に輝く神秘的な体液。救済への純粋な想いが結晶化したもので、永遠の愛と保護を象徴している。'
     },
     
     personality: [
