@@ -189,10 +189,9 @@ export class Player extends Actor {
      * アビリティと装備に基づいて全ステータスを再計算
      */
     public recalculateStats(): void {
-        // Calculate HP with toughness bonus and armor
-        const toughnessMultiplier = PlayerConstants.STAT_MULTIPLIER_BASE + this.abilitySystem.getToughnessHpBonus();
+        // Calculate HP with armor bonus
         const armorBonus = this.equipmentManager.getArmorHpBonus();
-        this.maxHp = Math.round((this.baseMaxHp + armorBonus) * toughnessMultiplier);
+        this.maxHp = this.baseMaxHp + armorBonus;
         
         // Calculate MP with endurance bonus
         const enduranceMultiplier = PlayerConstants.STAT_MULTIPLIER_BASE + this.abilitySystem.getEnduranceMpBonus();
@@ -280,14 +279,13 @@ export class Player extends Actor {
     }
     
     getAttackPower(): number {
-        // Calculate base attack power with combat ability and weapon
-        const combatMultiplier = PlayerConstants.STAT_MULTIPLIER_BASE + this.abilitySystem.getCombatAttackBonus();
+        // Calculate base attack power with weapon
         const weaponBonus = this.equipmentManager.getWeaponAttackBonus();
-        const baseWithAbilityAndWeapon = (this.baseAttackPower + weaponBonus) * combatMultiplier;
+        const baseWithWeapon = this.baseAttackPower + weaponBonus;
         
         // Apply status effect modifiers
         const statusModifier = this.statusEffects.getAttackModifier();
-        return Math.round(baseWithAbilityAndWeapon * statusModifier);
+        return Math.round(baseWithWeapon * statusModifier);
     }
     
     /**
