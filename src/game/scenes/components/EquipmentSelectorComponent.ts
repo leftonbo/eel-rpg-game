@@ -16,7 +16,7 @@ export class EquipmentSelectorComponent {
     static createEquipmentOption(
         equipment: Equipment,
         isEquipped: boolean,
-        equipmentType: 'weapon' | 'armor',
+        equipmentType: 'weapon' | 'armor' | 'gloves' | 'belt',
         onEquipmentChange: (equipmentId: string) => void
     ): HTMLElement {
         const optionDiv = document.createElement('div');
@@ -59,7 +59,7 @@ export class EquipmentSelectorComponent {
         containerId: string,
         equipments: Equipment[],
         currentEquipmentId: string | null,
-        equipmentType: 'weapon' | 'armor',
+        equipmentType: 'weapon' | 'armor' | 'gloves' | 'belt',
         onEquipmentChange: (equipmentId: string) => void
     ): void {
         const container = document.getElementById(containerId);
@@ -124,6 +124,38 @@ export class EquipmentSelectorComponent {
     ): void {
         this.updateEquipmentSelection(containerId, armors, currentArmorId, 'armor', onArmorChange);
     }
+    
+    /**
+     * 手袋選択リストを更新する
+     * @param containerId コンテナ要素のID
+     * @param gloves 手袋データの配列
+     * @param currentGlovesId 現在装備中の手袋ID
+     * @param onGlovesChange 手袋変更時のコールバック
+     */
+    static updateGlovesSelection(
+        containerId: string,
+        gloves: Equipment[],
+        currentGlovesId: string | null,
+        onGlovesChange: (glovesId: string) => void
+    ): void {
+        this.updateEquipmentSelection(containerId, gloves, currentGlovesId, 'gloves', onGlovesChange);
+    }
+    
+    /**
+     * ベルト選択リストを更新する
+     * @param containerId コンテナ要素のID
+     * @param belts ベルトデータの配列
+     * @param currentBeltId 現在装備中のベルトID
+     * @param onBeltChange ベルト変更時のコールバック
+     */
+    static updateBeltSelection(
+        containerId: string,
+        belts: Equipment[],
+        currentBeltId: string | null,
+        onBeltChange: (beltId: string) => void
+    ): void {
+        this.updateEquipmentSelection(containerId, belts, currentBeltId, 'belt', onBeltChange);
+    }
 
     /**
      * 装備のボーナステキストを取得する
@@ -131,11 +163,16 @@ export class EquipmentSelectorComponent {
      * @param equipmentType 装備タイプ
      * @returns ボーナステキスト
      */
-    private static getEquipmentBonusText(equipment: Equipment, equipmentType: 'weapon' | 'armor'): string {
+    private static getEquipmentBonusText(equipment: Equipment, equipmentType: 'weapon' | 'armor' | 'gloves' | 'belt'): string {
         if (equipmentType === 'weapon') {
             return `(+${equipment.attackPowerBonus || 0} 攻撃力)`;
         } else if (equipmentType === 'armor') {
             return `(+${equipment.hpBonus || 0} HP)`;
+        } else if (equipmentType === 'gloves') {
+            const escapeBonus = equipment.escapeRateBonus || 0;
+            return `(+${Math.round(escapeBonus * 100)} 拘束脱出力)`;
+        } else if (equipmentType === 'belt') {
+            return `(+${equipment.mpBonus || 0} MP)`;
         }
         return '';
     }
@@ -145,10 +182,12 @@ export class EquipmentSelectorComponent {
      * @param equipmentType 装備タイプ
      * @returns 日本語名
      */
-    private static getEquipmentTypeName(equipmentType: 'weapon' | 'armor'): string {
+    private static getEquipmentTypeName(equipmentType: 'weapon' | 'armor' | 'gloves' | 'belt'): string {
         switch (equipmentType) {
             case 'weapon': return '武器';
             case 'armor': return '防具';
+            case 'gloves': return '手袋';
+            case 'belt': return 'ベルト';
             default: return '装備';
         }
     }

@@ -34,7 +34,7 @@ export class PlayerBattleActions {
             + (this.player.struggleAttempts - 1) * PlayerConstants.STRUGGLE_SUCCESS_INCREASE_PER_ATTEMPT;
         
         // Apply agility bonus
-        const agilityBonus = this.player.abilitySystem.getAgilityEscapeBonus();
+        const agilityBonus = this.player.equipmentManager.getGlovesEscapeRateBonus();
         baseSuccessRate *= 1 + agilityBonus;
         
         // Apply charm modifier
