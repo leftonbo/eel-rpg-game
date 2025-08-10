@@ -1,5 +1,5 @@
 import { Game } from '../Game';
-import { AbilityType } from '../systems/AbilitySystem';
+import { AbilityType, WEAPONS, ARMORS, GLOVES, BELTS } from '../systems/AbilitySystem';
 import { SkillRegistry } from '../data/skills';
 import { Player } from '../entities/Player';
 import { getAllBossData, getBossData } from '../data';
@@ -373,58 +373,31 @@ function checkNewUnlocks(abilityType: AbilityType, newLevel: number): { weapons:
         skills: []
     };
     
+    // Check for weapon unlocks
     if (abilityType === AbilityType.Combat) {
-        const weaponUnlocks: { [level: number]: string } = {
-            1: 'パチンコ',
-            2: '木の弓矢',
-            4: 'コンパウンドボウ',
-            6: 'サブマシンガン',
-            8: 'レーザーライフル',
-            10: 'スーパーブラスター'
-        };
-        if (weaponUnlocks[newLevel]) {
-            unlocks.weapons.push(weaponUnlocks[newLevel]);
-        }
+        const newWeapons = WEAPONS.filter(weapon => weapon.requiredLevel === newLevel);
+        unlocks.weapons.push(...newWeapons.map(weapon => weapon.name));
     }
     
+    // Check for armor unlocks
     if (abilityType === AbilityType.Toughness) {
-        const armorUnlocks: { [level: number]: string } = {
-            1: 'Tシャツ',
-            2: '旅装',
-            4: '冒険者の服',
-            6: '軍用ジャケット',
-            8: '近未来スーツ',
-            10: '超合金アーマー'
-        };
-        if (armorUnlocks[newLevel]) {
-            unlocks.armors.push(armorUnlocks[newLevel]);
-        }
-        
-        const gloveUnlocks: { [level: number]: string } = {
-            1: '作業用手袋',
-            3: '革の手袋',
-            5: '戦闘用グローブ',
-            7: '強化手袋',
-            9: 'パワーグローブ'
-        };
-        if (gloveUnlocks[newLevel]) {
-            unlocks.gloves.push(gloveUnlocks[newLevel]);
-        }
+        const newArmors = ARMORS.filter(armor => armor.requiredLevel === newLevel);
+        unlocks.armors.push(...newArmors.map(armor => armor.name));
     }
     
+    // Check for glove unlocks
     if (abilityType === AbilityType.Agility) {
-        const beltUnlocks: { [level: number]: string } = {
-            1: '布のベルト',
-            3: '革のベルト',
-            5: 'ユーティリティベルト',
-            7: '強化ベルト',
-            9: 'アジリティベルト'
-        };
-        if (beltUnlocks[newLevel]) {
-            unlocks.belts.push(beltUnlocks[newLevel]);
-        }
+        const newGloves = GLOVES.filter(glove => glove.requiredLevel === newLevel);
+        unlocks.gloves.push(...newGloves.map(glove => glove.name));
     }
     
+    // Check for belt unlocks
+    if (abilityType === AbilityType.Endurance) {
+        const newBelts = BELTS.filter(belt => belt.requiredLevel === newLevel);
+        unlocks.belts.push(...newBelts.map(belt => belt.name));
+    }
+    
+    // Check for item unlocks (keeping existing craftwork items)
     if (abilityType === AbilityType.CraftWork) {
         const itemUnlocks: { [level: number]: string } = {
             1: '元気ドリンク',
