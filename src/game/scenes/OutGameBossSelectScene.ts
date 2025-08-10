@@ -97,7 +97,9 @@ export class OutGameBossSelectScene extends BaseOutGameScene {
             'player-summary-max-mp': player.maxMp.toString(),
             'player-summary-attack': player.getAttackPower().toString(),
             'player-summary-weapon': equipment.weapon?.name || '素手',
-            'player-summary-armor': equipment.armor?.name || 'はだか'
+            'player-summary-armor': equipment.armor?.name || 'はだか',
+            'player-summary-gloves': equipment.gloves?.name || 'なし',
+            'player-summary-belt': equipment.belt?.name || 'なし',
         });
     }
 }
