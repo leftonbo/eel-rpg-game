@@ -226,9 +226,9 @@ export const GLOVES: Equipment[] = [
     { id: 'tactical-gloves', name: 'タクティカル手袋', description: '戦術用の高性能手袋', escapeRateBonus: 0.5, requiredLevel: 5, abilityType: AbilityType.Agility },
     { id: 'spider-gloves', name: 'スパイダー手袋', description: 'クモの糸のような粘着力', escapeRateBonus: 0.6, requiredLevel: 6, abilityType: AbilityType.Agility },
     { id: 'gecko-gloves', name: 'ゲッコー手袋', description: 'ヤモリの足のような吸着力', escapeRateBonus: 0.7, requiredLevel: 7, abilityType: AbilityType.Agility },
-    { id: 'nano-gloves', name: 'ナノテク手袋', description: 'ナノテクノロジー製の手袋', escapeRateBonus: 0.8, requiredLevel: 8, abilityType: AbilityType.Agility },
-    { id: 'quantum-gloves', name: '量子手袋', description: '量子効果を利用した手袋', escapeRateBonus: 0.9, requiredLevel: 9, abilityType: AbilityType.Agility },
-    { id: 'ultimate-grip', name: 'アルティメットグリップ', description: '究極のグリップ力を持つ手袋', escapeRateBonus: 1.0, requiredLevel: 10, abilityType: AbilityType.Agility }
+    { id: 'reinforced-gloves', name: '強化手袋', description: '掴んだものは外さないハイテク手袋', escapeRateBonus: 0.8, requiredLevel: 8, abilityType: AbilityType.Agility },
+    { id: 'nano-gloves', name: 'ナノテク手袋', description: 'ナノテクノロジー製のハイテク手袋', escapeRateBonus: 0.9, requiredLevel: 9, abilityType: AbilityType.Agility },
+    { id: 'ultimate-grip', name: 'アルティメットグリップ', description: '究極のグリップ力を持つ最強の手袋', escapeRateBonus: 1.0, requiredLevel: 10, abilityType: AbilityType.Agility }
 ];
 
 export const BELTS: Equipment[] = [
@@ -242,5 +242,5 @@ export const BELTS: Equipment[] = [
     { id: 'energy-belt', name: 'エネルギーベルト', description: 'エネルギー循環を促進するベルト', mpBonus: 35, requiredLevel: 7, abilityType: AbilityType.Endurance },
     { id: 'vitality-belt', name: 'バイタリティベルト', description: '生命力を増強するベルト', mpBonus: 40, requiredLevel: 8, abilityType: AbilityType.Endurance },
     { id: 'power-belt', name: 'パワーベルト', description: '内なる力を引き出すベルト', mpBonus: 45, requiredLevel: 9, abilityType: AbilityType.Endurance },
-    { id: 'infinity-belt', name: 'インフィニティベルト', description: '無限のスタミナを与えるベルト', mpBonus: 50, requiredLevel: 10, abilityType: AbilityType.Endurance }
+    { id: 'infinity-belt', name: 'インフィニティベルト', description: '無限のマナを与える最強のベルト', mpBonus: 50, requiredLevel: 10, abilityType: AbilityType.Endurance }
 ];
