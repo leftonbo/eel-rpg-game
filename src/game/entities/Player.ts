@@ -297,6 +297,7 @@ export class Player extends Actor {
         const success = this.equipmentManager.equipWeapon(weaponId);
         if (success) {
             this.recalculateStats();
+            this.saveToStorage();
         }
         return success;
     }
@@ -310,6 +311,7 @@ export class Player extends Actor {
         const success = this.equipmentManager.equipArmor(armorId);
         if (success) {
             this.recalculateStats();
+            this.saveToStorage();
         }
         return success;
     }
@@ -323,6 +325,7 @@ export class Player extends Actor {
         const success = this.equipmentManager.equipGloves(glovesId);
         if (success) {
             this.recalculateStats();
+            this.saveToStorage();
         }
         return success;
     }
@@ -336,6 +339,7 @@ export class Player extends Actor {
         const success = this.equipmentManager.equipBelt(beltId);
         if (success) {
             this.recalculateStats();
+            this.saveToStorage();
         }
         return success;
     }
