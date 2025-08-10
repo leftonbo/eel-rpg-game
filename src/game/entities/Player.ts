@@ -661,4 +661,36 @@ export class Player extends Actor {
     public updateShownChangelogIndex(index: number): void {
         this.shownChangelogIndex = index;
     }
+    
+    /**
+     * 最強装備を一括装備（パフォーマンス最適化）
+     * @returns 装備成功の場合true
+     */
+    public equipBestEquipments(): boolean {
+        const bestEquipments = this.equipmentManager.getBestEquipments();
+        const success = this.equipmentManager.equipMultipleInternal(bestEquipments);
+        
+        if (success) {
+            this.recalculateStats();
+            this.saveToStorage();
+        }
+        
+        return success;
+    }
+    
+    /**
+     * 全装備を外す（最低レベル装備に変更、パフォーマンス最適化）
+     * @returns 装備成功の場合true
+     */
+    public unequipAllEquipments(): boolean {
+        const lowestEquipments = this.equipmentManager.getLowestEquipments();
+        const success = this.equipmentManager.equipMultipleInternal(lowestEquipments);
+        
+        if (success) {
+            this.recalculateStats();
+            this.saveToStorage();
+        }
+        
+        return success;
+    }
 }

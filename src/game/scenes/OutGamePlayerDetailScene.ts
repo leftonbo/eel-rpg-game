@@ -41,6 +41,45 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
     }
     
     /**
+     * 装備一括操作ボタンのイベントリスナーを初期化
+     */
+    private initEquipmentActionButtons(): void {
+        // 最強装備ボタン
+        const equipBestBtn = document.getElementById('equip-best-btn');
+        if (equipBestBtn) {
+            equipBestBtn.addEventListener('click', () => {
+                const player = this.game.getPlayer();
+                const success = player.equipBestEquipments();
+                
+                if (success) {
+                    ToastUtils.showToast('最強装備に変更しました', '最強装備', ToastType.Success);
+                    // プレイヤー詳細を再更新
+                    this.updatePlayerDetails();
+                } else {
+                    ToastUtils.showToast('装備変更に失敗しました', '最強装備', ToastType.Error);
+                }
+            });
+        }
+        
+        // 全装備外すボタン
+        const unequipAllBtn = document.getElementById('unequip-all-btn');
+        if (unequipAllBtn) {
+            unequipAllBtn.addEventListener('click', () => {
+                const player = this.game.getPlayer();
+                const success = player.unequipAllEquipments();
+                
+                if (success) {
+                    ToastUtils.showToast('すべての装備を外しました', '装備外し', ToastType.Success);
+                    // プレイヤー詳細を再更新
+                    this.updatePlayerDetails();
+                } else {
+                    ToastUtils.showToast('装備変更に失敗しました', '装備外し', ToastType.Error);
+                }
+            });
+        }
+    }
+    
+    /**
      * 初期化処理
      */
     private initPlayerDetail(): void {
@@ -56,6 +95,9 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
         
         // デバッグコントロールのイベントリスナーを設定
         this.initDebugControls();
+        
+        // 装備一括操作ボタンのイベントリスナーを設定
+        this.initEquipmentActionButtons();
         
         // プレイヤー詳細モーダルの更新イベント
         document.addEventListener('updatePlayerSummary', () => {
