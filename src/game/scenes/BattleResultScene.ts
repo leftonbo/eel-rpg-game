@@ -19,6 +19,8 @@ export interface BattleResult {
     newUnlocks: {
         weapons: string[];
         armors: string[];
+        gloves: string[];
+        belts: string[];
         items: string[];
         skills: string[];
     };
@@ -149,14 +151,14 @@ export class BattleResultScene {
         
         unlocksContainer.innerHTML = '';
         
-        const { weapons, armors, items, skills } = this.battleResult.newUnlocks;
-        const hasUnlocks = weapons.length > 0 || armors.length > 0 || items.length > 0 || skills.length > 0;
+        const { weapons, armors, gloves, belts, items, skills } = this.battleResult.newUnlocks;
+        const hasUnlocks = weapons.length > 0 || armors.length > 0 || gloves.length > 0 || belts.length > 0 || items.length > 0 || skills.length > 0;
         
         if (!hasUnlocks) return;
         
         unlocksContainer.innerHTML = '<h5>新しいアンロック！</h5>';
         
-        [...weapons, ...armors, ...items, ...skills].forEach(unlockName => {
+        [...weapons, ...armors, ...gloves, ...belts, ...items, ...skills].forEach(unlockName => {
             const unlockDiv = document.createElement('div');
             unlockDiv.className = 'mb-2 p-2 border border-info rounded bg-info bg-opacity-10';
             unlockDiv.innerHTML = `
@@ -306,9 +308,11 @@ export function calculateBattleResult(
     };
     
     const levelUps: { [key: string]: { previousLevel: number; newLevel: number } } = {};
-    const newUnlocks: { weapons: string[]; armors: string[]; items: string[]; skills: string[] } = {
+    const newUnlocks: { weapons: string[]; armors: string[]; gloves: string[]; belts: string[]; items: string[]; skills: string[] } = {
         weapons: [],
         armors: [],
+        gloves: [],
+        belts: [],
         items: [],
         skills: []
     };
@@ -331,6 +335,8 @@ export function calculateBattleResult(
                 const unlocks = checkNewUnlocks(abilityType as AbilityType, result.newLevel);
                 newUnlocks.weapons.push(...unlocks.weapons);
                 newUnlocks.armors.push(...unlocks.armors);
+                newUnlocks.gloves.push(...unlocks.gloves);
+                newUnlocks.belts.push(...unlocks.belts);
                 newUnlocks.items.push(...unlocks.items);
                 newUnlocks.skills.push(...unlocks.skills);
                 
@@ -357,10 +363,12 @@ export function calculateBattleResult(
 /**
  * Check what new equipment/items are unlocked at a given ability level
  */
-function checkNewUnlocks(abilityType: AbilityType, newLevel: number): { weapons: string[]; armors: string[]; items: string[]; skills: string[] } {
-    const unlocks: { weapons: string[]; armors: string[]; items: string[]; skills: string[] } = {
+function checkNewUnlocks(abilityType: AbilityType, newLevel: number): { weapons: string[]; armors: string[]; gloves: string[]; belts: string[]; items: string[]; skills: string[] } {
+    const unlocks: { weapons: string[]; armors: string[]; gloves: string[]; belts: string[]; items: string[]; skills: string[] } = {
         weapons: [],
         armors: [],
+        gloves: [],
+        belts: [],
         items: [],
         skills: []
     };
@@ -390,6 +398,30 @@ function checkNewUnlocks(abilityType: AbilityType, newLevel: number): { weapons:
         };
         if (armorUnlocks[newLevel]) {
             unlocks.armors.push(armorUnlocks[newLevel]);
+        }
+        
+        const gloveUnlocks: { [level: number]: string } = {
+            1: '作業用手袋',
+            3: '革の手袋',
+            5: '戦闘用グローブ',
+            7: '強化手袋',
+            9: 'パワーグローブ'
+        };
+        if (gloveUnlocks[newLevel]) {
+            unlocks.gloves.push(gloveUnlocks[newLevel]);
+        }
+    }
+    
+    if (abilityType === AbilityType.Agility) {
+        const beltUnlocks: { [level: number]: string } = {
+            1: '布のベルト',
+            3: '革のベルト',
+            5: 'ユーティリティベルト',
+            7: '強化ベルト',
+            9: 'アジリティベルト'
+        };
+        if (beltUnlocks[newLevel]) {
+            unlocks.belts.push(beltUnlocks[newLevel]);
         }
     }
     
