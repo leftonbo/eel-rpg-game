@@ -130,7 +130,7 @@ export class Player extends Actor {
      * @param equipmentData 装備データ
      */
     private loadEquipment(equipmentData: any): void {
-        this.equipmentManager.loadEquipment(equipmentData.weapon, equipmentData.armor);
+        this.equipmentManager.loadEquipment(equipmentData.weapon, equipmentData.armor, equipmentData.gloves, equipmentData.belt);
     }
     
     /**
