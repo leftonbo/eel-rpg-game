@@ -112,6 +112,8 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
         this.updateElement('detail-attack', player.getAttackPower().toString());
         this.updateElement('detail-weapon-bonus', player.equipmentManager.getWeaponAttackBonus().toString());
         this.updateElement('detail-armor-bonus', player.equipmentManager.getArmorHpBonus().toString());
+        this.updateElement('detail-gloves-bonus', Math.round(player.equipmentManager.getGlovesEscapeRateBonus() * 100).toString());
+        this.updateElement('detail-belt-bonus', player.equipmentManager.getBeltMpBonus().toString());
         
         // アビリティレベル
         Object.entries(abilityLevels).forEach(([abilityType, data]: [string, ExtendedAbilityData]) => {
@@ -197,12 +199,15 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
         const player = this.game.getPlayer();
         const availableWeapons = player.getAvailableWeapons();
         const availableArmors = player.getAvailableArmors();
+        const availableGloves = player.getAvailableGloves();
+        const availableBelts = player.getAvailableBelts();
+        const equipmentInfo = player.getEquipmentInfo();
         
         // 武器選択にEquipmentSelectorComponentを使用
         EquipmentSelectorComponent.updateWeaponSelection(
             'weapon-selection',
             availableWeapons,
-            player.getEquipmentInfo().weapon?.id || null,
+            equipmentInfo.weapon?.id || null,
             (weaponId: string) => {
                 player.equipWeapon(weaponId);
                 // プレイヤー詳細を再更新
@@ -214,9 +219,33 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
         EquipmentSelectorComponent.updateArmorSelection(
             'armor-selection',
             availableArmors,
-            player.getEquipmentInfo().armor?.id || null,
+            equipmentInfo.armor?.id || null,
             (armorId: string) => {
                 player.equipArmor(armorId);
+                // プレイヤー詳細を再更新
+                this.updatePlayerDetails();
+            }
+        );
+        
+        // 手袋選択にEquipmentSelectorComponentを使用
+        EquipmentSelectorComponent.updateGlovesSelection(
+            'gloves-selection',
+            availableGloves,
+            equipmentInfo.gloves?.id || null,
+            (glovesId: string) => {
+                player.equipGloves(glovesId);
+                // プレイヤー詳細を再更新
+                this.updatePlayerDetails();
+            }
+        );
+        
+        // ベルト選択にEquipmentSelectorComponentを使用
+        EquipmentSelectorComponent.updateBeltSelection(
+            'belt-selection',
+            availableBelts,
+            equipmentInfo.belt?.id || null,
+            (beltId: string) => {
+                player.equipBelt(beltId);
                 // プレイヤー詳細を再更新
                 this.updatePlayerDetails();
             }

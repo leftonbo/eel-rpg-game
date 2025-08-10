@@ -130,7 +130,7 @@ export class Player extends Actor {
      * @param equipmentData 装備データ
      */
     private loadEquipment(equipmentData: any): void {
-        this.equipmentManager.loadEquipment(equipmentData.weapon, equipmentData.armor);
+        this.equipmentManager.loadEquipment(equipmentData.weapon, equipmentData.armor, equipmentData.gloves, equipmentData.belt);
     }
     
     /**
@@ -193,9 +193,9 @@ export class Player extends Actor {
         const armorBonus = this.equipmentManager.getArmorHpBonus();
         this.maxHp = this.baseMaxHp + armorBonus;
         
-        // Calculate MP with endurance bonus
-        const enduranceMultiplier = PlayerConstants.STAT_MULTIPLIER_BASE + this.abilitySystem.getEnduranceMpBonus();
-        this.maxMp = Math.round(this.baseMaxMp * enduranceMultiplier);
+        // Calculate MP with belt bonus
+        const beltBonus = this.equipmentManager.getBeltMpBonus();
+        this.maxMp = this.baseMaxMp + beltBonus;
         
         // Update items based on new ability levels
         updatePlayerItems(this);
@@ -297,6 +297,7 @@ export class Player extends Actor {
         const success = this.equipmentManager.equipWeapon(weaponId);
         if (success) {
             this.recalculateStats();
+            this.saveToStorage();
         }
         return success;
     }
@@ -310,6 +311,35 @@ export class Player extends Actor {
         const success = this.equipmentManager.equipArmor(armorId);
         if (success) {
             this.recalculateStats();
+            this.saveToStorage();
+        }
+        return success;
+    }
+    
+    /**
+     * 手袋を装備（アンロック済みの場合）
+     * @param glovesId 手袋ID
+     * @returns 装備成功の場合true
+     */
+    public equipGloves(glovesId: string): boolean {
+        const success = this.equipmentManager.equipGloves(glovesId);
+        if (success) {
+            this.recalculateStats();
+            this.saveToStorage();
+        }
+        return success;
+    }
+    
+    /**
+     * ベルトを装備（アンロック済みの場合）
+     * @param beltId ベルトID
+     * @returns 装備成功の場合true
+     */
+    public equipBelt(beltId: string): boolean {
+        const success = this.equipmentManager.equipBelt(beltId);
+        if (success) {
+            this.recalculateStats();
+            this.saveToStorage();
         }
         return success;
     }
@@ -328,6 +358,22 @@ export class Player extends Actor {
      */
     public getAvailableArmors(): Equipment[] {
         return this.equipmentManager.getAvailableArmors();
+    }
+    
+    /**
+     * アジリティレベルに基づいて利用可能な手袋を取得
+     * @returns 利用可能な手袋の配列
+     */
+    public getAvailableGloves(): Equipment[] {
+        return this.equipmentManager.getAvailableGloves();
+    }
+    
+    /**
+     * エンデュランスレベルに基づいて利用可能なベルトを取得
+     * @returns 利用可能なベルトの配列
+     */
+    public getAvailableBelts(): Equipment[] {
+        return this.equipmentManager.getAvailableBelts();
     }
     
     /**
@@ -519,9 +565,9 @@ export class Player extends Actor {
     
     /**
      * 現在の装備の表示情報を取得
-     * @returns 武器と防具の情報
+     * @returns 武器、防具、手袋、ベルトの情報
      */
-    public getEquipmentInfo(): { weapon: Equipment | null; armor: Equipment | null } {
+    public getEquipmentInfo(): { weapon: Equipment | null; armor: Equipment | null; gloves: Equipment | null; belt: Equipment | null } {
         return this.equipmentManager.getEquipmentInfo();
     }
     

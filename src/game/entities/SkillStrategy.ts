@@ -78,7 +78,7 @@ export class StruggleStrategy implements SkillStrategy {
         let baseSuccessRate = PlayerConstants.STRUGGLE_BASE_SUCCESS_RATE + (player.struggleAttempts) * PlayerConstants.STRUGGLE_SUCCESS_INCREASE_PER_ATTEMPT;
         
         // Apply agility bonus
-        const agilityBonus = player.abilitySystem.getAgilityEscapeBonus();
+        const agilityBonus = player.equipmentManager.getGlovesEscapeRateBonus();
         baseSuccessRate *= 1 + agilityBonus;
         
         const modifier = player.statusEffects.getStruggleModifier();

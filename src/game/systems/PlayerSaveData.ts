@@ -7,6 +7,8 @@ export interface PlayerSaveData {
     equipment: {
         weapon: string;
         armor: string;
+        gloves: string;
+        belt: string;
     };
     memorials: MemorialSaveData; // Trophy system data
     playerInfo: {
@@ -85,7 +87,9 @@ export class PlayerSaveManager {
             abilities: defaultAbilities,
             equipment: {
                 weapon: 'bare-hands',
-                armor: 'naked'
+                armor: 'naked',
+                gloves: 'bare-hands-gloves',
+                belt: 'no-belt'
             },
             memorials: MemorialSystem.INITIAL_SAVE_DATA, // Start with no boss memorials
             playerInfo: {

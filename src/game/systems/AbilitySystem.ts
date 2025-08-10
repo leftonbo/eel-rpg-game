@@ -18,6 +18,8 @@ export interface Equipment {
     description: string;
     attackPowerBonus?: number;
     hpBonus?: number;
+    mpBonus?: number;
+    escapeRateBonus?: number;
     requiredLevel: number;
     abilityType: AbilityType;
 }
@@ -132,25 +134,6 @@ export class AbilitySystem {
         return craftworkAbility.level / 10; // 10% per level (level/10 = multiplier)
     }
     
-    /**
-     * Calculate endurance max MP bonus (10% per level)
-     */
-    getEnduranceMpBonus(): number {
-        const enduranceAbility = this.abilities.get(AbilityType.Endurance);
-        if (!enduranceAbility) return 0;
-        
-        return enduranceAbility.level / 10; // 10% per level (level/10 = multiplier)
-    }
-    
-    /**
-     * Calculate agility restrain escape bonus (10% per level)
-     */
-    getAgilityEscapeBonus(): number {
-        const agilityAbility = this.abilities.get(AbilityType.Agility);
-        if (!agilityAbility) return 0;
-        
-        return agilityAbility.level * 0.1; // 10% per level
-    }
     
     /**
      * Get explorer level (controls boss unlock progression)
@@ -232,4 +215,32 @@ export const ARMORS: Equipment[] = [
     { id: 'future-suit', name: '近未来スーツ', description: '高性能な防護スーツ', hpBonus: 440, requiredLevel: 8, abilityType: AbilityType.Toughness },
     { id: 'powered-armor', name: 'パワーアーマー', description: '動力付き防護装備', hpBonus: 650, requiredLevel: 9, abilityType: AbilityType.Toughness },
     { id: 'super-armor', name: '超合金アーマー', description: '最強の防護装備', hpBonus: 900, requiredLevel: 10, abilityType: AbilityType.Toughness }
+];
+
+export const GLOVES: Equipment[] = [
+    { id: 'bare-hands-gloves', name: '素手', description: '何も装備していない', escapeRateBonus: 0, requiredLevel: 0, abilityType: AbilityType.Agility },
+    { id: 'cloth-gloves', name: '布の手袋', description: '薄い布でできた手袋', escapeRateBonus: 0.1, requiredLevel: 1, abilityType: AbilityType.Agility },
+    { id: 'work-gloves', name: '作業用手袋', description: '作業用の丈夫な手袋', escapeRateBonus: 0.2, requiredLevel: 2, abilityType: AbilityType.Agility },
+    { id: 'grip-gloves', name: 'グリップ手袋', description: 'グリップ力を高める手袋', escapeRateBonus: 0.3, requiredLevel: 3, abilityType: AbilityType.Agility },
+    { id: 'climbing-gloves', name: 'クライミング手袋', description: '岩登り用の専用手袋', escapeRateBonus: 0.4, requiredLevel: 4, abilityType: AbilityType.Agility },
+    { id: 'tactical-gloves', name: 'タクティカル手袋', description: '戦術用の高性能手袋', escapeRateBonus: 0.5, requiredLevel: 5, abilityType: AbilityType.Agility },
+    { id: 'spider-gloves', name: 'スパイダー手袋', description: 'クモの糸のような粘着力', escapeRateBonus: 0.6, requiredLevel: 6, abilityType: AbilityType.Agility },
+    { id: 'gecko-gloves', name: 'ゲッコー手袋', description: 'ヤモリの足のような吸着力', escapeRateBonus: 0.7, requiredLevel: 7, abilityType: AbilityType.Agility },
+    { id: 'reinforced-gloves', name: '強化手袋', description: '掴んだものは外さないハイテク手袋', escapeRateBonus: 0.8, requiredLevel: 8, abilityType: AbilityType.Agility },
+    { id: 'nano-gloves', name: 'ナノテク手袋', description: 'ナノテクノロジー製のハイテク手袋', escapeRateBonus: 0.9, requiredLevel: 9, abilityType: AbilityType.Agility },
+    { id: 'ultimate-grip', name: 'アルティメットグリップ', description: '究極のグリップ力を持つ最強の手袋', escapeRateBonus: 1.0, requiredLevel: 10, abilityType: AbilityType.Agility }
+];
+
+export const BELTS: Equipment[] = [
+    { id: 'no-belt', name: 'ベルトなし', description: '何も装備していない', mpBonus: 0, requiredLevel: 0, abilityType: AbilityType.Endurance },
+    { id: 'simple-belt', name: '普通のベルト', description: '日常用のシンプルなベルト', mpBonus: 5, requiredLevel: 1, abilityType: AbilityType.Endurance },
+    { id: 'sport-belt', name: 'スポーツベルト', description: '運動時のサポートベルト', mpBonus: 10, requiredLevel: 2, abilityType: AbilityType.Endurance },
+    { id: 'training-belt', name: 'トレーニングベルト', description: '筋力トレーニング用ベルト', mpBonus: 15, requiredLevel: 3, abilityType: AbilityType.Endurance },
+    { id: 'weight-belt', name: 'ウェイトベルト', description: '重量挙げ用の強化ベルト', mpBonus: 20, requiredLevel: 4, abilityType: AbilityType.Endurance },
+    { id: 'martial-belt', name: '武道ベルト', description: '武術修行用のベルト', mpBonus: 25, requiredLevel: 5, abilityType: AbilityType.Endurance },
+    { id: 'stamina-belt', name: 'スタミナベルト', description: '持久力を高める特殊ベルト', mpBonus: 30, requiredLevel: 6, abilityType: AbilityType.Endurance },
+    { id: 'energy-belt', name: 'エネルギーベルト', description: 'エネルギー循環を促進するベルト', mpBonus: 35, requiredLevel: 7, abilityType: AbilityType.Endurance },
+    { id: 'vitality-belt', name: 'バイタリティベルト', description: '生命力を増強するベルト', mpBonus: 40, requiredLevel: 8, abilityType: AbilityType.Endurance },
+    { id: 'power-belt', name: 'パワーベルト', description: '内なる力を引き出すベルト', mpBonus: 45, requiredLevel: 9, abilityType: AbilityType.Endurance },
+    { id: 'infinity-belt', name: 'インフィニティベルト', description: '無限のマナを与える最強のベルト', mpBonus: 50, requiredLevel: 10, abilityType: AbilityType.Endurance }
 ];
