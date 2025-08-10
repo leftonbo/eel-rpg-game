@@ -112,116 +112,26 @@ eel-rpg-game/
 ├── src/
 │   ├── main.ts             # エントリーポイント
 │   ├── public/             # 静的ファイル
-│   │   └── robots.txt      # ロボット対応ファイル
 │   ├── game/               # ゲームロジック
 │   │   ├── Game.ts         # ゲームメインクラス
 │   │   ├── systems/        # ゲームシステム
-│   │   │   ├── StatusEffect.ts      # ステータス効果管理
-│   │   │   ├── StatusEffectTypes.ts # ステータス効果タイプ定義
-│   │   │   ├── AbilitySystem.ts     # アビリティシステム
-│   │   │   ├── PlayerSaveData.ts    # セーブデータ管理
-│   │   │   ├── MemorialSystem.ts    # 戦闘記録・統計システム
-│   │   │   └── status-effects/      # ステータス効果詳細
-│   │   │       ├── battle-effects.ts
-│   │   │       ├── core-states.ts
-│   │   │       ├── dream-demon-effects.ts
-│   │   │       ├── dual-jester-effects.ts
-│   │   │       ├── fluffy-dragon-effects.ts
-│   │   │       ├── bat-vampire-effects.ts
-│   │   │       ├── seraph-mascot-effects.ts
-│   │   │       ├── aqua-serpent-effects.ts
-│   │   │       ├── clean-master-effects.ts
-│   │   │       ├── dark-ghost-effects.ts
-│   │   │       ├── demon-dragon-effects.ts
-│   │   │       ├── mikan-dragon-effects.ts
-│   │   │       ├── scorpion-carrier-effects.ts
-│   │   │       ├── sea-kraken-effects.ts
-│   │   │       ├── underground-worm-effects.ts
-│   │   │       └── index.ts
 │   │   ├── scenes/         # ゲームシーン
-│   │   │   ├── BaseOutGameScene.ts  # アウトゲーム基底クラス
-│   │   │   ├── TitleScene.ts        # タイトル画面
-│   │   │   ├── OutGameBossSelectScene.ts      # ボス選択画面
-│   │   │   ├── OutGamePlayerDetailScene.ts    # プレイヤー詳細画面
-│   │   │   ├── OutGameLibraryScene.ts         # ライブラリ画面
-│   │   │   ├── OutGameExplorationRecordScene.ts # 探索記録画面
-│   │   │   ├── OutGameChangelogScene.ts       # 更新履歴画面
-│   │   │   ├── OutGameOptionScene.ts          # オプション画面
-│   │   │   ├── BattleScene.ts       # 戦闘画面
-│   │   │   ├── BattleResultScene.ts # 戦闘結果画面
-│   │   │   ├── components/          # UIコンポーネント
-│   │   │   │   ├── BattleMessageComponent.ts
-│   │   │   │   ├── BossModalComponent.ts
-│   │   │   │   ├── EquipmentSelectorComponent.ts
-│   │   │   │   ├── SkillDisplayComponent.ts
-│   │   │   │   └── TrophyDisplayComponent.ts
-│   │   │   ├── managers/            # シーン管理クラス
-│   │   │   │   ├── BattleActionManager.ts
-│   │   │   │   ├── BattleDebugManager.ts
-│   │   │   │   ├── BattleUIManager.ts
-│   │   │   │   ├── BossCardManager.ts
-│   │   │   │   └── PlayerInfoEditManager.ts
-│   │   │   └── utils/               # シーンユーティリティ
-│   │   │       ├── AbilityNameResolver.ts
-│   │   │       ├── DOMUpdater.ts
-│   │   │       └── ProgressCalculator.ts
 │   │   ├── entities/       # ゲームエンティティ
-│   │   │   ├── Actor.ts             # ベースアクタークラス
-│   │   │   ├── Player.ts            # プレイヤークラス
-│   │   │   ├── Boss.ts              # ボスクラス
-│   │   │   ├── PlayerBattleActions.ts       # プレイヤー戦闘行動
-│   │   │   ├── PlayerConstants.ts           # プレイヤー定数
-│   │   │   ├── PlayerEquipmentManager.ts    # 装備管理
-│   │   │   ├── PlayerItemManager.ts         # アイテム管理
-│   │   │   ├── PlayerProgressionManager.ts  # 成長管理
-│   │   │   └── SkillStrategy.ts             # スキル戦略
 │   │   ├── data/           # ゲームデータ
 │   │   │   ├── bosses/              # ボスデータ（16体・glob import対応）
 │   │   │   ├── documents/           # ストーリードキュメント
-│   │   │   │   └── character-elnal.md
 │   │   │   ├── skills/              # スキルシステム
-│   │   │   │   ├── agility.ts
-│   │   │   │   ├── combat.ts
-│   │   │   │   ├── endurance.ts
-│   │   │   │   ├── toughness.ts
-│   │   │   │   ├── types.ts
-│   │   │   │   └── index.ts
-│   │   │   ├── DocumentLoader.ts    # ドキュメント読み込み（glob import使用）
-│   │   │   ├── ExtendedItems.ts     # 拡張アイテム
-│   │   │   ├── PlayerIcons.ts       # プレイヤーアイコン
-│   │   │   └── index.ts             # ボスデータローダー（glob import使用）
 │   │   ├── types/          # 型定義
-│   │   │   └── bootstrap.ts         # Bootstrap型定義
 │   │   └── utils/          # ユーティリティ
 │   │       ├── BootstrapMarkdownRenderer.ts # Markdownレンダラー
 │   │       ├── CombatUtils.ts       # 戦闘計算ユーティリティ
 │   │       └── ModalUtils.ts        # モーダル・トースト表示
 │   ├── templates/          # EJSテンプレート（HTML自動生成）
 │   │   ├── components/              # 再利用コンポーネント
-│   │   │   ├── ability-card.ejs
-│   │   │   └── modal-base.ejs
 │   │   └── partials/                # パーシャルテンプレート
-│   │       ├── action-buttons.ejs
-│   │       ├── battle-*.ejs         # 戦闘関連
-│   │       ├── out-game-*.ejs       # アウトゲーム関連
-│   │       ├── player-*.ejs         # プレイヤー関連
-│   │       └── utility-modals.ejs
 │   ├── styles/             # スタイルシート
-│   │   └── main.css
 │   └── vite-env.d.ts       # Vite型定義
 ├── docs/                   # ドキュメント
-│   ├── boss-creation-guide.md       # ボス作成ガイド
-│   ├── bosses/                      # ボス資料集
-│   │   └── README.md
-│   └── drafts/                      # プロンプト履歴・アイデア草案
-├── dist/                   # ビルド出力
-├── uploads/                # アップロードファイル
-├── CLAUDE.md               # AI開発支援ドキュメント
-├── package.json            # プロジェクト設定
-├── tsconfig.json           # TypeScript設定
-├── vite.config.ts          # Vite設定
-├── vitest.config.ts        # Vitest設定
-├── eslint.config.js        # ESLint設定
 └── README.md               # このファイル
 ```
 
