@@ -177,6 +177,9 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
             player.statusEffects.removeEffect(StatusEffectType.Cocoon);
             player.statusEffects.removeEffect(StatusEffectType.Sleep);
 
+            // Apply escape recovery passive skill
+            player.battleActions?.applyEscapeRecovery();
+
             // Full heal
             player.heal(player.maxHp);
             

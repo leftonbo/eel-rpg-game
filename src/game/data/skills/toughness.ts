@@ -58,7 +58,7 @@ export const TOUGHNESS_PASSIVE_SKILLS: SkillData[] = [
     {
         id: 'escape-recovery',
         name: '脱出回復',
-        description: '拘束や食べられなどから抜け出すと、失った最大ヘルスの20%を回復する',
+        description: '拘束や食べられなどから抜け出すと、失った最大ヘルスの30%を回復する',
         category: SkillCategory.Passive,
         mpCost: 0,
         priority: ActionPriority.NormalAction,

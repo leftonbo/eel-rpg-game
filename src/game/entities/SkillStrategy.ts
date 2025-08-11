@@ -99,6 +99,11 @@ export class StruggleStrategy implements SkillStrategy {
             player.struggleAttempts = 0;
             player.statusEffects.removeEffect(StatusEffectType.Restrained);
             player.statusEffects.removeEffect(StatusEffectType.Eaten);
+            player.statusEffects.removeEffect(StatusEffectType.Cocoon);
+            player.statusEffects.removeEffect(StatusEffectType.Sleep);
+
+            // Apply escape recovery passive skill
+            player.battleActions?.applyEscapeRecovery();
             
             // Notify agility experience for successful escape
             if (player.agilityExperienceCallback) {

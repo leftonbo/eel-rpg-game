@@ -54,6 +54,7 @@ export class PlayerBattleActions {
             this.player.statusEffects.removeEffect(StatusEffectType.Restrained);
             this.player.statusEffects.removeEffect(StatusEffectType.Eaten);
             this.player.statusEffects.removeEffect(StatusEffectType.Cocoon);
+            this.player.statusEffects.removeEffect(StatusEffectType.Sleep);
             
             // Apply escape recovery passive skill
             this.applyEscapeRecovery();
@@ -192,7 +193,7 @@ export class PlayerBattleActions {
     /**
      * 脱出回復パッシブスキルの適用
      */
-    private applyEscapeRecovery(): string[] {
+    public applyEscapeRecovery(): string[] {
         const messages: string[] = [];
         const passiveSkills = this.player.getUnlockedPassiveSkills();
         

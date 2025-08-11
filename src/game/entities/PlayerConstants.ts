@@ -62,8 +62,8 @@ export const AGILITY_EXP_ENHANCED_FAILED_ESCAPE = 800;
 /** 再生パッシブの回復量計算用除数（最大HP÷50） */
 export const REGENERATION_HEAL_DIVISOR = 50;
 
-/** 脱出回復パッシブの回復率（失った最大HPの20%） */
-export const ESCAPE_RECOVERY_RATE = 0.2;
+/** 脱出回復パッシブの回復率（失った最大HPの30%） */
+export const ESCAPE_RECOVERY_RATE = 0.3;
 
 /** パワーアタックのデフォルトダメージ倍率 */
 export const POWER_ATTACK_DEFAULT_MULTIPLIER = 2.5;
