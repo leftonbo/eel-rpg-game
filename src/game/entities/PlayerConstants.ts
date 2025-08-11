@@ -89,8 +89,7 @@ export const STRUGGLE_ATTEMPT_INCREASE_FAIL = 4;
 /** MP不足時のもがく失敗試行回数増加 */
 export const STRUGGLE_ATTEMPT_INCREASE_FAIL_NO_MP = 8;
 
-/** エンデュランスでフルMP回復が可能なレベル */
-export const ENDURANCE_FULL_MP_RECOVERY_LEVEL = 3;
+
 
 /** アジリティでもがく時ダメージが発生するレベル */
 export const AGILITY_DAMAGE_DEALING_LEVEL = 5;

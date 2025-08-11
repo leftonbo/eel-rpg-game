@@ -191,6 +191,26 @@ export class PlayerBattleActions {
     }
     
     /**
+     * 防御・じっとする時のMP回復パッシブ効果を適用
+     * @returns メッセージ配列
+     */
+    public applyDefenseMpRecovery(): string[] {
+        const messages: string[] = [];
+        const passiveSkills = this.player.getUnlockedPassiveSkills();
+        
+        const hasMpRecoveryOnDefense = passiveSkills.some(skill => skill.passiveEffect === 'mp-recovery-on-defense');
+        if (hasMpRecoveryOnDefense) {
+            const recoveryAmount = Math.floor(this.player.maxMp * 0.5); // 50% MP recovery
+            const actualRecovery = this.player.recoverMp(recoveryAmount);
+            if (actualRecovery > 0) {
+                messages.push(`MPを${actualRecovery}回復した！`);
+            }
+        }
+        
+        return messages;
+    }
+    
+    /**
      * 脱出回復パッシブスキルの適用
      */
     public applyEscapeRecovery(): string[] {

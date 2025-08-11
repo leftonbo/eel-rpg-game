@@ -143,18 +143,15 @@ export class StruggleStrategy implements SkillStrategy {
  * 防御戦略
  */
 export class DefendStrategy implements SkillStrategy {
-    execute(player: Player, skillData: SkillData): SkillResult {
+    execute(player: Player, _skillData: SkillData): SkillResult {
         player.defend();
         
-        // Check if endurance level 3+ for MP recovery
-        const enduranceLevel = player.abilitySystem.getAbility(AbilityType.Endurance)?.level || 0;
-        if (enduranceLevel >= PlayerConstants.ENDURANCE_FULL_MP_RECOVERY_LEVEL) {
-            player.mp = player.maxMp;
-        }
+        // Apply MP recovery passive effect if available
+        const mpRecoveryMessages = player.battleActions.applyDefenseMpRecovery();
         
         return {
             success: true,
-            message: `${player.name}は${skillData.name}の構えを取った！`
+            message: `${player.name}は防御している！${mpRecoveryMessages.length > 0 ? ' ' + mpRecoveryMessages[0] : ''}`
         };
     }
 }
@@ -163,18 +160,15 @@ export class DefendStrategy implements SkillStrategy {
  * じっとする戦略
  */
 export class StayStillStrategy implements SkillStrategy {
-    execute(player: Player, skillData: SkillData): SkillResult {
+    execute(player: Player, _skillData: SkillData): SkillResult {
         player.stayStill();
         
-        // Check if endurance level 3+ for MP recovery
-        const enduranceLevel = player.abilitySystem.getAbility(AbilityType.Endurance)?.level || 0;
-        if (enduranceLevel >= PlayerConstants.ENDURANCE_FULL_MP_RECOVERY_LEVEL) {
-            player.mp = player.maxMp;
-        }
+        // Apply MP recovery passive effect if available
+        const mpRecoveryMessages = player.battleActions.applyDefenseMpRecovery();
         
         return {
             success: true,
-            message: `${player.name}は${skillData.name}して体力を回復した！`
+            message: `${player.name}はじっとして体力を回復した！${mpRecoveryMessages.length > 0 ? ' ' + mpRecoveryMessages[0] : ''}`
         };
     }
 }

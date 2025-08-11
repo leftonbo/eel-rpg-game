@@ -494,9 +494,7 @@ export class Player extends Actor {
      */
     private canUseSkill(skillData: SkillData): boolean {
         // Basic checks
-        if (this.statusEffects.isExhausted()) return false;
         if (!this.statusEffects.canAct()) return false;
-        if (!this.statusEffects.canUseSkills()) return false;
         
         // Special state checks
         if (this.isDefeated() || this.statusEffects.isDoomed() || this.statusEffects.isSleeping()) {
@@ -507,15 +505,15 @@ export class Player extends Actor {
         switch (skillData.id) {
             case 'power-attack':
             case 'ultra-smash':
-                return true;
+                return this.statusEffects.canUseSkills();
             case 'struggle':
-                return this.statusEffects.isRestrained() || this.statusEffects.isEaten();
+                return this.statusEffects.canUseSkills() && (this.statusEffects.isRestrained() || this.statusEffects.isEaten());
             case 'defend':
                 return true;
             case 'stay-still':
                 return this.statusEffects.isRestrained() || this.statusEffects.isEaten();
             default:
-                return true;
+                return this.statusEffects.canUseSkills();
         }
     }
     

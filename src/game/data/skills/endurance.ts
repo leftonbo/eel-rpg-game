@@ -6,7 +6,7 @@ export const ENDURANCE_PASSIVE_SKILLS: SkillData[] = [
     {
         id: 'mp-recovery-on-defense',
         name: 'MP回復強化',
-        description: '「防御」または「じっとする」コマンド時、MPが全回復するようになる',
+        description: '「防御」または「じっとする」コマンド時、MPが50%回復するようになる',
         category: SkillCategory.Passive,
         mpCost: 0,
         priority: ActionPriority.NormalAction,

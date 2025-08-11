@@ -262,13 +262,7 @@ export class BattleScene {
      * プレイヤー防御
      */
     private playerDefend(): void {
-        if (!this.player || !this.playerTurn) return;
-        
-        this.player.defend();
-        this.messageComponent.addBattleLogMessage(`${this.player.name}は身を守った！`, 'system', 'player');
-        
-        this.updateUI();
-        this.endPlayerTurn();
+        this.useSkill('defend');
     }
     
     /**
@@ -399,13 +393,7 @@ export class BattleScene {
      * プレイヤーじっとする
      */
     private playerStayStill(): void {
-        if (!this.player || !this.playerTurn) return;
-        
-        this.player.stayStill();
-        this.messageComponent.addBattleLogMessage(`${this.player.name}はじっとして体力を回復した`, 'heal', 'player');
-        
-        this.updateUI();
-        this.endPlayerTurn();
+        this.useSkill('stay-still');
     }
     
     /**
