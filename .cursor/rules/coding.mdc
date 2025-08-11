@@ -35,7 +35,7 @@ This file provides guidance to Cursor when working with code in this repository.
 ### ゲーム状態管理
 
 - **Game.ts**: メインゲームクラス、シーン間遷移とプレイヤー/ボス状態を管理
-- **GameState enum**: Title → BossSelect → Battle の状態遷移
+- **GameState enum**: Title → OutGame → Battle の状態遷移
 - 各シーンクラスがDOM操作とゲームロジックを分離
 
 ### エンティティシステム
@@ -59,8 +59,10 @@ This file provides guidance to Cursor when working with code in this repository.
 ### 特殊システム
 
 - **拘束システム**: もがく/じっとする選択、解除時ボス3ターン気絶
-- **食べられ状態**: HP0+拘束時発生、最大HP吸収によるゲームオーバー
+- **食べられ状態**: HP0+拘束時発生、最大HPを吸収される
 - **戦闘不能**: HP0で5ターン行動不能後50%回復
+- **再起不能**: 最大HP0で再起不能、ボスからとどめ攻撃を受け、その後は永続の敗北イベント
+- **敗北イベント**: ボスの体内に閉じ込められる永続イベント演出、一部は8ターンごとに特殊演出
 - **アイテムシステム**: ターン消費なし、回復薬（状態異常解除）とアドレナリン注射（無敵）
 
 ## 重要な実装パターン
@@ -74,12 +76,11 @@ This file provides guidance to Cursor when working with code in this repository.
 概要：
 
 1. `src/game/data/bosses/{boss-id}.ts` でボスデータ作成
-2. **🚀 設定更新不要！** Vite glob importにより自動認識される
-3. EJSテンプレートシステムでHTML自動生成（手動HTML編集は不要）
-4. 必要に応じて新しい状態異常をStatusEffectTypesに追加
-5. エクスプローラーレベル設定（explorerLevelRequired）でボス解禁制御
-6. 記念品システム（victoryTrophy/defeatTrophy）の設定
-7. テスト実行で動作確認
+2. EJSテンプレートシステムでHTML自動生成（手動HTML編集は不要）
+3. 必要に応じて新しい状態異常をStatusEffectTypesに追加
+4. エクスプローラーレベル設定（explorerLevelRequired）でボス解禁制御
+5. 記念品システム（victoryTrophy/defeatTrophy）の設定
+6. テスト実行で動作確認
 
 ### 状態異常追加
 
@@ -100,9 +101,16 @@ This file provides guidance to Cursor when working with code in this repository.
 ```typescript
 interface PlayerSaveData {
     abilities: { [key: string]: AbilityData };     // アビリティレベル/経験値
-    equipment: { weapon: string; armor: string; };  // 装備武器/防具ID
+    equipment: {
+        weapon: string;
+        armor: string;
+        gloves: string;
+        belt: string;
+    };                                              // 装備武器/防具/手袋/ベルトID
     memorials: MemorialSaveData;                    // ボス撃破記録・統計
     playerInfo: { name: string; icon: string; };    // プレイヤー名・アイコン
+    readDocuments: string[];                        // 既読ドキュメントID（未読バッジシステム用）
+    shownChangelogIndex: number;                    // 表示済み最新チェンジログエントリのインデックス
     version: number;                                // データバージョン（マイグレーション用）
 }
 ```
@@ -135,7 +143,7 @@ interface PlayerSaveData {
 
 ### ゲームバランス調整
 
-- Player.ts: maxHp=100, baseAttackPower=5
+- Player.ts: maxHp=100, baseAttackPower=10
 - 状態異常ダメージ: 火だるま=8, 毒=3（毎ターン）
 - アビリティ: 6種類（Combat, Toughness, Endurance, Agility, CraftWork, Explorer）
 - 装備: 武器4段階（素手→ナイフ→剣→大剣）、防具4段階（裸→服→軽装甲→重装甲）
