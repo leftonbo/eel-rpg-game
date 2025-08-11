@@ -430,6 +430,7 @@ export class BattleScene {
     private endPlayerTurn(): void {
         this.playerTurn = false;
         
+        this.updateUI();
         if (!this.checkBattleEnd()) {
             setTimeout(() => {
                 this.bossTurn();
