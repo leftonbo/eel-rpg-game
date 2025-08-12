@@ -178,38 +178,40 @@ if (!boss.getCustomVariable<boolean>('hasUsedSpecialMove')) {
 
 ```typescript
 interface MessageData {
-    text: string;                // 表示テキスト
-    speaker?: string;           // 話者名（未指定時はボス名）
-    delay?: number;             // 次のメッセージまでの遅延（ms、デフォルト: 2000）
-    bgm?: string;               // BGM変更（オプション）
-    effect?: string;            // 演出効果（オプション）
+    speaker?: 'player' | 'boss' | 'system';  // 話者（省略時は'system'）
+    style?: 'default' | 'talk';              // ダイアログスタイル（'default'または'talk'）
+    text: string;                            // 表示テキスト
 }
 
 // 使用例
 battleStartMessages: [
     {
+        text: 'あなたは竜との戦いに挑む...',
+        speaker: 'player',
+        style: 'default'
+    },
+    {
         text: '「ようこそ、我が領域へ...」',
-        speaker: '魔界の竜',
-        delay: 3000
+        speaker: 'boss',
+        style: 'talk'
     },
     {
-        text: 'この空間では、私が絶対的な支配者だ',
-        delay: 2500
-    },
-    {
-        text: '覚悟はできているか？',
-        delay: 2000
+        text: '「この空間では、私が絶対的な支配者だ」',
+        speaker: 'boss',
+        style: 'talk'
     }
 ],
 
 victoryMessages: [
     {
         text: '「グルルル...まだ、終わっていない...」',
-        delay: 2000
+        speaker: 'boss',
+        style: 'talk'
     },
     {
         text: 'エルナルは勝利したが、ボスはまだ何かを企んでいるようだ...',
-        delay: 3000
+        speaker: 'player',
+        style: 'default'
     }
 ]
 ```
