@@ -372,8 +372,8 @@ export class StatusEffectManager {
     }
     
     // Message generation helper methods
-    static generateTickMessage(target: Actor, effect: StatusEffectType, damage: number): string | null {
-        const config = StatusEffectManager.configs.get(effect);
+    static generateTickMessage(target: Actor, statusType: StatusEffectType, damage: number): string | null {
+        const config = StatusEffectManager.configs.get(statusType);
         if (!config) return null;
         
         const isPlayer = StatusEffectManager.isPlayerActor(target);
@@ -391,8 +391,8 @@ export class StatusEffectManager {
         return `${config.name}によって${damage}のダメージ！`;
     }
     
-    static generateRemoveMessage(target: Actor, effect: StatusEffectType): string | null {
-        const config = StatusEffectManager.configs.get(effect);
+    static generateRemoveMessage(target: Actor, statusType: StatusEffectType): string | null {
+        const config = StatusEffectManager.configs.get(statusType);
         if (!config) return null;
         
         const isPlayer = StatusEffectManager.isPlayerActor(target);
