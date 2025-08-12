@@ -1,4 +1,16 @@
+import { StatusEffectType } from '../systems/StatusEffectTypes';
 import { Player } from './Player';
+
+/**
+ * アイテム使用結果
+ */
+export interface ItemUseResult {
+    success: boolean;
+    healedHp?: number;
+    recoveredMp?: number;
+    removedStatusEffects?: StatusEffectType[];
+    addedStatusEffects?: StatusEffectType[];
+}
 
 /**
  * プレイヤーアイテムインターフェース
@@ -7,7 +19,7 @@ export interface PlayerItem {
     name: string;
     count: number;
     description: string;
-    use: (player: Player) => boolean;
+    use: (player: Player) => ItemUseResult;
     experienceGain: number; // Experience gain for using the item
 }
 
@@ -49,9 +61,9 @@ export class PlayerItemManager {
     /**
      * アイテムを使用
      */
-    useItem(itemName: string, player: Player): boolean {
+    useItem(itemName: string, player: Player): ItemUseResult {
         const item = this.items.get(itemName);
-        if (!item || item.count <= 0) return false;
+        if (!item || item.count <= 0) return { success: false };
         
         return item.use(player);
     }

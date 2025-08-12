@@ -7,7 +7,7 @@ import { SkillRegistry, SkillData } from '../data/skills';
 import { MemorialSystem } from '../systems/MemorialSystem';
 import { SkillStrategyFactory } from './SkillStrategy';
 import { PlayerEquipmentManager } from './PlayerEquipmentManager';
-import { PlayerItemManager } from './PlayerItemManager';
+import { ItemUseResult, PlayerItemManager } from './PlayerItemManager';
 import { PlayerBattleActions } from './PlayerBattleActions';
 import { PlayerProgressionManager } from './PlayerProgressionManager';
 import * as PlayerConstants from './PlayerConstants';
@@ -420,7 +420,7 @@ export class Player extends Actor {
         this.battleActions.defend();
     }
     
-    useItem(itemName: string): boolean {
+    useItem(itemName: string): ItemUseResult {
         return this.itemManager.useItem(itemName, this);
     }
     
