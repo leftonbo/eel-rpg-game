@@ -11,7 +11,7 @@ import { BattleMessageComponent } from './components/BattleMessageComponent';
 import { BattleEventHandler, EventCallbacks } from './utils/BattleEventHandler';
 import { PLAYER_ITEMS } from '../data/PlayerItems';
 import { StatusEffectManager } from '../systems/StatusEffect';
-import { ItemUseResult } from '../entities/PlayerItemManager';
+import { ItemUseResult, ItemUseFailureReason } from '../entities/PlayerItemManager';
 
 /**
  * 戦闘画面を定義するクラス
@@ -372,7 +372,18 @@ export class BattleScene {
                 'omamori': 'おまもり'
             };
             const itemDisplayName = itemDisplayNames[itemName] || itemName;
-            this.messageComponent.addBattleLogMessage(`${itemDisplayName}を使用できない！`, 'system', 'player');
+            
+            // Display specific failure reason
+            let failureMessage = `${itemDisplayName}を使用できない！`;
+            if (result.failureReason === ItemUseFailureReason.NotEnoughCount) {
+                failureMessage = `${itemDisplayName}が足りない！`;
+            } else if (result.failureReason === ItemUseFailureReason.InvalidCondition) {
+                if (itemName === 'omamori') {
+                    failureMessage = `${itemDisplayName}は今は使えない...`;
+                }
+            }
+            
+            this.messageComponent.addBattleLogMessage(failureMessage, 'system', 'player');
         }
     }
 

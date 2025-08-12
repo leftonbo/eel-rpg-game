@@ -1,8 +1,44 @@
 import { AbilityType } from '../systems/AbilitySystem';
 import { StatusEffectType } from '../systems/StatusEffectTypes';
 import { Player } from '../entities/Player';
-import { ItemUseResult } from '../entities/PlayerItemManager';
+import { ItemUseResult, ItemUseFailureReason } from '../entities/PlayerItemManager';
 
+/**
+ * アイテム使用前の共通バリデーション
+ */
+function validateItemUse(player: Player, itemId: string): ItemUseResult | null {
+    if (player.getItemCount(itemId) <= 0) {
+        return { success: false, failureReason: ItemUseFailureReason.NotEnoughCount };
+    }
+    return null; // バリデーション成功
+}
+
+/**
+ * 特殊条件アイテム（おまもり等）のバリデーション
+ */
+function validateSpecialConditionItem(player: Player, itemId: string): ItemUseResult | null {
+    const baseValidation = validateItemUse(player, itemId);
+    if (baseValidation) return baseValidation;
+    
+    if (itemId === 'omamori') {
+        // おまもりは特定の状態でのみ使用可能
+        if (!player.isKnockedOut()
+            && !player.isRestrained()
+            && !player.isEaten()
+            && !player.statusEffects.hasEffect(StatusEffectType.Cocoon)
+            && !player.statusEffects.hasEffect(StatusEffectType.Sleep)) {
+            return { success: false, failureReason: ItemUseFailureReason.InvalidCondition };
+        }
+    }
+    
+    return null; // バリデーション成功
+}
+
+/**
+ * アイテムの定義データ（テンプレート）
+ * ゲーム全体で共有される設定情報を持つ
+ * PlayerItemManagerのPlayerItemインスタンス生成に使用される
+ */
 export interface PlayerItemData {
     id: string;
     name: string;
@@ -29,7 +65,8 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
             return baseCount + craftworkLevel;
         },
         use: (player: Player) => {
-            if (player.getItemCount('heal-potion') <= 0) return { success: false };
+            const validation = validateItemUse(player, 'heal-potion');
+            if (validation) return validation;
             
             // Heal 80% of max HP
             const healAmount = Math.floor(player.maxHp * 0.8);
@@ -65,7 +102,8 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
             return count;
         },
         use: (player: Player) => {
-            if (player.getItemCount('energy-drink') <= 0) return { success: false };
+            const validation = validateItemUse(player, 'energy-drink');
+            if (validation) return validation;
             
             // Set MP to max
             const currentMp = player.mp;
@@ -106,7 +144,8 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
             return count;
         },
         use: (player: Player) => {
-            if (player.getItemCount('adrenaline') <= 0) return { success: false };
+            const validation = validateItemUse(player, 'adrenaline');
+            if (validation) return validation;
             
             const addedEffects: StatusEffectType[] = [];
             if (player.statusEffects.addEffect(StatusEffectType.Invincible)) {
@@ -138,7 +177,8 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
             return count;
         },
         use: (player: Player) => {
-            if (player.getItemCount('elixir') <= 0) return { success: false };
+            const validation = validateItemUse(player, 'elixir');
+            if (validation) return validation;
             
             // Full heal
             const actualHealedHp = player.heal(player.maxHp);
@@ -184,16 +224,8 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
             return count;
         },
         use: (player: Player) => {
-            if (player.getItemCount('omamori') <= 0) return { success: false };
-            
-            // Can only be used when knocked out, restrained, or eaten, or in special states
-            if (!player.isKnockedOut()
-                && !player.isRestrained()
-                && !player.isEaten()
-                && !player.statusEffects.hasEffect(StatusEffectType.Cocoon)
-                && !player.statusEffects.hasEffect(StatusEffectType.Sleep)) {
-                return { success: false };
-            }
+            const validation = validateSpecialConditionItem(player, 'omamori');
+            if (validation) return validation;
             
             // Remove special states
             const removedSpecialEffects: StatusEffectType[] = [];
