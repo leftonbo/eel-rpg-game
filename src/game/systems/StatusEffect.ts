@@ -348,6 +348,26 @@ export class StatusEffectManager {
         return highestPriority;
     }
     
+    // Generate apply message for status effect
+    static generateApplyMessage(target: Actor, statusType: StatusEffectType): string | null {
+        const config = StatusEffectManager.configs.get(statusType);
+        if (!config) return null;
+        
+        const isPlayer = StatusEffectManager.isPlayerActor(target);
+        const messages = config.messages;
+        
+        if (messages) {
+            const template = isPlayer ? messages.onApplyPlayer : messages.onApplyBoss;
+            if (template === "") return null; // Empty string means hide message
+            if (template) {
+                return StatusEffectManager.formatMessageTemplate(template, target);
+            }
+        }
+        
+        // Default message if no custom template
+        return `${target.displayName}が${config.name}状態になった！`;
+    }
+
     // Helper method for Actor type detection
     private static isPlayerActor(target: Actor): boolean {
         // Check if the target is an instance of Player
@@ -363,7 +383,7 @@ export class StatusEffectManager {
             const template = isPlayer ? messages.onTickPlayer : messages.onTickBoss;
             if (template === "") return null; // Empty string means hide message
             if (template) {
-                return this.formatMessageTemplate(template, target, damage);
+                return StatusEffectManager.formatMessageTemplate(template, target, damage);
             }
         }
         
@@ -379,7 +399,7 @@ export class StatusEffectManager {
             const template = isPlayer ? messages.onRemovePlayer : messages.onRemoveBoss;
             if (template === "") return null; // Empty string means hide message
             if (template) {
-                return this.formatMessageTemplate(template, target);
+                return StatusEffectManager.formatMessageTemplate(template, target);
             }
         }
         
@@ -387,7 +407,7 @@ export class StatusEffectManager {
         return `${effect.name}が解除された`;
     }
     
-    private formatMessageTemplate(template: string, target: Actor, damage?: number): string {
+    private static formatMessageTemplate(template: string, target: Actor, damage?: number): string {
         return template.replace(/{(\w+)}/g, (_match, variable) => {
             switch (variable) {
                 case 'name':

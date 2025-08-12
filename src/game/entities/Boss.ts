@@ -730,7 +730,10 @@ export class Boss extends Actor {
         // Custom finishing move logic
         if (action.statusEffect) {
             player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
-            messages.push(`${player.name}が${StatusEffectManager.getEffectName(action.statusEffect)}状態になった！`);
+            const applyMessage = StatusEffectManager.generateApplyMessage(player, action.statusEffect);
+            if (applyMessage) {
+                messages.push(applyMessage);
+            }
         }
         
         return messages;
@@ -742,7 +745,10 @@ export class Boss extends Actor {
         // Post-defeat actions (status effects only, no HP/MP changes)
         if (action.statusEffect) {
             player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
-            messages.push(`${player.name}が${StatusEffectManager.getEffectName(action.statusEffect)}状態になった！`);
+            const applyMessage = StatusEffectManager.generateApplyMessage(player, action.statusEffect);
+            if (applyMessage) {
+                messages.push(applyMessage);
+            }
         }
         
         return messages;
@@ -785,7 +791,10 @@ export class Boss extends Actor {
         
         if (Math.random() < statusChance) {
             player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
-            messages.push(`${player.name}が${StatusEffectManager.getEffectName(action.statusEffect)}状態になった！`);
+            const applyMessage = StatusEffectManager.generateApplyMessage(player, action.statusEffect);
+            if (applyMessage) {
+                messages.push(applyMessage);
+            }
         } else if (!action.damageFormula) {
             // If it's a status-only attack and the status didn't apply
             // we still want to show a message
