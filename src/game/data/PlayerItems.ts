@@ -1,5 +1,5 @@
 import { AbilityType } from '../systems/AbilitySystem';
-import { StatusEffectType } from '../systems/StatusEffect';
+import { StatusEffectType } from '../systems/StatusEffectTypes';
 import { Player } from '../entities/Player';
 import { ItemUseResult } from '../entities/PlayerItemManager';
 
