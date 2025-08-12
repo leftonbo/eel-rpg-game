@@ -316,6 +316,7 @@ newBossData.finishingMove = function() {
 };
 
 // getDialogue メソッドの実装例
+// 現在は使用されません (旧ボスには互換性のために残しています)
 newBossData.getDialogue = function(situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') {
     const dialogues: Record<string, string[]> = {
         'battle-start': [
@@ -527,16 +528,14 @@ aiStrategy: (boss, player, turn) => {
     // プレイヤーが戦闘不能
     if (player.isKnockedOut()) {
         if (player.isRestrained()) {
-            // 拘束+戦闘不能時：高確率で食べる
-            if (Math.random() < 0.85) {
-                return {
-                    type: ActionType.EatAttack,
-                    name: '丸呑み',
-                    description: '拘束した獲物を丸呑みする',
-                    messages: ['丸呑みのメッセージ...'],
-                    weight: 1
-                };
-            }
+            // 拘束+戦闘不能時：確実に食べる
+            return {
+                type: ActionType.EatAttack,
+                name: '丸呑み',
+                description: '拘束した獲物を丸呑みする',
+                messages: ['丸呑みのメッセージ...'],
+                weight: 1
+            };
         } else {
             // 戦闘不能時：拘束or食べる
             const random = Math.random();
