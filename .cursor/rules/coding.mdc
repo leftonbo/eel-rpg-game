@@ -1,5 +1,6 @@
 ---
-alwaysApply: true
+description: Basic coding rules for this project
+alwaysApply: false
 ---
 # Rules for Cursor coding
 
