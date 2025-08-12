@@ -33,23 +33,37 @@
 ```typescript
 interface BossData {
     id: string;                     // ユニークなボスID
-    name: string;                   // 内部名称
-    displayName: string;            // 表示名（絵文字含む）
+    name: string;                   // [非推奨] 内部名称（displayNameを使用）
+    displayName: string;            // 表示名
+    icon: string;                   // ボスのアイコン（絵文字）
     description: string;            // 短い説明
+    appearanceNote?: string;        // ボス外観説明文
     questNote: string;              // クエストノート（詳細説明）
     maxHp: number;                  // 最大HP
     attackPower: number;            // 攻撃力
     actions: BossAction[];          // 行動リスト
     personality?: string[];         // 個性台詞（オプション）
     aiStrategy?: (boss: Boss, player: Player, turn: number) => BossAction;  // AI戦略
-    getDialogue?: (situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') => string;  // 状況別台詞
-    finishingMove?: () => string[]; // フィニッシュムーブ
-    icon?: string;                  // アイコン（絵文字）
-    guestCharacterInfo?: {          // ゲストキャラクター情報（オプション）
-        creator: string;
-        source?: string;
-    };
+    getDialogue?: (situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') => string;  // [非推奨] 状況別台詞（battleStartMessages等を使用）
+    finishingMove?: () => string[]; // 自動とどめ攻撃のメッセージ
+    suppressAutoFinishingMove?: boolean; // 自動とどめ攻撃を抑制し、AI戦略でカスタムとどめ攻撃を処理
+    guestCharacterInfo?: BossGuestCharacterInfo; // ゲストキャラクター情報
+    battleStartMessages?: MessageData[]; // 戦闘開始時のメッセージ進行
+    victoryMessages?: MessageData[];     // プレイヤー勝利時のメッセージ進行
+    customVariables?: Record<string, any>; // ボス固有のカスタム変数（AI戦略用）
     explorerLevelRequired?: number; // エクスプローラーアビリティ解禁レベル（未指定時は0）
+    victoryTrophy?: TrophyData;     // 勝利時記念品（外側から採れるもの）
+    defeatTrophy?: TrophyData;      // 敗北時記念品（内側から採れるもの）
+}
+
+interface BossGuestCharacterInfo {
+    creator: string;                // 制作者名
+    characterName?: string;         // 元となったキャラクター名
+}
+
+interface TrophyData {
+    name: string;                   // 記念品名
+    description: string;            // 記念品の説明
 }
 ```
 
@@ -64,15 +78,15 @@ interface BossData {
 - `CocoonAction` - 繭状態中の行動
 - `EatAttack` - 食べる攻撃
 - `DevourAttack` - 食べられた状態での攻撃
-- `FinishingMove` - カスタムとどめ攻撃
 - `PostDefeatedAttack` - プレイヤー敗北後の攻撃
+- `FinishingMove` - カスタムとどめ攻撃
 - `Skip` - 行動スキップ
 
 #### BossActionプロパティ
 
 ```typescript
 interface BossAction {
-    id?: string;                    // アクション固有ID（推奨、将来必須化予定）
+    id: string;                     // アクション固有ID（必須）
     type: ActionType;               // 行動タイプ
     name: string;                   // 行動名
     description: string;            // 行動説明
@@ -83,6 +97,7 @@ interface BossAction {
     statusDuration?: number;        // 状態異常持続ターン
     weight: number;                 // AI選択重み
     canUse?: (boss: Boss, player: Player, turn: number) => boolean;  // 使用条件
+    onPreUse?: (action: BossAction, boss: Boss, player: Player, turn: number) => BossAction | null; // 使用前コールバック（行動修正用）
     onUse?: (boss: Boss, player: Player, turn: number) => string[];  // カスタム行動コールバック
     hitRate?: number;               // 命中率（デフォルト: 0.95）
     criticalRate?: number;          // クリティカル率（デフォルト: 0.05）
@@ -157,6 +172,50 @@ if (!boss.getCustomVariable<boolean>('hasUsedSpecialMove')) {
 
 このシステムで、強力な特殊技を一度だけ使用可能にしたり、使用後に一定ターン使用不可にしたりできます。
 
+### メッセージシステム
+
+新しいメッセージシステムでは、戦闘開始時や勝利時に段階的なメッセージ進行を設定できます：
+
+```typescript
+interface MessageData {
+    text: string;                // 表示テキスト
+    speaker?: string;           // 話者名（未指定時はボス名）
+    delay?: number;             // 次のメッセージまでの遅延（ms、デフォルト: 2000）
+    bgm?: string;               // BGM変更（オプション）
+    effect?: string;            // 演出効果（オプション）
+}
+
+// 使用例
+battleStartMessages: [
+    {
+        text: '「ようこそ、我が領域へ...」',
+        speaker: '魔界の竜',
+        delay: 3000
+    },
+    {
+        text: 'この空間では、私が絶対的な支配者だ',
+        delay: 2500
+    },
+    {
+        text: '覚悟はできているか？',
+        delay: 2000
+    }
+],
+
+victoryMessages: [
+    {
+        text: '「グルルル...まだ、終わっていない...」',
+        delay: 2000
+    },
+    {
+        text: 'エルナルは勝利したが、ボスはまだ何かを企んでいるようだ...',
+        delay: 3000
+    }
+]
+```
+
+**注意**: 新しいメッセージシステムは`getDialogue`メソッドに優先して使用されます。
+
 ## 実装手順
 
 ### 1. 新ボスファイルの作成
@@ -164,11 +223,13 @@ if (!boss.getCustomVariable<boolean>('hasUsedSpecialMove')) {
 `src/game/data/bosses/new-boss.ts` を作成：
 
 ```typescript
-import { BossData, ActionType, BossAction } from '../../entities/Boss';
+import { Player } from '@/game/entities/Player';
+import { BossData, ActionType, BossAction, Boss } from '../../entities/Boss';
 import { StatusEffectType } from '../../systems/StatusEffectTypes';
 
 const newBossActions: BossAction[] = [
     {
+        id: 'basic-attack',
         type: ActionType.Attack,
         name: '基本攻撃',
         description: '基本的な攻撃',
@@ -177,6 +238,7 @@ const newBossActions: BossAction[] = [
         playerStateCondition: 'normal'
     },
     {
+        id: 'devour-attack',
         type: ActionType.DevourAttack,
         name: '体内吸収',
         description: '体内で獲物の生命力を吸収する',
@@ -190,6 +252,7 @@ const newBossActions: BossAction[] = [
         playerStateCondition: 'eaten'
     },
     {
+        id: 'special-attack',
         type: ActionType.Attack,
         name: '特殊攻撃',
         description: '特殊な効果を持つ攻撃',
@@ -367,6 +430,20 @@ npm run build      # ビルドテスト
 - `ScorpionPoison` - サソリ毒（スコーピオンキャリア）
 - `Anesthesia` - 麻酔（スコーピオンキャリア）
 - `Weakening` - 弱体化（スコーピオンキャリア）
+- `Fear` - 恐怖（闇のおばけ）
+- `Oblivion` - 忘却（闇のおばけ）
+- `Petrified` - 石化（地底のワーム）
+- `Darkness` - 暗闇（蝙蝠のヴァンパイア）
+- `Sleepy` - 眠気（ふわふわドラゴン）
+- `Blessed` - 祝福（セラフマスコット）
+- `HolySlimed` - 聖なるスライム（セラフマスコット）
+- `Overwhelmed` - 圧倒（セラフマスコット）
+- `SalvationState` - 救済状態（セラフマスコット）
+- `FalseSecurity` - 偽の安心（双面の道化師）
+- `Manic` - 躁状態（双面の道化師）
+- `Bipolar` - 双極性（双面の道化師）
+- `Plushified` - ぬいぐるみ化（双面の道化師）
+- `DemonStomach` - 魔界の胃袋（魔界の竜）
 
 **特殊系状態異常**
 - `AphrodisiacPoison` - 媚薬毒（ドリームデーモン）
@@ -518,9 +595,9 @@ aiStrategy: (boss, player, turn) => {
 
 現在のボス設定を基にした推奨値：
 
-- **初級ボス**: HP 150-200, 攻撃力 12-15
-- **中級ボス**: HP 250-350, 攻撃力 15-20
-- **上級ボス**: HP 350-450, 攻撃力 18-22
+- **初級ボス**: HP 250-450, 攻撃力 12-18
+- **中級ボス**: HP 580-800, 攻撃力 13-20
+- **上級ボス**: HP 970-2600, 攻撃力 12-20
 
 ### 既存ボスとの比較
 
@@ -565,9 +642,9 @@ aiStrategy: (boss, player, turn) => {
 - 魔界の竜: HP 2600, 攻撃力 20 (最高難易度ボス)
 
 **バランス設計指針**
-- HP 150-200: 状態異常特化型（短期決戦型）
-- HP 250-350: バランス型（中期戦闘型）
-- HP 350-450: 高耐久型（長期戦闘型）
+- HP 250-450: 初級〜中級ボス（基本システム習得用）
+- HP 580-800: 上級ボス（各種状態異常・特殊システム）
+- HP 970-2600: 最高級ボス（高難易度・複合システム）
 - 攻撃力は特殊能力の強さに反比例させる
 
 ## エクスプローラーアビリティとボス解禁システム
