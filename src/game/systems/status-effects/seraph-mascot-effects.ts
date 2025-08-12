@@ -30,6 +30,12 @@ export const seraphMascotEffectsConfigs: StatusEffectConfig[] = [
         modifiers: {
             attackPower: 0.7,
             struggleRate: 0.4
+        },
+        messages: {
+            onApplyPlayer: '{name}は神聖な粘液にまみれた！',
+            onApplyBoss: '{name}は神聖な粘液にまみれた！',
+            onRemovePlayer: '{name}の粘液が抜けた',
+            onRemoveBoss: '{name}の粘液が抜けた'
         }
     },
     {

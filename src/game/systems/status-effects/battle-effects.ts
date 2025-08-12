@@ -15,6 +15,13 @@ export const battleEffectsConfigs: StatusEffectConfig[] = [
         isDebuff: false,
         modifiers: {
             damageReceived: 0.5
+        },
+        messages: {
+            // システムで制御するためメッセージは出さない
+            onApplyPlayer: '',
+            onApplyBoss: '',
+            onRemovePlayer: '',
+            onRemoveBoss: ''
         }
     },
     {
@@ -62,12 +69,12 @@ export const battleEffectsConfigs: StatusEffectConfig[] = [
             target.takeDamage(damage);
         },
         messages: {
-            onApplyPlayer: '{name}は火だるま状態になった！',
-            onApplyBoss: '{name}は火だるま状態になった！',
+            onApplyPlayer: '{name}は火だるまになった！',
+            onApplyBoss: '{name}は火だるまになった！',
             onTickPlayer: '{name}は火だるま状態で{damage}のダメージを受けた！',
             onTickBoss: '{name}は火だるま状態で{damage}のダメージを受けた！',
-            onRemovePlayer: '{name}の火だるま状態が回復した',
-            onRemoveBoss: '{name}の火だるま状態が回復した'
+            onRemovePlayer: '{name}に着いていた火が消えた',
+            onRemoveBoss: '{name}に着いていた火が消えた'
         }
     },
     {
@@ -79,6 +86,12 @@ export const battleEffectsConfigs: StatusEffectConfig[] = [
         isDebuff: true,
         modifiers: {
             struggleRate: 0.5
+        },
+        messages: {
+            onApplyPlayer: '{name}は魅了された！',
+            onApplyBoss: '{name}は魅了された！',
+            onRemovePlayer: '{name}の魅了が解けた',
+            onRemoveBoss: '{name}の魅了が解けた'
         }
     },
     {
@@ -90,6 +103,12 @@ export const battleEffectsConfigs: StatusEffectConfig[] = [
         isDebuff: true,
         modifiers: {
             attackPower: 0.5
+        },
+        messages: {
+            onApplyPlayer: '{name}は鈍足になった！',
+            onApplyBoss: '{name}は鈍足になった！',
+            onRemovePlayer: '{name}の鈍足が解けた',
+            onRemoveBoss: '{name}の鈍足が解けた'
         }
     },
     {
@@ -145,6 +164,12 @@ export const battleEffectsConfigs: StatusEffectConfig[] = [
         isDebuff: true,
         modifiers: {
             struggleRate: 0.5
+        },
+        messages: {
+            onApplyPlayer: '{name}は粘液まみれになった！',
+            onApplyBoss: '{name}は粘液まみれになった！',
+            onRemovePlayer: '{name}の粘液が抜けた',
+            onRemoveBoss: '{name}の粘液が抜けた'
         }
     },
     {
@@ -156,6 +181,12 @@ export const battleEffectsConfigs: StatusEffectConfig[] = [
         isDebuff: true,
         modifiers: {
             canAct: false
+        },
+        messages: {
+            onApplyPlayer: '{name}は眠ってしまった！',
+            onApplyBoss: '{name}は眠った！',
+            onRemovePlayer: '{name}の眠りが解けた',
+            onRemoveBoss: '{name}の眠りが解けた'
         }
     }
 ];

@@ -50,6 +50,12 @@ export const coreStatesConfigs: StatusEffectConfig[] = [
             damageReceived: 1.5,
             struggleRate: 0.5, // Struggle success rate halved
             canUseSkills: false
+        },
+        messages: {
+            onApplyPlayer: '{name}は疲れ果てた！',
+            onApplyBoss: '{name}は疲れ果てた！',
+            onRemovePlayer: '{name}は再びスキルが使えるようになった',
+            onRemoveBoss: '{name}の疲れが解けた'
         }
     },
     {

@@ -12,6 +12,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
         modifiers: {
             attackPower: 0.3,
             accuracy: 0.3
+        },
+        messages: {
+            onApplyPlayer: '{name}は麻痺した！',
+            onApplyBoss: '{name}は麻痺した！',
+            onRemovePlayer: '{name}の麻痺が解けた',
+            onRemoveBoss: '{name}の麻痺が解けた'
         }
     },
     {
@@ -48,6 +54,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
         isDebuff: true,
         modifiers: {
             attackPower: 0.7
+        },
+        messages: {
+            onApplyPlayer: '{name}はねむけになった！',
+            onApplyBoss: '{name}はねむけになった！',
+            onRemovePlayer: '{name}のねむけが解けた',
+            onRemoveBoss: '{name}のねむけが解けた'
         }
     },
     {
@@ -60,6 +72,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
         modifiers: {
             attackPower: 0.4,
             damageReceived: 1.5
+        },
+        messages: {
+            onApplyPlayer: '{name}は脱力した！',
+            onApplyBoss: '{name}は脱力した！',
+            onRemovePlayer: '{name}の脱力が解けた',
+            onRemoveBoss: '{name}の脱力が解けた'
         }
     },
     {
@@ -96,6 +114,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
         isDebuff: true,
         modifiers: {
             attackPower: 0.1
+        },
+        messages: {
+            onApplyPlayer: '{name}は混乱した！',
+            onApplyBoss: '{name}は混乱した！',
+            onRemovePlayer: '{name}の混乱が解けた',
+            onRemoveBoss: '{name}の混乱が解けた'
         }
     },
     {
@@ -113,6 +137,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
             }
+        },
+        messages: {
+            onApplyPlayer: '{name}は発情した！',
+            onApplyBoss: '{name}は発情した！',
+            onRemovePlayer: '{name}の発情が解けた',
+            onRemoveBoss: '{name}の発情が解けた'
         }
     },
     {
@@ -132,6 +162,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
             }
+        },
+        messages: {
+            onApplyPlayer: '{name}は悩殺された！',
+            onApplyBoss: '{name}は悩殺された！',
+            onRemovePlayer: '{name}の悩殺が解けた',
+            onRemoveBoss: '{name}の悩殺が解けた'
         }
     },
     {
@@ -143,6 +179,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
         isDebuff: true,
         modifiers: {
             canUseSkills: false
+        },
+        messages: {
+            onApplyPlayer: '{name}は魔法を使えなくなった！',
+            onApplyBoss: '{name}は魔法を使えなくなった！',
+            onRemovePlayer: '{name}の魔法封印が解けた',
+            onRemoveBoss: '{name}の魔法封印が解けた'
         }
     },
     {
@@ -162,6 +204,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
             }
+        },
+        messages: {
+            onApplyPlayer: '{name}は快楽に堕ちてしまった！',
+            onApplyBoss: '{name}は快楽に堕ちてしまった！',
+            onRemovePlayer: '{name}は快楽から回復した',
+            onRemoveBoss: '{name}は快楽から回復した'
         }
     },
     {
@@ -181,6 +229,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
             }
+        },
+        messages: {
+            onApplyPlayer: '{name}は淫乱になった！',
+            onApplyBoss: '{name}は淫乱になった！',
+            onRemovePlayer: '{name}の淫乱が解けた',
+            onRemoveBoss: '{name}の淫乱が解けた'
         }
     },
     {
@@ -192,6 +246,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
         isDebuff: true,
         modifiers: {
             canAct: false
+        },
+        messages: {
+            onApplyPlayer: '{name}は催眠を受けてしまった！',
+            onApplyBoss: '{name}は催眠された！',
+            onRemovePlayer: '{name}の催眠が解けた',
+            onRemoveBoss: '{name}の催眠が解けた'
         }
     },
     {
@@ -210,6 +270,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
             }
+        },
+        messages: {
+            onApplyPlayer: '{name}は洗脳されてしまった！',
+            onApplyBoss: '{name}は洗脳された！',
+            onRemovePlayer: '{name}の洗脳が解けた',
+            onRemoveBoss: '{name}の洗脳が解けた'
         }
     },
     {
@@ -229,6 +295,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
             }
+        },
+        messages: {
+            onApplyPlayer: '{name}はあまあまになった！',
+            onApplyBoss: '{name}はあまあまになった！',
+            onRemovePlayer: '{name}はあまあまから回復した',
+            onRemoveBoss: '{name}はあまあまから回復した'
         }
     },
     {
@@ -248,6 +320,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
             }
+        },
+        messages: {
+            onApplyPlayer: '{name}はとろとろになった！',
+            onApplyBoss: '{name}はとろとろになった！',
+            onRemovePlayer: '{name}はとろとろから回復した',
+            onRemoveBoss: '{name}はとろとろから回復した'
         }
     },
     {
@@ -266,6 +344,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
             }
+        },
+        messages: {
+            onApplyPlayer: '{name}はうっとりになった！',
+            onApplyBoss: '{name}はうっとりになった！',
+            onRemovePlayer: '{name}はうっとりから回復した',
+            onRemoveBoss: '{name}はうっとりから回復した'
         }
     },
     {
@@ -284,6 +368,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
             }
+        },
+        messages: {
+            onApplyPlayer: '{name}は魅惑された！',
+            onApplyBoss: '{name}は魅惑された！',
+            onRemovePlayer: '{name}の魅惑が解けた',
+            onRemoveBoss: '{name}の魅惑が解けた'
         }
     },
     {
@@ -302,6 +392,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
             }
+        },
+        messages: {
+            onApplyPlayer: '{name}は至福になった！',
+            onApplyBoss: '{name}は至福になった！',
+            onRemovePlayer: '{name}は至福から回復した',
+            onRemoveBoss: '{name}は至福から回復した'
         }
     },
     {
@@ -320,6 +416,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
             if (mpLoss > 0) {
                 target.loseMp(mpLoss);
             }
+        },
+        messages: {
+            onApplyPlayer: '{name}は魅了術にかかった！',
+            onApplyBoss: '{name}は魅了術にかかった！',
+            onRemovePlayer: '{name}の魅了術が解けた',
+            onRemoveBoss: '{name}の魅了術が解けた'
         }
     },
     {
@@ -332,6 +434,12 @@ export const dreamDemonEffectsConfigs: StatusEffectConfig[] = [
         modifiers: {
             canAct: false,
             canUseSkills: false
+        },
+        messages: {
+            onApplyPlayer: '{name}は夢の世界に閉じ込められた！',
+            onApplyBoss: '{name}は夢の世界に閉じ込められた！',
+            onRemovePlayer: '{name}は夢の世界から抜け出した',
+            onRemoveBoss: '{name}は夢の世界から抜け出した'
         }
     }
 ];

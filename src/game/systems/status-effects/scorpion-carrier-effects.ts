@@ -43,6 +43,12 @@ export const scorpionCarrierEffectsConfigs: StatusEffectConfig[] = [
         isDebuff: true,
         modifiers: {
             damageReceived: 1.5
+        },
+        messages: {
+            onApplyPlayer: '{name}は脱力剤で体に力が入らなくなってしまった！',
+            onApplyBoss: '{name}は脱力剤で体に力が入らなくなってしまった！',
+            onRemovePlayer: '{name}の脱力剤が解けた',
+            onRemoveBoss: '{name}の脱力剤が解けた'
         }
     }
 ];

@@ -12,6 +12,12 @@ export const cleanMasterEffectsConfigs: StatusEffectConfig[] = [
         modifiers: {
             accuracy: 0.7, // Reduces accuracy to 70%
             struggleRate: 0.8 // Slightly harder to struggle
+        },
+        messages: {
+            onApplyPlayer: '{name}は泡まみれになった！',
+            onApplyBoss: '{name}は泡まみれになった！',
+            onRemovePlayer: '{name}の泡が取れた',
+            onRemoveBoss: '{name}の泡が取れた'
         }
     },
     {
@@ -24,6 +30,12 @@ export const cleanMasterEffectsConfigs: StatusEffectConfig[] = [
         modifiers: {
             accuracy: 0.5, // Reduces accuracy to 50%
             canAct: false // Cannot act during first turn
+        },
+        messages: {
+            onApplyPlayer: '{name}は回転中になった！',
+            onApplyBoss: '{name}は回転中になった！',
+            onRemovePlayer: '{name}の回転が終わった',
+            onRemoveBoss: '{name}の回転が終わった'
         }
     },
     {

@@ -10,6 +10,12 @@ export const mikanDragonEffectsConfigs: StatusEffectConfig[] = [
         isDebuff: true,
         modifiers: {
             attackPower: 0.3
+        },
+        messages: {
+            onApplyPlayer: '{name}は体に力が入らなくなってしまった！',
+            onApplyBoss: '{name}は体に力が入らなくなった！',
+            onRemovePlayer: '{name}の脱力が解けた',
+            onRemoveBoss: '{name}の脱力が解けた'
         }
     }
 ];

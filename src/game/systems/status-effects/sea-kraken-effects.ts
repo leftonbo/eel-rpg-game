@@ -10,6 +10,12 @@ export const seaKrakenEffectsConfigs: StatusEffectConfig[] = [
         isDebuff: true,
         modifiers: {
             accuracy: 0.7 // Reduces accuracy to 70% of its original value
+        },
+        messages: {
+            onApplyPlayer: '{name}は視界が阻害された！',
+            onApplyBoss: '{name}は視界が阻害された！',
+            onRemovePlayer: '{name}の視界が回復した',
+            onRemoveBoss: '{name}の視界が回復した'
         }
     }
 ];
