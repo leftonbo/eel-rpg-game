@@ -30,7 +30,6 @@ export interface BossAction {
     name: string;
     description: string;
     messages?: string[]; // Optional messages with format specifiers: {boss}, {player}
-    damage?: number;  // [Deprecated] Fixed damage value (use damageFormula instead)
     damageFormula?: (user: Boss) => number; // Function to calculate damage based on actor's stats
     statusEffect?: StatusEffectType;
     statusDuration?: number;
@@ -384,10 +383,6 @@ export class Boss extends Actor {
     private calculateActionDamage(action: BossAction): number | undefined {
         if (action.damageFormula) {
             return action.damageFormula(this); // Use damage formula if provided
-        }
-        
-        if (action.damage) {
-            return action.damage; // Use fixed damage if provided [deprecated]
         }
         
         return undefined; // No damage defined
@@ -791,7 +786,7 @@ export class Boss extends Actor {
         if (Math.random() < statusChance) {
             player.statusEffects.addEffect(action.statusEffect, action.statusDuration);
             messages.push(`${player.name}が${StatusEffectManager.getEffectName(action.statusEffect)}状態になった！`);
-        } else if (!action.damage) {
+        } else if (!action.damageFormula) {
             // If it's a status-only attack and the status didn't apply
             // we still want to show a message
             messages.push(`${player.name}は${StatusEffectManager.getEffectName(action.statusEffect)}状態にならなかった。`);

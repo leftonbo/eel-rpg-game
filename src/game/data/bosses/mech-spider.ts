@@ -61,7 +61,7 @@ const mechSpiderActions: BossAction[] = [
         name: 'スパイダーネット',
         description: '機械の合成糸で作った網で拘束する',
         messages: ['{boss}は合成糸の網を{player}に投げかける！'],
-        damage: 0,
+        damageFormula: (_user: Boss) => 0,
         weight: 30,
         canUse: (_boss, player, _turn) => {
             return (!player.isRestrained() && !player.isCocoon() && !player.isEaten() && Math.random() < 0.8) || player.isKnockedOut();

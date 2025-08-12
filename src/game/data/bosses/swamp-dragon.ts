@@ -388,8 +388,9 @@ export const swampDragonData: BossData = {
         if (player.getHpPercentage() > 50 && Math.random() < 0.5 + (0.2 * aggressionLevel)) {
             const currentPlayerState = boss.getPlayerState(player);
             const highDamageActions = swampDragonActions.filter(action => 
-                action.type === ActionType.Attack && 
-                (action.damage || 0) >= 8 &&
+                action.type === ActionType.Attack &&
+                action?.damageFormula !== undefined &&
+                action.damageFormula(boss) >= boss.attackPower &&
                 (!action.playerStateCondition || action.playerStateCondition === currentPlayerState)
             );
             

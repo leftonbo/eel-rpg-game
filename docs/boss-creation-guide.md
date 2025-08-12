@@ -91,7 +91,6 @@ interface BossAction {
     name: string;                   // 行動名
     description: string;            // 行動説明
     messages?: string[];            // メッセージ（{boss}, {player}を使用）
-    damage?: number;                // [非推奨] 固定ダメージ量（damageFormulaを使用推奨）
     damageFormula?: (user: Boss) => number; // ダメージ計算式（ボスのステータスに基づく）
     statusEffect?: StatusEffectType; // 状態異常タイプ
     statusDuration?: number;        // 状態異常持続ターン
