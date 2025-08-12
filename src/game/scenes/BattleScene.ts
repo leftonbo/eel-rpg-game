@@ -10,6 +10,8 @@ import { BattleDebugManager } from './managers/BattleDebugManager';
 import { BattleMessageComponent } from './components/BattleMessageComponent';
 import { BattleEventHandler, EventCallbacks } from './utils/BattleEventHandler';
 import { PLAYER_ITEMS } from '../data/PlayerItems';
+import { StatusEffectManager } from '../systems/StatusEffect';
+import { ItemUseResult, ItemUseFailureReason } from '../entities/PlayerItemManager';
 
 /**
  * 戦闘画面を定義するクラス
@@ -338,13 +340,14 @@ export class BattleScene {
     private useItem(itemName: string): void {
         if (!this.player || !this.playerTurn) return;
         
-        const success = this.player.useItem(itemName);
+        const result = this.player.useItem(itemName);
         
-        if (success) {
+        if (result.success) {
             const itemDisplayNames: { [key: string]: string } = {
                 'heal-potion': '回復薬',
                 'adrenaline': 'アドレナリン注射',
                 'energy-drink': '元気ドリンク',
+                'elixir': 'エリクサー',
                 'omamori': 'おまもり'
             };
             const itemDisplayName = itemDisplayNames[itemName] || itemName;
@@ -355,6 +358,9 @@ export class BattleScene {
             this.battleStats.craftworkExperience += experienceGain;
             this.messageComponent.addBattleLogMessage(`${this.player.name}は${itemDisplayName}を使った！`, 'heal', 'player');
             
+            // Display detailed effects
+            this.displayItemEffects(result);
+            
             this.actionManager.hideItemPanel();
             this.updateUI();
         } else {
@@ -362,10 +368,59 @@ export class BattleScene {
                 'heal-potion': '回復薬',
                 'adrenaline': 'アドレナリン注射',
                 'energy-drink': '元気ドリンク',
+                'elixir': 'エリクサー',
                 'omamori': 'おまもり'
             };
             const itemDisplayName = itemDisplayNames[itemName] || itemName;
-            this.messageComponent.addBattleLogMessage(`${itemDisplayName}を使用できない！`, 'system', 'player');
+            
+            // Display specific failure reason
+            let failureMessage = `${itemDisplayName}を使用できない！`;
+            if (result.failureReason === ItemUseFailureReason.NotEnoughCount) {
+                failureMessage = `${itemDisplayName}が足りない！`;
+            } else if (result.failureReason === ItemUseFailureReason.InvalidCondition) {
+                if (itemName === 'omamori') {
+                    failureMessage = `${itemDisplayName}は今は使えない...`;
+                }
+            }
+            
+            this.messageComponent.addBattleLogMessage(failureMessage, 'system', 'player');
+        }
+    }
+
+    /**
+     * アイテム効果の詳細メッセージを表示
+     */
+    private displayItemEffects(result: ItemUseResult): void {
+        if (!this.player) return;
+
+        // HP回復メッセージ
+        if (result.healedHp && result.healedHp > 0) {
+            this.messageComponent.addBattleLogMessage(`HPが${result.healedHp}回復した！`, 'heal', 'player');
+        }
+
+        // MP回復メッセージ
+        if (result.recoveredMp && result.recoveredMp > 0) {
+            this.messageComponent.addBattleLogMessage(`MPが${result.recoveredMp}回復した！`, 'heal', 'player');
+        }
+
+        // 状態異常解除メッセージ
+        if (result.removedStatusEffects && result.removedStatusEffects.length > 0) {
+            result.removedStatusEffects.forEach(statusType => {
+                const message = StatusEffectManager.generateRemoveMessage(this.player!, statusType);
+                if (message) {
+                    this.messageComponent.addBattleLogMessage(message, 'status-effect', 'player');
+                }
+            });
+        }
+
+        // 状態異常付与メッセージ
+        if (result.addedStatusEffects && result.addedStatusEffects.length > 0) {
+            result.addedStatusEffects.forEach(statusType => {
+                const message = StatusEffectManager.generateApplyMessage(this.player!, statusType);
+                if (message) {
+                    this.messageComponent.addBattleLogMessage(message, 'status-effect', 'player');
+                }
+            });
         }
     }
     

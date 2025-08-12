@@ -89,7 +89,7 @@ export class StatusEffectManager {
                 const damage = oldHp - target.hp;
                 
                 if (damage > 0) {
-                    const message = this.generateTickMessage(target, effect, damage, config);
+                    const message = StatusEffectManager.generateTickMessage(target, effect.type, damage);
                     if (message) {
                         messages.push(message);
                     }
@@ -111,12 +111,9 @@ export class StatusEffectManager {
                 effect.duration--;
                 if (effect.duration <= 0) {
                     effectsToRemove.push(type);
-                    const config = StatusEffectManager.configs.get(type);
-                    if (config) {
-                        const message = this.generateRemoveMessage(target, effect, config);
-                        if (message) {
-                            messages.push(message);
-                        }
+                    const message = StatusEffectManager.generateRemoveMessage(target, effect.type);
+                    if (message) {
+                        messages.push(message);
                     }
                 }
             }
@@ -375,7 +372,10 @@ export class StatusEffectManager {
     }
     
     // Message generation helper methods
-    private generateTickMessage(target: Actor, effect: StatusEffect, damage: number, config: StatusEffectConfig): string | null {
+    static generateTickMessage(target: Actor, statusType: StatusEffectType, damage: number): string | null {
+        const config = StatusEffectManager.configs.get(statusType);
+        if (!config) return null;
+        
         const isPlayer = StatusEffectManager.isPlayerActor(target);
         const messages = config.messages;
         
@@ -388,10 +388,13 @@ export class StatusEffectManager {
         }
         
         // Default message if no custom template
-        return `${effect.name}によって${damage}のダメージ！`;
+        return `${config.name}によって${damage}のダメージ！`;
     }
     
-    private generateRemoveMessage(target: Actor, effect: StatusEffect, config: StatusEffectConfig): string | null {
+    static generateRemoveMessage(target: Actor, statusType: StatusEffectType): string | null {
+        const config = StatusEffectManager.configs.get(statusType);
+        if (!config) return null;
+        
         const isPlayer = StatusEffectManager.isPlayerActor(target);
         const messages = config?.messages;
         
@@ -404,7 +407,7 @@ export class StatusEffectManager {
         }
         
         // Default message if no custom template
-        return `${effect.name}が解除された`;
+        return `${config.name}が解除された`;
     }
     
     private static formatMessageTemplate(template: string, target: Actor, damage?: number): string {

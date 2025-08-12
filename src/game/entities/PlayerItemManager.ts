@@ -1,13 +1,36 @@
+import { StatusEffectType } from '../systems/StatusEffectTypes';
 import { Player } from './Player';
 
 /**
- * プレイヤーアイテムインターフェース
+ * アイテム使用失敗理由
+ */
+export enum ItemUseFailureReason {
+    NotEnoughCount = 'not_enough_count',
+    InvalidCondition = 'invalid_condition',
+    Unknown = 'unknown'
+}
+
+/**
+ * アイテム使用結果
+ */
+export interface ItemUseResult {
+    success: boolean;
+    healedHp?: number;
+    recoveredMp?: number;
+    removedStatusEffects?: StatusEffectType[];
+    addedStatusEffects?: StatusEffectType[];
+    failureReason?: ItemUseFailureReason;
+}
+
+/**
+ * プレイヤーが実際に所持しているアイテムのインスタンス
+ * PlayerItemDataから生成され、個数や実際の使用関数を持つ
  */
 export interface PlayerItem {
     name: string;
     count: number;
     description: string;
-    use: (player: Player) => boolean;
+    use: (player: Player) => ItemUseResult;
     experienceGain: number; // Experience gain for using the item
 }
 
@@ -49,9 +72,10 @@ export class PlayerItemManager {
     /**
      * アイテムを使用
      */
-    useItem(itemName: string, player: Player): boolean {
+    useItem(itemName: string, player: Player): ItemUseResult {
         const item = this.items.get(itemName);
-        if (!item || item.count <= 0) return false;
+        if (!item) return { success: false, failureReason: ItemUseFailureReason.Unknown };
+        if (item.count <= 0) return { success: false, failureReason: ItemUseFailureReason.NotEnoughCount };
         
         return item.use(player);
     }

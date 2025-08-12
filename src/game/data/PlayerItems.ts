@@ -1,7 +1,44 @@
 import { AbilityType } from '../systems/AbilitySystem';
-import { StatusEffectType, StatusEffectManager } from '../systems/StatusEffect';
+import { StatusEffectType } from '../systems/StatusEffectTypes';
 import { Player } from '../entities/Player';
+import { ItemUseResult, ItemUseFailureReason } from '../entities/PlayerItemManager';
 
+/**
+ * アイテム使用前の共通バリデーション
+ */
+function validateItemUse(player: Player, itemId: string): ItemUseResult | null {
+    if (player.getItemCount(itemId) <= 0) {
+        return { success: false, failureReason: ItemUseFailureReason.NotEnoughCount };
+    }
+    return null; // バリデーション成功
+}
+
+/**
+ * 特殊条件アイテム（おまもり等）のバリデーション
+ */
+function validateSpecialConditionItem(player: Player, itemId: string): ItemUseResult | null {
+    const baseValidation = validateItemUse(player, itemId);
+    if (baseValidation) return baseValidation;
+    
+    if (itemId === 'omamori') {
+        // おまもりは特定の状態でのみ使用可能
+        if (!player.isKnockedOut()
+            && !player.isRestrained()
+            && !player.isEaten()
+            && !player.statusEffects.hasEffect(StatusEffectType.Cocoon)
+            && !player.statusEffects.hasEffect(StatusEffectType.Sleep)) {
+            return { success: false, failureReason: ItemUseFailureReason.InvalidCondition };
+        }
+    }
+    
+    return null; // バリデーション成功
+}
+
+/**
+ * アイテムの定義データ（テンプレート）
+ * ゲーム全体で共有される設定情報を持つ
+ * PlayerItemManagerのPlayerItemインスタンス生成に使用される
+ */
 export interface PlayerItemData {
     id: string;
     name: string;
@@ -10,7 +47,7 @@ export interface PlayerItemData {
     abilityType: AbilityType;
     experienceGain: number;
     getCount: (player: Player) => number;
-    use: (player: Player) => boolean;
+    use: (player: Player) => ItemUseResult;
 }
 
 export const PLAYER_ITEMS: PlayerItemData[] = [
@@ -28,20 +65,22 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
             return baseCount + craftworkLevel;
         },
         use: (player: Player) => {
-            if (player.getItemCount('heal-potion') <= 0) return false;
+            const validation = validateItemUse(player, 'heal-potion');
+            if (validation) return validation;
             
             // Heal 80% of max HP
             const healAmount = Math.floor(player.maxHp * 0.8);
-            player.heal(healAmount);
+            const actualHealedHp = player.heal(healAmount);
             
             // Remove all debuff status effects using the new system
             const removedDebuffs = player.statusEffects.removeDebuffs();
-            if (removedDebuffs.length > 0) {
-                console.log('回復薬で解除されたデバフ:', removedDebuffs.map(type => StatusEffectManager.getEffectName(type)).join(', '));
-            }
             
             player.itemManager.decrementItemCount('heal-potion');
-            return true;
+            return { 
+                success: true,
+                healedHp: actualHealedHp,
+                removedStatusEffects: removedDebuffs
+            };
         }
     },
     
@@ -63,16 +102,27 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
             return count;
         },
         use: (player: Player) => {
-            if (player.getItemCount('energy-drink') <= 0) return false;
+            const validation = validateItemUse(player, 'energy-drink');
+            if (validation) return validation;
             
             // Set MP to max
+            const currentMp = player.mp;
             player.recoverMp(player.maxMp);
+            const recoveredMp = player.mp - currentMp;
             
             // Add energized effect for 3 turns
             player.statusEffects.removeEffect(StatusEffectType.Exhausted);
-            player.statusEffects.addEffect(StatusEffectType.Energized);
+            const addedEffects: StatusEffectType[] = [];
+            if (player.statusEffects.addEffect(StatusEffectType.Energized)) {
+                addedEffects.push(StatusEffectType.Energized);
+            }
+            
             player.itemManager.decrementItemCount('energy-drink');
-            return true;
+            return { 
+                success: true,
+                recoveredMp: recoveredMp,
+                addedStatusEffects: addedEffects
+            };
         }
     },
     
@@ -94,11 +144,19 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
             return count;
         },
         use: (player: Player) => {
-            if (player.getItemCount('adrenaline') <= 0) return false;
+            const validation = validateItemUse(player, 'adrenaline');
+            if (validation) return validation;
             
-            player.statusEffects.addEffect(StatusEffectType.Invincible);
+            const addedEffects: StatusEffectType[] = [];
+            if (player.statusEffects.addEffect(StatusEffectType.Invincible)) {
+                addedEffects.push(StatusEffectType.Invincible);
+            }
+            
             player.itemManager.decrementItemCount('adrenaline');
-            return true;
+            return { 
+                success: true,
+                addedStatusEffects: addedEffects
+            };
         }
     },
     
@@ -119,24 +177,33 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
             return count;
         },
         use: (player: Player) => {
-            if (player.getItemCount('elixir') <= 0) return false;
+            const validation = validateItemUse(player, 'elixir');
+            if (validation) return validation;
             
             // Full heal
-            player.heal(player.maxHp);
+            const actualHealedHp = player.heal(player.maxHp);
+            const currentMp = player.mp;
             player.recoverMp(player.maxMp);
+            const recoveredMp = player.mp - currentMp;
             
             // Remove all debuff status effects using the new system
             const removedDebuffs = player.statusEffects.removeDebuffs();
-            if (removedDebuffs.length > 0) {
-                console.log('エリクサーで解除されたデバフ:', removedDebuffs.map(type => StatusEffectManager.getEffectName(type)).join(', '));
-            }
             
             // Add energized effect
             player.statusEffects.removeEffect(StatusEffectType.Exhausted);
-            player.statusEffects.addEffect(StatusEffectType.Energized);
+            const addedEffects: StatusEffectType[] = [];
+            if (player.statusEffects.addEffect(StatusEffectType.Energized)) {
+                addedEffects.push(StatusEffectType.Energized);
+            }
             
             player.itemManager.decrementItemCount('elixir');
-            return true;
+            return { 
+                success: true,
+                healedHp: actualHealedHp,
+                recoveredMp: recoveredMp,
+                removedStatusEffects: removedDebuffs,
+                addedStatusEffects: addedEffects
+            };
         }
     },
     
@@ -157,40 +224,45 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
             return count;
         },
         use: (player: Player) => {
-            if (player.getItemCount('omamori') <= 0) return false;
-            
-            // Can only be used when knocked out, restrained, or eaten, or in special states
-            if (!player.isKnockedOut()
-                && !player.isRestrained()
-                && !player.isEaten()
-                && !player.statusEffects.hasEffect(StatusEffectType.Cocoon)
-                && !player.statusEffects.hasEffect(StatusEffectType.Sleep)) {
-                return false;
-            }
+            const validation = validateSpecialConditionItem(player, 'omamori');
+            if (validation) return validation;
             
             // Remove special states
-            player.statusEffects.removeEffect(StatusEffectType.KnockedOut);
-            player.statusEffects.removeEffect(StatusEffectType.Restrained);
-            player.statusEffects.removeEffect(StatusEffectType.Eaten);
-            
-            // and also special restraints
-            player.statusEffects.removeEffect(StatusEffectType.Cocoon);
-            player.statusEffects.removeEffect(StatusEffectType.Sleep);
+            const removedSpecialEffects: StatusEffectType[] = [];
+            if (player.statusEffects.hasEffect(StatusEffectType.KnockedOut) && player.statusEffects.removeEffect(StatusEffectType.KnockedOut)) {
+                removedSpecialEffects.push(StatusEffectType.KnockedOut);
+            }
+            if (player.statusEffects.hasEffect(StatusEffectType.Restrained) && player.statusEffects.removeEffect(StatusEffectType.Restrained)) {
+                removedSpecialEffects.push(StatusEffectType.Restrained);
+            }
+            if (player.statusEffects.hasEffect(StatusEffectType.Eaten) && player.statusEffects.removeEffect(StatusEffectType.Eaten)) {
+                removedSpecialEffects.push(StatusEffectType.Eaten);
+            }
+            if (player.statusEffects.hasEffect(StatusEffectType.Cocoon) && player.statusEffects.removeEffect(StatusEffectType.Cocoon)) {
+                removedSpecialEffects.push(StatusEffectType.Cocoon);
+            }
+            if (player.statusEffects.hasEffect(StatusEffectType.Sleep) && player.statusEffects.removeEffect(StatusEffectType.Sleep)) {
+                removedSpecialEffects.push(StatusEffectType.Sleep);
+            }
 
             // Apply escape recovery passive skill
             player.battleActions?.applyEscapeRecovery();
 
             // Full heal
-            player.heal(player.maxHp);
+            const actualHealedHp = player.heal(player.maxHp);
             
             // Remove all debuff status effects using the new system
             const removedDebuffs = player.statusEffects.removeDebuffs();
-            if (removedDebuffs.length > 0) {
-                console.log('おまもりで解除されたデバフ:', removedDebuffs.map(type => StatusEffectManager.getEffectName(type)).join(', '));
-            }
+            
+            // Combine all removed effects
+            const allRemovedEffects = [...removedSpecialEffects, ...removedDebuffs];
             
             player.itemManager.decrementItemCount('omamori');
-            return true;
+            return { 
+                success: true,
+                healedHp: actualHealedHp,
+                removedStatusEffects: allRemovedEffects
+            };
         }
     }
 ];
