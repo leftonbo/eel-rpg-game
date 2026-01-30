@@ -43,9 +43,7 @@ function localizeBossData(bossData: BossData): BossData {
                 characterName: bossData.guestCharacterInfo.characterName
                     ? t(`${baseKey}.guestCharacterInfo.characterName`, { defaultValue: bossData.guestCharacterInfo.characterName })
                     : undefined,
-                creator: bossData.guestCharacterInfo.creator
-                    ? t(`${baseKey}.guestCharacterInfo.creator`, { defaultValue: bossData.guestCharacterInfo.creator })
-                    : undefined
+                creator: t(`${baseKey}.guestCharacterInfo.creator`, { defaultValue: bossData.guestCharacterInfo.creator })
             }
             : undefined,
         victoryTrophy: bossData.victoryTrophy
