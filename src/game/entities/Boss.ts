@@ -3,6 +3,7 @@ import { Player } from './Player';
 import { calculateAttackResult } from '../utils/CombatUtils';
 import { Actor } from './Actor';
 import { MessageData } from '../scenes/components/BattleMessageComponent';
+import { t } from '../i18n';
 
 // Message formatter utility
 export function formatMessage(template: string, nameUser: string, nameTarget: string): string {
@@ -324,8 +325,8 @@ export class Boss extends Actor {
             return {
                 id: 'stunned-skip',
                 type: ActionType.Skip,
-                name: '行動不能',
-                description: '反動で動けない...',
+                name: t('battle.messages.stunnedSkipName'),
+                description: t('battle.messages.stunnedSkipDescription'),
                 weight: 1
             };
         }
@@ -404,7 +405,7 @@ export class Boss extends Actor {
         
         // Check for invincible status first
         if (player.statusEffects.hasEffect(StatusEffectType.Invincible)) {
-            messages.push(`${player.name}は攻撃を華麗に回避した！`);
+            messages.push(t('battle.messages.playerDodged', { playerName: player.name }));
             return messages;
         }
         
@@ -433,7 +434,7 @@ export class Boss extends Actor {
             });
         } else {
             // Default message if no custom messages provided
-            messages.push(`${this.displayName}の${action.name}！`);
+            messages.push(t('battle.messages.actionDefault', { bossName: this.displayName, actionName: action.name }));
         }
         
         return messages;
@@ -463,7 +464,7 @@ export class Boss extends Actor {
                 return this.executeSkipAction(action);
             default:
                 console.warn(`Unknown action type: ${action.type}`);
-                return [`${this.displayName}の行動が理解できない...`];
+                return [t('battle.messages.actionUnknown', { bossName: this.displayName })];
         }
     }
     
@@ -497,14 +498,14 @@ export class Boss extends Actor {
         );
 
         if (attackResult.isMiss) {
-            messages.push(`しかし、攻撃は外れた！`);
+            messages.push(t('battle.messages.attackMiss'));
         } else {
             if (baseDamage) {
                 const actualDamage = player.takeDamage(attackResult.damage);
                 if (attackResult.isCritical) {
-                    messages.push(`痛恨の一撃！ ${player.name}に${actualDamage}のダメージ！`);
+                    messages.push(t('battle.messages.criticalHit', { playerName: player.name, damage: actualDamage }));
                 } else {
-                    messages.push(`${player.name}に${actualDamage}のダメージ！`);
+                    messages.push(t('battle.messages.normalHit', { playerName: player.name, damage: actualDamage }));
                 }
 
                 // Check for HP absorption
@@ -537,14 +538,14 @@ export class Boss extends Actor {
         );
 
         if (attackResult.isMiss) {
-            messages.push(`しかし、攻撃は外れた！`);
+            messages.push(t('battle.messages.attackMiss'));
         } else {
             if (baseDamage) {
                 const actualDamage = player.takeDamage(attackResult.damage);
                 if (attackResult.isCritical) {
-                    messages.push(`痛恨の一撃！ ${player.name}に${actualDamage}のダメージ！`);
+                    messages.push(t('battle.messages.criticalHit', { playerName: player.name, damage: actualDamage }));
                 } else {
-                    messages.push(`${player.name}に${actualDamage}のダメージ！`);
+                    messages.push(t('battle.messages.normalHit', { playerName: player.name, damage: actualDamage }));
                 }
 
                 // Check for HP absorption
@@ -577,14 +578,14 @@ export class Boss extends Actor {
         );
 
         if (attackResult.isMiss) {
-            messages.push(`しかし、攻撃は外れた！`);
+            messages.push(t('battle.messages.attackMiss'));
         } else {
             if (baseDamage) {
                 const actualDamage = player.takeDamage(attackResult.damage);
                 if (attackResult.isCritical) {
-                    messages.push(`痛恨の一撃！ ${player.name}に${actualDamage}のダメージ！`);
+                    messages.push(t('battle.messages.criticalHit', { playerName: player.name, damage: actualDamage }));
                 } else {
-                    messages.push(`${player.name}に${actualDamage}のダメージ！`);
+                    messages.push(t('battle.messages.normalHit', { playerName: player.name, damage: actualDamage }));
                 }
 
                 // Check for HP absorption
@@ -601,7 +602,7 @@ export class Boss extends Actor {
                 // Apply restraint effect
                 player.statusEffects.addEffect(StatusEffectType.Restrained);
                 player.struggleAttempts = 0; // Reset struggle attempts
-                messages.push(`${player.name}は拘束された！`);
+                messages.push(t('battle.messages.playerRestrained', { playerName: player.name }));
             }
         }
 
@@ -615,7 +616,7 @@ export class Boss extends Actor {
         }
         player.statusEffects.addEffect(StatusEffectType.Cocoon);
         player.struggleAttempts = 0; // Reset struggle attempts
-        return [`${player.name}が繭状態になった！`];
+        return [t('battle.messages.playerCocooned', { playerName: player.name })];
     }
     
     private executeCocoonAction(action: BossAction, player: Player): string[] {
@@ -630,20 +631,20 @@ export class Boss extends Actor {
         
         if (maxHpReduction > 0) {
             player.loseMaxHp(maxHpReduction);
-            messages.push(`${player.name}の最大HPが${maxHpReduction}減少した！`);
+            messages.push(t('battle.messages.playerMaxHpReduced', { playerName: player.name, amount: maxHpReduction }));
             
             // Check for HP absorption for boss healing/growth
             if (action.healRatio && action.healRatio > 0) {
                 const healedAmount = this.healFromDamage(maxHpReduction, action.healRatio);
                 if (healedAmount > 0) {
-                    messages.push(`${this.displayName}は${healedAmount}HP回復した！`);
+                    messages.push(t('battle.messages.bossHealed', { bossName: this.displayName, amount: healedAmount }));
                 }
                 
                 // Boss can also gain max HP (for certain actions like "circulation")
                 const maxHpGain = Math.floor(maxHpReduction * (action.healRatio || 0));
                 if (maxHpGain > 0) {
                     this.gainMaxHp(maxHpGain);
-                    messages.push(`${this.displayName}の最大HPが${maxHpGain}増加した！`);
+                    messages.push(t('battle.messages.bossMaxHpIncreased', { bossName: this.displayName, amount: maxHpGain }));
                 }
             }
         }
@@ -651,7 +652,7 @@ export class Boss extends Actor {
         // Apply direct damage if specified
         if (actionDamage && actionDamage > 0) {
             const actualDamage = player.takeDamage(actionDamage);
-            messages.push(`${player.name}に${actualDamage}のダメージ！`);
+            messages.push(t('battle.messages.normalHit', { playerName: player.name, damage: actualDamage }));
         }
         
         // Apply status effect if specified
@@ -669,7 +670,7 @@ export class Boss extends Actor {
             player.statusEffects.removeEffect(StatusEffectType.Restrained);
         }
         player.statusEffects.addEffect(StatusEffectType.Eaten);
-        return [`${player.name}が食べられてしまった！`];
+        return [t('battle.messages.playerEaten', { playerName: player.name })];
     }
     
     private executeDevourAttackAction(action: BossAction, player: Player): string[] {
@@ -691,7 +692,7 @@ export class Boss extends Actor {
         
         if (hpAbsorbed > 0) {
             player.loseMaxHp(hpAbsorbed);
-            messages.push(`${player.name}の最大ヘルスが${hpAbsorbed}奪われた！`);
+            messages.push(t('battle.messages.playerMaxHpAbsorbed', { playerName: player.name, amount: hpAbsorbed }));
 
             // Boss gains the absorbed max HP
             this.gainMaxHp(hpAbsorbed);
@@ -713,7 +714,7 @@ export class Boss extends Actor {
         const mpDrained = Math.min(player.mp, mpDrainAmount);
         if (mpDrained > 0) {
             player.loseMp(mpDrained);
-            messages.push(`${player.name}のMPが${mpDrained}奪われた！`);
+            messages.push(t('battle.messages.playerMpDrained', { playerName: player.name, amount: mpDrained }));
         }
 
         if (action.statusEffect) {
@@ -756,7 +757,7 @@ export class Boss extends Actor {
     
     private executeSkipAction(action: BossAction): string[] {
         // Skip action, just return a message
-        return [action.description ?? `${this.displayName}は行動できない...`];
+        return [action.description ?? t('battle.messages.bossCannotAct', { bossName: this.displayName })];
     }
     
     private processHpAbsorption(action: BossAction, actualDamage: number): string[] {
@@ -765,7 +766,7 @@ export class Boss extends Actor {
         if (action.healRatio && action.healRatio > 0 && actualDamage > 0) {
             const healedAmount = this.healFromDamage(actualDamage, action.healRatio);
             if (healedAmount > 0) {
-                messages.push(` ${this.displayName}は${healedAmount}HP回復した！`);
+                messages.push(` ${t('battle.messages.bossHealed', { bossName: this.displayName, amount: healedAmount })}`);
             }
         }
         
@@ -798,7 +799,12 @@ export class Boss extends Actor {
         } else if (!action.damageFormula) {
             // If it's a status-only attack and the status didn't apply
             // we still want to show a message
-            messages.push(`${player.name}は${StatusEffectManager.getEffectName(action.statusEffect)}状態にならなかった。`);
+            messages.push(
+                t('battle.messages.statusNotApplied', {
+                    playerName: player.name,
+                    statusName: StatusEffectManager.getEffectName(action.statusEffect)
+                })
+            );
         }
         
         return messages;
@@ -823,7 +829,7 @@ export class Boss extends Actor {
         // Call parent processRoundEnd for status effect processing
         const parentMessages = super.processRoundEnd();
         parentMessages.forEach(message => {
-            messages.push(`${this.displayName}の${message}`);
+            messages.push(t('battle.messages.bossStatusMessagePrefix', { bossName: this.displayName, message }));
         });
         
         return messages;
@@ -835,9 +841,9 @@ export class Boss extends Actor {
     getDialogue(situation: 'battle-start' | 'victory' | 'defeat'): string {
         // Default dialogue, can be overridden by specific boss implementations
         const dialogues: Record<string, string[]> = {
-            'battle-start': ['戦闘開始だ！'],
-            'victory': ['勝利した...'],
-            'defeat': ['敗北した...']
+            'battle-start': [t('battle.messages.defaultDialogueBattleStart')],
+            'victory': [t('battle.messages.defaultDialogueVictory')],
+            'defeat': [t('battle.messages.defaultDialogueDefeat')]
         };
         
         const options = dialogues[situation] || dialogues['battle-start'];

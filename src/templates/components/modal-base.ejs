@@ -3,7 +3,7 @@
     <div class="modal-dialog <%= typeof modalSize !== 'undefined' ? modalSize : '' %>">
         <div class="modal-content <%= typeof theme !== 'undefined' ? theme : 'bg-dark' %>">
             <div class="modal-header">
-                <h5 class="modal-title" id="<%= modalId %>-label">
+                <h5 class="modal-title" id="<%= modalId %>-label"<% if (typeof titleKey !== 'undefined') { %> data-i18n="<%= titleKey %>"<% } %>>
                     <% if (typeof icon !== 'undefined') { %><%= icon %> <% } %>
                     <%= title %>
                     <% if (typeof subtitle !== 'undefined') { %> - <%= subtitle %><% } %>

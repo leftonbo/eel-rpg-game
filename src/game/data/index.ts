@@ -1,4 +1,5 @@
 import { BossData } from '../entities/Boss';
+import { getBossText } from '../i18n';
 
 /**
  * ボスモジュールの型定義
@@ -21,6 +22,35 @@ const modules = import.meta.glob('./bosses/*.ts') as Record<string, BossModuleLo
  * ボスデータのキャッシュ
  */
 const bossDataCache: Map<string, BossData> = new Map();
+
+type BossTextOverrides = Partial<{
+    displayName: BossData['displayName'];
+    description: BossData['description'];
+    questNote: BossData['questNote'];
+    appearanceNote: BossData['appearanceNote'];
+    battleStartMessages: BossData['battleStartMessages'];
+    victoryMessages: BossData['victoryMessages'];
+    victoryTrophy: BossData['victoryTrophy'];
+    defeatTrophy: BossData['defeatTrophy'];
+    personality: BossData['personality'];
+}>;
+
+function applyBossTextOverrides(bossData: BossData, bossId: string): void {
+    const text = getBossText<BossTextOverrides>(bossId);
+    if (!text || typeof text !== 'object' || Array.isArray(text)) {
+        return;
+    }
+
+    if (text.displayName) bossData.displayName = text.displayName;
+    if (text.description) bossData.description = text.description;
+    if (text.questNote) bossData.questNote = text.questNote;
+    if (text.appearanceNote) bossData.appearanceNote = text.appearanceNote;
+    if (text.battleStartMessages) bossData.battleStartMessages = text.battleStartMessages;
+    if (text.victoryMessages) bossData.victoryMessages = text.victoryMessages;
+    if (text.victoryTrophy) bossData.victoryTrophy = text.victoryTrophy;
+    if (text.defeatTrophy) bossData.defeatTrophy = text.defeatTrophy;
+    if (text.personality) bossData.personality = text.personality;
+}
 
 /**
  * BossData型チェック関数
@@ -97,6 +127,8 @@ export async function loadAllBossData(): Promise<void> {
                 if (!isBossData(bossData)) {
                     throw new Error(`Invalid boss data in ${filePath}: does not match BossData interface`);
                 }
+
+                applyBossTextOverrides(bossData, bossId);
                 
                 return { bossId, bossData };
             } catch (error) {

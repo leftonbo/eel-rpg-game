@@ -1,4 +1,5 @@
 import { Boss } from '../../entities/Boss';
+import { t } from '../../i18n';
 
 /**
  * メッセージ進行データ
@@ -121,7 +122,7 @@ export class BattleMessageComponent {
         
         const label = document.createElement('span');
         label.className = 'battle-round-label';
-        label.textContent = `ラウンド ${roundNumber}`;
+        label.textContent = t('battle.log.roundLabel', { round: roundNumber });
         
         divider.appendChild(label);
         this.battleLog.appendChild(divider);
@@ -134,7 +135,10 @@ export class BattleMessageComponent {
     showBattleStartMessages(boss: Boss): void {
         if (!boss.battleStartMessages) {
             // フォールバック
-            this.addBattleLogMessage(`${boss.displayName}が現れた！`, 'system');
+            this.addBattleLogMessage(
+                t('battle.messages.bossAppeared', { bossName: boss.displayName }),
+                'system'
+            );
             return;
         }
 
@@ -152,7 +156,10 @@ export class BattleMessageComponent {
     showVictoryMessages(boss: Boss): void {
         if (!boss.victoryMessages) {
             // フォールバック
-            this.addBattleLogMessage(`${boss.displayName}を倒した！`, 'system');
+            this.addBattleLogMessage(
+                t('battle.messages.bossDefeated', { bossName: boss.displayName }),
+                'system'
+            );
             return;
         }
 

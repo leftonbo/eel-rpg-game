@@ -10,12 +10,12 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <h2 id="modal-boss-description" class="fs-5">ボスの説明</h2>
+                <h2 id="modal-boss-description" class="fs-5" data-i18n="ui.bossSelect.modalDescriptionTitle">ボスの説明</h2>
                 <p id="modal-boss-stats">
                     <!-- Boss stats will be displayed here -->
                 </p>
                 <hr>
-                <h2 class="fs-5">討伐クエスト内容</h2>
+                <h2 class="fs-5" data-i18n="ui.bossSelect.modalQuestTitle">討伐クエスト内容</h2>
                 <p id="modal-boss-quest-note">
                     <!-- Quest note will be displayed here -->
                 </p>
@@ -29,12 +29,12 @@
             </div>
             <div id="modal-boss-buttons-confirm" class="modal-footer">
                 <!-- Show confirm to go to battle -->
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-                <button type="button" class="btn btn-primary" id="confirm-boss-btn">戦闘開始！</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="ui.bossSelect.cancel">キャンセル</button>
+                <button type="button" class="btn btn-primary" id="confirm-boss-btn" data-i18n="ui.bossSelect.confirmStart">戦闘開始！</button>
             </div>
             <div id="modal-boss-buttons-back" class="modal-footer d-none">
                 <!-- Just show back button -->
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">戻る</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="ui.bossSelect.back">戻る</button>
             </div>
         </div>
     </div>

@@ -4,9 +4,10 @@
   const alertModalData = {
     modalId: 'alert-modal',
     title: '通知',
+    titleKey: 'system.modals.alertTitle',
     theme: 'bg-dark',
     body: '<div id="alert-modal-body"><!-- Alert message goes here --></div>',
-    footer: '<button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>'
+    footer: '<button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-i18n="system.modals.ok">OK</button>'
   };
 %>
 <%- include('../components/modal-base', alertModalData) %>
@@ -16,10 +17,11 @@
   const confirmModalData = {
     modalId: 'confirm-modal',
     title: '確認',
+    titleKey: 'system.modals.confirmTitle',
     theme: 'bg-dark',
     body: '<div id="confirm-modal-body"><!-- Confirm message goes here --></div>',
-    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="confirm-cancel-btn">キャンセル</button>' +
-            '<button type="button" class="btn btn-danger" id="confirm-ok-btn">OK</button>'
+    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="confirm-cancel-btn" data-i18n="system.modals.cancel">キャンセル</button>' +
+            '<button type="button" class="btn btn-danger" id="confirm-ok-btn" data-i18n="system.modals.ok">OK</button>'
   };
 %>
 <%- include('../components/modal-base', confirmModalData) %>
@@ -29,11 +31,12 @@
   const promptModalData = {
     modalId: 'prompt-modal',
     title: '入力',
+    titleKey: 'system.modals.promptTitle',
     theme: 'bg-dark',
     body: '<div id="prompt-modal-body" class="mb-3"><!-- Prompt message goes here --></div>' +
-          '<input type="text" class="form-control" id="prompt-modal-input" placeholder="入力してください">',
-    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="prompt-cancel-btn">キャンセル</button>' +
-            '<button type="button" class="btn btn-primary" id="prompt-ok-btn">OK</button>'
+          '<input type="text" class="form-control" id="prompt-modal-input" placeholder="入力してください" data-i18n-attr="placeholder:system.modals.promptPlaceholder">',
+    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="prompt-cancel-btn" data-i18n="system.modals.cancel">キャンセル</button>' +
+            '<button type="button" class="btn btn-primary" id="prompt-ok-btn" data-i18n="system.modals.ok">OK</button>'
   };
 %>
 <%- include('../components/modal-base', promptModalData) %>
@@ -43,11 +46,12 @@
   const selectModalData = {
     modalId: 'select-modal',
     title: '選択',
+    titleKey: 'system.modals.selectTitle',
     theme: 'bg-dark',
     body: '<div id="select-modal-body" class="mb-3"><!-- Select message goes here --></div>' +
           '<select class="form-select" id="select-modal-select"><!-- Options will be populated here --></select>',
-    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="select-cancel-btn">キャンセル</button>' +
-            '<button type="button" class="btn btn-primary" id="select-ok-btn">選択</button>'
+    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="select-cancel-btn" data-i18n="system.modals.cancel">キャンセル</button>' +
+            '<button type="button" class="btn btn-primary" id="select-ok-btn" data-i18n="system.modals.select">選択</button>'
   };
 %>
 <%- include('../components/modal-base', selectModalData) %>

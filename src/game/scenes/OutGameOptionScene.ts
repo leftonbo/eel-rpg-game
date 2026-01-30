@@ -3,6 +3,7 @@ import { BaseOutGameScene } from './BaseOutGameScene';
 import { PlayerSaveManager } from '../systems/PlayerSaveData';
 import { ModalUtils } from '../utils/ModalUtils';
 import { ToastType, ToastUtils } from '../utils/ToastUtils';
+import { getLanguage, setLanguage, t } from '../i18n';
 
 export class OutGameOptionScene extends BaseOutGameScene {
     constructor(game: Game) {
@@ -60,6 +61,13 @@ export class OutGameOptionScene extends BaseOutGameScene {
                 this.handleDebugModeToggle(target.checked);
             });
         }
+
+        const languageSelect = document.getElementById('language-select') as HTMLSelectElement | null;
+        if (languageSelect) {
+            languageSelect.addEventListener('change', () => {
+                void this.handleLanguageChange(languageSelect);
+            });
+        }
     }
     
     /**
@@ -71,10 +79,15 @@ export class OutGameOptionScene extends BaseOutGameScene {
         if (debugToggle) {
             debugToggle.checked = this.game.isDebugMode();
         }
+
+        const languageSelect = document.getElementById('language-select') as HTMLSelectElement | null;
+        if (languageSelect) {
+            languageSelect.value = getLanguage();
+        }
         
         // セーブデータの存在チェック
         const hasSaveData = PlayerSaveManager.hasSaveData();
-        this.updateElement('save-data-status', hasSaveData ? '存在' : 'なし');
+        this.updateElement('save-data-status', hasSaveData ? t('ui.option.saveDataExists') : t('ui.option.saveDataMissing'));
         
         // プレイヤー情報表示
         const player = this.game.getPlayer();
@@ -105,7 +118,11 @@ export class OutGameOptionScene extends BaseOutGameScene {
                         PlayerSaveManager.importSaveDataJson(jsonData);
                         
                         // 成功メッセージ
-                        ToastUtils.showToast('セーブデータのインポートが完了しました', 'インポート完了', ToastType.Success);
+                        ToastUtils.showToast(
+                            t('system.toasts.importSuccessMessage'),
+                            t('system.toasts.importSuccessTitle'),
+                            ToastType.Success
+                        );
 
                         // 画面更新
                         this.updateOptionScreen();
@@ -114,7 +131,11 @@ export class OutGameOptionScene extends BaseOutGameScene {
                         this.game.reboot();
                     } catch (error) {
                         console.error('Save data import failed:', error);
-                        ToastUtils.showToast('セーブデータのインポートに失敗しました', 'インポート失敗', ToastType.Error);
+                        ToastUtils.showToast(
+                            t('system.toasts.importErrorMessage'),
+                            t('system.toasts.importErrorTitle'),
+                            ToastType.Error
+                        );
                     }
                 };
                 reader.readAsText(file);
@@ -139,11 +160,19 @@ export class OutGameOptionScene extends BaseOutGameScene {
             a.click();
             URL.revokeObjectURL(url);
             
-            ToastUtils.showToast('セーブデータをエクスポートしました', 'エクスポート完了', ToastType.Success);
+            ToastUtils.showToast(
+                t('system.toasts.exportSuccessMessage'),
+                t('system.toasts.exportSuccessTitle'),
+                ToastType.Success
+            );
             
         } catch (error) {
             console.error('Save data export failed:', error);
-            ToastUtils.showToast('セーブデータのエクスポートに失敗しました', 'エクスポート失敗', ToastType.Error);
+            ToastUtils.showToast(
+                t('system.toasts.exportErrorMessage'),
+                t('system.toasts.exportErrorTitle'),
+                ToastType.Error
+            );
         }
     }
     
@@ -151,11 +180,15 @@ export class OutGameOptionScene extends BaseOutGameScene {
      * セーブデータ削除処理
      */
     private async handleDeleteSaveData(): Promise<void> {
-        const confirmed = await ModalUtils.showConfirm('全てのセーブデータを削除しますか？この操作は取り消せません。');
+        const confirmed = await ModalUtils.showConfirm(t('ui.option.dataDeleteConfirm'));
         if (confirmed) {
             try {
                 PlayerSaveManager.clearSaveData();
-                ToastUtils.showToast('セーブデータを削除しました', 'セーブデータ削除完了', ToastType.Success);
+                ToastUtils.showToast(
+                    t('system.toasts.deleteSuccessMessage'),
+                    t('system.toasts.deleteSuccessTitle'),
+                    ToastType.Success
+                );
                 
                 // 画面更新
                 this.updateOptionScreen();
@@ -167,7 +200,11 @@ export class OutGameOptionScene extends BaseOutGameScene {
                 this.game.reboot();
             } catch (error) {
                 console.error('Save data clear failed:', error);
-                ToastUtils.showToast('セーブデータの削除に失敗しました', 'セーブデータ削除失敗', ToastType.Error);
+                ToastUtils.showToast(
+                    t('system.toasts.deleteErrorMessage'),
+                    t('system.toasts.deleteErrorTitle'),
+                    ToastType.Error
+                );
             }
         }
     }
@@ -177,10 +214,41 @@ export class OutGameOptionScene extends BaseOutGameScene {
      */
     private handleDebugModeToggle(enabled: boolean): void {
         localStorage.setItem('debug_mode', enabled.toString());
-        ToastUtils.showToast(`デバッグモードを${enabled ? '有効' : '無効'}にしました`, 'デバッグモード', ToastType.Info);
+        ToastUtils.showToast(
+            enabled ? t('system.debug.enabledMessage') : t('system.debug.disabledMessage'),
+            t('system.debug.title'),
+            ToastType.Info
+        );
         
-        // 設定反映のためページリロードを提示
-        if (confirm('設定を反映するためにページをリロードしますか？')) {
+        void this.promptReload();
+    }
+
+    private async handleLanguageChange(selectElement: HTMLSelectElement): Promise<void> {
+        const previousLanguage = getLanguage();
+        const nextLanguage = selectElement.value === 'en' ? 'en' : 'ja';
+
+        if (nextLanguage === previousLanguage) {
+            return;
+        }
+
+        setLanguage(nextLanguage);
+
+        const confirmed = await ModalUtils.showConfirm(
+            t('ui.option.reloadPrompt'),
+            t('ui.option.reloadTitle')
+        );
+
+        if (confirmed) {
+            location.reload();
+        } else {
+            setLanguage(previousLanguage);
+            selectElement.value = previousLanguage;
+        }
+    }
+
+    private async promptReload(): Promise<void> {
+        const confirmed = await ModalUtils.showConfirm(t('system.modals.reloadConfirm'));
+        if (confirmed) {
             location.reload();
         }
     }

@@ -2,6 +2,7 @@ import { BossData } from '@/game/entities/Boss';
 import { Game } from '../../Game';
 import { getAllBossData } from '../../data';
 import { MemorialSaveData } from '../../systems/MemorialSystem';
+import { t } from '../../i18n';
 
 export class BossCardManager {
     private game: Game;
@@ -66,7 +67,7 @@ export class BossCardManager {
                     <div class="card-body text-center">
                         <h3 class="card-title">${bossData.icon} ${bossData.displayName}</h3>
                         <p class="card-text">${bossData.description}</p>
-                        <button class="btn btn-success w-100">選択</button>
+                        <button class="btn btn-success w-100">${t('ui.bossSelect.selectButton')}</button>
                     </div>
                 </div>
             `;
@@ -137,7 +138,7 @@ export class BossCardManager {
             if (isUnlocked) {
                 textElement.textContent = bossData.description;
             } else {
-                textElement.textContent = `🔒 エクスプローラーLv.${requiredLevel}で解禁`;
+                textElement.textContent = t('ui.bossSelect.locked', { level: requiredLevel });
             }
         }
     }
@@ -193,14 +194,14 @@ export class BossCardManager {
                 // Show victory badge
                 victoryBadge.style.display = 'flex';
                 victoryBadge.textContent = '🏆';
-                victoryBadge.title = '勝利済み';
+                victoryBadge.title = t('ui.bossSelect.victoryBadgeTitle');
             }
             
             if (hasDefeat) {
                 // Show defeat badge
                 defeatBadge.style.display = 'flex';
                 defeatBadge.textContent = '💀';
-                defeatBadge.title = '敗北済み';
+                defeatBadge.title = t('ui.bossSelect.defeatBadgeTitle');
             }
         }
     }

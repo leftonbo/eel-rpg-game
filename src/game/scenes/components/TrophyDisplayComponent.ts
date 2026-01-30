@@ -1,6 +1,7 @@
 import { getBossData } from '@/game/data';
 import { Trophy } from '../../systems/MemorialSystem';
 import { Player } from '@/game/entities/Player';
+import { getLanguage, t } from '@/game/i18n';
 
 /**
  * トロフィー表示の共通コンポーネント
@@ -37,10 +38,10 @@ export class TrophyDisplayComponent {
                 <div class="card bg-secondary disabled">
                     <div class="card-body">
                         <h6 class="card-title d-flex justify-content-between align-items-center text-muted">
-                            ${typeIcon} ？？？？？
+                            ${typeIcon} ${t('ui.trophy.unknownTitle')}
                         </h6>
-                        <p class="card-text small text-muted">？？？？？</p>
-                        <small class="text-muted">${bossData.displayName} からアンロックできる</small>
+                        <p class="card-text small text-muted">${t('ui.trophy.unknownDescription')}</p>
+                        <small class="text-muted">${t('ui.trophy.unlockFrom', { bossName: bossData.displayName })}</small>
                     </div>
                 </div>
             `;
@@ -58,7 +59,7 @@ export class TrophyDisplayComponent {
                         <span class="badge bg-${typeClass}">+${trophy.explorerExp} EXP</span>
                     </h6>
                     <p class="card-text small">${trophy.description}</p>
-                    <small class="text-muted">獲得日: ${dateStr}</small>
+                    <small class="text-muted">${t('ui.trophy.obtainedDate', { date: dateStr })}</small>
                 </div>
             </div>
         `;
@@ -169,7 +170,7 @@ export class TrophyDisplayComponent {
     private static formatDate(date: string | Date | number | null): string {
         try {
             if (!date) {
-                return '不明';
+                return t('ui.trophy.unknownDate');
             }
             
             let dateObj: Date;
@@ -185,13 +186,14 @@ export class TrophyDisplayComponent {
             
             if (isNaN(dateObj.getTime())) {
                 console.warn('Invalid date provided:', date);
-                return '不明';
+                return t('ui.trophy.unknownDate');
             }
             
-            return dateObj.toLocaleDateString('ja-JP');
+            const locale = getLanguage() === 'en' ? 'en-US' : 'ja-JP';
+            return dateObj.toLocaleDateString(locale);
         } catch (error) {
             console.warn('Failed to format date:', date, error);
-            return '不明';
+            return t('ui.trophy.unknownDate');
         }
     }
 
