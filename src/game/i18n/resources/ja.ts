@@ -1,6 +1,20 @@
 import { bossTranslations } from '../bosses';
 
 const ja = {
+    errors: {
+        unknown: '不明なエラーが発生しました',
+        bossLoadFailed: 'ボスデータの読み込みに失敗しました: {{error}}'
+    },
+    common: {
+        unknown: '不明',
+        hp: 'ヘルス',
+        mp: 'マナ',
+        attack: '攻撃力',
+        weapon: '武器',
+        armor: '防具',
+        gloves: '手袋',
+        belt: 'ベルト',
+    },
     navigation: {
         bossSelect: '⚔️ ボス選択',
         playerDetail: '👤 プレイヤー詳細',
@@ -11,36 +25,15 @@ const ja = {
     },
     bossSelect: {
         title: '討伐対象を選択....',
-        playerSummary: {
-            hp: 'ヘルス',
-            mp: 'マナ',
-            attack: '攻撃力',
-            weapon: '武器',
-            armor: '防具',
-            gloves: '手袋',
-            belt: 'ベルト',
-            unarmed: '素手',
-            noArmor: 'はだか',
-            noGloves: 'なし',
-            noBelt: 'なし'
-        },
         selectButton: '選択',
-        unlockRequirement: '🔒 エクスプローラーLv.{{level}}で解禁',
+        unlockRequirement: '🔒️ エクスプローラーLv.{{level}}で解禁',
         status: {
             victory: '勝利済み',
             defeat: '敗北済み'
-        },
-        errors: {
-            loadFailed: 'ボスデータの読み込みに失敗しました: {{error}}',
-            unknown: '不明なエラーが発生しました'
         }
     },
     bossModal: {
         questTitle: '討伐クエスト内容',
-        stats: {
-            hp: 'HP',
-            attack: '攻撃力'
-        },
         appearanceLabel: '特徴',
         guest: {
             fallbackName: 'ゲストキャラクター',
@@ -53,7 +46,6 @@ const ja = {
         }
     },
     options: {
-        title: '⚙️ オプション',
         playerInfo: 'プレイヤー情報',
         dataManagement: 'データ管理',
         gameSettings: 'ゲーム設定',

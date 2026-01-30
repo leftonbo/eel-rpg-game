@@ -1,6 +1,20 @@
 import { bossTranslations } from '../bosses';
 
 const en = {
+    errors: {
+        unknown: 'An unknown error occurred.',
+        bossLoadFailed: 'Failed to load boss data: {{error}}'
+    },
+    common: {
+        unknown: 'Unknown',
+        hp: 'Health',
+        mp: 'Mana',
+        attack: 'Attack',
+        weapon: 'Weapon',
+        armor: 'Armor',
+        gloves: 'Gloves',
+        belt: 'Belt',
+    },
     navigation: {
         bossSelect: '⚔️ Boss Select',
         playerDetail: '👤 Player Details',
@@ -11,36 +25,15 @@ const en = {
     },
     bossSelect: {
         title: 'Select a target to hunt....',
-        playerSummary: {
-            hp: 'Health',
-            mp: 'Mana',
-            attack: 'Attack',
-            weapon: 'Weapon',
-            armor: 'Armor',
-            gloves: 'Gloves',
-            belt: 'Belt',
-            unarmed: 'Unarmed',
-            noArmor: 'None',
-            noGloves: 'None',
-            noBelt: 'None'
-        },
         selectButton: 'Select',
-        unlockRequirement: '🔒 Unlock at Explorer Lv.{{level}}',
+        unlockRequirement: '🔒️ Unlock at Explorer Lv.{{level}}',
         status: {
             victory: 'Victory Achieved',
             defeat: 'Defeat Recorded'
-        },
-        errors: {
-            loadFailed: 'Failed to load boss data: {{error}}',
-            unknown: 'An unknown error occurred.'
         }
     },
     bossModal: {
         questTitle: 'Quest Objective',
-        stats: {
-            hp: 'HP',
-            attack: 'Attack'
-        },
         appearanceLabel: 'Traits',
         guest: {
             fallbackName: 'Guest Character',
@@ -53,7 +46,6 @@ const en = {
         }
     },
     options: {
-        title: '⚙️ Options',
         playerInfo: 'Player Info',
         dataManagement: 'Data Management',
         gameSettings: 'Game Settings',

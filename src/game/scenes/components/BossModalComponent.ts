@@ -130,10 +130,10 @@ export class BossModalComponent {
             modalStats.innerHTML = `
                 <div class="row">
                     <div class="col-6">
-                        <strong>${t('bossModal.stats.hp')}:</strong> ${bossData.maxHp}
+                        <strong>${t('common.hp')}:</strong> ${bossData.maxHp}
                     </div>
                     <div class="col-6">
-                        <strong>${t('bossModal.stats.attack')}:</strong> ${bossData.attackPower}
+                        <strong>${t('common.attack')}:</strong> ${bossData.attackPower}
                     </div>
                 </div>
             `;

@@ -78,9 +78,9 @@ export class OutGameBossSelectScene extends BaseOutGameScene {
             console.error('Failed to load boss:', error);
             
             // エラーメッセージ表示
-            const errorMessage = error instanceof Error ? error.message : t('bossSelect.errors.unknown');
+            const errorMessage = error instanceof Error ? error.message : t('errors.unknown');
             ToastUtils.showToast(
-                t('bossSelect.errors.loadFailed', { error: errorMessage }),
+                t('errors.bossLoadFailed', { error: errorMessage }),
                 ToastType.Error
             );
         }
@@ -102,10 +102,10 @@ export class OutGameBossSelectScene extends BaseOutGameScene {
             'player-summary-max-hp': player.maxHp.toString(),
             'player-summary-max-mp': player.maxMp.toString(),
             'player-summary-attack': player.getAttackPower().toString(),
-            'player-summary-weapon': equipment.weapon?.name || t('bossSelect.playerSummary.unarmed'),
-            'player-summary-armor': equipment.armor?.name || t('bossSelect.playerSummary.noArmor'),
-            'player-summary-gloves': equipment.gloves?.name || t('bossSelect.playerSummary.noGloves'),
-            'player-summary-belt': equipment.belt?.name || t('bossSelect.playerSummary.noBelt'),
+            'player-summary-weapon': equipment.weapon?.name || t('common.unknown'),
+            'player-summary-armor': equipment.armor?.name || t('common.unknown'),
+            'player-summary-gloves': equipment.gloves?.name || t('common.unknown'),
+            'player-summary-belt': equipment.belt?.name || t('common.unknown'),
         });
     }
 }
