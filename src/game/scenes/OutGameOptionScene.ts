@@ -3,6 +3,8 @@ import { BaseOutGameScene } from './BaseOutGameScene';
 import { PlayerSaveManager } from '../systems/PlayerSaveData';
 import { ModalUtils } from '../utils/ModalUtils';
 import { ToastType, ToastUtils } from '../utils/ToastUtils';
+import { getLanguage, setLanguage, t } from '../i18n';
+import { SupportedLanguage } from '../i18n/types';
 
 export class OutGameOptionScene extends BaseOutGameScene {
     constructor(game: Game) {
@@ -21,6 +23,10 @@ export class OutGameOptionScene extends BaseOutGameScene {
         this.updateNavigationActiveState();
         
         // オプション画面を更新
+        this.updateOptionScreen();
+    }
+
+    refreshLocalization(): void {
         this.updateOptionScreen();
     }
     
@@ -60,6 +66,14 @@ export class OutGameOptionScene extends BaseOutGameScene {
                 this.handleDebugModeToggle(target.checked);
             });
         }
+
+        const languageSelect = document.getElementById('language-select') as HTMLSelectElement | null;
+        if (languageSelect) {
+            languageSelect.addEventListener('change', async (event) => {
+                const target = event.target as HTMLSelectElement;
+                await setLanguage(target.value as SupportedLanguage);
+            });
+        }
     }
     
     /**
@@ -74,7 +88,7 @@ export class OutGameOptionScene extends BaseOutGameScene {
         
         // セーブデータの存在チェック
         const hasSaveData = PlayerSaveManager.hasSaveData();
-        this.updateElement('save-data-status', hasSaveData ? '存在' : 'なし');
+        this.updateElement('save-data-status', hasSaveData ? t('options.saveDataStatus.exists') : t('options.saveDataStatus.none'));
         
         // プレイヤー情報表示
         const player = this.game.getPlayer();
@@ -84,6 +98,12 @@ export class OutGameOptionScene extends BaseOutGameScene {
         // 撃破済みボス数
         const defeatedBossCount = player.memorialSystem.getVictoriousBossIds().length;
         this.updateElement('defeated-boss-count-display', defeatedBossCount.toString());
+
+        // 言語選択の状態を反映
+        const languageSelect = document.getElementById('language-select') as HTMLSelectElement | null;
+        if (languageSelect) {
+            languageSelect.value = getLanguage();
+        }
     }
     
     /**
@@ -105,7 +125,11 @@ export class OutGameOptionScene extends BaseOutGameScene {
                         PlayerSaveManager.importSaveDataJson(jsonData);
                         
                         // 成功メッセージ
-                        ToastUtils.showToast('セーブデータのインポートが完了しました', 'インポート完了', ToastType.Success);
+                        ToastUtils.showToast(
+                            t('toasts.importSuccessMessage'),
+                            t('toasts.importSuccessTitle'),
+                            ToastType.Success
+                        );
 
                         // 画面更新
                         this.updateOptionScreen();
@@ -114,7 +138,11 @@ export class OutGameOptionScene extends BaseOutGameScene {
                         this.game.reboot();
                     } catch (error) {
                         console.error('Save data import failed:', error);
-                        ToastUtils.showToast('セーブデータのインポートに失敗しました', 'インポート失敗', ToastType.Error);
+                        ToastUtils.showToast(
+                            t('toasts.importFailureMessage'),
+                            t('toasts.importFailureTitle'),
+                            ToastType.Error
+                        );
                     }
                 };
                 reader.readAsText(file);
@@ -139,11 +167,19 @@ export class OutGameOptionScene extends BaseOutGameScene {
             a.click();
             URL.revokeObjectURL(url);
             
-            ToastUtils.showToast('セーブデータをエクスポートしました', 'エクスポート完了', ToastType.Success);
+            ToastUtils.showToast(
+                t('toasts.exportSuccessMessage'),
+                t('toasts.exportSuccessTitle'),
+                ToastType.Success
+            );
             
         } catch (error) {
             console.error('Save data export failed:', error);
-            ToastUtils.showToast('セーブデータのエクスポートに失敗しました', 'エクスポート失敗', ToastType.Error);
+            ToastUtils.showToast(
+                t('toasts.exportFailureMessage'),
+                t('toasts.exportFailureTitle'),
+                ToastType.Error
+            );
         }
     }
     
@@ -151,11 +187,15 @@ export class OutGameOptionScene extends BaseOutGameScene {
      * セーブデータ削除処理
      */
     private async handleDeleteSaveData(): Promise<void> {
-        const confirmed = await ModalUtils.showConfirm('全てのセーブデータを削除しますか？この操作は取り消せません。');
+        const confirmed = await ModalUtils.showConfirm(t('options.dialogs.deleteConfirm'));
         if (confirmed) {
             try {
                 PlayerSaveManager.clearSaveData();
-                ToastUtils.showToast('セーブデータを削除しました', 'セーブデータ削除完了', ToastType.Success);
+                ToastUtils.showToast(
+                    t('toasts.deleteSuccessMessage'),
+                    t('toasts.deleteSuccessTitle'),
+                    ToastType.Success
+                );
                 
                 // 画面更新
                 this.updateOptionScreen();
@@ -167,7 +207,11 @@ export class OutGameOptionScene extends BaseOutGameScene {
                 this.game.reboot();
             } catch (error) {
                 console.error('Save data clear failed:', error);
-                ToastUtils.showToast('セーブデータの削除に失敗しました', 'セーブデータ削除失敗', ToastType.Error);
+                ToastUtils.showToast(
+                    t('toasts.deleteFailureMessage'),
+                    t('toasts.deleteFailureTitle'),
+                    ToastType.Error
+                );
             }
         }
     }

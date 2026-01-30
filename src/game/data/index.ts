@@ -1,4 +1,5 @@
 import { BossData } from '../entities/Boss';
+import { t } from '../i18n';
 
 /**
  * ボスモジュールの型定義
@@ -21,6 +22,62 @@ const modules = import.meta.glob('./bosses/*.ts') as Record<string, BossModuleLo
  * ボスデータのキャッシュ
  */
 const bossDataCache: Map<string, BossData> = new Map();
+
+function localizeBossData(bossData: BossData): BossData {
+    const baseKey = `bosses.${bossData.id}`;
+
+    return {
+        ...bossData,
+        displayName: t(`${baseKey}.displayName`, { defaultValue: bossData.displayName }),
+        description: t(`${baseKey}.description`, { defaultValue: bossData.description }),
+        questNote: t(`${baseKey}.questNote`, { defaultValue: bossData.questNote }),
+        appearanceNote: bossData.appearanceNote
+            ? t(`${baseKey}.appearanceNote`, { defaultValue: bossData.appearanceNote })
+            : undefined,
+        personality: bossData.personality
+            ? bossData.personality.map((entry, index) => t(`${baseKey}.personality.${index}`, { defaultValue: entry }))
+            : bossData.personality,
+        guestCharacterInfo: bossData.guestCharacterInfo
+            ? {
+                ...bossData.guestCharacterInfo,
+                characterName: bossData.guestCharacterInfo.characterName
+                    ? t(`${baseKey}.guestCharacterInfo.characterName`, { defaultValue: bossData.guestCharacterInfo.characterName })
+                    : undefined,
+                creator: bossData.guestCharacterInfo.creator
+                    ? t(`${baseKey}.guestCharacterInfo.creator`, { defaultValue: bossData.guestCharacterInfo.creator })
+                    : undefined
+            }
+            : undefined,
+        victoryTrophy: bossData.victoryTrophy
+            ? {
+                name: t(`${baseKey}.victoryTrophy.name`, { defaultValue: bossData.victoryTrophy.name }),
+                description: t(`${baseKey}.victoryTrophy.description`, { defaultValue: bossData.victoryTrophy.description })
+            }
+            : undefined,
+        defeatTrophy: bossData.defeatTrophy
+            ? {
+                name: t(`${baseKey}.defeatTrophy.name`, { defaultValue: bossData.defeatTrophy.name }),
+                description: t(`${baseKey}.defeatTrophy.description`, { defaultValue: bossData.defeatTrophy.description })
+            }
+            : undefined,
+        actions: bossData.actions.map(action => ({
+            ...action,
+            name: t(`${baseKey}.actions.${action.id}.name`, { defaultValue: action.name }),
+            description: t(`${baseKey}.actions.${action.id}.description`, { defaultValue: action.description }),
+            messages: action.messages?.map((message, index) => (
+                t(`${baseKey}.actions.${action.id}.messages.${index}`, { defaultValue: message })
+            ))
+        })),
+        battleStartMessages: bossData.battleStartMessages?.map((message, index) => ({
+            ...message,
+            text: t(`${baseKey}.battleStartMessages.${index}.text`, { defaultValue: message.text })
+        })),
+        victoryMessages: bossData.victoryMessages?.map((message, index) => ({
+            ...message,
+            text: t(`${baseKey}.victoryMessages.${index}.text`, { defaultValue: message.text })
+        }))
+    };
+}
 
 /**
  * BossData型チェック関数
@@ -125,7 +182,7 @@ export function getRegisteredBossIds(): string[] {
  * @returns ボスデータの配列
  */
 export function getAllBossData(): BossData[] {
-    return Array.from(bossDataCache.values());
+    return Array.from(bossDataCache.values()).map(localizeBossData);
 }
 
 /**
@@ -136,7 +193,7 @@ export function getAllBossData(): BossData[] {
  */
 export function getBossData(id: string): BossData {
     if (bossDataCache.has(id)) {
-        return bossDataCache.get(id)!;
+        return localizeBossData(bossDataCache.get(id)!);
     } else {
         throw new Error(`Boss data for ID ${id} not loaded. Please ensure loadAllBossData() is called first.`);
     }

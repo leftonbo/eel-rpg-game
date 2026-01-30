@@ -4,6 +4,7 @@ import { ToastType, ToastUtils } from '../utils/ToastUtils';
 import { BossCardManager } from './managers/BossCardManager';
 import { DOMUpdater } from './utils/DOMUpdater';
 import { BossModalComponent } from './components/BossModalComponent';
+import { t } from '../i18n';
 
 export class OutGameBossSelectScene extends BaseOutGameScene {
     private bossModalComponent: BossModalComponent;
@@ -36,6 +37,11 @@ export class OutGameBossSelectScene extends BaseOutGameScene {
         this.bossCardManager.updateBossCards();
         
         // プレイヤー情報表示更新
+        this.updatePlayerSummary();
+    }
+
+    refreshLocalization(): void {
+        this.bossCardManager.refreshBossCards();
         this.updatePlayerSummary();
     }
     
@@ -72,9 +78,9 @@ export class OutGameBossSelectScene extends BaseOutGameScene {
             console.error('Failed to load boss:', error);
             
             // エラーメッセージ表示
-            const errorMessage = error instanceof Error ? error.message : '不明なエラーが発生しました';
+            const errorMessage = error instanceof Error ? error.message : t('bossSelect.errors.unknown');
             ToastUtils.showToast(
-                `ボスデータの読み込みに失敗しました: ${errorMessage}`,
+                t('bossSelect.errors.loadFailed', { error: errorMessage }),
                 ToastType.Error
             );
         }
@@ -96,10 +102,10 @@ export class OutGameBossSelectScene extends BaseOutGameScene {
             'player-summary-max-hp': player.maxHp.toString(),
             'player-summary-max-mp': player.maxMp.toString(),
             'player-summary-attack': player.getAttackPower().toString(),
-            'player-summary-weapon': equipment.weapon?.name || '素手',
-            'player-summary-armor': equipment.armor?.name || 'はだか',
-            'player-summary-gloves': equipment.gloves?.name || 'なし',
-            'player-summary-belt': equipment.belt?.name || 'なし',
+            'player-summary-weapon': equipment.weapon?.name || t('bossSelect.playerSummary.unarmed'),
+            'player-summary-armor': equipment.armor?.name || t('bossSelect.playerSummary.noArmor'),
+            'player-summary-gloves': equipment.gloves?.name || t('bossSelect.playerSummary.noGloves'),
+            'player-summary-belt': equipment.belt?.name || t('bossSelect.playerSummary.noBelt'),
         });
     }
 }
