@@ -85,9 +85,25 @@ const ja = {
         debug: {
             label: 'デバッグモード',
             description: 'デバッグ機能を有効にします（開発者向け）'
+        }
+    },
+    dialogs: {
+        common: {
+            ok: 'OK',
+            cancel: 'キャンセル',
+            select: '選択',
+            alert: {
+                title: '通知',
+                message: '通知メッセージ'
+            },
+            confirm: {
+                title: '確認',
+                message: '確認メッセージ'
+            }
         },
-        dialogs: {
-            deleteConfirm: '全てのセーブデータを削除しますか？この操作は取り消せません。'
+        deleteConfirm: {
+            title: 'セーブデータ削除確認',
+            message: '全てのセーブデータを削除しますか？この操作は取り消せません。'
         }
     },
     toasts: {

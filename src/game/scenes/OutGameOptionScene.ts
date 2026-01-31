@@ -187,7 +187,10 @@ export class OutGameOptionScene extends BaseOutGameScene {
      * セーブデータ削除処理
      */
     private async handleDeleteSaveData(): Promise<void> {
-        const confirmed = await ModalUtils.showConfirm(t('options.dialogs.deleteConfirm'));
+        const confirmed = await ModalUtils.showConfirm(
+            t('dialogs.deleteConfirm.message'),
+            t('dialogs.deleteConfirm.title')
+        );
         if (confirmed) {
             try {
                 PlayerSaveManager.clearSaveData();

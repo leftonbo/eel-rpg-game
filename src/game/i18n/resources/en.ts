@@ -85,24 +85,52 @@ const en = {
         debug: {
             label: 'Debug Mode',
             description: 'Enable debug features (for developers)'
+        }
+    },
+    dialogs: {
+        common: {
+            ok: 'OK',
+            cancel: 'Cancel',
+            select: 'Select',
+            alert: {
+                title: 'Alert',
+                message: 'Alert message'
+            },
+            confirm: {
+                title: 'Confirm',
+                message: 'Confirm message'
+            }
         },
-        dialogs: {
-            deleteConfirm: 'Delete all save data? This action cannot be undone.'
+        deleteConfirm: {
+            title: 'Delete Save Data Confirm',
+            message: 'Delete all save data? This action cannot be undone.'
         }
     },
     toasts: {
-        importSuccessTitle: 'Import Complete',
-        importSuccessMessage: 'Save data imported successfully.',
-        importFailureTitle: 'Import Failed',
-        importFailureMessage: 'Failed to import save data.',
-        exportSuccessTitle: 'Export Complete',
-        exportSuccessMessage: 'Save data exported successfully.',
-        exportFailureTitle: 'Export Failed',
-        exportFailureMessage: 'Failed to export save data.',
-        deleteSuccessTitle: 'Delete Complete',
-        deleteSuccessMessage: 'Save data deleted successfully.',
-        deleteFailureTitle: 'Delete Failed',
-        deleteFailureMessage: 'Failed to delete save data.'
+        importSuccess: {
+            title: 'Import Complete',
+            message: 'Save data imported successfully.'
+        },
+        importFailure: {
+            title: 'Import Failed',
+            message: 'Failed to import save data.'
+        },
+        exportSuccess: {
+            title: 'Export Complete',
+            message: 'Save data exported successfully.'
+        },
+        exportFailure: {
+            title: 'Export Failed',
+            message: 'Failed to export save data.'
+        },
+        deleteSuccess: {
+            title: 'Delete Complete',
+            message: 'Save data deleted successfully.'
+        },
+        deleteFailure: {
+            title: 'Delete Failed',
+            message: 'Failed to delete save data.'
+        }
     },
     bosses: bossTranslations.en
 };

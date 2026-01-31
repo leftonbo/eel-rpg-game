@@ -6,7 +6,7 @@
     title: '通知',
     theme: 'bg-dark',
     body: '<div id="alert-modal-body"><!-- Alert message goes here --></div>',
-    footer: '<button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>'
+    footer: '<button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-i18n="dialogs.common.ok">OK</button>'
   };
 %>
 <%- include('../components/modal-base', alertModalData) %>
@@ -18,8 +18,8 @@
     title: '確認',
     theme: 'bg-dark',
     body: '<div id="confirm-modal-body"><!-- Confirm message goes here --></div>',
-    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="confirm-cancel-btn">キャンセル</button>' +
-            '<button type="button" class="btn btn-danger" id="confirm-ok-btn">OK</button>'
+    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="confirm-cancel-btn" data-i18n="dialogs.common.cancel">キャンセル</button>' +
+            '<button type="button" class="btn btn-danger" id="confirm-ok-btn" data-i18n="dialogs.common.ok">OK</button>'
   };
 %>
 <%- include('../components/modal-base', confirmModalData) %>
@@ -32,8 +32,8 @@
     theme: 'bg-dark',
     body: '<div id="prompt-modal-body" class="mb-3"><!-- Prompt message goes here --></div>' +
           '<input type="text" class="form-control" id="prompt-modal-input" placeholder="入力してください">',
-    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="prompt-cancel-btn">キャンセル</button>' +
-            '<button type="button" class="btn btn-primary" id="prompt-ok-btn">OK</button>'
+    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="prompt-cancel-btn" data-i18n="dialogs.common.cancel">キャンセル</button>' +
+            '<button type="button" class="btn btn-primary" id="prompt-ok-btn" data-i18n="dialogs.common.ok">OK</button>'
   };
 %>
 <%- include('../components/modal-base', promptModalData) %>
@@ -46,8 +46,8 @@
     theme: 'bg-dark',
     body: '<div id="select-modal-body" class="mb-3"><!-- Select message goes here --></div>' +
           '<select class="form-select" id="select-modal-select"><!-- Options will be populated here --></select>',
-    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="select-cancel-btn">キャンセル</button>' +
-            '<button type="button" class="btn btn-primary" id="select-ok-btn">選択</button>'
+    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="select-cancel-btn" data-i18n="dialogs.common.cancel">キャンセル</button>' +
+            '<button type="button" class="btn btn-primary" id="select-ok-btn" data-i18n="dialogs.common.select">選択</button>'
   };
 %>
 <%- include('../components/modal-base', selectModalData) %>
