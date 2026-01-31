@@ -193,6 +193,26 @@ export class Boss extends Actor {
     }
 
     /**
+     * Apply localized boss data without resetting battle state.
+     */
+    applyLocalizedData(data: BossData): void {
+        this.data = data;
+        this.displayName = data.displayName;
+        this.name = data.name;
+        this.description = data.description;
+        this.questNote = data.questNote;
+        this.actions = data.actions;
+        this.personality = data.personality || [];
+        this.aiStrategy = data.aiStrategy;
+        this.finishingMove = data.finishingMove;
+        this.battleStartMessages = data.battleStartMessages;
+        this.victoryMessages = data.victoryMessages;
+        this.suppressAutoFinishingMove = data.suppressAutoFinishingMove || false;
+        this.icon = data.icon || '👹';
+        this.guestCharacterInfo = data.guestCharacterInfo;
+    }
+
+    /**
      * Recalculate stats based on boss data
      */
     recalculateStats(): void {

@@ -1,4 +1,5 @@
 import { getBossData } from '../../data';
+import { t } from '../../i18n';
 import type { BootstrapModal } from '../../types/bootstrap';
 
 /**
@@ -129,10 +130,10 @@ export class BossModalComponent {
             modalStats.innerHTML = `
                 <div class="row">
                     <div class="col-6">
-                        <strong>HP:</strong> ${bossData.maxHp}
+                        <strong>${t('common.hp')}:</strong> ${bossData.maxHp}
                     </div>
                     <div class="col-6">
-                        <strong>攻撃力:</strong> ${bossData.attackPower}
+                        <strong>${t('common.attack')}:</strong> ${bossData.attackPower}
                     </div>
                 </div>
             `;
@@ -152,7 +153,7 @@ export class BossModalComponent {
                 modalAppearance.textContent = ''; // Clear previous content
                 const small = document.createElement('small');
                 small.className = 'text-muted';
-                small.textContent = `特徴: ${bossData.appearanceNote}`;
+                small.textContent = `${t('bossModal.appearanceLabel')}: ${bossData.appearanceNote}`;
                 modalAppearance.appendChild(small);
             } else {
                 modalAppearance.classList.add('d-none');
@@ -163,11 +164,14 @@ export class BossModalComponent {
         const modalGuestInfo = document.getElementById('modal-boss-guest-info');
         if (modalGuestInfo) {
             if (bossData.guestCharacterInfo) {
-                const characterName = bossData.guestCharacterInfo.characterName || 'Guest Character';
+                const characterName = bossData.guestCharacterInfo.characterName || t('bossModal.guest.fallbackName');
                 modalGuestInfo.textContent = ''; // Clear previous content
                 const small = document.createElement('small');
                 small.className = 'text-muted';
-                small.textContent = `${characterName} created by ${bossData.guestCharacterInfo.creator}`;
+                small.textContent = t('bossModal.guest.createdBy', {
+                    name: characterName,
+                    creator: bossData.guestCharacterInfo.creator
+                });
                 modalGuestInfo.appendChild(small);
                 modalGuestInfo.classList.remove('d-none');
             } else {

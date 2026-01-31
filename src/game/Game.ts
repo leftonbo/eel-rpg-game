@@ -242,6 +242,16 @@ export class Game implements IGameContext {
     getCurrentState(): GameState {
         return this.currentState;
     }
+
+    refreshLocalization(): void {
+        if (this.currentBoss) {
+            const localizedBoss = getBossData(this.currentBoss.id);
+            this.currentBoss.applyLocalizedData(localizedBoss);
+        }
+
+        this.outGameBossSelectScene.refreshLocalization();
+        this.outGameOptionScene.refreshLocalization();
+    }
     
     /**
      * Check if debug mode is enabled

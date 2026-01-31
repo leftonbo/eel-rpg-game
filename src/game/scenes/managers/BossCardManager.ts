@@ -2,6 +2,7 @@ import { BossData } from '@/game/entities/Boss';
 import { Game } from '../../Game';
 import { getAllBossData } from '../../data';
 import { MemorialSaveData } from '../../systems/MemorialSystem';
+import { t } from '../../i18n';
 
 export class BossCardManager {
     private game: Game;
@@ -28,6 +29,8 @@ export class BossCardManager {
             console.error('[BossCardManager] boss-cards-container not found');
             return;
         }
+
+        container.innerHTML = '';
         
         // Get all boss data and sort by explorerLevelRequired first, then by id
         const allBossData = getAllBossData();
@@ -66,7 +69,7 @@ export class BossCardManager {
                     <div class="card-body text-center">
                         <h3 class="card-title">${bossData.icon} ${bossData.displayName}</h3>
                         <p class="card-text">${bossData.description}</p>
-                        <button class="btn btn-success w-100">選択</button>
+                        <button class="btn btn-success w-100">${t('bossSelect.selectButton')}</button>
                     </div>
                 </div>
             `;
@@ -86,6 +89,10 @@ export class BossCardManager {
      * Set up event delegation for boss card clicks
      */
     private setupBossCardEventDelegation(container: HTMLElement): void {
+        if (container.dataset.listenerAdded) {
+            return;
+        }
+
         container.addEventListener('click', (e) => {
             const card = (e.target as HTMLElement).closest('.boss-card');
             if (card) {
@@ -95,6 +102,8 @@ export class BossCardManager {
                 }
             }
         });
+
+        container.dataset.listenerAdded = 'true';
     }
 
     /**
@@ -137,7 +146,7 @@ export class BossCardManager {
             if (isUnlocked) {
                 textElement.textContent = bossData.description;
             } else {
-                textElement.textContent = `🔒 エクスプローラーLv.${requiredLevel}で解禁`;
+                textElement.textContent = t('bossSelect.unlockRequirement', { level: requiredLevel });
             }
         }
     }
@@ -193,15 +202,20 @@ export class BossCardManager {
                 // Show victory badge
                 victoryBadge.style.display = 'flex';
                 victoryBadge.textContent = '🏆';
-                victoryBadge.title = '勝利済み';
+                victoryBadge.title = t('bossSelect.status.victory');
             }
             
             if (hasDefeat) {
                 // Show defeat badge
                 defeatBadge.style.display = 'flex';
                 defeatBadge.textContent = '💀';
-                defeatBadge.title = '敗北済み';
+                defeatBadge.title = t('bossSelect.status.defeat');
             }
         }
+    }
+
+    refreshBossCards(): void {
+        this.generateBossCards();
+        this.updateBossCards();
     }
 }

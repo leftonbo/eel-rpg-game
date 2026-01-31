@@ -7,7 +7,7 @@
             <div class="col-12">
                 <div class="card bg-dark">
                     <div class="card-header">
-                        <h5 class="mb-0">⚙️ オプション</h5>
+                        <h5 class="mb-0" data-i18n="navigation.option">⚙️ オプション</h5>
                     </div>
                     <div class="card-body">
                         <!-- Message Container -->
@@ -16,24 +16,24 @@
                         <!-- Player Information -->
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h6>プレイヤー情報</h6>
+                                <h6 data-i18n="options.playerInfo">プレイヤー情報</h6>
                                 <div class="card bg-secondary">
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-3">
-                                                <strong>名前:</strong>
+                                                <strong data-i18n="options.player.name">名前</strong>:
                                                 <span id="player-name-display">エルナル</span>
                                             </div>
                                             <div class="col-md-3">
-                                                <strong>エクスプローラーLv:</strong>
+                                                <strong data-i18n="options.player.explorerLevel">エクスプローラーLv</strong>:
                                                 <span id="player-explorer-level-display">1</span>
                                             </div>
                                             <div class="col-md-3">
-                                                <strong>撃破済みボス数:</strong>
+                                                <strong data-i18n="options.player.defeatedBossCount">撃破済みボス数</strong>:
                                                 <span id="defeated-boss-count-display">0</span>
                                             </div>
                                             <div class="col-md-3">
-                                                <strong>セーブデータ:</strong>
+                                                <strong data-i18n="options.player.saveData">セーブデータ</strong>:
                                                 <span id="save-data-status">存在</span>
                                             </div>
                                         </div>
@@ -45,18 +45,19 @@
                         <!-- Data Management -->
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h6>データ管理</h6>
+                                <h6 data-i18n="options.dataManagement">データ管理</h6>
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="card bg-secondary mb-3">
                                             <div class="card-body text-center">
-                                                <h6 class="card-title">📤 データエクスポート</h6>
+                                                <h6 class="card-title" data-i18n="options.data.exportTitle">📤 データエクスポート</h6>
                                                 <p class="card-text">
-                                                    セーブデータをファイルとして保存します
+                                                    <span data-i18n="options.data.exportDescription">セーブデータをファイルとして保存します</span>
                                                 </p>
                                                 <button
                                                     id="export-save-data-btn"
                                                     class="btn btn-outline-info w-100"
+                                                    data-i18n="options.data.exportButton"
                                                 >
                                                     エクスポート
                                                 </button>
@@ -66,13 +67,14 @@
                                     <div class="col-md-4">
                                         <div class="card bg-secondary mb-3">
                                             <div class="card-body text-center">
-                                                <h6 class="card-title">📥 データインポート</h6>
+                                                <h6 class="card-title" data-i18n="options.data.importTitle">📥 データインポート</h6>
                                                 <p class="card-text">
-                                                    セーブデータをファイルから読み込みます
+                                                    <span data-i18n="options.data.importDescription">セーブデータをファイルから読み込みます</span>
                                                 </p>
                                                 <button
                                                     id="import-save-data-btn"
                                                     class="btn btn-outline-success w-100"
+                                                    data-i18n="options.data.importButton"
                                                 >
                                                     インポート
                                                 </button>
@@ -88,11 +90,12 @@
                                     <div class="col-md-4">
                                         <div class="card bg-secondary mb-3">
                                             <div class="card-body text-center">
-                                                <h6 class="card-title">🗑️ データ削除</h6>
-                                                <p class="card-text">全てのセーブデータを削除します</p>
+                                                <h6 class="card-title" data-i18n="options.data.deleteTitle">🗑️ データ削除</h6>
+                                                <p class="card-text" data-i18n="options.data.deleteDescription">全てのセーブデータを削除します</p>
                                                 <button
                                                     id="delete-save-data-btn"
                                                     class="btn btn-outline-danger w-100"
+                                                    data-i18n="options.data.deleteButton"
                                                 >
                                                     削除
                                                 </button>
@@ -106,15 +109,25 @@
                         <!-- Game Settings -->
                         <div class="row">
                             <div class="col-12">
-                                <h6>ゲーム設定</h6>
+                                <h6 data-i18n="options.gameSettings">ゲーム設定</h6>
                                 <div class="card bg-secondary">
                                     <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label" for="language-select" data-i18n="options.language.label">表示言語</label>
+                                            <select id="language-select" class="form-select">
+                                                <option value="ja" data-i18n="options.language.ja">日本語</option>
+                                                <option value="en" data-i18n="options.language.en">English</option>
+                                            </select>
+                                            <div class="form-text" data-i18n="options.language.help">
+                                                ゲーム内テキストの表示言語を切り替えます。
+                                            </div>
+                                        </div>
                                         <div class="form-check form-switch d-none">
                                             <input class="form-check-input" type="checkbox" id="debug-mode-toggle">
-                                            <label class="form-check-label" for="debug-mode-toggle">
+                                            <label class="form-check-label" for="debug-mode-toggle" data-i18n="options.debug.label">
                                                 デバッグモード
                                             </label>
-                                            <div class="form-text">
+                                            <div class="form-text" data-i18n="options.debug.description">
                                                 デバッグ機能を有効にします（開発者向け）
                                             </div>
                                         </div>
