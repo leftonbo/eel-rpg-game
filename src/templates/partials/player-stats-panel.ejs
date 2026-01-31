@@ -18,12 +18,12 @@
     
     <h6 data-i18n="playerStats.abilities">アビリティ</h6>
     <div class="row">
-        <%- include('../components/ability-card', { icon: '⚔️', name: 'コンバット', nameKey: 'abilities.names.combat', abilityId: 'combat', description: '新しい武器と攻撃スキルをアンロックします。ボスにダメージを与えると経験値が貯まります。', descriptionKey: 'abilities.descriptions.combat' }) %>
-        <%- include('../components/ability-card', { icon: '🛡️', name: 'タフネス', nameKey: 'abilities.names.toughness', abilityId: 'toughness', description: '新しい防具と防衛スキルをアンロックします。ヘルスが減ると経験値が貯まります。', descriptionKey: 'abilities.descriptions.toughness' }) %>
-        <%- include('../components/ability-card', { icon: '🔧', name: 'クラフトワーク', nameKey: 'abilities.names.craftwork', abilityId: 'craftwork', description: 'アイテムの所持数が増加し、新しいアイテムをアンロックします。アイテムを使用するたびに経験値が貯まります。', descriptionKey: 'abilities.descriptions.craftwork' }) %>
-        <%- include('../components/ability-card', { icon: '💪', name: 'エンデュランス', nameKey: 'abilities.names.endurance', abilityId: 'endurance', description: '最大マナが増加します。マナを消費するたびに経験値が貯まります。', descriptionKey: 'abilities.descriptions.endurance' }) %>
-        <%- include('../components/ability-card', { icon: '🏃', name: 'アジリティ', nameKey: 'abilities.names.agility', abilityId: 'agility', description: '拘束状態から脱出しやすくなります。拘束から脱出を試みるたびに経験値が貯まります。', descriptionKey: 'abilities.descriptions.agility' }) %>
-        <%- include('../components/ability-card', { icon: '🗺️', name: 'エクスプローラー', nameKey: 'abilities.names.explorer', abilityId: 'explorer', description: '探検できる範囲が広がり、新しいボスをアンロックします。記念品を獲得したり、ボスからスキルを受けたりするたびに経験値が貯まります。', descriptionKey: 'abilities.descriptions.explorer' }) %>
+        <%- include('../components/ability-card', { icon: '⚔️', abilityId: 'combat' }) %>
+        <%- include('../components/ability-card', { icon: '🛡️', abilityId: 'toughness' }) %>
+        <%- include('../components/ability-card', { icon: '🔧', abilityId: 'craftwork' }) %>
+        <%- include('../components/ability-card', { icon: '💪', abilityId: 'endurance' }) %>
+        <%- include('../components/ability-card', { icon: '🏃', abilityId: 'agility' }) %>
+        <%- include('../components/ability-card', { icon: '🗺️', abilityId: 'explorer' }) %>
     </div>
     
     <!-- Debug Controls for Skills Tab -->

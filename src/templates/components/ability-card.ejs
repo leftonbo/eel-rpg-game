@@ -4,7 +4,7 @@
         <div class="card-body">
             <h6 class="card-title">
                 <%= icon %>
-                <span <%= locals?.nameKey ? `data-i18n="${nameKey}"` : '' %>><%= name %></span>
+                <span data-i18n="abilities.names.<%= abilityId %>"></span>
                 <span data-i18n="common.levelShort">Lv.</span><span id="<%= abilityId %>-level">0</span>
             </h6>
             <div class="progress mb-2">
@@ -14,11 +14,9 @@
                 <span data-i18n="common.expLabel">経験値</span>: <span id="<%= abilityId %>-exp">0</span> / 
                 <span id="<%= abilityId %>-next">100</span>
             </small>
-            <% if (locals?.description) { %>
-                <p class="mt-2 mb-0 small">
-                    <span <%= locals?.descriptionKey ? `data-i18n="${descriptionKey}"` : '' %>><%= description %></span>
-                </p>
-            <% } %>
+            <p class="mt-2 mb-0 small">
+                <span data-i18n="abilities.descriptions.<%= abilityId %>"></span>
+            </p>
         </div>
     </div>
 </div>
