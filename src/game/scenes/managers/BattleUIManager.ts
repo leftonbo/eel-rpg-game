@@ -3,6 +3,7 @@ import { Boss } from '../../entities/Boss';
 import { StatusEffect, StatusEffectType } from '../../systems/StatusEffect';
 import { PLAYER_ITEMS } from '@/game/data/PlayerItems';
 import { BossModalComponent } from '../components/BossModalComponent';
+import { t } from 'i18next';
 
 /**
  * バトル画面のUI更新を管理するクラス
@@ -246,19 +247,14 @@ export class BattleUIManager {
         
         // Add buttons for player items that are unlocked and not already shown
         PLAYER_ITEMS.forEach(itemData => {
-            // Skip items that already have static buttons
-            if (['heal-potion', 'adrenaline', 'energy-drink'].includes(itemData.id)) {
-                return;
-            }
-            
             const itemCount = player.getItemCount(itemData.id);
             if (itemCount > 0) {
                 const button = document.createElement('button');
                 button.id = `${itemData.id}-btn`;
                 button.className = 'btn btn-outline-success';
                 button.setAttribute('data-dynamic-item', 'true');
-                button.innerHTML = `💊 ${itemData.name} (${itemCount})`;
-                button.title = itemData.description;
+                button.innerHTML = `${itemData.icon} ${t(`items.${itemData.id}.name`)} (${itemCount})`;
+                button.title = t(`items.${itemData.id}.description`);
                 
                 // Insert before the back button
                 const backBtn = document.getElementById('item-back-btn');
@@ -294,8 +290,8 @@ export class BattleUIManager {
             const omamoriBtn = document.createElement('button');
             omamoriBtn.id = 'omamori-special-btn';
             omamoriBtn.className = 'btn btn-outline-light';
-            omamoriBtn.innerHTML = '🛡️ おまもり (1)';
-            omamoriBtn.title = '特殊状態を解除し、HPを満回復する';
+            omamoriBtn.innerHTML = `🧿 ${t('items.omamori.name')} (${player.getItemCount('omamori')})`;
+            omamoriBtn.title = t('items.omamori.description');
             omamoriContainer.appendChild(omamoriBtn);
         }
     }

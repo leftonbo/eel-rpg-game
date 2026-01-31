@@ -219,17 +219,16 @@ const en = {
         attack: '⚔️ Attack',
         defend: '🛡️ Defend',
         skill: '⚡️ Skills',
-        item: '💊 Items'
+        item: '👜 Items'
     },
     skillPanel: {
-        title: 'Skills',
         powerAttack: '💥 Power Attack',
         powerAttackCost: '(20MP)',
         powerAttackHint: 'Guaranteed hit with 2.5x attack (20MP)',
         heal: '✨ Heal',
         healCost: '(30MP)',
         healHint: 'Restore 100 HP (30MP)',
-        struggle: '🔥 Hard Struggle',
+        struggle: '🔥 Thrash',
         struggleCost: '(30MP)',
         struggleHint: 'Struggles with doubled escape chance (30MP)',
         ultraSmash: '💀 Ultra Smash',
@@ -237,20 +236,10 @@ const en = {
         ultraSmashHint: 'All-out attack',
         back: 'Back'
     },
-    itemPanel: {
-        title: 'Items',
-        healPotion: '💊 Healing Potion',
-        healPotionHint: 'Heal 80% HP and remove debuffs',
-        adrenaline: '💉 Adrenaline Shot',
-        adrenalineHint: 'Become invincible for 3 turns',
-        energyDrink: '⚡️ Energy Drink',
-        energyDrinkHint: 'MP stays full for 3 turns',
-        back: 'Back'
-    },
     specialActions: {
         struggle: '💪 Struggle',
         struggleHint: 'Attempt to escape (success rate increases with attempts)',
-        struggleSkill: '🔥 Hard Struggle',
+        struggleSkill: '🔥 Thrash',
         struggleSkillCost: '(30MP)',
         struggleSkillHint: 'Struggles with doubled escape chance (30MP)',
         stayStill: '😌 Stay Still',
@@ -552,6 +541,28 @@ const en = {
                 name: 'Infinity Belt',
                 description: 'Ultimate belt granting endless mana'
             }
+        }
+    },
+    items: {
+        'heal-potion': {
+            name: 'Healing Potion',
+            description: 'Heal 80% Health and remove debuffs'
+        },
+        'adrenaline': {
+            name: 'Adrenaline Shot',
+            description: 'Become invincible for 3 turns'
+        },
+        'energy-drink': {
+            name: 'Energy Drink',
+            description: 'Mana stays full for 3 turns'
+        },
+        'elixir': {
+            name: 'Elixir',
+            description: 'Heal 100% Health, remove debuffs and Mana stays full for 3 turns'
+        },
+        'omamori': {
+            name: 'Charm',
+            description: 'Only usable in knocked out, restrained, eaten state. Heal 100% Health, remove knocked out, restrained and eaten state and remove debuffs'
         }
     },
     library: {

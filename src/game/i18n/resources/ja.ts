@@ -219,10 +219,9 @@ const ja = {
         attack: '⚔️ 攻撃',
         defend: '🛡️ 防御',
         skill: '⚡️ スキル',
-        item: '💊 アイテム'
+        item: '👜 アイテム'
     },
     skillPanel: {
-        title: 'スキル',
         powerAttack: '💥 パワーアタック',
         powerAttackCost: '(20MP)',
         powerAttackHint: '2.5倍の攻撃力で確実に攻撃（20MP）',
@@ -235,16 +234,6 @@ const ja = {
         ultraSmash: '💀 ウルトラスマッシュ',
         ultraSmashCost: '(MP全消費)',
         ultraSmashHint: '全力攻撃',
-        back: '戻る'
-    },
-    itemPanel: {
-        title: 'アイテム',
-        healPotion: '💊 回復薬',
-        healPotionHint: 'ヘルスを80%回復し、状態異常を解除する',
-        adrenaline: '💉 アドレナリン注射',
-        adrenalineHint: '3ターンの間、無敵になる',
-        energyDrink: '⚡️ 元気ドリンク',
-        energyDrinkHint: '3ターンの間、MPが常に満タンになる',
         back: '戻る'
     },
     specialActions: {
@@ -552,6 +541,28 @@ const ja = {
                 name: 'インフィニティベルト',
                 description: '無限のマナを与える最強のベルト'
             }
+        }
+    },
+    items: {
+        'heal-potion': {
+            name: '回復薬',
+            description: 'ヘルスを80%回復し、状態異常を解除する'
+        },
+        'energy-drink': {
+            name: '元気ドリンク',
+            description: '3ターンの間、マナが常に満タンになる'
+        },
+        'adrenaline': {
+            name: 'アドレナリン注射',
+            description: '3ターンの間、無敵になる'
+        },
+        'elixir': {
+            name: 'エリクサー',
+            description: 'ヘルスを100%回復し、状態異常を解除する。3ターンの間、マナが常に満タンになる'
+        },
+        'omamori': {
+            name: 'おまもり',
+            description: '行動不能・拘束・食べられ状態にのみ使える。ヘルスを100%回復し、行動不能・拘束・食べられ状態を解除、状態異常も解除する'
         }
     },
     library: {

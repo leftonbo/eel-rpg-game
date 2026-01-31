@@ -41,8 +41,7 @@ function validateSpecialConditionItem(player: Player, itemId: string): ItemUseRe
  */
 export interface PlayerItemData {
     id: string;
-    name: string;
-    description: string;
+    icon: string;
     requiredLevel: number;
     abilityType: AbilityType;
     experienceGain: number;
@@ -54,8 +53,7 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
     // Healing Potion (base item, enhanced by CraftWork level)
     {
         id: 'heal-potion',
-        name: '回復薬',
-        description: 'ヘルスを80%回復し、状態異常を解除する',
+        icon: '💊',
         requiredLevel: 0,
         abilityType: AbilityType.CraftWork,
         experienceGain: 20,
@@ -87,8 +85,7 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
     // Energy Drink (unlocked at CraftWork level 1)
     {
         id: 'energy-drink',
-        name: '元気ドリンク',
-        description: '3ターンの間、MPが常に満タンになる',
+        icon: '🥤',
         requiredLevel: 1,
         abilityType: AbilityType.CraftWork,
         experienceGain: 80,
@@ -129,8 +126,7 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
     // Adrenaline Shot (unlocked at CraftWork level 3)
     {
         id: 'adrenaline',
-        name: 'アドレナリン注射',
-        description: '3ターンの間、無敵になる',
+        icon: '💉',
         requiredLevel: 3,
         abilityType: AbilityType.CraftWork,
         experienceGain: 150,
@@ -163,8 +159,7 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
     // Elixir (unlocked at CraftWork level 5)
     {
         id: 'elixir',
-        name: 'エリクサー',
-        description: 'HPを100%回復し、状態異常を解除、元気ドリンクの効果を得る',
+        icon: '🍯',
         requiredLevel: 5,
         abilityType: AbilityType.CraftWork,
         experienceGain: 400,
@@ -210,8 +205,7 @@ export const PLAYER_ITEMS: PlayerItemData[] = [
     // Omamori (unlocked at CraftWork level 7)
     {
         id: 'omamori',
-        name: 'おまもり',
-        description: '行動不能状態・拘束中・食べられ中にのみ使える。即座にそれらの状態を解除し、HPを100%回復し、状態異常を解除',
+        icon: '🧿',
         requiredLevel: 7,
         abilityType: AbilityType.CraftWork,
         experienceGain: 1000,
@@ -282,9 +276,9 @@ export function updatePlayerItems(player: Player): void {
         } else if (currentCount > 0) {
             // Add new item if it should be available
             player.itemManager.addItem(itemData.id, {
-                name: itemData.name,
+                id: itemData.id,
+                icon: itemData.icon,
                 count: currentCount,
-                description: itemData.description,
                 use: itemData.use,
                 experienceGain: itemData.experienceGain,
             });
