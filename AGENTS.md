@@ -126,6 +126,8 @@ requiredBossLosses: ["boss-id3"]
 
 ### コミットメッセージ
 
+コミットメッセージは日本語で記述する。
+
 コミットメッセージには gitmoji スタイルを使用します。詳細は [git-commit.md](./docs/rules/git-commit.md) を参照。
 
 ### ブランチ命名
