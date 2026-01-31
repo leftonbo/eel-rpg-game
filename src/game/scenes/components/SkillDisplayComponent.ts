@@ -1,5 +1,5 @@
 import { SkillData, UnlockCondition } from '../../data/skills';
-import { AbilityNameResolver } from '../utils/AbilityNameResolver';
+import { t } from '../../i18n';
 
 /**
  * スキル表示の共通コンポーネント
@@ -33,7 +33,7 @@ export class SkillDisplayComponent {
     private static createActiveSkillHTML(skill: SkillData): string {
         const categoryColor = this.getSkillCategoryColor(skill.category);
         const categoryName = this.getSkillCategoryName(skill.category);
-        const mpCostText = skill.mpCost > 0 ? `MP: ${skill.mpCost}` : 'MP: 0';
+        const mpCostText = t('skills.mpCost', { cost: skill.mpCost });
         
         return `
             <div class="skill-header d-flex justify-content-between align-items-start mb-2">
@@ -63,7 +63,7 @@ export class SkillDisplayComponent {
                     <p class="skill-description mb-0">${skill.description}</p>
                 </div>
                 <div class="skill-meta text-end flex-shrink-0">
-                    <span class="badge bg-info">パッシブ</span>
+                    <span class="badge bg-info">${t('skills.passiveBadge')}</span>
                 </div>
             </div>
             ${this.getSkillUnlockCondition(skill)}
@@ -79,23 +79,23 @@ export class SkillDisplayComponent {
         const details = [];
         
         if (skill.damageMultiplier && skill.damageMultiplier > 1) {
-            details.push(`威力: ${skill.damageMultiplier}倍`);
+            details.push(t('skills.details.damageMultiplier', { value: skill.damageMultiplier }));
         }
         
         if (skill.criticalRate && skill.criticalRate > 0.05) {
-            details.push(`クリティカル率: ${Math.round(skill.criticalRate * 100)}%`);
+            details.push(t('skills.details.criticalRate', { value: Math.round(skill.criticalRate * 100) }));
         }
         
         if (skill.hitRate && skill.hitRate < 1) {
-            details.push(`命中率: ${Math.round(skill.hitRate * 100)}%`);
+            details.push(t('skills.details.hitRate', { value: Math.round(skill.hitRate * 100) }));
         }
         
         if (skill.healAmount) {
-            details.push(`回復量: ${skill.healAmount}`);
+            details.push(t('skills.details.healAmount', { value: skill.healAmount }));
         }
         
         if (skill.healPercentage) {
-            details.push(`回復率: ${Math.round(skill.healPercentage * 100)}%`);
+            details.push(t('skills.details.healPercentage', { value: Math.round(skill.healPercentage * 100) }));
         }
         
         const unlockCondition = this.getSkillUnlockCondition(skill);
@@ -120,10 +120,11 @@ export class SkillDisplayComponent {
     private static getSkillUnlockCondition(skill: SkillData): string {
         if (skill.unlockConditions && skill.unlockConditions.length > 0) {
             const conditions = skill.unlockConditions.map((condition: UnlockCondition) => {
-                const abilityName = AbilityNameResolver.getAbilityName(condition.abilityType);
-                return `${abilityName}レベル ${condition.requiredLevel}`;
+                const abilityKey = `abilities.names.${condition.abilityType}`;
+                const abilityName = t(abilityKey);
+                return t('skills.unlockConditionItem', { ability: abilityName, level: condition.requiredLevel });
             });
-            return `<div class="skill-unlock-condition">解放条件: ${conditions.join(', ')}</div>`;
+            return `<div class="skill-unlock-condition">${t('skills.unlockConditionsLabel')}: ${conditions.join(', ')}</div>`;
         }
         return '';
     }
@@ -150,11 +151,11 @@ export class SkillDisplayComponent {
      */
     private static getSkillCategoryName(category: string): string {
         switch (category) {
-            case 'combat': return '攻撃';
-            case 'defense': return '防御';
-            case 'support': return '支援';
-            case 'passive': return 'パッシブ';
-            default: return 'その他';
+            case 'combat': return t('skills.categories.combat');
+            case 'defense': return t('skills.categories.defense');
+            case 'support': return t('skills.categories.support');
+            case 'passive': return t('skills.categories.passive');
+            default: return t('skills.categories.other');
         }
     }
 
@@ -170,7 +171,7 @@ export class SkillDisplayComponent {
         containerId: string, 
         skills: SkillData[], 
         isPassive: boolean = false,
-        emptyMessage: string = '解放されたスキルがありません'
+        emptyMessage: string = t('skills.empty.default')
     ): void {
         const container = document.getElementById(containerId);
         if (!container) {
@@ -200,7 +201,7 @@ export class SkillDisplayComponent {
      */
     static updateActiveSkillsList(containerId: string, skills: SkillData[]): void {
         const activeSkills = skills.filter(skill => !skill.isPassive);
-        this.updateSkillsList(containerId, activeSkills, false, '解放されたアクティブスキルがありません');
+        this.updateSkillsList(containerId, activeSkills, false, t('skills.empty.active'));
     }
 
     /**
@@ -209,7 +210,7 @@ export class SkillDisplayComponent {
      * @param skills パッシブスキルデータの配列
      */
     static updatePassiveSkillsList(containerId: string, skills: SkillData[]): void {
-        this.updateSkillsList(containerId, skills, true, '解放されたパッシブスキルがありません');
+        this.updateSkillsList(containerId, skills, true, t('skills.empty.passive'));
     }
 
     /**
@@ -219,24 +220,25 @@ export class SkillDisplayComponent {
      */
     static getSkillInfoText(skill: SkillData): string {
         const parts = [
-            `名前: ${skill.name}`,
-            `説明: ${skill.description}`,
-            `カテゴリ: ${this.getSkillCategoryName(skill.category)}`
+            t('skills.info.name', { name: skill.name }),
+            t('skills.info.description', { description: skill.description }),
+            t('skills.info.category', { category: this.getSkillCategoryName(skill.category) })
         ];
 
         if (skill.mpCost > 0) {
-            parts.push(`MP消費: ${skill.mpCost}`);
+            parts.push(t('skills.info.mpCost', { cost: skill.mpCost }));
         }
 
         if (skill.damageMultiplier && skill.damageMultiplier > 1) {
-            parts.push(`威力: ${skill.damageMultiplier}倍`);
+            parts.push(t('skills.details.damageMultiplier', { value: skill.damageMultiplier }));
         }
 
         if (skill.unlockConditions && skill.unlockConditions.length > 0) {
-            const conditions = skill.unlockConditions.map(condition => 
-                `${AbilityNameResolver.getAbilityName(condition.abilityType)}Lv.${condition.requiredLevel}`
-            );
-            parts.push(`解放条件: ${conditions.join(', ')}`);
+            const conditions = skill.unlockConditions.map(condition => {
+                const abilityName = t(`abilities.names.${condition.abilityType}`);
+                return t('skills.unlockConditionItem', { ability: abilityName, level: condition.requiredLevel });
+            });
+            parts.push(`${t('skills.unlockConditionsLabel')}: ${conditions.join(', ')}`);
         }
 
         return parts.join('\n');

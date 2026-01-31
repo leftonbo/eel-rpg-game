@@ -6,6 +6,8 @@
 /**
  * トーストのタイプを定義する型エイリアス
  */
+import { t } from '../i18n';
+
 export enum ToastType {
     Success = 'success',
     Error = 'error',
@@ -113,7 +115,7 @@ export class ToastUtils {
                 <div class="toast-header ${bgClass} text-white">
                     <span class="me-2">${iconClass}</span>
                     <strong class="me-auto">${displayTitle}</strong>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="閉じる"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="${t('common.close')}"></button>
                 </div>
                 <div class="toast-body">
                     ${message}
@@ -213,11 +215,11 @@ export class ToastUtils {
      */
     private static getToastTitle(type: ToastType): string {
         switch (type) {
-            case ToastType.Success: return '成功';
-            case ToastType.Error: return 'エラー';
-            case ToastType.Warning: return '警告';
+            case ToastType.Success: return t('toasts.types.success');
+            case ToastType.Error: return t('toasts.types.error');
+            case ToastType.Warning: return t('toasts.types.warning');
             case ToastType.Info:
-            default: return '情報';
+            default: return t('toasts.types.info');
         }
     }
 }

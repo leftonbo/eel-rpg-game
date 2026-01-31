@@ -4,6 +4,7 @@ import { getBossData } from '../data';
 import { BootstrapMarkdownRenderer } from '../utils/BootstrapMarkdownRenderer';
 import { getAllDocuments, LibraryDocument, loadAllDocuments } from '../data/DocumentLoader';
 import { Player } from '../entities/Player';
+import { t } from '../i18n';
 
 
 interface LibraryDocumentStatus extends LibraryDocument {
@@ -158,10 +159,10 @@ export class OutGameLibraryScene extends BaseOutGameScene {
         return bossIds.map(bossId => {
             try {
                 const bossData = getBossData(bossId);
-                return `${bossData.displayName}${type === 'defeat' ? '敗北' : '撃破'}`;
+                return t(`library.requirements.${type}`, { boss: bossData.displayName });
             } catch (error) {
                 console.error(`Error fetching boss data for ID "${bossId}":`, error);
-                return `${bossId}${type === 'defeat' ? '敗北' : '撃破'}(データ不明)`;
+                return t('library.requirements.unknownBoss', { bossId, type: t(`library.requirements.${type}Label`) });
             }
         }).join(', ');
     }
@@ -195,7 +196,7 @@ export class OutGameLibraryScene extends BaseOutGameScene {
                 button.classList.add('btn-outline-info');
                 
                 // 未読の場合は未読バッジも表示
-                const unreadBadge = doc.isRead ? '' : '<span class="badge bg-danger text-dark me-2">未読</span>';
+                const unreadBadge = doc.isRead ? '' : `<span class="badge bg-danger text-dark me-2">${t('library.unread')}</span>`;
                 button.innerHTML = `
                     <div class="d-flex justify-content-between align-items-center">
                         <span>${doc.title}</span>
@@ -206,14 +207,27 @@ export class OutGameLibraryScene extends BaseOutGameScene {
                 `;
             } else {
                 button.disabled = true;
+                const requirements: string[] = [];
+                if (doc.requiredExplorerLevel) {
+                    requirements.push(t('library.unlockRequirement.explorerLevel', { level: doc.requiredExplorerLevel }));
+                }
+                if (doc.requiredBossDefeats && doc.requiredBossDefeats.length > 0) {
+                    requirements.push(t('library.unlockRequirement.bossDefeats', {
+                        bosses: this.renderBossRequirements(doc.requiredBossDefeats, 'victory')
+                    }));
+                }
+                if (doc.requiredBossLosses && doc.requiredBossLosses.length > 0) {
+                    requirements.push(t('library.unlockRequirement.bossLosses', {
+                        bosses: this.renderBossRequirements(doc.requiredBossLosses, 'defeat')
+                    }));
+                }
+                const requirementText = requirements.join(t('library.unlockRequirement.separator'));
                 button.innerHTML = `
                     <div class="d-flex justify-content-between align-items-center">
-                        <span class="text-muted">？？？？？</span>
+                        <span class="text-muted">${t('library.lockedTitle')}</span>
                     </div>
                     <small class="text-muted d-block mt-1">
-                        🔒️ ${doc.requiredExplorerLevel ? `エクスプローラー Lv. ${doc.requiredExplorerLevel}` : ''}
-                        ${doc.requiredBossDefeats ? `, ${this.renderBossRequirements(doc.requiredBossDefeats, 'victory')}` : ''}
-                        ${doc.requiredBossLosses ? `, ${this.renderBossRequirements(doc.requiredBossLosses, 'defeat')}` : ''}
+                        ${t('library.unlockRequirement.lockedPrefix')} ${requirementText}
                     </small>
                 `;
             }
@@ -272,7 +286,7 @@ export class OutGameLibraryScene extends BaseOutGameScene {
         if (contentContainer) {
             contentContainer.innerHTML = `
                 <div class="text-center text-muted">
-                    <p class="mb-0">左から資料を選択してください</p>
+                    <p class="mb-0">${t('library.selectPrompt')}</p>
                 </div>
             `;
         }

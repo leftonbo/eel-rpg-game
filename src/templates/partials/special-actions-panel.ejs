@@ -1,10 +1,19 @@
 <!-- Special Actions Panel (for restrained state) -->
 <div id="special-actions" class="d-none">
     <div class="d-grid gap-2">
-        <button id="struggle-btn" class="btn btn-warning" title="拘束から脱出を試みる（成功率は試行回数で上昇）">💪 もがく</button>
-        <button id="struggle-skill-special-btn" class="btn btn-outline-warning" title="拘束状態専用：脱出確率2倍（30MP）">🔥 あばれる (30MP)</button>
-        <button id="stay-still-btn" class="btn btn-info" title="体力を回復する（最大HPの5%）">😌 じっとする</button>
-        <button id="give-up-btn" class="btn btn-secondary" title="何もしない">️💀 なすがまま</button>
+        <button id="struggle-btn" class="btn btn-warning" title="拘束から脱出を試みる（成功率は試行回数で上昇）" data-i18n="specialActions.struggleHint" data-i18n-attr="title">
+            <span data-i18n="specialActions.struggle">💪 もがく</span>
+        </button>
+        <button id="struggle-skill-special-btn" class="btn btn-outline-warning" title="拘束状態専用：脱出確率2倍（30MP）" data-i18n="specialActions.struggleSkillHint" data-i18n-attr="title">
+            <span data-i18n="specialActions.struggleSkill">🔥 あばれる</span>
+            <span data-i18n="specialActions.struggleSkillCost">(30MP)</span>
+        </button>
+        <button id="stay-still-btn" class="btn btn-info" title="体力を回復する（最大HPの5%）" data-i18n="specialActions.stayStillHint" data-i18n-attr="title">
+            <span data-i18n="specialActions.stayStill">😌 じっとする</span>
+        </button>
+        <button id="give-up-btn" class="btn btn-secondary" title="何もしない" data-i18n="specialActions.giveUpHint" data-i18n-attr="title">
+            <span data-i18n="specialActions.giveUp">💀 なすがまま</span>
+        </button>
         <!-- Omamori button will be dynamically inserted here -->
         <div id="omamori-special-container" class="d-grid gap-2"></div>
     </div>

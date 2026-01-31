@@ -61,9 +61,9 @@ export class OutGameOptionScene extends BaseOutGameScene {
         // デバッグモード切り替え
         const debugToggle = document.getElementById('debug-mode-toggle');
         if (debugToggle) {
-            debugToggle.addEventListener('change', (event) => {
+            debugToggle.addEventListener('change', async (event) => {
                 const target = event.target as HTMLInputElement;
-                this.handleDebugModeToggle(target.checked);
+                await this.handleDebugModeToggle(target.checked);
             });
         }
 
@@ -222,12 +222,20 @@ export class OutGameOptionScene extends BaseOutGameScene {
     /**
      * デバッグモード切り替え処理
      */
-    private handleDebugModeToggle(enabled: boolean): void {
+    private async handleDebugModeToggle(enabled: boolean): Promise<void> {
         localStorage.setItem('debug_mode', enabled.toString());
-        ToastUtils.showToast(`デバッグモードを${enabled ? '有効' : '無効'}にしました`, 'デバッグモード', ToastType.Info);
+        ToastUtils.showToast(
+            t('options.debug.toast.message', { state: enabled ? t('options.debug.state.enabled') : t('options.debug.state.disabled') }),
+            t('options.debug.toast.title'),
+            ToastType.Info
+        );
         
         // 設定反映のためページリロードを提示
-        if (confirm('設定を反映するためにページをリロードしますか？')) {
+        const shouldReload = await ModalUtils.showConfirm(
+            t('options.debug.reloadConfirm.message'),
+            t('options.debug.reloadConfirm.title')
+        );
+        if (shouldReload) {
             location.reload();
         }
     }

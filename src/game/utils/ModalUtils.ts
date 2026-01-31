@@ -28,6 +28,8 @@
  * }
  * ```
  */
+import { t } from '../i18n';
+
 export class ModalUtils {
     /**
      * タイミング定数
@@ -67,7 +69,7 @@ export class ModalUtils {
      * }
      * ```
      */
-    static async showAlert(message: string, title: string = '通知'): Promise<void> {
+    static async showAlert(message: string, title: string = t('dialogs.common.alert.title')): Promise<void> {
         return new Promise((resolve) => {
             const modal = document.getElementById('alert-modal') as HTMLElement;
             const titleElement = document.getElementById('alert-modal-label') as HTMLElement;
@@ -112,7 +114,7 @@ export class ModalUtils {
      * }
      * ```
      */
-    static async showConfirm(message: string, title: string = '確認'): Promise<boolean> {
+    static async showConfirm(message: string, title: string = t('dialogs.common.confirm.title')): Promise<boolean> {
         return new Promise((resolve) => {
             const modal = document.getElementById('confirm-modal') as HTMLElement;
             const titleElement = document.getElementById('confirm-modal-label') as HTMLElement;
@@ -182,7 +184,12 @@ export class ModalUtils {
      * const age = await ModalUtils.showPrompt('年齢', '20', '年齢入力', 'number');
      * ```
      */
-    static async showPrompt(message: string, defaultValue: string = '', title: string = '入力', inputType: string = 'text'): Promise<string | null> {
+    static async showPrompt(
+        message: string,
+        defaultValue: string = '',
+        title: string = t('dialogs.common.prompt.title'),
+        inputType: string = 'text'
+    ): Promise<string | null> {
         return new Promise((resolve) => {
             const modal = document.getElementById('prompt-modal') as HTMLElement;
             const titleElement = document.getElementById('prompt-modal-label') as HTMLElement;
@@ -280,7 +287,11 @@ export class ModalUtils {
      * );
      * ```
      */
-    static async showSelect(message: string, options: { value: string; text: string }[], title: string = '選択'): Promise<string | null> {
+    static async showSelect(
+        message: string,
+        options: { value: string; text: string }[],
+        title: string = t('dialogs.common.selectTitle')
+    ): Promise<string | null> {
         return new Promise((resolve) => {
             const modal = document.getElementById('select-modal') as HTMLElement;
             const titleElement = document.getElementById('select-modal-label') as HTMLElement;
@@ -395,14 +406,14 @@ export class ModalUtils {
                 errorDiv.classList.add('d-none');
 
                 if (!key) {
-                    showError('変数名を入力してください');
+                    showError(t('dialogs.customVar.errors.missingKey'));
                     keyInput.classList.add('is-invalid');
                     keyInput.focus();
                     return;
                 }
 
                 if (!value) {
-                    showError('値を入力してください');
+                    showError(t('dialogs.customVar.errors.missingValue'));
                     valueInput.classList.add('is-invalid');
                     valueInput.focus();
                     return;
@@ -493,7 +504,8 @@ export class ModalUtils {
             const addBtn = document.getElementById('status-effect-add-btn') as HTMLButtonElement;
             
             // Set title
-            titleElement.textContent = `${target === 'player' ? 'プレイヤー' : 'ボス'}のステータス効果を追加`;
+            const targetLabel = target === 'player' ? t('common.player') : t('common.boss');
+            titleElement.textContent = t('dialogs.statusEffect.title', { target: targetLabel });
             
             // Populate status types
             typeSelect.innerHTML = '';
@@ -531,14 +543,14 @@ export class ModalUtils {
                 errorDiv.classList.add('d-none');
 
                 if (isNaN(duration) || duration < 1) {
-                    showError('有効なターン数を入力してください（1以上）');
+                    showError(t('dialogs.statusEffect.errors.invalidDuration'));
                     durationInput.classList.add('is-invalid');
                     durationInput.focus();
                     return;
                 }
 
                 if (duration > 99) {
-                    showError('ターン数は99以下で入力してください');
+                    showError(t('dialogs.statusEffect.errors.maxDuration'));
                     durationInput.classList.add('is-invalid');
                     durationInput.focus();
                     return;
