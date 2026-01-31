@@ -1,6 +1,6 @@
 <!-- Explorer Panel -->
 <div id="explorer-panel">
-    <h6>🎯 ゲーム進行度</h6>
+    <h6 data-i18n="explorer.progressTitle">🎯 ゲーム進行度</h6>
     <div class="row mb-4">
         <div class="col-md-12 mb-3">
             <div class="card bg-secondary">
@@ -19,42 +19,45 @@
         </div>
     </div>
     
-    <h6>🗺️ エクスプローラー</h6>
+    <h6 data-i18n="explorer.explorerTitle">🗺️ エクスプローラー</h6>
     <div class="row mb-4">
-        <%- include('../components/ability-card', { icon: '🗺️', name: 'エクスプローラー', abilityId: 'second-explorer', description: '探検できる範囲が広がり、新しいボスをアンロックします。記念品を獲得したり、ボスからスキルを受けたりするたびに経験値が貯まります。' }) %>
+        <%- include('../components/ability-card', { icon: '🗺️', abilityId: 'explorer', idPrefix: 'second' }) %>
         <div class="col-md-6 mb-3">
             <div class="card bg-secondary">
                 <div class="card-body">
-                    <h6 class="card-title">📊 探検統計</h6>
-                    <div class="mb-2">アンロック済みボス: <span id="unlocked-bosses-count">3</span> / <span id="unlockable-bosses-count">9</span></div>
-                    <div class="mb-2">獲得記念品: <span id="total-trophies-count">0</span></div>
-                    <div class="mb-1">探検経験値総計: <span id="total-explorer-exp">0</span></div>
+                    <h6 class="card-title" data-i18n="explorer.statsTitle">📊 探検統計</h6>
+                    <div class="mb-2"><span data-i18n="explorer.unlockedBosses">アンロック済みボス</span>: <span id="unlocked-bosses-count">3</span> / <span id="unlockable-bosses-count">9</span></div>
+                    <div class="mb-2"><span data-i18n="explorer.trophiesCollected">獲得記念品</span>: <span id="total-trophies-count">0</span></div>
+                    <div class="mb-1"><span data-i18n="explorer.totalExplorerExp">探検経験値総計</span>: <span id="total-explorer-exp">0</span></div>
                 </div>
             </div>
         </div>
     </div>
     
-    <h6>🗺️ 探検可能な地形</h6>
+    <h6 data-i18n="explorer.terrainTitle">🗺️ 探検可能な地形</h6>
     <div class="row mb-4">
         <div class="col-12">
             <div class="card bg-secondary">
                 <div class="card-body">
-                    <h6 class="card-title">🌍 現在アクセス可能な地形</h6>
+                    <h6 class="card-title" data-i18n="explorer.currentTerrainsTitle">🌍 現在アクセス可能な地形</h6>
                     <div id="accessible-terrains-container" class="d-flex flex-wrap gap-2">
                         <!-- Terrain badges will be dynamically populated here -->
                     </div>
-                    <p class="mt-2 mb-0 small text-muted">エクスプローラーレベルを上げることで、より遠くの未知の地形に足を踏み入れることができます。</p>
+                    <p class="mt-2 mb-0 small text-muted" data-i18n="explorer.terrainHint">エクスプローラーレベルを上げることで、より遠くの未知の地形に足を踏み入れることができます。</p>
                 </div>
             </div>
         </div>
     </div>
     
-    <h6>🏆 記念品コレクション</h6>
+    <h6 data-i18n="explorer.trophyCollectionTitle">🏆 記念品コレクション</h6>
     <div id="trophies-collection" class="row">
         <!-- Trophy cards will be dynamically populated here -->
     </div>
     
     <div class="text-center mt-3" id="no-trophies-message">
-        <p class="text-muted">まだ記念品を獲得していません。<br>ボスとの戦闘で初回勝利や敗北を経験して記念品を集めましょう！</p>
+        <p class="text-muted">
+            <span data-i18n="explorer.noTrophiesLine1">まだ記念品を獲得していません。</span><br>
+            <span data-i18n="explorer.noTrophiesLine2">ボスとの戦闘で初回勝利や敗北を経験して記念品を集めましょう！</span>
+        </p>
     </div>
 </div>

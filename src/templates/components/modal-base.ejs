@@ -5,13 +5,14 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="<%= modalId %>-label">
                     <% if (typeof icon !== 'undefined') { %><%= icon %> <% } %>
-                    <%= title %>
+                    <%- title %>
                     <% if (typeof subtitle !== 'undefined') { %> - <%= subtitle %><% } %>
                 </h5>
-                <button type="button" 
+                <button type="button"
                         class="btn-close <%= typeof theme === 'undefined' || theme === 'bg-dark' ? 'btn-close-white' : '' %>" 
                         data-bs-dismiss="modal" 
-                        aria-label="Close">
+                        data-i18n="common.close"
+                        data-i18n-attr="aria-label">
                 </button>
             </div>
             <div class="modal-body">

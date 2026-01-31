@@ -1,19 +1,23 @@
 <!-- Skill Panel (hidden by default) -->
 <div id="skill-panel" class="d-none mt-3">
-    <h6>スキル</h6>
+    <h6 data-i18n="skillPanel.title">スキル</h6>
     <div class="d-grid gap-2">
-        <button id="power-attack-btn" class="btn btn-outline-danger" title="2.5倍の攻撃力で確実に攻撃（20MP）">
-            💥 パワーアタック (20MP)
+        <button id="power-attack-btn" class="btn btn-outline-danger" title="2.5倍の攻撃力で確実に攻撃（20MP）" data-i18n="skillPanel.powerAttackHint" data-i18n-attr="title">
+            <span data-i18n="skillPanel.powerAttack">💥 パワーアタック</span>
+            <span data-i18n="skillPanel.powerAttackCost">(20MP)</span>
         </button>
-        <button id="heal-skill-btn" class="btn btn-outline-success" title="HPを100回復（30MP）">
-            ✨ ヒール (30MP)
+        <button id="heal-skill-btn" class="btn btn-outline-success" title="HPを100回復（30MP）" data-i18n="skillPanel.healHint" data-i18n-attr="title">
+            <span data-i18n="skillPanel.heal">✨ ヒール</span>
+            <span data-i18n="skillPanel.healCost">(30MP)</span>
         </button>
-        <button id="struggle-skill-btn" class="btn btn-outline-warning" title="拘束状態専用：脱出確率2倍（30MP）">
-            🔥 あばれる (30MP)
+        <button id="struggle-skill-btn" class="btn btn-outline-warning" title="拘束状態専用：脱出確率2倍（30MP）" data-i18n="skillPanel.struggleHint" data-i18n-attr="title">
+            <span data-i18n="skillPanel.struggle">🔥 あばれる</span>
+            <span data-i18n="skillPanel.struggleCost">(30MP)</span>
         </button>
-        <button id="ultra-smash-btn" class="btn btn-outline-danger" title="全力攻撃">
-            💀 ウルトラスマッシュ (MP全消費)
+        <button id="ultra-smash-btn" class="btn btn-outline-danger" title="全力攻撃" data-i18n="skillPanel.ultraSmashHint" data-i18n-attr="title">
+            <span data-i18n="skillPanel.ultraSmash">💀 ウルトラスマッシュ</span>
+            <span data-i18n="skillPanel.ultraSmashCost">(MP全消費)</span>
         </button>
-        <button id="skill-back-btn" class="btn btn-outline-secondary">戻る</button>
+        <button id="skill-back-btn" class="btn btn-outline-secondary" data-i18n="common.back">戻る</button>
     </div>
 </div>

@@ -2,42 +2,42 @@
 <div class="tab-pane fade show active" id="stats-panel">
     <div class="row mb-3">
         <div class="col-md-6">
-            <h6>基本ステータス</h6>
-            <div class="mb-2">ヘルス: <span id="detail-max-hp">100</span></div>
-            <div class="mb-2">マナ: <span id="detail-max-mp">40</span></div>
-            <div class="mb-2">攻撃力: <span id="detail-attack">5</span></div>
+            <h6 data-i18n="playerStats.baseStats">基本ステータス</h6>
+            <div class="mb-2"><span data-i18n="common.hp">ヘルス</span>: <span id="detail-max-hp">100</span></div>
+            <div class="mb-2"><span data-i18n="common.mp">マナ</span>: <span id="detail-max-mp">40</span></div>
+            <div class="mb-2"><span data-i18n="common.attack">攻撃力</span>: <span id="detail-attack">5</span></div>
         </div>
         <div class="col-md-6">
-            <h6>装備効果</h6>
-            <div class="mb-2">防具: +<span id="detail-armor-bonus">0</span> ヘルス</div>
-            <div class="mb-2">ベルト: +<span id="detail-belt-bonus">0</span> マナ</div>
-            <div class="mb-2">武器: +<span id="detail-weapon-bonus">0</span> 攻撃力</div>
-            <div class="mb-2">手袋: +<span id="detail-gloves-bonus">0</span> 拘束脱出力</div>
+            <h6 data-i18n="playerStats.equipmentEffects">装備効果</h6>
+            <div class="mb-2"><span data-i18n="common.armor">防具</span>: +<span id="detail-armor-bonus">0</span> <span data-i18n="common.hp">ヘルス</span></div>
+            <div class="mb-2"><span data-i18n="common.belt">ベルト</span>: +<span id="detail-belt-bonus">0</span> <span data-i18n="common.mp">マナ</span></div>
+            <div class="mb-2"><span data-i18n="common.weapon">武器</span>: +<span id="detail-weapon-bonus">0</span> <span data-i18n="common.attack">攻撃力</span></div>
+            <div class="mb-2"><span data-i18n="common.gloves">手袋</span>: +<span id="detail-gloves-bonus">0</span> <span data-i18n="playerStats.escapePower">拘束脱出力</span></div>
         </div>
     </div>
     
-    <h6>アビリティ</h6>
+    <h6 data-i18n="playerStats.abilities">アビリティ</h6>
     <div class="row">
-        <%- include('../components/ability-card', { icon: '⚔️', name: 'コンバット', abilityId: 'combat', description: '新しい武器と攻撃スキルをアンロックします。ボスにダメージを与えると経験値が貯まります。' }) %>
-        <%- include('../components/ability-card', { icon: '🛡️', name: 'タフネス', abilityId: 'toughness', description: '新しい防具と防衛スキルをアンロックします。ヘルスが減ると経験値が貯まります。' }) %>
-        <%- include('../components/ability-card', { icon: '🔧', name: 'クラフトワーク', abilityId: 'craftwork', description: 'アイテムの所持数が増加し、新しいアイテムをアンロックします。アイテムを使用するたびに経験値が貯まります。' }) %>
-        <%- include('../components/ability-card', { icon: '💪', name: 'エンデュランス', abilityId: 'endurance', description: '最大マナが増加します。マナを消費するたびに経験値が貯まります。' }) %>
-        <%- include('../components/ability-card', { icon: '🏃', name: 'アジリティ', abilityId: 'agility', description: '拘束状態から脱出しやすくなります。拘束から脱出を試みるたびに経験値が貯まります。' }) %>
-        <%- include('../components/ability-card', { icon: '🗺️', name: 'エクスプローラー', abilityId: 'explorer', description: '探検できる範囲が広がり、新しいボスをアンロックします。記念品を獲得したり、ボスからスキルを受けたりするたびに経験値が貯まります。' }) %>
+        <%- include('../components/ability-card', { icon: '⚔️', abilityId: 'combat' }) %>
+        <%- include('../components/ability-card', { icon: '🛡️', abilityId: 'toughness' }) %>
+        <%- include('../components/ability-card', { icon: '🔧', abilityId: 'craftwork' }) %>
+        <%- include('../components/ability-card', { icon: '💪', abilityId: 'endurance' }) %>
+        <%- include('../components/ability-card', { icon: '🏃', abilityId: 'agility' }) %>
+        <%- include('../components/ability-card', { icon: '🗺️', abilityId: 'explorer' }) %>
     </div>
     
     <!-- Debug Controls for Skills Tab -->
 <div id="debug-controls-skills" class="mt-4 d-none">
-    <h6>🔧 デバッグ機能 - アビリティレベル変更</h6>
+    <h6 data-i18n="playerStats.debugAbilityTitle">🔧 デバッグ機能 - アビリティレベル変更</h6>
     <div class="row">
         <div class="col-md-4 mb-3">
             <div class="card bg-secondary">
                 <div class="card-body">
-                    <h6 class="card-title">⚔️ コンバット</h6>
+                    <h6 class="card-title" data-i18n="abilities.names.combat">⚔️ コンバット</h6>
                     <div class="input-group mb-2">
-                        <span class="input-group-text">Lv</span>
+                        <span class="input-group-text" data-i18n="common.levelShort">Lv</span>
                         <input type="number" id="debug-combat-level" class="form-control" min="0" max="10" value="0">
-                        <button class="btn btn-outline-warning btn-sm" id="debug-combat-btn">変更</button>
+                        <button class="btn btn-outline-warning btn-sm" id="debug-combat-btn" data-i18n="common.change">変更</button>
                     </div>
                 </div>
             </div>
@@ -45,11 +45,11 @@
         <div class="col-md-4 mb-3">
             <div class="card bg-secondary">
                 <div class="card-body">
-                    <h6 class="card-title">🛡️ タフネス</h6>
+                    <h6 class="card-title" data-i18n="abilities.names.toughness">🛡️ タフネス</h6>
                     <div class="input-group mb-2">
-                        <span class="input-group-text">Lv</span>
+                        <span class="input-group-text" data-i18n="common.levelShort">Lv</span>
                         <input type="number" id="debug-toughness-level" class="form-control" min="0" max="10" value="0">
-                        <button class="btn btn-outline-warning btn-sm" id="debug-toughness-btn">変更</button>
+                        <button class="btn btn-outline-warning btn-sm" id="debug-toughness-btn" data-i18n="common.change">変更</button>
                     </div>
                 </div>
             </div>
@@ -57,11 +57,11 @@
         <div class="col-md-4 mb-3">
             <div class="card bg-secondary">
                 <div class="card-body">
-                    <h6 class="card-title">🔧 クラフトワーク</h6>
+                    <h6 class="card-title" data-i18n="abilities.names.craftwork">🔧 クラフトワーク</h6>
                     <div class="input-group mb-2">
-                        <span class="input-group-text">Lv</span>
+                        <span class="input-group-text" data-i18n="common.levelShort">Lv</span>
                         <input type="number" id="debug-craftwork-level" class="form-control" min="0" max="10" value="0">
-                        <button class="btn btn-outline-warning btn-sm" id="debug-craftwork-btn">変更</button>
+                        <button class="btn btn-outline-warning btn-sm" id="debug-craftwork-btn" data-i18n="common.change">変更</button>
                     </div>
                 </div>
             </div>
@@ -69,11 +69,11 @@
         <div class="col-md-4 mb-3">
             <div class="card bg-secondary">
                 <div class="card-body">
-                    <h6 class="card-title">💪 エンデュランス</h6>
+                    <h6 class="card-title" data-i18n="abilities.names.endurance">💪 エンデュランス</h6>
                     <div class="input-group mb-2">
-                        <span class="input-group-text">Lv</span>
+                        <span class="input-group-text" data-i18n="common.levelShort">Lv</span>
                         <input type="number" id="debug-endurance-level" class="form-control" min="0" max="10" value="0">
-                        <button class="btn btn-outline-warning btn-sm" id="debug-endurance-btn">変更</button>
+                        <button class="btn btn-outline-warning btn-sm" id="debug-endurance-btn" data-i18n="common.change">変更</button>
                     </div>
                 </div>
             </div>
@@ -81,11 +81,11 @@
         <div class="col-md-4 mb-3">
             <div class="card bg-secondary">
                 <div class="card-body">
-                    <h6 class="card-title">🏃 アジリティ</h6>
+                    <h6 class="card-title" data-i18n="abilities.names.agility">🏃 アジリティ</h6>
                     <div class="input-group mb-2">
-                        <span class="input-group-text">Lv</span>
+                        <span class="input-group-text" data-i18n="common.levelShort">Lv</span>
                         <input type="number" id="debug-agility-level" class="form-control" min="0" max="10" value="0">
-                        <button class="btn btn-outline-warning btn-sm" id="debug-agility-btn">変更</button>
+                        <button class="btn btn-outline-warning btn-sm" id="debug-agility-btn" data-i18n="common.change">変更</button>
                     </div>
                 </div>
             </div>
@@ -93,11 +93,11 @@
         <div class="col-md-4 mb-3">
             <div class="card bg-secondary">
                 <div class="card-body">
-                    <h6 class="card-title">🗺️ エクスプローラー</h6>
+                    <h6 class="card-title" data-i18n="abilities.names.explorer">🗺️ エクスプローラー</h6>
                     <div class="input-group mb-2">
-                        <span class="input-group-text">Lv</span>
+                        <span class="input-group-text" data-i18n="common.levelShort">Lv</span>
                         <input type="number" id="debug-explorer-level" class="form-control" min="0" max="10" value="0">
-                        <button class="btn btn-outline-warning btn-sm" id="debug-explorer-btn">変更</button>
+                        <button class="btn btn-outline-warning btn-sm" id="debug-explorer-btn" data-i18n="common.change">変更</button>
                     </div>
                 </div>
             </div>
@@ -105,11 +105,11 @@
         <div class="col-md-4 mb-3">
             <div class="card bg-secondary">
                 <div class="card-body">
-                    <h6 class="card-title">📊 一括設定</h6>
+                    <h6 class="card-title" data-i18n="playerStats.bulkTitle">📊 一括設定</h6>
                     <div class="input-group mb-2">
-                        <span class="input-group-text">Lv</span>
+                        <span class="input-group-text" data-i18n="common.levelShort">Lv</span>
                         <input type="number" id="debug-all-level" class="form-control" min="0" max="10" value="0">
-                        <button class="btn btn-outline-warning btn-sm" id="debug-all-btn">全て変更</button>
+                        <button class="btn btn-outline-warning btn-sm" id="debug-all-btn" data-i18n="playerStats.bulkChange">全て変更</button>
                     </div>
                 </div>
             </div>

@@ -3,10 +3,10 @@
 <%
   const alertModalData = {
     modalId: 'alert-modal',
-    title: '通知',
+    title: '<span data-i18n="dialogs.common.alert.title">通知</span>',
     theme: 'bg-dark',
     body: '<div id="alert-modal-body"><!-- Alert message goes here --></div>',
-    footer: '<button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>'
+    footer: '<button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-i18n="dialogs.common.ok">OK</button>'
   };
 %>
 <%- include('../components/modal-base', alertModalData) %>
@@ -15,11 +15,11 @@
 <%
   const confirmModalData = {
     modalId: 'confirm-modal',
-    title: '確認',
+    title: '<span data-i18n="dialogs.common.confirm.title">確認</span>',
     theme: 'bg-dark',
     body: '<div id="confirm-modal-body"><!-- Confirm message goes here --></div>',
-    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="confirm-cancel-btn">キャンセル</button>' +
-            '<button type="button" class="btn btn-danger" id="confirm-ok-btn">OK</button>'
+    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="confirm-cancel-btn" data-i18n="dialogs.common.cancel">キャンセル</button>' +
+            '<button type="button" class="btn btn-danger" id="confirm-ok-btn" data-i18n="dialogs.common.ok">OK</button>'
   };
 %>
 <%- include('../components/modal-base', confirmModalData) %>
@@ -28,12 +28,12 @@
 <%
   const promptModalData = {
     modalId: 'prompt-modal',
-    title: '入力',
+    title: '<span data-i18n="dialogs.common.prompt.title">入力</span>',
     theme: 'bg-dark',
     body: '<div id="prompt-modal-body" class="mb-3"><!-- Prompt message goes here --></div>' +
-          '<input type="text" class="form-control" id="prompt-modal-input" placeholder="入力してください">',
-    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="prompt-cancel-btn">キャンセル</button>' +
-            '<button type="button" class="btn btn-primary" id="prompt-ok-btn">OK</button>'
+          '<input type="text" class="form-control" id="prompt-modal-input" placeholder="入力してください" data-i18n="dialogs.common.prompt.placeholder" data-i18n-attr="placeholder">',
+    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="prompt-cancel-btn" data-i18n="dialogs.common.cancel">キャンセル</button>' +
+            '<button type="button" class="btn btn-primary" id="prompt-ok-btn" data-i18n="dialogs.common.ok">OK</button>'
   };
 %>
 <%- include('../components/modal-base', promptModalData) %>
@@ -42,12 +42,12 @@
 <%
   const selectModalData = {
     modalId: 'select-modal',
-    title: '選択',
+    title: '<span data-i18n="dialogs.common.selectTitle">選択</span>',
     theme: 'bg-dark',
     body: '<div id="select-modal-body" class="mb-3"><!-- Select message goes here --></div>' +
           '<select class="form-select" id="select-modal-select"><!-- Options will be populated here --></select>',
-    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="select-cancel-btn">キャンセル</button>' +
-            '<button type="button" class="btn btn-primary" id="select-ok-btn">選択</button>'
+    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="select-cancel-btn" data-i18n="dialogs.common.cancel">キャンセル</button>' +
+            '<button type="button" class="btn btn-primary" id="select-ok-btn" data-i18n="dialogs.common.select">選択</button>'
   };
 %>
 <%- include('../components/modal-base', selectModalData) %>
@@ -56,20 +56,20 @@
 <%
   const customVarModalData = {
     modalId: 'custom-var-modal',
-    title: 'カスタム変数を追加',
+    title: '<span data-i18n="dialogs.customVar.title">カスタム変数を追加</span>',
     theme: 'bg-dark',
     body: '<div id="custom-var-error" class="alert alert-danger d-none mb-3" role="alert"><!-- Error message will be displayed here --></div>' +
           '<div class="mb-3">' +
-          '  <label for="custom-var-key" class="form-label">変数名</label>' +
-          '  <input type="text" class="form-control" id="custom-var-key" placeholder="変数名を入力してください">' +
+          '  <label for="custom-var-key" class="form-label" data-i18n="dialogs.customVar.keyLabel">変数名</label>' +
+          '  <input type="text" class="form-control" id="custom-var-key" placeholder="変数名を入力してください" data-i18n="dialogs.customVar.keyPlaceholder" data-i18n-attr="placeholder">' +
           '</div>' +
           '<div class="mb-3">' +
-          '  <label for="custom-var-value" class="form-label">値</label>' +
-          '  <input type="text" class="form-control" id="custom-var-value" placeholder="値を入力してください">' +
-          '  <div class="form-text">数値やtrue/falseは自動的に変換されます</div>' +
+          '  <label for="custom-var-value" class="form-label" data-i18n="dialogs.customVar.valueLabel">値</label>' +
+          '  <input type="text" class="form-control" id="custom-var-value" placeholder="値を入力してください" data-i18n="dialogs.customVar.valuePlaceholder" data-i18n-attr="placeholder">' +
+          '  <div class="form-text" data-i18n="dialogs.customVar.helper">数値やtrue/falseは自動的に変換されます</div>' +
           '</div>',
-    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>' +
-            '<button type="button" class="btn btn-primary" id="custom-var-add-btn">追加</button>'
+    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="dialogs.common.cancel">キャンセル</button>' +
+            '<button type="button" class="btn btn-primary" id="custom-var-add-btn" data-i18n="common.add">追加</button>'
   };
 %>
 <%- include('../components/modal-base', customVarModalData) %>
@@ -78,19 +78,19 @@
 <%
   const statusEffectModalData = {
     modalId: 'status-effect-modal',
-    title: 'ステータス効果を追加',
+    title: '<span data-i18n="dialogs.statusEffect.titleDefault">ステータス効果を追加</span>',
     theme: 'bg-dark',
     body: '<div id="status-effect-error" class="alert alert-danger d-none mb-3" role="alert"><!-- Error message will be displayed here --></div>' +
           '<div class="mb-3">' +
-          '  <label for="status-effect-type" class="form-label">ステータス効果</label>' +
+          '  <label for="status-effect-type" class="form-label" data-i18n="dialogs.statusEffect.typeLabel">ステータス効果</label>' +
           '  <select class="form-select" id="status-effect-type"><!-- Options will be populated here --></select>' +
           '</div>' +
           '<div class="mb-3">' +
-          '  <label for="status-effect-duration" class="form-label">持続ターン数</label>' +
+          '  <label for="status-effect-duration" class="form-label" data-i18n="dialogs.statusEffect.durationLabel">持続ターン数</label>' +
           '  <input type="number" class="form-control" id="status-effect-duration" value="3" min="1" max="99">' +
           '</div>',
-    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>' +
-            '<button type="button" class="btn btn-primary" id="status-effect-add-btn">追加</button>'
+    footer: '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="dialogs.common.cancel">キャンセル</button>' +
+            '<button type="button" class="btn btn-primary" id="status-effect-add-btn" data-i18n="common.add">追加</button>'
   };
 %>
 <%- include('../components/modal-base', statusEffectModalData) %>

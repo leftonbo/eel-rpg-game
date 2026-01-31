@@ -61,9 +61,9 @@ export class OutGameOptionScene extends BaseOutGameScene {
         // デバッグモード切り替え
         const debugToggle = document.getElementById('debug-mode-toggle');
         if (debugToggle) {
-            debugToggle.addEventListener('change', (event) => {
+            debugToggle.addEventListener('change', async (event) => {
                 const target = event.target as HTMLInputElement;
-                this.handleDebugModeToggle(target.checked);
+                await this.handleDebugModeToggle(target.checked);
             });
         }
 
@@ -126,8 +126,8 @@ export class OutGameOptionScene extends BaseOutGameScene {
                         
                         // 成功メッセージ
                         ToastUtils.showToast(
-                            t('toasts.importSuccessMessage'),
-                            t('toasts.importSuccessTitle'),
+                            t('toasts.importSuccess.message'),
+                            t('toasts.importSuccess.title'),
                             ToastType.Success
                         );
 
@@ -139,8 +139,8 @@ export class OutGameOptionScene extends BaseOutGameScene {
                     } catch (error) {
                         console.error('Save data import failed:', error);
                         ToastUtils.showToast(
-                            t('toasts.importFailureMessage'),
-                            t('toasts.importFailureTitle'),
+                            t('toasts.importFailure.message'),
+                            t('toasts.importFailure.title'),
                             ToastType.Error
                         );
                     }
@@ -168,16 +168,16 @@ export class OutGameOptionScene extends BaseOutGameScene {
             URL.revokeObjectURL(url);
             
             ToastUtils.showToast(
-                t('toasts.exportSuccessMessage'),
-                t('toasts.exportSuccessTitle'),
+                t('toasts.exportSuccess.message'),
+                t('toasts.exportSuccess.title'),
                 ToastType.Success
             );
             
         } catch (error) {
             console.error('Save data export failed:', error);
             ToastUtils.showToast(
-                t('toasts.exportFailureMessage'),
-                t('toasts.exportFailureTitle'),
+                t('toasts.exportFailure.message'),
+                t('toasts.exportFailure.title'),
                 ToastType.Error
             );
         }
@@ -187,13 +187,16 @@ export class OutGameOptionScene extends BaseOutGameScene {
      * セーブデータ削除処理
      */
     private async handleDeleteSaveData(): Promise<void> {
-        const confirmed = await ModalUtils.showConfirm(t('options.dialogs.deleteConfirm'));
+        const confirmed = await ModalUtils.showConfirm(
+            t('dialogs.deleteConfirm.message'),
+            t('dialogs.deleteConfirm.title')
+        );
         if (confirmed) {
             try {
                 PlayerSaveManager.clearSaveData();
                 ToastUtils.showToast(
-                    t('toasts.deleteSuccessMessage'),
-                    t('toasts.deleteSuccessTitle'),
+                    t('toasts.deleteSuccess.message'),
+                    t('toasts.deleteSuccess.title'),
                     ToastType.Success
                 );
                 
@@ -208,8 +211,8 @@ export class OutGameOptionScene extends BaseOutGameScene {
             } catch (error) {
                 console.error('Save data clear failed:', error);
                 ToastUtils.showToast(
-                    t('toasts.deleteFailureMessage'),
-                    t('toasts.deleteFailureTitle'),
+                    t('toasts.deleteFailure.message'),
+                    t('toasts.deleteFailure.title'),
                     ToastType.Error
                 );
             }
@@ -219,12 +222,20 @@ export class OutGameOptionScene extends BaseOutGameScene {
     /**
      * デバッグモード切り替え処理
      */
-    private handleDebugModeToggle(enabled: boolean): void {
+    private async handleDebugModeToggle(enabled: boolean): Promise<void> {
         localStorage.setItem('debug_mode', enabled.toString());
-        ToastUtils.showToast(`デバッグモードを${enabled ? '有効' : '無効'}にしました`, 'デバッグモード', ToastType.Info);
+        ToastUtils.showToast(
+            t('options.debug.toast.message', { state: enabled ? t('options.debug.state.enabled') : t('options.debug.state.disabled') }),
+            t('options.debug.toast.title'),
+            ToastType.Info
+        );
         
         // 設定反映のためページリロードを提示
-        if (confirm('設定を反映するためにページをリロードしますか？')) {
+        const shouldReload = await ModalUtils.showConfirm(
+            t('options.debug.reloadConfirm.message'),
+            t('options.debug.reloadConfirm.title')
+        );
+        if (shouldReload) {
             location.reload();
         }
     }

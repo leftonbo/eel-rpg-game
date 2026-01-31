@@ -6,6 +6,7 @@ import { SkillDisplayComponent } from './components/SkillDisplayComponent';
 import { Player } from '@/game/entities/Player';
 import { PlayerInfoEditManager } from './managers/PlayerInfoEditManager';
 import { ToastUtils, ToastType } from '../utils/ToastUtils';
+import { t } from '../i18n';
 
 // 拡張されたアビリティデータ型（experienceToNextを含む）
 interface ExtendedAbilityData extends AbilityData {
@@ -20,12 +21,12 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
     
     // アビリティ設定（統合マッピング）
     private static readonly ABILITY_CONFIG = {
-        [AbilityType.Combat]: { name: 'コンバット' },
-        [AbilityType.Toughness]: { name: 'タフネス' },
-        [AbilityType.CraftWork]: { name: 'クラフトワーク' },
-        [AbilityType.Endurance]: { name: 'エンデュランス' },
-        [AbilityType.Agility]: { name: 'アジリティ' },
-        [AbilityType.Explorer]: { name: 'エクスプローラー' }
+        [AbilityType.Combat]: { nameKey: 'abilities.names.combat' },
+        [AbilityType.Toughness]: { nameKey: 'abilities.names.toughness' },
+        [AbilityType.CraftWork]: { nameKey: 'abilities.names.craftwork' },
+        [AbilityType.Endurance]: { nameKey: 'abilities.names.endurance' },
+        [AbilityType.Agility]: { nameKey: 'abilities.names.agility' },
+        [AbilityType.Explorer]: { nameKey: 'abilities.names.explorer' }
     };
     
     private playerInfoEditManager: PlayerInfoEditManager; // Used in custom events
@@ -52,11 +53,19 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
                 const success = player.equipBestEquipments();
                 
                 if (success) {
-                    ToastUtils.showToast('最強装備に変更しました', '最強装備', ToastType.Success);
+                    ToastUtils.showToast(
+                        t('playerEquipment.toasts.equipBestSuccess.message'),
+                        t('playerEquipment.toasts.equipBestSuccess.title'),
+                        ToastType.Success
+                    );
                     // プレイヤー詳細を再更新
                     this.updatePlayerDetails();
                 } else {
-                    ToastUtils.showToast('装備変更に失敗しました', '最強装備', ToastType.Error);
+                    ToastUtils.showToast(
+                        t('playerEquipment.toasts.equipBestFailure.message'),
+                        t('playerEquipment.toasts.equipBestFailure.title'),
+                        ToastType.Error
+                    );
                 }
             });
         }
@@ -69,11 +78,19 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
                 const success = player.unequipAllEquipments();
                 
                 if (success) {
-                    ToastUtils.showToast('すべての装備を外しました', '装備外し', ToastType.Success);
+                    ToastUtils.showToast(
+                        t('playerEquipment.toasts.unequipAllSuccess.message'),
+                        t('playerEquipment.toasts.unequipAllSuccess.title'),
+                        ToastType.Success
+                    );
                     // プレイヤー詳細を再更新
                     this.updatePlayerDetails();
                 } else {
-                    ToastUtils.showToast('装備変更に失敗しました', '装備外し', ToastType.Error);
+                    ToastUtils.showToast(
+                        t('playerEquipment.toasts.unequipAllFailure.message'),
+                        t('playerEquipment.toasts.unequipAllFailure.title'),
+                        ToastType.Error
+                    );
                 }
             });
         }
@@ -402,8 +419,8 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
                     // バリデーション
                     if (newLevel < 0 || newLevel > AbilitySystem.MAX_LEVEL) {
                         ToastUtils.showToast(
-                            `レベルは0から${AbilitySystem.MAX_LEVEL}の間で設定してください`,
-                            '無効な値',
+                            t('playerStats.toasts.invalidLevel.message', { maxLevel: AbilitySystem.MAX_LEVEL }),
+                            t('playerStats.toasts.invalidLevel.title'),
                             ToastType.Error
                         );
                         return;
@@ -453,8 +470,8 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
     private changeAllAbilityLevels(newLevel: number): void {
         if (newLevel < 0 || newLevel > AbilitySystem.MAX_LEVEL) {
             ToastUtils.showToast(
-                `レベルは0から${AbilitySystem.MAX_LEVEL}の間で設定してください`,
-                '無効な値',
+                t('playerStats.toasts.invalidLevel.message', { maxLevel: AbilitySystem.MAX_LEVEL }),
+                t('playerStats.toasts.invalidLevel.title'),
                 ToastType.Error
             );
             return;
@@ -475,15 +492,15 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
             
             // 成功トーストを表示
             ToastUtils.showToast(
-                `全てのアビリティを レベル ${newLevel} に変更しました`,
-                'デバッグ機能',
+                t('playerStats.toasts.bulkChangeSuccess.message', { level: newLevel }),
+                t('playerStats.toasts.bulkChangeSuccess.title'),
                 ToastType.Success
             );
         } catch (error) {
             console.error('Failed to change all ability levels:', error);
             ToastUtils.showToast(
-                '一括レベル変更に失敗しました',
-                'エラー',
+                t('playerStats.toasts.bulkChangeFailure.message'),
+                t('playerStats.toasts.bulkChangeFailure.title'),
                 ToastType.Error
             );
         }
@@ -496,8 +513,8 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
         if (newLevel < 0 || newLevel > AbilitySystem.MAX_LEVEL) {
             if (showToast) {
                 ToastUtils.showToast(
-                    `レベルは0から${AbilitySystem.MAX_LEVEL}の間で設定してください`,
-                    '無効な値',
+                    t('playerStats.toasts.invalidLevel.message', { maxLevel: AbilitySystem.MAX_LEVEL }),
+                    t('playerStats.toasts.invalidLevel.title'),
                     ToastType.Error
                 );
             }
@@ -508,8 +525,8 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
             console.error(`Unknown ability type: ${abilityType}`);
             if (showToast) {
                 ToastUtils.showToast(
-                    `不明なアビリティ: ${abilityType}`,
-                    'エラー',
+                    t('playerStats.toasts.unknownAbility.message', { ability: abilityType }),
+                    t('playerStats.toasts.unknownAbility.title'),
                     ToastType.Error
                 );
             }
@@ -531,20 +548,20 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
             
             // 成功トーストを表示
             if (showToast) {
-                const abilityName = OutGamePlayerDetailScene.ABILITY_CONFIG[abilityType].name;
+                const abilityName = t(OutGamePlayerDetailScene.ABILITY_CONFIG[abilityType].nameKey);
                 ToastUtils.showToast(
-                    `${abilityName} を レベル ${newLevel} に変更しました`,
-                    'デバッグ機能',
+                    t('playerStats.toasts.changeSuccess.message', { ability: abilityName, level: newLevel }),
+                    t('playerStats.toasts.changeSuccess.title'),
                     ToastType.Success
                 );
             }
         } catch (error) {
             console.error('Failed to change ability level:', error);
             if (showToast) {
-                const abilityName = OutGamePlayerDetailScene.ABILITY_CONFIG[abilityType].name;
+                const abilityName = t(OutGamePlayerDetailScene.ABILITY_CONFIG[abilityType].nameKey);
                 ToastUtils.showToast(
-                    `${abilityName} のレベル変更に失敗しました`,
-                    'エラー',
+                    t('playerStats.toasts.changeFailure.message', { ability: abilityName }),
+                    t('playerStats.toasts.changeFailure.title'),
                     ToastType.Error
                 );
             }

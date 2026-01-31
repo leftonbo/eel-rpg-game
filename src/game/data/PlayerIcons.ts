@@ -46,7 +46,7 @@ export const PLAYER_ICONS: PlayerIcon[] = [
     { id: 'sun', emoji: '☀️', name: '太陽', category: '自然' },
     { id: 'moon', emoji: '🌙', name: '月', category: '自然' },
     { id: 'star', emoji: '⭐', name: '星', category: '自然' },
-    { id: 'lightning', emoji: '⚡', name: '雷', category: '自然' },
+    { id: 'lightning', emoji: '⚡️', name: '雷', category: '自然' },
     { id: 'flower', emoji: '🌸', name: '桜', category: '自然' },
     { id: 'tree', emoji: '🌳', name: '木', category: '自然' },
     { id: 'snow', emoji: '❄️', name: '雪', category: '自然' },

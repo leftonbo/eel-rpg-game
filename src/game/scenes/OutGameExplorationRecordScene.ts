@@ -6,6 +6,7 @@ import { MemorialSystem } from '../systems/MemorialSystem';
 import { TrophyDisplayComponent } from './components/TrophyDisplayComponent';
 import { Player } from '../entities/Player';
 import { ToastType, ToastUtils } from '../utils/ToastUtils';
+import { t } from '../i18n';
 
 // 拡張されたアビリティデータ型（experienceToNextを含む）
 interface ExtendedAbilityData extends AbilityData {
@@ -193,7 +194,11 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
             this.updateGameProgressionScoreBar(progressDetails.ratio);
         } catch (error) {
             console.error('Failed to update progress data:', error);
-            ToastUtils.showToast('進行度表示の更新に失敗しました', 'エラー', ToastType.Error);
+            ToastUtils.showToast(
+                t('explorer.toasts.progressUpdateFailure.message'),
+                t('explorer.toasts.progressUpdateFailure.title'),
+                ToastType.Error
+            );
         }
     }
     

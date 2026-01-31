@@ -5,6 +5,7 @@ import { Player } from '../entities/Player';
 import { getAllBossData, getBossData } from '../data';
 import { Trophy, MemorialSystem } from '../systems/MemorialSystem';
 import { Boss, BossData } from '../entities/Boss';
+import { t } from '../i18n';
 
 export enum BattleResultStatus {
     Interrupted = 'interrupted',
@@ -96,7 +97,7 @@ export class BattleResultScene {
         const expContainer = document.getElementById('experience-gained');
         if (!expContainer || !this.battleResult) return;
         
-        expContainer.innerHTML = '<h5>獲得経験値</h5>';
+        expContainer.innerHTML = `<h5>${t('battleResult.experienceTitle')}</h5>`;
         
         Object.entries(this.battleResult.experienceGained).forEach(([abilityType, exp]) => {
             if (exp > 0) {
@@ -126,7 +127,7 @@ export class BattleResultScene {
         const hasLevelUps = Object.keys(this.battleResult.levelUps).length > 0;
         if (!hasLevelUps) return;
         
-        levelUpContainer.innerHTML = '<h5>レベルアップ！</h5>';
+        levelUpContainer.innerHTML = `<h5>${t('battleResult.levelUpTitle')}</h5>`;
         
         Object.entries(this.battleResult.levelUps).forEach(([abilityType, levelUp]) => {
             const abilityName = this.getAbilityDisplayName(abilityType as AbilityType);
@@ -134,8 +135,8 @@ export class BattleResultScene {
             levelUpDiv.className = 'mb-3 p-3 border border-warning rounded bg-warning bg-opacity-10';
             levelUpDiv.innerHTML = `
                 <div class="text-center">
-                    <div class="h6 text-warning">🎉 ${abilityName} レベルアップ！</div>
-                    <div class="fs-4">Lv.${levelUp.previousLevel} → Lv.${levelUp.newLevel}</div>
+                    <div class="h6 text-warning">${t('battleResult.levelUpBanner', { ability: abilityName })}</div>
+                    <div class="fs-4">${t('battleResult.levelUpRange', { previous: levelUp.previousLevel, next: levelUp.newLevel })}</div>
                 </div>
             `;
             levelUpContainer.appendChild(levelUpDiv);
@@ -156,14 +157,14 @@ export class BattleResultScene {
         
         if (!hasUnlocks) return;
         
-        unlocksContainer.innerHTML = '<h5>新しいアンロック！</h5>';
+        unlocksContainer.innerHTML = `<h5>${t('battleResult.newUnlocksTitle')}</h5>`;
         
         [...weapons, ...armors, ...gloves, ...belts, ...items, ...skills].forEach(unlockName => {
             const unlockDiv = document.createElement('div');
             unlockDiv.className = 'mb-2 p-2 border border-info rounded bg-info bg-opacity-10';
             unlockDiv.innerHTML = `
                 <div class="text-center text-info">
-                    🔓 ${unlockName} が利用可能になりました！
+                    ${t('battleResult.newUnlockMessage', { name: unlockName })}
                 </div>
             `;
             unlocksContainer.appendChild(unlockDiv);
@@ -184,7 +185,7 @@ export class BattleResultScene {
         }
         
         // Clear previous content and set header in one operation
-        trophyContainer.innerHTML = '<h5>🏆 獲得記念品</h5>';
+        trophyContainer.innerHTML = `<h5>${t('battleResult.trophiesTitle')}</h5>`;
         
         this.battleResult.trophies.forEach(trophy => {
             const trophyDiv = document.createElement('div');
@@ -196,8 +197,8 @@ export class BattleResultScene {
                         <div class="small text-muted">${trophy.description}</div>
                     </div>
                     <div class="text-end">
-                        <div class="text-success">+${trophy.explorerExp} EXP</div>
-                        <div class="small text-muted">🗺️ エクスプローラー</div>
+                        <div class="text-success">${t('battleResult.experienceGain', { exp: trophy.explorerExp })}</div>
+                        <div class="small text-muted">${t('battleResult.explorerLabel')}</div>
                     </div>
                 </div>
             `;
@@ -219,14 +220,14 @@ export class BattleResultScene {
         }
         
         // Clear previous content and set header in one operation
-        bossUnlockContainer.innerHTML = '<h5>🔓 新ボス解禁</h5>';
+        bossUnlockContainer.innerHTML = `<h5>${t('battleResult.newBossUnlocksTitle')}</h5>`;
         
         this.battleResult.newBossUnlocks.forEach(bossName => {
             const unlockDiv = document.createElement('div');
             unlockDiv.className = 'mb-3 p-3 border border-warning rounded bg-warning bg-opacity-10';
             unlockDiv.innerHTML = `
                 <div class="text-center">
-                    <div class="h6 mb-0 text-warning">🌟 ${bossName} が解禁されました！</div>
+                    <div class="h6 mb-0 text-warning">${t('battleResult.newBossUnlockMessage', { boss: bossName })}</div>
                 </div>
             `;
             bossUnlockContainer.appendChild(unlockDiv);
@@ -238,12 +239,12 @@ export class BattleResultScene {
      */
     private getAbilityDisplayName(abilityType: AbilityType): string {
         const names: Record<AbilityType, string> = {
-            [AbilityType.Combat]: '⚔️ コンバット',
-            [AbilityType.Toughness]: '🛡️ タフネス',
-            [AbilityType.CraftWork]: '🔧 クラフトワーク',
-            [AbilityType.Endurance]: '💪 エンデュランス',
-            [AbilityType.Agility]: '🏃 アジリティ',
-            [AbilityType.Explorer]: '🗺️ エクスプローラー'
+            [AbilityType.Combat]: t('abilities.labels.combat'),
+            [AbilityType.Toughness]: t('abilities.labels.toughness'),
+            [AbilityType.CraftWork]: t('abilities.labels.craftwork'),
+            [AbilityType.Endurance]: t('abilities.labels.endurance'),
+            [AbilityType.Agility]: t('abilities.labels.agility'),
+            [AbilityType.Explorer]: t('abilities.labels.explorer')
         };
         return names[abilityType] || abilityType;
     }
