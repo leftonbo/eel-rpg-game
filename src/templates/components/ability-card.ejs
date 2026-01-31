@@ -4,18 +4,20 @@
         <div class="card-body">
             <h6 class="card-title">
                 <%= icon %>
-                <span data-i18n="abilities.names.<%= abilityId %>"></span>
-                <span data-i18n="common.levelShort">Lv.</span><span id="<%= abilityId %>-level">0</span>
+                <span data-i18n="abilities.names.<%= abilityId %>"><%= abilityId %></span>
+                <span data-i18n="common.levelShort">Lv.</span>
+                <span id="<%= typeof idPrefix !== 'undefined' ? idPrefix + '-' : '' %><%= abilityId %>-level">0</span>
             </h6>
             <div class="progress mb-2">
-                <div id="<%= abilityId %>-progress" class="progress-bar bg-info" role="progressbar" style="width: 0%"></div>
+                <div id="<%= typeof idPrefix !== 'undefined' ? idPrefix + '-' : '' %><%= abilityId %>-progress" class="progress-bar bg-info" role="progressbar" style="width: 0%"></div>
             </div>
             <small class="text-muted">
-                <span data-i18n="common.expLabel">経験値</span>: <span id="<%= abilityId %>-exp">0</span> / 
-                <span id="<%= abilityId %>-next">100</span>
+                <span data-i18n="common.expLabel">経験値</span>: 
+                <span id="<%= typeof idPrefix !== 'undefined' ? idPrefix + '-' : '' %><%= abilityId %>-exp">0</span> / 
+                <span id="<%= typeof idPrefix !== 'undefined' ? idPrefix + '-' : '' %><%= abilityId %>-next">100</span>
             </small>
             <p class="mt-2 mb-0 small">
-                <span data-i18n="abilities.descriptions.<%= abilityId %>"></span>
+                <span data-i18n="abilities.descriptions.<%= abilityId %>"><%= abilityId %></span>
             </p>
         </div>
     </div>
