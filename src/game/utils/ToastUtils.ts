@@ -115,7 +115,7 @@ export class ToastUtils {
                 <div class="toast-header ${bgClass} text-white">
                     <span class="me-2">${iconClass}</span>
                     <strong class="me-auto">${displayTitle}</strong>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="${t('common.close')}"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="close"></button>
                 </div>
                 <div class="toast-body">
                     ${message}
