@@ -4,6 +4,7 @@ import { ToastType, ToastUtils } from '../utils/ToastUtils';
 import { BossCardManager } from './managers/BossCardManager';
 import { DOMUpdater } from './utils/DOMUpdater';
 import { BossModalComponent } from './components/BossModalComponent';
+import { AbilitySystem, EquipmentType } from '../systems/AbilitySystem';
 import { t } from '../i18n';
 
 export class OutGameBossSelectScene extends BaseOutGameScene {
@@ -103,10 +104,10 @@ export class OutGameBossSelectScene extends BaseOutGameScene {
             'player-summary-max-hp': player.maxHp.toString(),
             'player-summary-max-mp': player.maxMp.toString(),
             'player-summary-attack': player.getAttackPower().toString(),
-            'player-summary-weapon': equipment.weapon?.name || t('common.unknown'),
-            'player-summary-armor': equipment.armor?.name || t('common.unknown'),
-            'player-summary-gloves': equipment.gloves?.name || t('common.unknown'),
-            'player-summary-belt': equipment.belt?.name || t('common.unknown'),
+            'player-summary-weapon': equipment.weapon ? AbilitySystem.getEquipmentName(EquipmentType.Weapons, equipment.weapon) : t('common.unknown'),
+            'player-summary-armor': equipment.armor ? AbilitySystem.getEquipmentName(EquipmentType.Armors, equipment.armor) : t('common.unknown'),
+            'player-summary-gloves': equipment.gloves ? AbilitySystem.getEquipmentName(EquipmentType.Gloves, equipment.gloves) : t('common.unknown'),
+            'player-summary-belt': equipment.belt ? AbilitySystem.getEquipmentName(EquipmentType.Belts, equipment.belt) : t('common.unknown'),
         });
     }
 }

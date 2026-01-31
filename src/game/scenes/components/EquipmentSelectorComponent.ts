@@ -1,4 +1,5 @@
-import { Equipment } from "@/game/systems/AbilitySystem";
+import { AbilitySystem, Equipment, EquipmentType } from "@/game/systems/AbilitySystem";
+import { t } from "i18next";
 
 /**
  * 装備選択の共通コンポーネント
@@ -16,7 +17,7 @@ export class EquipmentSelectorComponent {
     static createEquipmentOption(
         equipment: Equipment,
         isEquipped: boolean,
-        equipmentType: 'weapon' | 'armor' | 'gloves' | 'belt',
+        equipmentType: EquipmentType,
         onEquipmentChange: (equipmentId: string) => void
     ): HTMLElement {
         const optionDiv = document.createElement('div');
@@ -24,13 +25,14 @@ export class EquipmentSelectorComponent {
         
         const bonusText = this.getEquipmentBonusText(equipment, equipmentType);
         const inputId = `${equipmentType}-${equipment.id}`;
+        const { localizedName, localizedDescription } = this.getLocalizedEquipmentTexts(equipment, equipmentType);
         
         optionDiv.innerHTML = `
             <input class="form-check-input" type="radio" name="${equipmentType}" id="${inputId}" 
                    value="${equipment.id}" ${isEquipped ? 'checked' : ''}>
             <label class="form-check-label" for="${inputId}">
-                <strong>${equipment.name}</strong> ${bonusText}<br>
-                <small class="text-muted">${equipment.description}</small>
+                <strong>${localizedName}</strong> ${bonusText}<br>
+                <small class="text-muted">${localizedDescription}</small>
             </label>
         `;
         
@@ -59,7 +61,7 @@ export class EquipmentSelectorComponent {
         containerId: string,
         equipments: Equipment[],
         currentEquipmentId: string | null,
-        equipmentType: 'weapon' | 'armor' | 'gloves' | 'belt',
+        equipmentType: EquipmentType,
         onEquipmentChange: (equipmentId: string) => void
     ): void {
         const container = document.getElementById(containerId);
@@ -106,7 +108,7 @@ export class EquipmentSelectorComponent {
         currentWeaponId: string | null,
         onWeaponChange: (weaponId: string) => void
     ): void {
-        this.updateEquipmentSelection(containerId, weapons, currentWeaponId, 'weapon', onWeaponChange);
+        this.updateEquipmentSelection(containerId, weapons, currentWeaponId, EquipmentType.Weapons, onWeaponChange);
     }
 
     /**
@@ -122,7 +124,7 @@ export class EquipmentSelectorComponent {
         currentArmorId: string | null,
         onArmorChange: (armorId: string) => void
     ): void {
-        this.updateEquipmentSelection(containerId, armors, currentArmorId, 'armor', onArmorChange);
+        this.updateEquipmentSelection(containerId, armors, currentArmorId, EquipmentType.Armors, onArmorChange);
     }
     
     /**
@@ -138,7 +140,7 @@ export class EquipmentSelectorComponent {
         currentGlovesId: string | null,
         onGlovesChange: (glovesId: string) => void
     ): void {
-        this.updateEquipmentSelection(containerId, gloves, currentGlovesId, 'gloves', onGlovesChange);
+        this.updateEquipmentSelection(containerId, gloves, currentGlovesId, EquipmentType.Gloves, onGlovesChange);
     }
     
     /**
@@ -154,7 +156,7 @@ export class EquipmentSelectorComponent {
         currentBeltId: string | null,
         onBeltChange: (beltId: string) => void
     ): void {
-        this.updateEquipmentSelection(containerId, belts, currentBeltId, 'belt', onBeltChange);
+        this.updateEquipmentSelection(containerId, belts, currentBeltId, EquipmentType.Belts, onBeltChange);
     }
 
     /**
@@ -163,16 +165,16 @@ export class EquipmentSelectorComponent {
      * @param equipmentType 装備タイプ
      * @returns ボーナステキスト
      */
-    private static getEquipmentBonusText(equipment: Equipment, equipmentType: 'weapon' | 'armor' | 'gloves' | 'belt'): string {
-        if (equipmentType === 'weapon') {
-            return `(+${equipment.attackPowerBonus || 0} 攻撃力)`;
-        } else if (equipmentType === 'armor') {
-            return `(+${equipment.hpBonus || 0} HP)`;
-        } else if (equipmentType === 'gloves') {
+    private static getEquipmentBonusText(equipment: Equipment, equipmentType: EquipmentType): string {
+        if (equipmentType === EquipmentType.Weapons) {
+            return `(+${equipment.attackPowerBonus || 0} ${t('common.attack')})`;
+        } else if (equipmentType === EquipmentType.Armors) {
+            return `(+${equipment.hpBonus || 0} ${t('common.hp')})`;
+        } else if (equipmentType === EquipmentType.Gloves) {
             const escapeBonus = equipment.escapeRateBonus || 0;
-            return `(+${Math.round(escapeBonus * 100)} 拘束脱出力)`;
-        } else if (equipmentType === 'belt') {
-            return `(+${equipment.mpBonus || 0} MP)`;
+            return `(+${Math.round(escapeBonus * 100)} ${t('common.escapePower')})`;
+        } else if (equipmentType === EquipmentType.Belts) {
+            return `(+${equipment.mpBonus || 0} ${t('common.mp')})`;
         }
         return '';
     }
@@ -182,12 +184,12 @@ export class EquipmentSelectorComponent {
      * @param equipmentType 装備タイプ
      * @returns 日本語名
      */
-    private static getEquipmentTypeName(equipmentType: 'weapon' | 'armor' | 'gloves' | 'belt'): string {
+    private static getEquipmentTypeName(equipmentType: EquipmentType): string {
         switch (equipmentType) {
-            case 'weapon': return '武器';
-            case 'armor': return '防具';
-            case 'gloves': return '手袋';
-            case 'belt': return 'ベルト';
+            case EquipmentType.Weapons: return '武器';
+            case EquipmentType.Armors: return '防具';
+            case EquipmentType.Gloves: return '手袋';
+            case EquipmentType.Belts: return 'ベルト';
             default: return '装備';
         }
     }
@@ -198,19 +200,28 @@ export class EquipmentSelectorComponent {
      * @param equipmentType 装備タイプ
      * @returns 装備情報のテキスト
      */
-    static getEquipmentInfoText(equipment: Equipment, equipmentType: 'weapon' | 'armor'): string {
+    static getEquipmentInfoText(equipment: Equipment, equipmentType: EquipmentType): string {
+        const { localizedName, localizedDescription } = this.getLocalizedEquipmentTexts(equipment, equipmentType);
         const parts = [
-            `名前: ${equipment.name}`,
-            `説明: ${equipment.description}`,
+            `名前: ${localizedName}`,
+            `説明: ${localizedDescription}`,
             `ID: ${equipment.id}`
         ];
 
-        if (equipmentType === 'weapon' && equipment.attackPowerBonus) {
-            parts.push(`攻撃力ボーナス: +${equipment.attackPowerBonus}`);
+        if (equipment.attackPowerBonus) {
+            parts.push(`${t('common.attack')}: +${equipment.attackPowerBonus}`);
         }
 
-        if (equipmentType === 'armor' && equipment.hpBonus) {
-            parts.push(`HPボーナス: +${equipment.hpBonus}`);
+        if (equipment.hpBonus) {
+            parts.push(`${t('common.hp')}: +${equipment.hpBonus}`);
+        }
+
+        if (equipment.escapeRateBonus) {
+            parts.push(`${t('common.escapePower')}: +${Math.round(equipment.escapeRateBonus * 100)}%`);
+        }
+
+        if (equipment.mpBonus) {
+            parts.push(`${t('common.mp')}: +${equipment.mpBonus}`);
         }
 
         return parts.join('\n');
@@ -227,7 +238,7 @@ export class EquipmentSelectorComponent {
     static generateEquipmentSelectionHTML(
         equipments: Equipment[],
         currentEquipmentId: string | null,
-        equipmentType: 'weapon' | 'armor',
+        equipmentType: EquipmentType,
         formName: string = equipmentType
     ): string {
         if (equipments.length === 0) {
@@ -238,20 +249,28 @@ export class EquipmentSelectorComponent {
             const isEquipped = currentEquipmentId === equipment.id;
             const bonusText = this.getEquipmentBonusText(equipment, equipmentType);
             const inputId = `${equipmentType}-${equipment.id}`;
+            const { localizedName, localizedDescription } = this.getLocalizedEquipmentTexts(equipment, equipmentType);
             
             return `
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="${formName}" id="${inputId}" 
                            value="${equipment.id}" ${isEquipped ? 'checked' : ''}>
                     <label class="form-check-label" for="${inputId}">
-                        <strong>${equipment.name}</strong> ${bonusText}<br>
-                        <small class="text-muted">${equipment.description}</small>
+                        <strong>${localizedName}</strong> ${bonusText}<br>
+                        <small class="text-muted">${localizedDescription}</small>
                     </label>
                 </div>
             `;
         }).join('');
 
         return options;
+    }
+
+    private static getLocalizedEquipmentTexts(equipment: Equipment, equipmentType: EquipmentType): { localizedName: string; localizedDescription: string } {
+        return {
+            localizedName: AbilitySystem.getEquipmentName(equipmentType, equipment),
+            localizedDescription: AbilitySystem.getEquipmentDescription(equipmentType, equipment)
+        };
     }
 
     /**
