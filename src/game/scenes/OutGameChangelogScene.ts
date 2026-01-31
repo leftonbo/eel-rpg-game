@@ -165,7 +165,7 @@ export class OutGameChangelogScene extends BaseOutGameScene {
                             <h5 class="modal-title" id="changelogModalLabel">
                                 📋 更新履歴 - 詳細表示
                             </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             ${htmlContent}
@@ -237,7 +237,7 @@ export class OutGameChangelogScene extends BaseOutGameScene {
                                 <h5 class="modal-title" id="newChangelogModalLabel">
                                     🎉 新しい更新履歴
                                 </h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="close"></button>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="alert alert-info mb-4" role="alert">
