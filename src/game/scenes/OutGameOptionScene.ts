@@ -126,8 +126,8 @@ export class OutGameOptionScene extends BaseOutGameScene {
                         
                         // 成功メッセージ
                         ToastUtils.showToast(
-                            t('toasts.importSuccessMessage'),
-                            t('toasts.importSuccessTitle'),
+                            t('toasts.importSuccess.message'),
+                            t('toasts.importSuccess.title'),
                             ToastType.Success
                         );
 
@@ -139,8 +139,8 @@ export class OutGameOptionScene extends BaseOutGameScene {
                     } catch (error) {
                         console.error('Save data import failed:', error);
                         ToastUtils.showToast(
-                            t('toasts.importFailureMessage'),
-                            t('toasts.importFailureTitle'),
+                            t('toasts.importFailure.message'),
+                            t('toasts.importFailure.title'),
                             ToastType.Error
                         );
                     }
@@ -168,16 +168,16 @@ export class OutGameOptionScene extends BaseOutGameScene {
             URL.revokeObjectURL(url);
             
             ToastUtils.showToast(
-                t('toasts.exportSuccessMessage'),
-                t('toasts.exportSuccessTitle'),
+                t('toasts.exportSuccess.message'),
+                t('toasts.exportSuccess.title'),
                 ToastType.Success
             );
             
         } catch (error) {
             console.error('Save data export failed:', error);
             ToastUtils.showToast(
-                t('toasts.exportFailureMessage'),
-                t('toasts.exportFailureTitle'),
+                t('toasts.exportFailure.message'),
+                t('toasts.exportFailure.title'),
                 ToastType.Error
             );
         }
@@ -192,8 +192,8 @@ export class OutGameOptionScene extends BaseOutGameScene {
             try {
                 PlayerSaveManager.clearSaveData();
                 ToastUtils.showToast(
-                    t('toasts.deleteSuccessMessage'),
-                    t('toasts.deleteSuccessTitle'),
+                    t('toasts.deleteSuccess.message'),
+                    t('toasts.deleteSuccess.title'),
                     ToastType.Success
                 );
                 
@@ -208,8 +208,8 @@ export class OutGameOptionScene extends BaseOutGameScene {
             } catch (error) {
                 console.error('Save data clear failed:', error);
                 ToastUtils.showToast(
-                    t('toasts.deleteFailureMessage'),
-                    t('toasts.deleteFailureTitle'),
+                    t('toasts.deleteFailure.message'),
+                    t('toasts.deleteFailure.title'),
                     ToastType.Error
                 );
             }

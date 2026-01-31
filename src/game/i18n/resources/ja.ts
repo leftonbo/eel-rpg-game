@@ -91,18 +91,30 @@ const ja = {
         }
     },
     toasts: {
-        importSuccessTitle: 'インポート完了',
-        importSuccessMessage: 'セーブデータのインポートが完了しました',
-        importFailureTitle: 'インポート失敗',
-        importFailureMessage: 'セーブデータのインポートに失敗しました',
-        exportSuccessTitle: 'エクスポート完了',
-        exportSuccessMessage: 'セーブデータをエクスポートしました',
-        exportFailureTitle: 'エクスポート失敗',
-        exportFailureMessage: 'セーブデータのエクスポートに失敗しました',
-        deleteSuccessTitle: 'セーブデータ削除完了',
-        deleteSuccessMessage: 'セーブデータを削除しました',
-        deleteFailureTitle: 'セーブデータ削除失敗',
-        deleteFailureMessage: 'セーブデータの削除に失敗しました'
+        importSuccess: {
+            title: 'インポート完了',
+            message: 'セーブデータのインポートが完了しました'
+        },
+        importFailure: {
+            title: 'インポート失敗',
+            message: 'セーブデータのインポートに失敗しました'
+        },
+        exportSuccess: {
+            title: 'エクスポート完了',
+            message: 'セーブデータをエクスポートしました'
+        },
+        exportFailure: {
+            title: 'エクスポート失敗',
+            message: 'セーブデータのエクスポートに失敗しました'
+        },
+        deleteSuccess: {
+            title: '削除完了',
+            message: 'セーブデータを削除しました'
+        },
+        deleteFailure: {
+            title: '削除失敗',
+            message: 'セーブデータの削除に失敗しました'
+        }
     },
     bosses: bossTranslations.ja
 };
