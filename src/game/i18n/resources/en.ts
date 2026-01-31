@@ -2,8 +2,14 @@ import { bossTranslations } from '../bosses';
 
 const en = {
     errors: {
-        unknown: 'An unknown error occurred.',
-        bossLoadFailed: 'Failed to load boss data: {{error}}'
+        unknown: {
+            title: 'Unknown Error',
+            message: 'An unknown error occurred.'
+        },
+        bossLoadFailed: {
+            title: 'Boss Data Load Failed',
+            message: 'Failed to load boss data: {{error}}'
+        }
     },
     common: {
         unknown: 'Unknown',

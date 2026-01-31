@@ -78,9 +78,10 @@ export class OutGameBossSelectScene extends BaseOutGameScene {
             console.error('Failed to load boss:', error);
             
             // エラーメッセージ表示
-            const errorMessage = error instanceof Error ? error.message : t('errors.unknown');
+            const errorMessage = error instanceof Error ? error.message : t('errors.unknown.message');
             ToastUtils.showToast(
-                t('errors.bossLoadFailed', { error: errorMessage }),
+                t('errors.bossLoadFailed.message', { error: errorMessage }),
+                t('errors.bossLoadFailed.title'),
                 ToastType.Error
             );
         }
