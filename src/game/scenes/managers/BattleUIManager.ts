@@ -194,47 +194,6 @@ export class BattleUIManager {
      * アイテム個数表示更新
      */
     updateItemCounts(player: Player): void {
-        // Update heal potion
-        const healPotionCount = player.getItemCount('heal-potion');
-        const healPotionUnlocked = player.getItemCount('heal-potion') > 0;
-        if (this.healPotionCount) {
-            this.healPotionCount.textContent = healPotionCount.toString();
-        }
-        const healPotionBtn = document.getElementById('heal-potion-btn');
-        if (healPotionBtn) {
-            healPotionBtn.style.display = healPotionUnlocked && healPotionCount > 0 ? 'block' : 'none';
-        }
-        
-        // Update adrenaline
-        const adrenalineCount = player.getItemCount('adrenaline');
-        const adrenalineUnlocked = player.getItemCount('adrenaline') > 0;
-        if (this.adrenalineCount) {
-            this.adrenalineCount.textContent = adrenalineCount.toString();
-        }
-        const adrenalineBtn = document.getElementById('adrenaline-btn');
-        if (adrenalineBtn) {
-            adrenalineBtn.style.display = adrenalineUnlocked && adrenalineCount > 0 ? 'block' : 'none';
-        }
-        
-        // Update energy drink
-        const energyDrinkCount = player.getItemCount('energy-drink');
-        const energyDrinkUnlocked = player.getItemCount('energy-drink') > 0;
-        if (this.energyDrinkCount) {
-            this.energyDrinkCount.textContent = energyDrinkCount.toString();
-        }
-        const energyDrinkBtn = document.getElementById('energy-drink-btn');
-        if (energyDrinkBtn) {
-            energyDrinkBtn.style.display = energyDrinkUnlocked && energyDrinkCount > 0 ? 'block' : 'none';
-        }
-        
-        // Update other extended items dynamically
-        this.updateItemButtons(player);
-    }
-    
-    /**
-     * アイテムボタン更新
-     */
-    private updateItemButtons(player: Player): void {
         const itemPanel = document.getElementById('item-panel');
         if (!itemPanel) return;
         
