@@ -86,9 +86,6 @@ export class BattleEventHandler {
      * アイテム関連のイベントリスナーを設定
      */
     private setupItemListeners(): void {
-        this.addEventListenerSafely('heal-potion-btn', 'click', () => this.callbacks.onUseItem('heal-potion'));
-        this.addEventListenerSafely('adrenaline-btn', 'click', () => this.callbacks.onUseItem('adrenaline'));
-        this.addEventListenerSafely('energy-drink-btn', 'click', () => this.callbacks.onUseItem('energy-drink'));
         this.addEventListenerSafely('item-back-btn', 'click', this.callbacks.onHideItemPanel);
     }
     

@@ -328,8 +328,8 @@ export class OutGamePlayerDetailScene extends BaseOutGameScene {
                     itemDiv.innerHTML = `
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <strong>${item.name}</strong> x${item.count}
-                                <br><small class="text-muted">${item.description}</small>
+                                <strong>${item.icon} ${t(`items.${item.id}.name`)}</strong> x${item.count}
+                                <br><small class="text-muted">${t(`items.${item.id}.description`)}</small>
                             </div>
                         </div>
                     `;

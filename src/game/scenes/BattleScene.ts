@@ -204,11 +204,6 @@ export class BattleScene {
         if (!this.player) return;
         
         PLAYER_ITEMS.forEach(itemData => {
-            // Skip items that already have static buttons
-            if (['heal-potion', 'adrenaline', 'energy-drink'].includes(itemData.id)) {
-                return;
-            }
-            
             const itemCount = this.player!.getItemCount(itemData.id);
             if (itemCount > 0) {
                 this.eventHandler.addDynamicItemListener(itemData.id, () => this.useItem(itemData.id));

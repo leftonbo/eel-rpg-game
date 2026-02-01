@@ -27,9 +27,9 @@ export interface ItemUseResult {
  * PlayerItemDataから生成され、個数や実際の使用関数を持つ
  */
 export interface PlayerItem {
-    name: string;
+    id: string;
+    icon: string;
     count: number;
-    description: string;
     use: (player: Player) => ItemUseResult;
     experienceGain: number; // Experience gain for using the item
 }

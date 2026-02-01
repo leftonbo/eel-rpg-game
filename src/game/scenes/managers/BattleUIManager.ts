@@ -3,6 +3,7 @@ import { Boss } from '../../entities/Boss';
 import { StatusEffect, StatusEffectType } from '../../systems/StatusEffect';
 import { PLAYER_ITEMS } from '@/game/data/PlayerItems';
 import { BossModalComponent } from '../components/BossModalComponent';
+import { t } from 'i18next';
 
 /**
  * バトル画面のUI更新を管理するクラス
@@ -193,47 +194,6 @@ export class BattleUIManager {
      * アイテム個数表示更新
      */
     updateItemCounts(player: Player): void {
-        // Update heal potion
-        const healPotionCount = player.getItemCount('heal-potion');
-        const healPotionUnlocked = player.getItemCount('heal-potion') > 0;
-        if (this.healPotionCount) {
-            this.healPotionCount.textContent = healPotionCount.toString();
-        }
-        const healPotionBtn = document.getElementById('heal-potion-btn');
-        if (healPotionBtn) {
-            healPotionBtn.style.display = healPotionUnlocked && healPotionCount > 0 ? 'block' : 'none';
-        }
-        
-        // Update adrenaline
-        const adrenalineCount = player.getItemCount('adrenaline');
-        const adrenalineUnlocked = player.getItemCount('adrenaline') > 0;
-        if (this.adrenalineCount) {
-            this.adrenalineCount.textContent = adrenalineCount.toString();
-        }
-        const adrenalineBtn = document.getElementById('adrenaline-btn');
-        if (adrenalineBtn) {
-            adrenalineBtn.style.display = adrenalineUnlocked && adrenalineCount > 0 ? 'block' : 'none';
-        }
-        
-        // Update energy drink
-        const energyDrinkCount = player.getItemCount('energy-drink');
-        const energyDrinkUnlocked = player.getItemCount('energy-drink') > 0;
-        if (this.energyDrinkCount) {
-            this.energyDrinkCount.textContent = energyDrinkCount.toString();
-        }
-        const energyDrinkBtn = document.getElementById('energy-drink-btn');
-        if (energyDrinkBtn) {
-            energyDrinkBtn.style.display = energyDrinkUnlocked && energyDrinkCount > 0 ? 'block' : 'none';
-        }
-        
-        // Update other extended items dynamically
-        this.updateItemButtons(player);
-    }
-    
-    /**
-     * アイテムボタン更新
-     */
-    private updateItemButtons(player: Player): void {
         const itemPanel = document.getElementById('item-panel');
         if (!itemPanel) return;
         
@@ -246,19 +206,14 @@ export class BattleUIManager {
         
         // Add buttons for player items that are unlocked and not already shown
         PLAYER_ITEMS.forEach(itemData => {
-            // Skip items that already have static buttons
-            if (['heal-potion', 'adrenaline', 'energy-drink'].includes(itemData.id)) {
-                return;
-            }
-            
             const itemCount = player.getItemCount(itemData.id);
             if (itemCount > 0) {
                 const button = document.createElement('button');
                 button.id = `${itemData.id}-btn`;
                 button.className = 'btn btn-outline-success';
                 button.setAttribute('data-dynamic-item', 'true');
-                button.innerHTML = `💊 ${itemData.name} (${itemCount})`;
-                button.title = itemData.description;
+                button.innerHTML = `${itemData.icon} ${t(`items.${itemData.id}.name`)} (${itemCount})`;
+                button.title = t(`items.${itemData.id}.description`);
                 
                 // Insert before the back button
                 const backBtn = document.getElementById('item-back-btn');
@@ -294,8 +249,8 @@ export class BattleUIManager {
             const omamoriBtn = document.createElement('button');
             omamoriBtn.id = 'omamori-special-btn';
             omamoriBtn.className = 'btn btn-outline-light';
-            omamoriBtn.innerHTML = '🛡️ おまもり (1)';
-            omamoriBtn.title = '特殊状態を解除し、HPを満回復する';
+            omamoriBtn.innerHTML = `🧿 ${t('items.omamori.name')} (${player.getItemCount('omamori')})`;
+            omamoriBtn.title = t('items.omamori.description');
             omamoriContainer.appendChild(omamoriBtn);
         }
     }

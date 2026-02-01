@@ -1,5 +1,5 @@
 import { Game } from '../Game';
-import { AbilityType, WEAPONS, ARMORS, GLOVES, BELTS } from '../systems/AbilitySystem';
+import { AbilityType, WEAPONS, ARMORS, GLOVES, BELTS, Equipment, EquipmentType, AbilitySystem } from '../systems/AbilitySystem';
 import { SkillRegistry } from '../data/skills';
 import { Player } from '../entities/Player';
 import { getAllBossData, getBossData } from '../data';
@@ -377,25 +377,25 @@ function checkNewUnlocks(abilityType: AbilityType, newLevel: number): { weapons:
     // Check for weapon unlocks
     if (abilityType === AbilityType.Combat) {
         const newWeapons = WEAPONS.filter(weapon => weapon.requiredLevel === newLevel);
-        unlocks.weapons.push(...newWeapons.map(weapon => weapon.name));
+        unlocks.weapons.push(...newWeapons.map(weapon => getLocalizedEquipmentName(EquipmentType.Weapons, weapon)));
     }
     
     // Check for armor unlocks
     if (abilityType === AbilityType.Toughness) {
         const newArmors = ARMORS.filter(armor => armor.requiredLevel === newLevel);
-        unlocks.armors.push(...newArmors.map(armor => armor.name));
+        unlocks.armors.push(...newArmors.map(armor => getLocalizedEquipmentName(EquipmentType.Armors, armor)));
     }
     
     // Check for glove unlocks
     if (abilityType === AbilityType.Agility) {
         const newGloves = GLOVES.filter(glove => glove.requiredLevel === newLevel);
-        unlocks.gloves.push(...newGloves.map(glove => glove.name));
+        unlocks.gloves.push(...newGloves.map(glove => getLocalizedEquipmentName(EquipmentType.Gloves, glove)));
     }
     
     // Check for belt unlocks
     if (abilityType === AbilityType.Endurance) {
         const newBelts = BELTS.filter(belt => belt.requiredLevel === newLevel);
-        unlocks.belts.push(...newBelts.map(belt => belt.name));
+        unlocks.belts.push(...newBelts.map(belt => getLocalizedEquipmentName(EquipmentType.Belts, belt)));
     }
     
     // Check for item unlocks (keeping existing craftwork items)
@@ -416,6 +416,16 @@ function checkNewUnlocks(abilityType: AbilityType, newLevel: number): { weapons:
     unlocks.skills.push(...skillUnlocks);
     
     return unlocks;
+}
+
+/**
+ * Get localized equipment name
+ * @param category Equipment category
+ * @param equipment Equipment
+ * @returns Localized equipment name
+ */
+function getLocalizedEquipmentName(category: EquipmentType, equipment: Equipment): string {
+    return AbilitySystem.getEquipmentName(category, equipment);
 }
 
 /**
