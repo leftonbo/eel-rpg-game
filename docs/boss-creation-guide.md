@@ -300,6 +300,7 @@ export const newBossData: BossData = {
 };
 
 // フィニッシュムーブの実装例
+// suppressAutoFinishingMoveがtrueの場合は使用しません (AI戦略で処理してください)
 newBossData.finishingMove = function() {
     return [
         '「グルルル...」',
@@ -503,6 +504,83 @@ aiStrategy: (boss, player, turn) => {
     
     return availableActions[0];
 }
+```
+
+### `suppressAutoFinishingMove: true` 時のカスタムとどめ攻撃
+
+自動とどめ攻撃を抑制する場合は、AI戦略内で `player.isEaten()` かつ `player.isDoomed()` を検知し、`ActionType.FinishingMove` のアクションを返します。`FinishingMove` は `onUse` で状態異常を変更するのが定石です。
+
+```typescript
+const customFinishMove: BossAction = {
+    id: 'custom-finish',
+    type: ActionType.FinishingMove,
+    name: 'カスタムとどめ',
+    description: '体内で力尽きた{player}を最終状態へ移行させる',
+    messages: [
+        '{player}は完全に体内へ取り込まれてしまった...'
+    ],
+    weight: 1,
+    onUse: (_boss: Boss, player: Player) => {
+        player.statusEffects.removeEffect(StatusEffectType.Doomed);
+        player.statusEffects.addEffect(StatusEffectType.Dead);
+        // 必要に応じて永続効果を付与する
+        // player.statusEffects.addEffect(StatusEffectType.YourCustomEffect, -1);
+        return [];
+    }
+};
+
+const aiStrategy = (boss: Boss, player: Player, turn: number): BossAction => {
+    if (player.isEaten() && player.isDoomed()) {
+        return customFinishMove;
+    }
+    // ... 通常行動の分岐
+};
+
+export const bossData: BossData = {
+    // ...
+    suppressAutoFinishingMove: true,
+    aiStrategy,
+    // ...
+};
+```
+
+### 敗北状態時に8ターン毎の特殊行動
+
+`player.isDefeated()` の分岐内で `postDefeatedTurn` をカスタム変数でカウントし、8ターン毎に特別行動を返します。`customVariables` に初期値を用意してください。
+
+```typescript
+const specialPostDefeatAction: BossAction = {
+    id: 'special-post-defeat',
+    type: ActionType.PostDefeatedAttack,
+    name: '特別な敗北後行動',
+    description: '8ターンごとに実行する特別行動',
+    messages: ['体内で特別なイベントが発生した...'],
+    weight: 1,
+    playerStateCondition: 'defeated'
+};
+
+const aiStrategy = (boss: Boss, player: Player, turn: number): BossAction => {
+    if (player.isDefeated()) {
+        let postDefeatedTurn = boss.getCustomVariable<number>('postDefeatedTurn', 0);
+        postDefeatedTurn += 1;
+        boss.setCustomVariable('postDefeatedTurn', postDefeatedTurn);
+
+        if (postDefeatedTurn % 8 === 0) {
+            return specialPostDefeatAction;
+        }
+
+        // ... 通常の敗北後行動を返す
+    }
+    // ... 通常行動の分岐
+};
+
+export const bossData: BossData = {
+    // ...
+    aiStrategy,
+    customVariables: {
+        postDefeatedTurn: 0
+    }
+};
 ```
 
 ## バランス調整指針
