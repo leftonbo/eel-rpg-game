@@ -408,7 +408,7 @@ aiStrategy: (boss, player, turn) => {
         }
     }
 
-    // プレイヤー敗北後の行動
+    // プレイヤー敗北後の行動 (永続的な体内保管描写)
     if (player.isDefeated()) {
         const postDefeatedActions: BossAction[] = [
             {
