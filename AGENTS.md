@@ -60,6 +60,8 @@
 5. `victoryTrophy` / `defeatTrophy` を設定
 6. テストで動作確認
 
+詳細の手順は [boss-creation-guide.md](docs/boss-creation-guide.md) を参照。
+
 ### 状態異常追加
 
 1. `StatusEffectType` enum に新タイプ追加
