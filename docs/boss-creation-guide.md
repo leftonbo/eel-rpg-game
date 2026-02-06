@@ -2,10 +2,6 @@
 
 このドキュメントは、ElnalFTE に新しいボスを追加するための包括的なガイドです。
 
-> **🚀 重要な更新情報（2024年7月）**  
-> **Vite glob import**システムにより、ボス追加が大幅に簡素化されました！  
-> 従来必要だった手動設定がほぼ不要になり、ボスファイルを作成するだけで自動的にゲームに反映されます。
-
 ## 概要
 
 **🚀 大幅簡素化！（2024年7月更新）**
@@ -13,18 +9,16 @@
 新しいボスを追加するには、以下のステップが必要です：
 
 1. **ボスデータファイルの作成**（メイン作業）
-2. ~~インデックスファイルの更新~~（❌ **不要！** 自動検出）
-3. ~~HTMLファイルの更新~~（❌ **不要！** 自動生成）
-4. 必要に応じて新しい状態異常の追加
+2. 必要に応じて新しい状態異常の追加
 
 **Vite glob import**により、ボスファイルを作成するだけで自動的にゲームに反映されます。
 
 ## 必要なファイル
 
-- `src/game/data/bosses/{boss-id}.ts` - 新ボスのデータファイル **（これだけ！）**
-- ~~`src/game/data/index.ts`~~ - ❌ **更新不要**（自動検出）
-- EJSテンプレートシステムによるHTML自動生成（手動編集不要）
-- `src/styles/main.css` - 新しい状態異常がある場合のみ（更新）
+- `src/game/data/bosses/{boss-id}.ts` - 新ボスのデータファイル
+- `src/game/status-effects/{boss-id}-effects.ts` - 新しい状態異常がある場合のみ
+- `src/game/systems/StatusEffectTypes.ts` - 新しい状態異常がある場合のみ
+- `src/styles/main.css` - 新しい状態異常がある場合のみ
 
 ## ボスデータ構造
 
@@ -313,85 +307,9 @@ newBossData.finishingMove = function() {
         '{player}は{boss}の支配下に置かれることになった...'
     ];
 };
-
-// getDialogue メソッドの実装例
-// 現在は使用されません (旧ボスには互換性のために残しています)
-newBossData.getDialogue = function(situation: 'battle-start' | 'player-restrained' | 'player-eaten' | 'player-escapes' | 'low-hp' | 'victory') {
-    const dialogues: Record<string, string[]> = {
-        'battle-start': [
-            '新しい挑戦者か...',
-            '面白そうだ',
-            '相手になってやろう'
-        ],
-        'player-restrained': [
-            '逃げられないぞ',
-            '観念しろ',
-            'これで終わりだ'
-        ],
-        'player-eaten': [
-            '美味しそうだ',
-            'ゆっくり味わおう',
-            '栄養になれ'
-        ],
-        'player-escapes': [
-            'チッ、逃げたか',
-            'なかなかやるな',
-            '次はそうはいかん'
-        ],
-        'low-hp': [
-            'まだ終わっていない！',
-            'この程度では！',
-            '本気を出すとしよう'
-        ],
-        'victory': [
-            '勝負あったな',
-            '満足だ'
-        ]
-    };
-    
-    const options = dialogues[situation] || dialogues['battle-start'];
-    return options[Math.floor(Math.random() * options.length)];
-};
 ```
 
-### 2. ~~インデックスファイルの更新~~ ❌ **不要！**
-
-**🚀 2024年7月更新**: **Vite glob import**により、この手順は完全に不要になりました！
-
-~~以前の手動設定（現在は不要）~~:
-```typescript
-// ❌ 以下は不要になりました！
-// export const registeredBossIds: string[] = [
-//     'new-boss'  // 手動追加不要
-// ];
-
-// ❌ 以下は不要になりました！
-// case 'new-boss':
-//     bossData = (await import('./bosses/new-boss')).newBossData;
-//     break;
-```
-
-**✅ 現在のシステム**: ボスファイルを作成するだけで自動的に以下が実行されます：
-1. **自動検出**: `import.meta.glob('./bosses/*.ts')`がファイルを検出
-2. **自動ロード**: ファイル名からボスIDとexport名を自動生成（`new-boss.ts` → `newBossData`）
-3. **自動追加**: ゲーム起動時にボス選択画面に自動で表示
-
-**EJSテンプレートの恩恵**: HTMLの手動編集は不要で、ボスデータの定義だけでUIに自動反映されます。
-
-### 2. EJSテンプレートシステムによるHTML自動生成
-
-**重要**: ボス追加時はHTMLを手動で編集する必要はありません。
-
-EJSテンプレートシステムが以下を自動で行います：
-
-1. **ボスカードの自動生成**: `registeredBossIds` 配列から動的にボスカードを生成
-2. **エクスプローラーレベル制御**: `explorerLevelRequired` に基づいてボスの解禁状態を制御
-3. **アイコン表示**: ボスデータの `icon` プロパティを使用
-4. **説明文表示**: ボスデータの `description` プロパティを使用
-
-このシステムにより、新ボスはファイルを作成するだけで自動的にゲームに組み込まれます。
-
-### 3. テストの実行
+### 2. テストの実行
 
 ボスを追加した後、必ず以下のテストを実行してください：
 
@@ -401,7 +319,7 @@ npm run test       # Vitest単体テスト
 npm run build      # ビルドテスト
 ```
 
-### 4. 新しい状態異常の追加（必要な場合）
+### 3. 新しい状態異常の追加（必要な場合）
 
 #### StatusEffectTypeに追加
 `src/game/systems/StatusEffectTypes.ts` の `StatusEffectType` enumに追加
@@ -421,7 +339,24 @@ npm run build      # ビルドテスト
 - `Darkness` - 暗闇（命中率大幅低下）
 - `Doomed` - 再起不能（最大HP0、とどめ攻撃対象）
 
-**新しい状態異常**
+**ボス固有状態異常**
+- `AphrodisiacPoison` - 媚薬毒（ドリームデーモン）
+- `Drowsiness` - 眠気（ドリームデーモン）
+- `Infatuation` - 恋慕（ドリームデーモン）
+- `Arousal` - 興奮（ドリームデーモン）
+- `Seduction` - 誘惑（ドリームデーモン）
+- `MagicSeal` - 魔法封印（ドリームデーモン）
+- `PleasureFall` - 快楽堕ち（ドリームデーモン）
+- `Lewdness` - 淫乱（ドリームデーモン）
+- `Hypnosis` - 催眠（ドリームデーモン）
+- `Brainwash` - 洗脳（ドリームデーモン）
+- `Sweet` - 甘い（ドリームデーモン）
+- `DreamControl` - 夢操作（ドリームデーモン）
+- `Melting` - 蕩け（ドリームデーモン）
+- `Euphoria` - 多幸感（ドリームデーモン）
+- `Fascination` - 魅惑（ドリームデーモン）
+- `Bliss` - 至福（ドリームデーモン）
+- `Enchantment` - 魔魅（ドリームデーモン）
 - `VisionImpairment` - 視界阻害（海のクラーケン）
 - `WaterSoaked` - 水濡れ（アクアサーペント）
 - `Dizzy` - 目眩（アクアサーペント）
@@ -446,25 +381,6 @@ npm run build      # ビルドテスト
 - `Bipolar` - 双極性（双面の道化師）
 - `Plushified` - ぬいぐるみ化（双面の道化師）
 - `DemonStomach` - 魔界の胃袋（魔界の竜）
-
-**特殊系状態異常**
-- `AphrodisiacPoison` - 媚薬毒（ドリームデーモン）
-- `Drowsiness` - 眠気（ドリームデーモン）
-- `Infatuation` - 恋慕（ドリームデーモン）
-- `Arousal` - 興奮（ドリームデーモン）
-- `Seduction` - 誘惑（ドリームデーモン）
-- `MagicSeal` - 魔法封印（ドリームデーモン）
-- `PleasureFall` - 快楽堕ち（ドリームデーモン）
-- `Lewdness` - 淫乱（ドリームデーモン）
-- `Hypnosis` - 催眠（ドリームデーモン）
-- `Brainwash` - 洗脳（ドリームデーモン）
-- `Sweet` - 甘い（ドリームデーモン）
-- `DreamControl` - 夢操作（ドリームデーモン）
-- `Melting` - 蕩け（ドリームデーモン）
-- `Euphoria` - 多幸感（ドリームデーモン）
-- `Fascination` - 魅惑（ドリームデーモン）
-- `Bliss` - 至福（ドリームデーモン）
-- `Enchantment` - 魔魅（ドリームデーモン）
 
 #### CSS クラスの追加
 `src/styles/main.css` に `.status-{type}` クラスを追加
