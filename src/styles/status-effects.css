@@ -980,3 +980,42 @@
         box-shadow: 0 0 15px rgba(173, 216, 230, 0.8);
     }
 }
+
+/* Slime Dragon effects */
+.status-slime-coated {
+    background: rgba(0, 200, 150, 0.4);
+    border-color: #00c896;
+    color: #80ffd4;
+    animation: slime-coat-pulse 2.5s ease-in-out infinite alternate;
+}
+
+.status-slime-egg {
+    background: rgba(100, 220, 255, 0.5);
+    border-color: #64dcff;
+    color: #e0f8ff;
+    animation: slime-egg-pulse 2s ease-in-out infinite;
+}
+
+/* Slime Coated animation */
+@keyframes slime-coat-pulse {
+    from {
+        box-shadow: 0 0 5px rgba(0, 200, 150, 0.4);
+        opacity: 0.85;
+    }
+    to {
+        box-shadow: 0 0 12px rgba(0, 200, 150, 0.7);
+        opacity: 1;
+    }
+}
+
+/* Slime Egg animation */
+@keyframes slime-egg-pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 8px rgba(100, 220, 255, 0.5);
+    }
+    50% {
+        transform: scale(1.03);
+        box-shadow: 0 0 15px rgba(100, 220, 255, 0.8);
+    }
+}

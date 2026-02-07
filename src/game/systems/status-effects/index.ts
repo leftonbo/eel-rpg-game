@@ -14,6 +14,7 @@ import { aquaSerpentEffectsConfigs } from './aqua-serpent-effects';
 import { cleanMasterEffectsConfigs } from './clean-master-effects';
 import { darkGhostEffectsConfigs } from './dark-ghost-effects';
 import { undergroundWormEffectsConfigs } from './underground-worm-effects';
+import { slimeDragonEffectsConfigs } from './slime-dragon-effects';
 
 // Aggregate all status effect configurations
 export const createStatusEffectConfigs = (): Map<StatusEffectType, StatusEffectConfig> => {
@@ -91,6 +92,11 @@ export const createStatusEffectConfigs = (): Map<StatusEffectType, StatusEffectC
 
     // Add underground worm effects
     undergroundWormEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add slime dragon effects
+    slimeDragonEffectsConfigs.forEach(config => {
         allConfigs.set(config.type, config);
     });
 
