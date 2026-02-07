@@ -30,11 +30,6 @@ export class BattleUIManager {
     private bossHpProgress: HTMLElement | null = null;
     private bossStatusEffects: HTMLElement | null = null;
     
-    // UI Elements - Items
-    private healPotionCount: HTMLElement | null = null;
-    private adrenalineCount: HTMLElement | null = null;
-    private energyDrinkCount: HTMLElement | null = null;
-    
     // Boss Modal
     private bossModalComponent: BossModalComponent;
     
@@ -66,11 +61,6 @@ export class BattleUIManager {
         this.bossHpBar = document.getElementById('boss-hp-bar');
         this.bossHpProgress = document.getElementById('boss-hp-progress');
         this.bossStatusEffects = document.getElementById('boss-status-effects');
-        
-        // Item count elements
-        this.healPotionCount = document.getElementById('heal-potion-count');
-        this.adrenalineCount = document.getElementById('adrenaline-count');
-        this.energyDrinkCount = document.getElementById('energy-drink-count');
     }
     
     /**
