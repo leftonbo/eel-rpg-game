@@ -289,8 +289,7 @@ export const slimeDragonData: BossData = {
     ],
 
     customVariables: {
-        postDefeatedTurn: 0,
-        coatingUsed: false
+        postDefeatedTurn: 0
     },
 
     battleStartMessages: [
