@@ -15,13 +15,12 @@ const slimeDragonActions: BossAction[] = [
         description: 'スライムの塊を飛ばして粘液まみれにする',
         damageFormula: (user: Boss) => user.attackPower * 0.8,
         hitRate: 0.95,
-        statusEffect: StatusEffectType.Slimed,
+        statusEffect: StatusEffectType.SlimeCoated,
         statusChance: 0.85,
         weight: 30,
         playerStateCondition: 'normal',
         messages: [
-            '{boss}がスライムの塊を{player}に向けて飛ばした！',
-            'ぺちゃっ！{player}はスライムまみれになった！'
+            '{boss}がスライムの塊を{player}に向けて飛ばした！'
         ]
     },
     {
@@ -34,8 +33,7 @@ const slimeDragonActions: BossAction[] = [
         weight: 25,
         playerStateCondition: 'normal',
         messages: [
-            '{boss}が半透明の巨体を振るった！',
-            'ぶるんっ！{player}はスライムの身体で薙ぎ払われた！'
+            '{boss}が半透明の巨体を振るった！'
         ]
     },
     {
@@ -50,8 +48,7 @@ const slimeDragonActions: BossAction[] = [
         weight: 20,
         playerStateCondition: 'normal',
         messages: [
-            '{boss}がぬるりと{player}に近づいて全身を包み込もうとした！',
-            '{player}は全身をスライムでコーティングされてしまった…身体が重い…'
+            '{boss}がぬるりと{player}に近づいて全身を包み込もうとした！'
         ]
     },
     {
@@ -64,8 +61,7 @@ const slimeDragonActions: BossAction[] = [
         weight: 20,
         playerStateCondition: 'normal',
         messages: [
-            '{boss}が嬉しそうにぷるぷる震えながら突進してきた！',
-            'どぷんっ！{player}は{boss}のじゃれつきに巻き込まれた！'
+            '{boss}が嬉しそうにぷるぷる震えながら突進してきた！'
         ]
     },
 
@@ -80,8 +76,7 @@ const slimeDragonActions: BossAction[] = [
         playerStateCondition: 'normal',
         messages: [
             '{boss}が巨大な身体を{player}の上にのしかけてきた！',
-            'ぬるるるっ…{player}は{boss}のスライムの身体に取り込まれていく…',
-            '{player}は{boss}の柔らかい身体に包まれて身動きが取れなくなった！'
+            'ぬるるるっ…{player}は{boss}のスライムの柔らかい身体に取り込まれていく…'
         ],
         canUse: (_boss: Boss, player: Player, _turn: number) => {
             return !player.isRestrained() && !player.isEaten();
@@ -99,8 +94,7 @@ const slimeDragonActions: BossAction[] = [
         weight: 40,
         playerStateCondition: 'restrained',
         messages: [
-            '{boss}のスライムの身体が{player}をじわじわと締めつける…',
-            'ぬるぬるとしたスライムが{player}の身体を包み込んでいく…'
+            '{boss}のスライムの身体が{player}をじわじわと締めつける…'
         ]
     },
     {
@@ -115,8 +109,7 @@ const slimeDragonActions: BossAction[] = [
         weight: 30,
         playerStateCondition: 'restrained',
         messages: [
-            '{boss}のスライムが{player}の身体にじわじわと浸透していく…',
-            '{player}の身体がスライムで重くなり、動きが鈍くなった…'
+            '{boss}のスライムが{player}の身体にじわじわと浸透していく…'
         ]
     }
 ];

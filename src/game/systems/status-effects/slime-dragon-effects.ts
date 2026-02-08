@@ -3,8 +3,8 @@ import { StatusEffectType, StatusEffectConfig, ActionPriority } from '../StatusE
 export const slimeDragonEffectsConfigs: StatusEffectConfig[] = [
     {
         type: StatusEffectType.SlimeCoated,
-        name: 'スライムコーティング',
-        description: '全身がスライムでコーティングされ、動きにくく回避しにくい',
+        name: 'スライムまみれ',
+        description: '全身がスライムまみれになり、動きにくく回避しにくい',
         duration: 5,
         category: 'debuff',
         isDebuff: true,
@@ -15,8 +15,8 @@ export const slimeDragonEffectsConfigs: StatusEffectConfig[] = [
         messages: {
             onApplyPlayer: '{name}は全身をスライムでコーティングされた！身体が動きにくい…',
             onApplyBoss: '{name}はスライムでコーティングされた！',
-            onRemovePlayer: '{name}のスライムコーティングが剥がれた',
-            onRemoveBoss: '{name}のスライムコーティングが剥がれた'
+            onRemovePlayer: '{name}のスライムが剥がれた',
+            onRemoveBoss: '{name}のスライムが剥がれた'
         }
     },
     {
