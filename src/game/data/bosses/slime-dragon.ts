@@ -439,14 +439,13 @@ export const slimeDragonData: BossData = {
         }
 
         // Slimed未付与 → 40%でスライムショット
-        const hasSlimed = player.statusEffects.hasEffect(StatusEffectType.Slimed);
-        if (!hasSlimed && !hasSlimeCoated && Math.random() < 0.40) {
+        if (!hasSlimeCoated && Math.random() < 0.40) {
             const slimeShot = slimeDragonActions.find(a => a.id === 'slime-shot');
             if (slimeShot) return slimeShot;
         }
 
         // 状態異常付与済みで拘束チャンスを狙う
-        if ((hasSlimed || hasSlimeCoated) && !player.isRestrained() && Math.random() < 0.40) {
+        if (hasSlimeCoated && !player.isRestrained() && Math.random() < 0.40) {
             const restraintAction = slimeDragonActions.find(a => a.type === ActionType.RestraintAttack);
             if (restraintAction) return restraintAction;
         }
