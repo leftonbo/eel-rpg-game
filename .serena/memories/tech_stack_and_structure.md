@@ -1,0 +1,10 @@
+- Tech stack: TypeScript 5+, Vite 7+, Vitest 3.2+, ESLint 9, Bootstrap 5.3, EJS templates, npm.
+- Important directories:
+  - src/game/entities: Player, Boss, managers for battle/equipment/items/progression.
+  - src/game/scenes: title/out-game/battle scenes and scene components.
+  - src/game/systems: AbilitySystem, MemorialSystem, status-related systems.
+  - src/game/data: bosses, skills, documents, changelogs, loaders.
+  - src/templates: EJS components/partials for generated HTML.
+  - styles: base/battle/components/status-effects CSS.
+  - tests: Vitest tests (e.g., Player.test.ts).
+- Boss loading pattern is data-driven with import.meta.glob (manual registration not required).

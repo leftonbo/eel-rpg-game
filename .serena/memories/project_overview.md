@@ -1,0 +1,5 @@
+- Browser-based RPG game in TypeScript where player selects bosses and fights turn-based battles.
+- Main flow/state: Title -> BossSelect -> Battle.
+- Core domains: entities (Player/Boss), scenes (UI + flow), systems (status effects, abilities, memorial/save), data-driven bosses/documents.
+- UI stack uses Bootstrap 5 with EJS templates that generate HTML at build time (avoid manual HTML edits).
+- Repository: eel-rpg-game, branch convention includes feature/bugfix/refactor/docs.

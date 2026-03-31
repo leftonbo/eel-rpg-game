@@ -1,0 +1,5 @@
+- After code changes, run at least: npm run typecheck, npm run test, npm run build.
+- Run npm run lint when change scope affects style/rules or before PR.
+- Keep EJS/template-driven generation in mind: avoid manual HTML edits that should come from templates.
+- Preserve project patterns (data-driven bosses, scene separation, Bootstrap-based UI).
+- For commits in this project workflow: Japanese message + gitmoji style (per repository guidance).

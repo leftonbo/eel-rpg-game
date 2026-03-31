@@ -1,0 +1,16 @@
+- Install deps: npm install
+- Dev server: npm run dev
+- Type check: npm run typecheck
+- Tests: npm run test
+- Test watch: npm run test:watch
+- Lint: npm run lint
+- Build: npm run build
+- Build with analyze: npm run build:analyze
+- Clean dist: npm run clean
+- Typical verification after edits: npm run typecheck && npm run test && npm run build (plus lint when needed).
+- Useful shell/git commands (Windows):
+  - List files: dir or Get-ChildItem
+  - Change dir: cd or Set-Location
+  - Search text: Select-String
+  - Recursive file search: Get-ChildItem -Recurse -File | Select-String "pattern"
+  - Git basics: git status, git diff, git add, git commit, git push

@@ -1,0 +1,8 @@
+- TypeScript strict typing, moduleResolution=bundler, imports without file extensions.
+- Naming: Class PascalCase, function/variable camelCase, constants UPPER_SNAKE_CASE, interfaces PascalCase (no I-prefix).
+- DOM event handling: prefer addEventListener; callbacks as arrow functions to preserve this.
+- Error handling: use try-catch where needed.
+- Do not use browser alert/confirm/prompt; use ModalUtils and ToastUtils.
+- UI implementation should primarily use Bootstrap components and keep custom CSS minimal.
+- For status effects: update enum/config and related CSS class (status-[type]).
+- For boss additions: create data file under src/game/data/bosses; auto-detected by glob import.
