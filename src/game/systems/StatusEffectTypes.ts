@@ -117,7 +117,10 @@ export enum StatusEffectType {
     
     // Slime Dragon effects
     SlimeCoated = 'slime-coated',
-    SlimeEgg = 'slime-egg'
+    SlimeEgg = 'slime-egg',
+    
+    // Tongue Dragon effects
+    TongueMucus = 'tongue-mucus'
 }
 
 export interface StatusEffect {

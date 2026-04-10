@@ -261,7 +261,7 @@ export const slimeDragonData: BossData = {
     name: 'SlimeDragon',
     displayName: 'スライムドラゴン',
     icon: '💧',
-    description: '湖に現れた巨大なスライムのドラゴン。好奇心旺盛で一緒に遊びたいだけだが…',
+    description: '湖に現れた巨大なスライムのドラゴン',
     appearanceNote: '半透明の青緑色のスライムで構成された巨大なドラゴン。体内が透けて見え、液状の身体がゆらゆらと揺れている。',
     questNote: '湖に探索に出た冒険者たちがスライムまみれになって帰ってくるという報告が相次いでいる。どうやら湖に巨大なスライム状の生物が出現しているらしい。原因を調査し、対処してほしい。',
     maxHp: 550,

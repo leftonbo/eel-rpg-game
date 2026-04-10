@@ -15,6 +15,7 @@ import { cleanMasterEffectsConfigs } from './clean-master-effects';
 import { darkGhostEffectsConfigs } from './dark-ghost-effects';
 import { undergroundWormEffectsConfigs } from './underground-worm-effects';
 import { slimeDragonEffectsConfigs } from './slime-dragon-effects';
+import { tongueDragonEffectsConfigs } from './tongue-dragon-effects';
 
 // Aggregate all status effect configurations
 export const createStatusEffectConfigs = (): Map<StatusEffectType, StatusEffectConfig> => {
@@ -97,6 +98,11 @@ export const createStatusEffectConfigs = (): Map<StatusEffectType, StatusEffectC
 
     // Add slime dragon effects
     slimeDragonEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add tongue dragon effects
+    tongueDragonEffectsConfigs.forEach(config => {
         allConfigs.set(config.type, config);
     });
 
