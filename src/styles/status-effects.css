@@ -981,6 +981,14 @@
     }
 }
 
+/* Tongue Dragon effects */
+.status-tongue-mucus {
+    background: rgba(150, 50, 200, 0.4);
+    border-color: #9632c8;
+    color: #e6c0ff;
+    animation: tongue-mucus-drip 2.5s ease-in-out infinite alternate;
+}
+
 /* Slime Dragon effects */
 .status-slime-coated {
     background: rgba(0, 200, 150, 0.4);
@@ -1005,6 +1013,20 @@
     to {
         box-shadow: 0 0 12px rgba(0, 200, 150, 0.7);
         opacity: 1;
+    }
+}
+
+/* Tongue Dragon animation */
+@keyframes tongue-mucus-drip {
+    from {
+        box-shadow: 0 0 5px rgba(150, 50, 200, 0.4);
+        opacity: 0.85;
+        transform: scale(1);
+    }
+    to {
+        box-shadow: 0 0 14px rgba(150, 50, 200, 0.7);
+        opacity: 1;
+        transform: scale(1.02);
     }
 }
 
