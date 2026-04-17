@@ -1,10 +1,31 @@
-- Tech stack: TypeScript 5+, Vite 7+, Vitest 3.2+, ESLint 9, Bootstrap 5.3, EJS templates, npm.
+- Tech stack:
+  - TypeScript 5.8+, Vite 7.1+, Vitest 3.2+, ESLint 9.31, Bootstrap 5.3, EJS templates (vite-plugin-ejs), vite-plugin-markdown, vite-plugin-live-reload.
+  - i18next 25+ for localization (ja/en).
+  - marked (Markdown rendering) + gray-matter (frontmatter parsing).
+  - tsx for script execution, rimraf for clean, rollup-plugin-visualizer for bundle analysis.
+  - Node.js 22+ required (engines field).
+- Boss loading pattern: `import.meta.glob('./bosses/*.ts')` in src/game/data/index.ts; no manual registration. Boss display text is translated via localizeBossData() using i18next keys `bosses.{id}.*`.
 - Important directories:
-  - src/game/entities: Player, Boss, managers for battle/equipment/items/progression.
-  - src/game/scenes: title/out-game/battle scenes and scene components.
-  - src/game/systems: AbilitySystem, MemorialSystem, status-related systems.
-  - src/game/data: bosses, skills, documents, changelogs, loaders.
-  - src/templates: EJS components/partials for generated HTML.
-  - styles: base/battle/components/status-effects CSS.
+  - src/game/entities: Actor, Player, Boss, PlayerConstants, PlayerBattleActions, PlayerEquipmentManager, PlayerItemManager, PlayerProgressionManager, SkillStrategy.
+  - src/game/scenes: TitleScene, BaseOutGameScene, OutGameBossSelectScene, OutGamePlayerDetailScene, OutGameLibraryScene, OutGameChangelogScene, OutGameOptionScene, OutGameExplorationRecordScene, BattleScene, BattleResultScene + components/ + managers/ + utils/.
+  - src/game/systems: AbilitySystem, MemorialSystem, PlayerSaveData (CURRENT_VERSION=7), StatusEffect, StatusEffectTypes, status-effects/ (per-boss effect configs + core-states + battle-effects).
+  - src/game/data: bosses/ (18 files), skills/, documents/ (Markdown), changelogs/, DocumentLoader.ts, ChangelogLoader.ts, PlayerIcons.ts, PlayerItems.ts, index.ts.
+  - src/game/i18n: index.ts, types.ts (SupportedLanguage, BossTranslation), dom.ts, resources/ (ja.ts, en.ts), bosses/ (per-boss translation files + index.ts).
+  - src/game/constants/: ChangelogConstants etc.
+  - src/game/utils: CombatUtils, ModalUtils, ToastUtils, BootstrapMarkdownRenderer, ChangelogMarkdownRenderer.
+  - src/templates: EJS components/ (ability-card, modal-base) and partials/ (25+ files for scenes, modals, panels).
+  - src/styles: main.css and supporting CSS.
   - tests: Vitest tests (e.g., Player.test.ts).
-- Boss loading pattern is data-driven with import.meta.glob (manual registration not required).
+  - scripts: boss-overview.ts (CLI boss stat table via tsx).
+- Bosses currently implemented (18, explorerLevelRequired):
+  - Lv0: swamp-dragon, dark-ghost, mech-spider
+  - Lv1: scorpion-carrier
+  - Lv2: sea-kraken, aqua-serpent, slime-dragon
+  - Lv3: dream-demon (guest)
+  - Lv4: mikan-dragon
+  - Lv5: underground-worm, tongue-dragon
+  - Lv6: clean-master, bat-vampire
+  - Lv7: fluffy-dragon
+  - Lv8: thermal-archiver
+  - Lv9: seraph-mascot, dual-jester
+  - Lv10: demon-dragon

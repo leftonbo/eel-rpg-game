@@ -4,21 +4,24 @@
 
 ## 概要
 
-**🚀 大幅簡素化！（2024年7月更新）**
-
 新しいボスを追加するには、以下のステップが必要です：
 
 1. **ボスデータファイルの作成**（メイン作業）
 2. 必要に応じて新しい状態異常の追加
+3. 必要に応じて多言語対応（i18n 翻訳ファイル）の追加
 
-**Vite glob import**により、ボスファイルを作成するだけで自動的にゲームに反映されます。
+**Vite glob import**により、`src/game/data/bosses/` にボスファイルを作成するだけで自動的にゲームへ反映されます。
+ボス側の表示テキストは `src/game/data/index.ts` の `localizeBossData()` 経由で i18next により翻訳されます。
 
 ## 必要なファイル
 
-- `src/game/data/bosses/{boss-id}.ts` - 新ボスのデータファイル
-- `src/game/status-effects/{boss-id}-effects.ts` - 新しい状態異常がある場合のみ
-- `src/game/systems/StatusEffectTypes.ts` - 新しい状態異常がある場合のみ
-- `src/styles/main.css` - 新しい状態異常がある場合のみ
+- `src/game/data/bosses/{boss-id}.ts` - 新ボスのデータファイル（必須）
+- `src/game/systems/status-effects/{boss-id}-effects.ts` - 新しい状態異常がある場合のみ
+- `src/game/systems/StatusEffectTypes.ts` - 新しい状態異常がある場合のみ（enum 追加）
+- `src/styles/main.css` - 新しい状態異常がある場合のみ（`.status-{type}` クラス）
+- `src/game/i18n/bosses/{boss-id}.ts` - 多言語対応が必要な場合（`BossTranslation` を export）
+- `src/game/i18n/bosses/index.ts` - 上記翻訳ファイルの追加エントリ
+- `docs/bosses/{boss-id}.md` - ボス資料（推奨）
 
 ## ボスデータ構造
 
@@ -315,12 +318,61 @@ newBossData.finishingMove = function() {
 ボスを追加した後、必ず以下のテストを実行してください：
 
 ```bash
-npm run typecheck  # TypeScript型チェック
-npm run test       # Vitest単体テスト
-npm run build      # ビルドテスト
+npm run typecheck     # TypeScript型チェック
+npm run test          # Vitest単体テスト
+npm run lint          # ESLint
+npm run build         # ビルドテスト
+npm run boss-overview # 全ボスの数値バランス確認
 ```
 
-### 3. 新しい状態異常の追加（必要な場合）
+### 3. 多言語対応（推奨）
+
+ボス表示テキストを多言語対応するには、`src/game/i18n/bosses/{boss-id}.ts` を作成し、`BossTranslation`（`ja` / `en`）を定義します。`src/game/data/index.ts` の `localizeBossData()` がボスデータ読込時に自動的に翻訳を適用します。
+
+```typescript
+// src/game/i18n/bosses/new-boss.ts
+import { BossTranslation } from '../types';
+
+export const newBossTranslation: BossTranslation = {
+    ja: {
+        displayName: '新しいボス',
+        description: 'ボスの説明（日本語）',
+        questNote: 'クエストの詳細説明（日本語）',
+        actions: {
+            'basic-attack': {
+                name: '基本攻撃',
+                description: '基本的な攻撃',
+                messages: ['{boss} が {player} に攻撃した！']
+            }
+        },
+        victoryTrophy: {
+            name: 'ボスの外皮',
+            description: '...'
+        },
+        defeatTrophy: {
+            name: 'ボスの体液',
+            description: '...'
+        }
+    },
+    en: {
+        displayName: 'New Boss',
+        description: 'Boss description (English)',
+        questNote: 'Quest note (English)',
+        actions: {
+            'basic-attack': {
+                name: 'Basic Attack',
+                description: 'A basic attack',
+                messages: ['{boss} attacks {player}!']
+            }
+        }
+    }
+};
+```
+
+その後 `src/game/i18n/bosses/index.ts` に追加エントリを登録してください。
+翻訳が未定義のフィールドは `defaultValue` としてボスデータ側の値がそのまま使用されます。
+
+### 4. 新しい状態異常の追加（必要な場合）
 
 #### StatusEffectTypeに追加
 `src/game/systems/StatusEffectTypes.ts` の `StatusEffectType` enumに追加
@@ -341,47 +393,53 @@ npm run build      # ビルドテスト
 - `Doomed` - 再起不能（最大HP0、とどめ攻撃対象）
 
 **ボス固有状態異常**
-- `AphrodisiacPoison` - 媚薬毒（ドリームデーモン）
-- `Drowsiness` - 眠気（ドリームデーモン）
-- `Infatuation` - 恋慕（ドリームデーモン）
-- `Arousal` - 興奮（ドリームデーモン）
-- `Seduction` - 誘惑（ドリームデーモン）
-- `MagicSeal` - 魔法封印（ドリームデーモン）
-- `PleasureFall` - 快楽堕ち（ドリームデーモン）
-- `Lewdness` - 淫乱（ドリームデーモン）
-- `Hypnosis` - 催眠（ドリームデーモン）
-- `Brainwash` - 洗脳（ドリームデーモン）
-- `Sweet` - 甘い（ドリームデーモン）
-- `DreamControl` - 夢操作（ドリームデーモン）
-- `Melting` - 蕩け（ドリームデーモン）
-- `Euphoria` - 多幸感（ドリームデーモン）
-- `Fascination` - 魅惑（ドリームデーモン）
-- `Bliss` - 至福（ドリームデーモン）
-- `Enchantment` - 魔魅（ドリームデーモン）
+- `AphrodisiacPoison` - 媚薬毒（夢の淫魔）
+- `Drowsiness` - 眠気（夢の淫魔）
+- `Infatuation` - 恋慕（夢の淫魔）
+- `Arousal` - 興奮（夢の淫魔）
+- `Seduction` - 誘惑（夢の淫魔）
+- `MagicSeal` - 魔法封印（夢の淫魔）
+- `PleasureFall` - 快楽堕ち（夢の淫魔）
+- `Lewdness` - 淫乱（夢の淫魔）
+- `Hypnosis` - 催眠（夢の淫魔）
+- `Brainwash` - 洗脳（夢の淫魔）
+- `Sweet` - 甘い（夢の淫魔）
+- `DreamControl` - 夢操作（夢の淫魔）
+- `Melting` - 蕩け（夢の淫魔）
+- `Euphoria` - 多幸感（夢の淫魔）
+- `Fascination` - 魅惑（夢の淫魔）
+- `Bliss` - 至福（夢の淫魔）
+- `Enchantment` - 魔魅（夢の淫魔）
 - `VisionImpairment` - 視界阻害（海のクラーケン）
 - `WaterSoaked` - 水濡れ（アクアサーペント）
 - `Dizzy` - 目眩（アクアサーペント）
 - `Soapy` - 泡まみれ（クリーンマスター）
 - `Spinning` - 回転（クリーンマスター）
 - `Steamy` - 湯気まみれ（クリーンマスター）
-- `Lethargy` - 倦怠感（みかんドラゴン）
-- `ScorpionPoison` - サソリ毒（スコーピオンキャリア）
-- `Anesthesia` - 麻酔（スコーピオンキャリア）
-- `Weakening` - 弱体化（スコーピオンキャリア）
+- `Lethargy` - 倦怠感（蜜柑ドラゴン）
+- `ScorpionPoison` - サソリ毒（運び屋のサソリ）
+- `Anesthesia` - 麻酔（運び屋のサソリ）
+- `Weakening` - 弱体化（運び屋のサソリ）
 - `Fear` - 恐怖（闇のおばけ）
 - `Oblivion` - 忘却（闇のおばけ）
 - `Petrified` - 石化（地底のワーム）
 - `Darkness` - 暗闇（蝙蝠のヴァンパイア）
 - `Sleepy` - 眠気（ふわふわドラゴン）
-- `Blessed` - 祝福（セラフマスコット）
-- `HolySlimed` - 聖なるスライム（セラフマスコット）
-- `Overwhelmed` - 圧倒（セラフマスコット）
-- `SalvationState` - 救済状態（セラフマスコット）
+- `Blessed` - 祝福（セラフィムマスコット）
+- `HolySlimed` - 聖なるスライム（セラフィムマスコット）
+- `Overwhelmed` - 圧倒（セラフィムマスコット）
+- `SalvationState` - 救済状態（セラフィムマスコット）
 - `FalseSecurity` - 偽の安心（双面の道化師）
 - `Manic` - 躁状態（双面の道化師）
 - `Bipolar` - 双極性（双面の道化師）
 - `Plushified` - ぬいぐるみ化（双面の道化師）
 - `DemonStomach` - 魔界の胃袋（魔界の竜）
+- `SlimeCoated` - スライム付着（スライムドラゴン）
+- `SlimeEgg` - スライム卵化（スライムドラゴン）
+- `TongueMucus` - 舌の粘液（舌のドラゴン）
+
+#### ボス固有状態異常の実装ファイル追加
+`src/game/systems/status-effects/{boss-id}-effects.ts` を作成し、`StatusEffectConfig` を定義して `src/game/systems/status-effects/index.ts` から登録します。`onApply` / `onTick` / `onRemove` と `modifiers`（攻撃力倍率、命中率、行動可否など）を必要に応じて実装してください。
 
 #### CSS クラスの追加
 `src/styles/main.css` に `.status-{type}` クラスを追加
@@ -589,57 +647,61 @@ export const bossData: BossData = {
 
 現在のボス設定を基にした推奨値：
 
-- **初級ボス**: HP 250-450, 攻撃力 12-18
-- **中級ボス**: HP 580-800, 攻撃力 13-20
-- **上級ボス**: HP 970-2600, 攻撃力 12-20
+- **初級ボス**: HP 250-450, 攻撃力 10-24
+- **中級ボス**: HP 550-800, 攻撃力 13-22
+- **上級ボス**: HP 970-2600, 攻撃力 20-32
+
+> 備考: `npm run boss-overview` で最新のステータス一覧を CLI 表示できます。
 
 ### 既存ボスとの比較
 
-**現在実装済みのボス16体**
+**現在実装済みのボス18体**
 
-#### 基本エリア (explorerLevelRequired: 0)
-- 沼のドラゴン: HP 400, 攻撃力 18 (高火力タイプ)
-- 闇のおばけ: HP 250, 攻撃力 12 (状態異常タイプ)
-- 機械のクモ: HP 300, 攻撃力 15 (拘束タイプ)
+#### 初期エリア (explorerLevelRequired: 0)
+- 沼のドラゴン: HP 400, 攻撃力 24 (高火力・ドラゴンタイプ)
+- 闇のおばけ: HP 250, 攻撃力 18 (状態異常・精神タイプ)
+- 機械のクモ: HP 300, 攻撃力 12 (拘束・繭タイプ)
 
 #### 砂漠エリア (explorerLevelRequired: 1)
-- 運び屋のサソリ: HP 580, 攻撃力 14 (毒+麻痺タイプ)
+- 運び屋のサソリ: HP 580, 攻撃力 22 (毒+麻痺+運搬タイプ)
 
 #### 海エリア (explorerLevelRequired: 2)
-- 海のクラーケン: HP 640, 攻撃力 15 (拘束+吸収タイプ)
+- 海のクラーケン: HP 640, 攻撃力 16 (拘束+吸収タイプ)
 - アクアサーペント: HP 750, 攻撃力 20 (水属性+体内攻撃タイプ)
+- スライムドラゴン: HP 550, 攻撃力 14 (スライム+卵化タイプ)
 
 #### ゲストキャラエリア (explorerLevelRequired: 3)
-- 夢の淫魔: HP 320, 攻撃力 13 (夢+特殊状態異常タイプ)
+- 夢の淫魔: HP 320, 攻撃力 10 (夢+特殊状態異常タイプ)
 
 #### ジャングルエリア (explorerLevelRequired: 4)
-- 蜜柑ドラゴン: HP 450, 攻撃力 17 (果物+睡眠タイプ)
+- 蜜柑ドラゴン: HP 450, 攻撃力 18 (果物+睡眠タイプ)
 
-#### 地下世界エリア (explorerLevelRequired: 5)
-- 地底のワーム: HP 800, 攻撃力 12 (地下型拘束タイプ)
+#### 洞窟・地下世界エリア (explorerLevelRequired: 5)
+- 地底のワーム: HP 800, 攻撃力 13 (地下型拘束+石化タイプ)
+- 舌のドラゴン: HP 680, 攻撃力 16 (舌拘束+粘液タイプ)
 
-#### 遺跡エリア (explorerLevelRequired: 6)
+#### 遺跡・古城エリア (explorerLevelRequired: 6)
 - クリーンマスター: HP 720, 攻撃力 16 (清掃+状態異常タイプ)
-- 蝙蝠のヴァンパイア: HP 640, 攻撃力 14 (拘束+魅了+生気吸収タイプ)
+- 蝙蝠のヴァンパイア: HP 640, 攻撃力 30 (拘束+魅了+生気吸収タイプ)
 
 #### 氷河エリア (explorerLevelRequired: 7)
-- ふわふわドラゴン: HP 600, 攻撃力 12 (ふわふわ+睡眠タイプ)
+- ふわふわドラゴン: HP 600, 攻撃力 14 (ふわふわ+睡眠タイプ)
 
 #### 工業エリア (explorerLevelRequired: 8)
-- サーマル・アーカイバー: HP 580, 攻撃力 14 (自動保管システム)
+- サーマル・アーカイバー: HP 580, 攻撃力 17 (自動標本保管システム)
 
 #### 天使エリア (explorerLevelRequired: 9)
-- セラフィムマスコット: HP 1200, 攻撃力 16 (巨大天使マスコット)
-- 双面の道化師: HP 970, 攻撃力 15 (二面性道化師)
+- セラフィムマスコット: HP 1200, 攻撃力 32 (巨大天使マスコット)
+- 双面の道化師: HP 970, 攻撃力 20 (二面性道化師)
 
 #### 魔界エリア (explorerLevelRequired: 10)
-- 魔界の竜: HP 2600, 攻撃力 20 (最高難易度ボス)
+- 魔界の竜: HP 2600, 攻撃力 22 (最高難易度ボス)
 
 **バランス設計指針**
 - HP 250-450: 初級〜中級ボス（基本システム習得用）
-- HP 580-800: 上級ボス（各種状態異常・特殊システム）
+- HP 550-800: 上級ボス（各種状態異常・特殊システム）
 - HP 970-2600: 最高級ボス（高難易度・複合システム）
-- 攻撃力は特殊能力の強さに反比例させる
+- 攻撃力は特殊能力の強さに反比例させる（ギミック特化のボスは低め、直接火力型は高め）
 
 ## エクスプローラーアビリティとボス解禁システム
 
@@ -675,13 +737,13 @@ explorerLevelRequired: 8-10
 - **レベル1 - 砂漠**
   - 運び屋のサソリ
 - **レベル2 - 海**
-  - 海のクラーケン、アクアサーペント
+  - 海のクラーケン、アクアサーペント、スライムドラゴン
 - **レベル3 - ゲストキャラクター関係**
   - 夢の淫魔
 - **レベル4 - ジャングル**
   - 蜜柑ドラゴン
 - **レベル5 - 洞窟・地下世界**
-  - 地底のワーム
+  - 地底のワーム、舌のドラゴン
 - **レベル6 - 遺跡・廃墟・古城**
   - クリーンマスター、蝙蝠のヴァンパイア
 - **レベル7 - 氷河・雪山**
@@ -758,27 +820,36 @@ defeatTrophy: {
 - `vite.config.ts` - Viteビルド設定、EJSプラグイン統合
 - `vitest.config.ts` - Vitestテスト設定
 
-### 古い実装（参考用）
+### 初期実装（シンプル・参考用）
 - `src/game/data/bosses/swamp-dragon.ts` - 複雑なAI戦略の例
 - `src/game/data/bosses/dark-ghost.ts` - 状態異常特化の例
-- `src/game/data/bosses/mech-spider.ts` - 拘束特化の例
+- `src/game/data/bosses/mech-spider.ts` - 拘束・繭システムの例
 
-### 新しい実装（推奨）
-- `src/game/data/bosses/sea-kraken.ts` - 現代的なAI戦略、PostDefeatedAttack、finishingMove、getDialogue の例
-- `src/game/data/bosses/aqua-serpent.ts` - customVariablesでの特殊技管理、onUse コールバックの例
+### 近代的な実装（推奨）
+- `src/game/data/bosses/sea-kraken.ts` - 現代的なAI戦略、PostDefeatedAttack、finishingMove の例
+- `src/game/data/bosses/aqua-serpent.ts` - customVariables での特殊技管理、onUse コールバックの例
 - `src/game/data/bosses/clean-master.ts` - 新しい状態異常システムの例
 - `src/game/data/bosses/dream-demon.ts` - 多様な状態異常と複雑な行動パターンの例
-- `src/game/data/bosses/bat-vampire.ts` - FinishingMoveアクション、給餌システム、詳細なAI戦略の例
-- `src/game/data/bosses/underground-worm.ts` - 最新のEJSテンプレート対応、記念品システムの例
-- `src/game/data/bosses/mikan-dragon.ts` - 新しい状態異常とシンプルなAI戦略の例
-- `src/game/data/bosses/seraph-mascot.ts` - 高HPボスのバランス例
-- `src/game/data/bosses/dual-jester.ts` - 二面性ボスの実装例
-- `src/game/data/bosses/demon-dragon.ts` - 最高難易度ボスの設計例
+- `src/game/data/bosses/bat-vampire.ts` - FinishingMove アクション、給餌システム、詳細な AI 戦略の例
+- `src/game/data/bosses/underground-worm.ts` - 最新の EJS テンプレート対応、記念品システムの例
+- `src/game/data/bosses/mikan-dragon.ts` - 新しい状態異常とシンプルな AI 戦略の例
+- `src/game/data/bosses/seraph-mascot.ts` - 高 HP ボスのバランス例、`suppressAutoFinishingMove` によるカスタムとどめ処理
+- `src/game/data/bosses/dual-jester.ts` - 二面性ボスの実装例、フェーズ切替（`dualJesterPhase1Actions` 等）
+- `src/game/data/bosses/demon-dragon.ts` - 最高難易度ボスの設計例、敗北後 8 ターン毎イベントの実装
+- `src/game/data/bosses/slime-dragon.ts` - スライム卵化による `FinishingMove` 処理、`suppressAutoFinishingMove` の実例
+- `src/game/data/bosses/tongue-dragon.ts` - `PostDefeatedAttack` + `FinishingMove` 両方を使う設計例
+- `src/game/data/bosses/thermal-archiver.ts` - 機械系ボスの標本保管ギミック、非戦闘的 AI 戦略の例
 
 ### システムファイル
-- `src/game/entities/Boss.ts` - ボスクラスの実装
-- `src/game/systems/StatusEffectTypes.ts` - 状態異常システム
-- `src/game/data/index.ts` - データエクスポートパターン
+- `src/game/entities/Boss.ts` - ボスクラス・`BossData` / `BossAction` / `TrophyData` の実装
+- `src/game/entities/Actor.ts` - 基底クラス（Player / Boss 共通）
+- `src/game/systems/StatusEffect.ts` - 状態異常マネージャ
+- `src/game/systems/StatusEffectTypes.ts` - 状態異常型定義（`StatusEffectType` enum、`StatusEffectConfig` 等）
+- `src/game/systems/status-effects/` - 各ボス固有の状態異常設定（`{boss-id}-effects.ts`）
+- `src/game/scenes/components/BattleMessageComponent.ts` - `MessageData` 型定義
+- `src/game/data/index.ts` - glob import と `localizeBossData()` による i18n 適用
+- `src/game/i18n/bosses/` - ボス別翻訳ファイル（`BossTranslation`）
+- `scripts/boss-overview.ts` - `npm run boss-overview` でボス一覧を表形式出力
 
 ## よくある問題と対処法
 

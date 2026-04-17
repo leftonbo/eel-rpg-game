@@ -1,16 +1,19 @@
-- Install deps: npm install
-- Dev server: npm run dev
-- Type check: npm run typecheck
-- Tests: npm run test
+- Install deps: npm install (requires Node.js >= 22)
+- Dev server: npm run dev (localhost:3000, HMR)
+- Type check: npm run typecheck (tsc --noEmit)
+- Tests: npm run test (Vitest)
 - Test watch: npm run test:watch
-- Lint: npm run lint
+- Lint: npm run lint (ESLint on src/)
 - Build: npm run build
-- Build with analyze: npm run build:analyze
+- Build with bundle analysis: npm run build:analyze
 - Clean dist: npm run clean
-- Typical verification after edits: npm run typecheck && npm run test && npm run build (plus lint when needed).
-- Useful shell/git commands (Windows):
-  - List files: dir or Get-ChildItem
-  - Change dir: cd or Set-Location
-  - Search text: Select-String
-  - Recursive file search: Get-ChildItem -Recurse -File | Select-String "pattern"
-  - Git basics: git status, git diff, git add, git commit, git push
+- Preview built output: npm run preview
+- Boss stats overview (CLI table): npm run boss-overview (tsx scripts/boss-overview.ts)
+- Typical verification after edits: npm run typecheck && npm run test && npm run build (plus npm run lint when needed, and npm run boss-overview when touching boss stats).
+- Host environment is Linux / WSL2; useful shell commands:
+  - List files: ls, ls -la
+  - Change dir: cd
+  - Search text: rg "pattern" (ripgrep preferred over grep)
+  - Find files: rg --files -g "*.ts" or fd/find
+  - Git basics: git status, git diff, git add, git commit, git push, git log --oneline
+- Git/PR conventions: commit messages in Japanese with gitmoji (see docs/rules/git-commit.md); PR title/body in Japanese (see docs/rules/pull-request.md). Branch naming: feature/, bugfix/, refactor/, docs/.

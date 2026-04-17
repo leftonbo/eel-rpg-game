@@ -1,5 +1,13 @@
-- Browser-based RPG game in TypeScript where player selects bosses and fights turn-based battles.
-- Main flow/state: Title -> BossSelect -> Battle.
-- Core domains: entities (Player/Boss), scenes (UI + flow), systems (status effects, abilities, memorial/save), data-driven bosses/documents.
-- UI stack uses Bootstrap 5 with EJS templates that generate HTML at build time (avoid manual HTML edits).
-- Repository: eel-rpg-game, branch convention includes feature/bugfix/refactor/docs.
+- Browser-based RPG game in TypeScript where the player (Elnal the eel) selects bosses and fights turn-based battles.
+- Main game state flow: Title -> OutGame (boss select / player detail / library / changelog / options / exploration record) -> Battle -> BattleResult.
+- Core domains:
+  - entities: Actor (base), Player, Boss, Player-side managers (Equipment/Item/BattleActions/Progression), SkillStrategy.
+  - scenes: Title/OutGame*/Battle/BattleResult scenes plus reusable components (BattleMessage, BossModal, EquipmentSelector, SkillDisplay, TrophyDisplay).
+  - systems: AbilitySystem, MemorialSystem, PlayerSaveData (v7), StatusEffect/StatusEffectTypes and per-boss status-effect configs under systems/status-effects/.
+  - data: bosses (18 files, auto-loaded), skills, documents (Markdown + gray-matter), changelogs, PlayerIcons/PlayerItems, DocumentLoader, ChangelogLoader, index.ts with localizeBossData.
+  - i18n: i18next-based Japanese/English support with per-boss translation files under i18n/bosses/.
+  - utils: CombatUtils, ModalUtils, ToastUtils, BootstrapMarkdownRenderer, ChangelogMarkdownRenderer.
+- UI stack uses Bootstrap 5.3 with EJS templates that generate HTML at build time (avoid manual HTML edits).
+- Repository: eel-rpg-game, default branch main, branch naming: feature/bugfix/refactor/docs.
+- Commit style: Japanese + gitmoji (see docs/rules/git-commit.md). PR template in docs/rules/pull-request.md.
+- Documentation hub: AGENTS.md (agent guide), docs/boss-creation-guide.md (boss authoring), docs/bosses/ (per-boss notes).
