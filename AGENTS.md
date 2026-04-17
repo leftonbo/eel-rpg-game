@@ -19,7 +19,9 @@ use context 7
 - **ESLint 9.31**: コード品質チェック
 - **Bootstrap 5.3**: UI フレームワーク
 - **EJS**: テンプレートエンジン（Vite プラグイン統合）
-- **npm**: パッケージマネージャ
+- **i18next**: 多言語対応（日本語・英語、ボスデータ・UI テキストを翻訳）
+- **marked / gray-matter**: Markdown 解析（ドキュメント・チェンジログ用）
+- **npm**: パッケージマネージャ（Node.js 22+ 必須）
 
 ## 開発コマンド
 
@@ -33,6 +35,7 @@ use context 7
 - `npm run clean` - dist ディレクトリクリーンアップ
 - `npm run test` - Vitest 単体テスト
 - `npm run test:watch` - Vitest 監視モード
+- `npm run boss-overview` - 全ボスのステータス一覧を表形式で出力（`scripts/boss-overview.ts`）
 
 ### 開発フロー
 
@@ -66,6 +69,7 @@ use context 7
 - **BossData interface**: HP、攻撃力、行動パターン、AI 戦略を定義
 - **AIStrategy function**: ボス固有の戦術（沼のドラゴン＝高火力、闇のおばけ＝状態異常、機械のクモ＝拘束特化）
 - **Vite glob import**: `import.meta.glob('./bosses/*.ts')` による自動ボス検出（手動登録不要）
+- **i18n 連携**: `src/game/data/index.ts` の `localizeBossData()` がボスデータを `i18next` で翻訳、表示時に `displayName` / `description` / `actions` / メッセージ類を自動ローカライズ
 - **EJS テンプレートシステム**: 自動 HTML 生成、手動編集不要
 
 ### 特殊システム
@@ -88,10 +92,11 @@ use context 7
 
 1. `src/game/data/bosses/{boss-id}.ts` でボスデータ作成
 2. EJS テンプレートシステムで HTML 自動生成（手動 HTML 編集は不要）
-3. 必要に応じて新しい状態異常を `StatusEffectTypes` に追加
+3. 必要に応じて新しい状態異常を `StatusEffectTypes` に追加し、`src/game/systems/status-effects/{boss-id}-effects.ts` で設定を実装
 4. エクスプローラーレベル設定（`explorerLevelRequired`）でボス解禁制御
 5. 記念品システム（`victoryTrophy` / `defeatTrophy`）の設定
-6. テスト実行で動作確認
+6. 多言語対応が必要な場合は `src/game/i18n/bosses/{boss-id}.ts` で `BossTranslation`（`ja` / `en`）を定義
+7. テスト実行で動作確認
 
 ### 状態異常追加
 
@@ -105,7 +110,7 @@ use context 7
 - **PlayerSaveData interface**: アビリティ、装備、戦闘記録を含むプレイヤー進行状態
 - **PlayerSaveManager**: localStorage 操作、データマイグレーション、バリデーション機能を提供
 - 保存データ: `localStorage['eelfood_player_data']` に JSON で格納
-- バージョン管理: 現在 v4、自動マイグレーション機能付き
+- バージョン管理: 現在 v7、自動マイグレーション機能付き
 
 #### セーブデータ構造
 
@@ -180,7 +185,7 @@ requiredBossLosses: ["boss-id3"]
 
 - **id**: ドキュメントの一意識別子（ファイル名と一致させる）
 - **title**: ゲーム内表示タイトル（絵文字推奨）
-- **type**: ドキュメント分類（`diary` = 日記、`reflection` = 振り返り、`guide` = 攻略、`lore` = 世界観）
+- **type**: ドキュメント分類（`diary` = 日記、`reflection` = 振り返り、`strategy` = 攻略、`default` = その他・世界観）
 - **requiredExplorerLevel**: 表示に必要なエクスプローラーレベル
 - **requiredBossDefeats**: 表示に必要なボス撃破条件（配列）
 - **requiredBossLosses**: 表示に必要なボス敗北条件（配列）
@@ -194,20 +199,22 @@ requiredBossLosses: ["boss-id3"]
 
 ## ゲームバランス
 
-- `Player.ts`: `maxHp=100`, `baseAttackPower=10`
+- `PlayerConstants.ts`: `BASE_MAX_HP=100`, `BASE_MAX_MP=50`, `BASE_ATTACK_POWER=10`
 - 状態異常ダメージ: 火だるま = 8, 毒 = 3（毎ターン）
 - アビリティ: 6 種類（Combat, Toughness, Endurance, Agility, CraftWork, Explorer）
 - 装備: 武器 4 段階（素手 → ナイフ → 剣 → 大剣）、防具 4 段階（裸 → 服 → 軽装甲 → 重装甲）
-- 現在のボス（16 体）:
-  - 基本エリア: 沼のドラゴン (HP400), 闇のおばけ (HP250), 機械のクモ (HP300)
-  - 砂漠: スコーピオンキャリア (HP450)
-  - 海: 海のクラーケン (HP720), アクアサーペント (HP750)
-  - ゲスト: ドリームデーモン (HP320)
-  - ジャングル: みかんドラゴン (HP640)
-  - 遺跡: クリーンマスター (HP580), 蝙蝠のヴァンパイア (HP640), 地下のワーム (HP800), サーマル・アーカイバー (HP580)
-  - 天使エリア: ふわふわドラゴン (HP600), セラフマスコット (HP1200)
-  - 双頭道化師: デュアルジェスター (HP970)
-  - 魔界エリア: 魔界の竜 (HP2600)
+- 現在のボス（18 体、`explorerLevelRequired` 別）:
+  - Lv0 初期エリア: 沼のドラゴン (HP400/ATK24), 闇のおばけ (HP250/ATK18), 機械のクモ (HP300/ATK12)
+  - Lv1 砂漠: 運び屋のサソリ (HP580/ATK22)
+  - Lv2 海: 海のクラーケン (HP640/ATK16), アクアサーペント (HP750/ATK20), スライムドラゴン (HP550/ATK14)
+  - Lv3 ゲストキャラ: 夢の淫魔 (HP320/ATK10)
+  - Lv4 ジャングル: 蜜柑ドラゴン (HP450/ATK18)
+  - Lv5 洞窟・地下世界: 地底のワーム (HP800/ATK13), 舌のドラゴン (HP680/ATK16)
+  - Lv6 遺跡・古城: クリーンマスター (HP720/ATK16), 蝙蝠のヴァンパイア (HP640/ATK30)
+  - Lv7 氷河: ふわふわドラゴン (HP600/ATK14)
+  - Lv8 工業: サーマル・アーカイバー (HP580/ATK17)
+  - Lv9 天使界: セラフィムマスコット (HP1200/ATK32), 双面の道化師 (HP970/ATK20)
+  - Lv10 魔界: 魔界の竜 (HP2600/ATK22)
 
 ## UI 実装方針
 
