@@ -80,37 +80,6 @@
 - **パッケージマネージャー**: npm
 - **Node.js**: 22.0.0+
 
-## プロジェクト構造
-
-```text
-eel-rpg-game/
-├── index.html          # メインHTML
-├── src/
-│   ├── main.ts             # エントリーポイント
-│   ├── public/             # 静的ファイル
-│   ├── game/               # ゲームロジック
-│   │   ├── Game.ts         # ゲームメインクラス
-│   │   ├── systems/        # ゲームシステム
-│   │   ├── scenes/         # ゲームシーン
-│   │   ├── entities/       # ゲームエンティティ
-│   │   ├── data/           # ゲームデータ
-│   │   │   ├── bosses/              # ボスデータ（16体・glob import対応）
-│   │   │   ├── documents/           # ストーリードキュメント
-│   │   │   ├── skills/              # スキルシステム
-│   │   ├── types/          # 型定義
-│   │   └── utils/          # ユーティリティ
-│   │       ├── BootstrapMarkdownRenderer.ts # Markdownレンダラー
-│   │       ├── CombatUtils.ts       # 戦闘計算ユーティリティ
-│   │       └── ModalUtils.ts        # モーダル・トースト表示
-│   ├── templates/          # EJSテンプレート（HTML自動生成）
-│   │   ├── components/              # 再利用コンポーネント
-│   │   └── partials/                # パーシャルテンプレート
-│   ├── styles/             # スタイルシート
-│   └── vite-env.d.ts       # Vite型定義
-├── docs/                   # ドキュメント
-└── README.md               # このファイル
-```
-
 ## 📖 ドキュメント
 
 - **[ボス作成ガイド](docs/boss-creation-guide.md)** - 新ボス追加のための詳細ガイド
