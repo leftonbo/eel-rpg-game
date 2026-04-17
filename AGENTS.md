@@ -85,18 +85,7 @@ use context 7
 
 ### 新ボス追加
 
-新ボスの追加方法については、[包括的なボス追加ガイド](docs/boss-creation-guide.md)を参照してください。
-既存ボスの詳細な資料については、[ボス資料集](docs/bosses/README.md)を参照してください。
-
-概要：
-
-1. `src/game/data/bosses/{boss-id}.ts` でボスデータ作成
-2. EJS テンプレートシステムで HTML 自動生成（手動 HTML 編集は不要）
-3. 必要に応じて新しい状態異常を `StatusEffectTypes` に追加し、`src/game/systems/status-effects/{boss-id}-effects.ts` で設定を実装
-4. エクスプローラーレベル設定（`explorerLevelRequired`）でボス解禁制御
-5. 記念品システム（`victoryTrophy` / `defeatTrophy`）の設定
-6. 多言語対応が必要な場合は `src/game/i18n/bosses/{boss-id}.ts` で `BossTranslation`（`ja` / `en`）を定義
-7. テスト実行で動作確認
+新ボスの追加作業は `adding-boss` Skill（`.cursor/skills/adding-boss/SKILL.md`）に従うこと。Skill が作業フロー・ファイル配置・参考ボス対応表・品質チェックをまとめている。詳細な実装仕様は [包括的なボス追加ガイド](docs/boss-creation-guide.md)、既存ボス資料は [ボス資料集](docs/bosses/README.md) を参照。
 
 ### 状態異常追加
 
