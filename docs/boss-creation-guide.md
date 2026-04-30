@@ -273,7 +273,7 @@ export const newBossData: BossData = {
     id: 'new-boss',
     name: 'NewBoss',
     displayName: '新しいボス',
-    description: 'ボスの説明',
+    description: 'ボスの説明を1文で記述',
     questNote: 'クエストの詳細説明...',
     maxHp: 300,
     attackPower: 15,
@@ -336,7 +336,7 @@ import { BossTranslation } from '../types';
 export const newBossTranslation: BossTranslation = {
     ja: {
         displayName: '新しいボス',
-        description: 'ボスの説明（日本語）',
+        description: 'ボスの説明を1文で記述（日本語）',
         questNote: 'クエストの詳細説明（日本語）',
         actions: {
             'basic-attack': {
