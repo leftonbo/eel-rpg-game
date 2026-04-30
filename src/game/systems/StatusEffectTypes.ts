@@ -124,7 +124,7 @@ export enum StatusEffectType {
 
     // Otherworld Centipede effects
     CentipedeSlime = 'centipede-slime',   // ネバネバ（拘束脱出力大幅低下）
-    CentipedePoison = 'centipede-poison'  // ムカデ毒（弱い継続ダメージ、蓄積で魅了化）
+    CentipedePoison = 'centipede-poison'  // ムカデ毒（弱い継続ダメージ）
 }
 
 export interface StatusEffect {
