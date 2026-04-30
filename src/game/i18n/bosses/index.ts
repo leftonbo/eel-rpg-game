@@ -14,6 +14,7 @@ import { seraphMascotTranslations } from './seraph-mascot';
 import { swampDragonTranslations } from './swamp-dragon';
 import { thermalArchiverTranslations } from './thermal-archiver';
 import { undergroundWormTranslations } from './underground-worm';
+import { otherworldCentipedeTranslations } from './otherworld-centipede';
 
 export const bossTranslations = {
     ja: {
@@ -32,7 +33,8 @@ export const bossTranslations = {
         'seraph-mascot': seraphMascotTranslations.ja,
         'swamp-dragon': swampDragonTranslations.ja,
         'thermal-archiver': thermalArchiverTranslations.ja,
-        'underground-worm': undergroundWormTranslations.ja
+        'underground-worm': undergroundWormTranslations.ja,
+        'otherworld-centipede': otherworldCentipedeTranslations.ja
     },
     en: {
         'aqua-serpent': aquaSerpentTranslations.en,
@@ -50,6 +52,7 @@ export const bossTranslations = {
         'seraph-mascot': seraphMascotTranslations.en,
         'swamp-dragon': swampDragonTranslations.en,
         'thermal-archiver': thermalArchiverTranslations.en,
-        'underground-worm': undergroundWormTranslations.en
+        'underground-worm': undergroundWormTranslations.en,
+        'otherworld-centipede': otherworldCentipedeTranslations.en
     }
 };

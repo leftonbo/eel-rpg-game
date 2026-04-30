@@ -120,7 +120,11 @@ export enum StatusEffectType {
     SlimeEgg = 'slime-egg',
     
     // Tongue Dragon effects
-    TongueMucus = 'tongue-mucus'
+    TongueMucus = 'tongue-mucus',
+
+    // Otherworld Centipede effects
+    CentipedeSlime = 'centipede-slime',   // ネバネバ（拘束脱出力大幅低下）
+    CentipedePoison = 'centipede-poison'  // ムカデ毒（弱い継続ダメージ、蓄積で魅了化）
 }
 
 export interface StatusEffect {
