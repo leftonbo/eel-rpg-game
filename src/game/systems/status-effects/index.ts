@@ -17,6 +17,7 @@ import { undergroundWormEffectsConfigs } from './underground-worm-effects';
 import { slimeDragonEffectsConfigs } from './slime-dragon-effects';
 import { tongueDragonEffectsConfigs } from './tongue-dragon-effects';
 import { yumewataMellowEffectsConfigs } from './yumewata-mellow-effects';
+import { otherworldCentipedeEffectsConfigs } from './otherworld-centipede-effects';
 
 // Aggregate all status effect configurations
 export const createStatusEffectConfigs = (): Map<StatusEffectType, StatusEffectConfig> => {
@@ -109,6 +110,11 @@ export const createStatusEffectConfigs = (): Map<StatusEffectType, StatusEffectC
 
     // Add yumewata mellow effects
     yumewataMellowEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add otherworld centipede effects
+    otherworldCentipedeEffectsConfigs.forEach(config => {
         allConfigs.set(config.type, config);
     });
 

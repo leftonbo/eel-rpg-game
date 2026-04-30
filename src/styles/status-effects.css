@@ -1078,3 +1078,39 @@
         box-shadow: 0 0 15px rgba(100, 220, 255, 0.8);
     }
 }
+/* Otherworld Centipede effects */
+.status-centipede-slime {
+    background: rgba(120, 200, 60, 0.4);
+    border-color: #78c83c;
+    color: #d4f090;
+    animation: centipede-slime-pulse 2s ease-in-out infinite alternate;
+}
+
+.status-centipede-poison {
+    background: rgba(100, 30, 140, 0.45);
+    border-color: #641e8c;
+    color: #d8aaff;
+    animation: centipede-poison-seep 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes centipede-slime-pulse {
+    from {
+        box-shadow: 0 0 5px rgba(120, 200, 60, 0.4);
+        opacity: 0.85;
+    }
+    to {
+        box-shadow: 0 0 13px rgba(120, 200, 60, 0.75);
+        opacity: 1;
+    }
+}
+
+@keyframes centipede-poison-seep {
+    from {
+        box-shadow: 0 0 5px rgba(100, 30, 140, 0.4);
+        opacity: 0.8;
+    }
+    to {
+        box-shadow: 0 0 14px rgba(100, 30, 140, 0.75);
+        opacity: 1;
+    }
+}
