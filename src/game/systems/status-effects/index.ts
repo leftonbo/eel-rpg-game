@@ -16,6 +16,7 @@ import { darkGhostEffectsConfigs } from './dark-ghost-effects';
 import { undergroundWormEffectsConfigs } from './underground-worm-effects';
 import { slimeDragonEffectsConfigs } from './slime-dragon-effects';
 import { tongueDragonEffectsConfigs } from './tongue-dragon-effects';
+import { otherworldCentipedeEffectsConfigs } from './otherworld-centipede-effects';
 
 // Aggregate all status effect configurations
 export const createStatusEffectConfigs = (): Map<StatusEffectType, StatusEffectConfig> => {
@@ -103,6 +104,11 @@ export const createStatusEffectConfigs = (): Map<StatusEffectType, StatusEffectC
 
     // Add tongue dragon effects
     tongueDragonEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add otherworld centipede effects
+    otherworldCentipedeEffectsConfigs.forEach(config => {
         allConfigs.set(config.type, config);
     });
 
