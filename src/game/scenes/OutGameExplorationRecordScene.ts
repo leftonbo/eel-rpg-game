@@ -2,6 +2,7 @@ import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
 import { AbilityType, AbilitySystem, AbilityData } from '../systems/AbilitySystem';
 import { getAllBossData } from '../data';
+import type { BossData } from '../entities/Boss';
 import { MemorialSystem } from '../systems/MemorialSystem';
 import { TrophyDisplayComponent } from './components/TrophyDisplayComponent';
 import { Player } from '../entities/Player';
@@ -17,6 +18,13 @@ interface GameProgressionData {
     currentScore: number;
     maxScore: number;
     ratio: number;
+}
+
+export function countUnlockedBosses(
+    bosses: Pick<BossData, 'explorerLevelRequired'>[],
+    explorerLevel: number
+): number {
+    return bosses.filter(boss => (boss.explorerLevelRequired || 0) <= explorerLevel).length;
 }
 
 export class OutGameExplorationRecordScene extends BaseOutGameScene {
@@ -72,9 +80,7 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
         
         // 統計情報
         const allBossData = getAllBossData();
-        const unlockedCount = allBossData.filter(boss => 
-            boss.explorerLevelRequired || 0 <= player.getExplorerLevel()
-        ).length;
+        const unlockedCount = countUnlockedBosses(allBossData, player.getExplorerLevel());
         this.updateElement('unlocked-bosses-count', unlockedCount.toString());
         this.updateElement('unlockable-bosses-count', allBossData.length.toString());
         
