@@ -120,7 +120,14 @@ export enum StatusEffectType {
     SlimeEgg = 'slime-egg',
     
     // Tongue Dragon effects
-    TongueMucus = 'tongue-mucus'
+    TongueMucus = 'tongue-mucus',
+    
+    // Yumewata Mellow effects
+    CozyScent = 'cozy-scent',
+    MuzzleMelt = 'muzzle-melt',
+    SensoryOverload = 'sensory-overload',
+    RibbonNest = 'ribbon-nest',
+    KinshipDrift = 'kinship-drift'
 }
 
 export interface StatusEffect {

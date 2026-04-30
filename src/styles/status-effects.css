@@ -425,6 +425,43 @@
     animation: shrink-pulse 1.5s ease-in-out infinite alternate;
 }
 
+/* Yumewata Mellow status effects */
+.status-cozy-scent {
+    background: linear-gradient(45deg, rgba(255, 196, 128, 0.65), rgba(255, 240, 180, 0.65));
+    border-color: #ffc66d;
+    color: #fff8e6;
+    animation: sweet-glow 2s ease-in-out infinite alternate;
+}
+
+.status-muzzle-melt {
+    background: linear-gradient(45deg, rgba(255, 126, 182, 0.6), rgba(255, 210, 235, 0.75));
+    border-color: #ff7eb6;
+    color: #fff0f8;
+    animation: melting-flow 2.5s ease-in-out infinite alternate;
+}
+
+.status-sensory-overload {
+    background: linear-gradient(45deg, rgba(70, 190, 210, 0.55), rgba(255, 184, 108, 0.55), rgba(180, 120, 255, 0.55));
+    background-size: 300% 300%;
+    border-color: #8ee6f0;
+    color: #f7fdff;
+    animation: bipolarShift 3s ease-in-out infinite;
+}
+
+.status-ribbon-nest {
+    background: linear-gradient(45deg, rgba(255, 150, 190, 0.7), rgba(146, 220, 190, 0.7));
+    border-color: #ff96be;
+    color: #fff7fb;
+    animation: plushified-bounce 2.5s ease-in-out infinite;
+}
+
+.status-kinship-drift {
+    background: linear-gradient(45deg, rgba(160, 230, 210, 0.7), rgba(245, 215, 130, 0.7));
+    border-color: #9ee6cf;
+    color: #fffdf0;
+    animation: fascination-pull 2s ease-in-out infinite alternate;
+}
+
 /* Basic Animations */
 @keyframes pulse {
     from {
