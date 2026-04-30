@@ -79,7 +79,7 @@ const otherworldCentipedeActions: BossAction[] = [
         messages: [
             '{boss}が別の装置を取り出した！',
             '小さな毒弾が{player}に向けて放たれた！',
-            '「ムカデの毒は致死性はないが……じわじわと浸かるのだ」'
+            '「ムカデの毒はじわじわと浸かるのだ」'
         ]
     },
     // 巻き付き（拘束）
@@ -323,7 +323,7 @@ export const otherworldCentipedeData: BossData = {
     name: 'OtherworldCentipede',
     displayName: '異界のムカデ',
     icon: '🐛',
-    description: '辺境に現れた巨大な異界のムカデ。無数の腕で様々な道具を操る',
+    description: '辺境に現れた巨大な異界のムカデ',
     appearanceNote: '全身が深紫と黒の甲殻に覆われた巨大なムカデ。無数の腕のそれぞれに様々な道具や装置を握り、奇妙な武器として使いこなす。大きな顎と鋭い毒牙を持ち、体内に閉じ込めた獲物を特別な粘液で保管する習性がある。',
     questNote: '辺境の村に巨大なムカデが現れ、暴れまわっているという報告が届いた。冒険者を捕まえては体内に閉じ込めてしまうという噂もある。異界のムカデを討伐し、被害を食い止めてほしい。',
     maxHp: 700,

@@ -4,7 +4,7 @@ export const otherworldCentipedeTranslations: BossTranslation = {
     ja: {},
     en: {
         displayName: 'Otherworld Centipede',
-        description: 'A colossal centipede from another realm, wielding tools with its countless arms.',
+        description: 'A colossal centipede from another realm',
         questNote: 'Reports say a giant centipede has appeared in the borderlands, running rampant. Rumors also tell of adventurers being captured and sealed inside its body. Please defeat the Otherworld Centipede and put a stop to the damage.',
         appearanceNote: 'Massive centipede, deep purple and black carapace, countless arms each holding various tools and devices',
         victoryTrophy: {
