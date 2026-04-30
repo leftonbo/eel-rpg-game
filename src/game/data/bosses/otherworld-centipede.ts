@@ -279,12 +279,13 @@ const periodicPoisonBathAction: BossAction = {
     ],
     weight: 1,
     onUse: (boss: Boss, player: Player, _turn: number) => {
-        if (!boss.getCustomVariable<boolean>('permanentCharmApplied', false)) {
-            boss.setCustomVariable('permanentCharmApplied', true);
-        }
         player.statusEffects.addEffect(StatusEffectType.CentipedeSlime, 10);
         player.statusEffects.addEffect(StatusEffectType.CentipedePoison, 10);
-        player.statusEffects.addEffect(StatusEffectType.Charm, -1);
+        // 永続魅了は最初の1回のみ付与
+        if (!boss.getCustomVariable<boolean>('permanentCharmApplied', false)) {
+            boss.setCustomVariable('permanentCharmApplied', true);
+            player.statusEffects.addEffect(StatusEffectType.Charm, -1);
+        }
         return [];
     }
 };
@@ -495,10 +496,10 @@ export const otherworldCentipedeData: BossData = {
                     };
                 }
                 // それ以外は締め付け
-                return otherworldCentipedeRestrainedActions.find(a => a.id === 'squeeze')!;
+                return otherworldCentipedeRestrainedActions.find(a => a.id === 'squeeze') ?? otherworldCentipedeRestrainedActions[0];
             } else {
                 // 未拘束+KO → 必ず巻き付き
-                return otherworldCentipedeActions.find(a => a.id === 'wrap-up')!;
+                return otherworldCentipedeActions.find(a => a.id === 'wrap-up') ?? otherworldCentipedeActions[0];
             }
         }
 
