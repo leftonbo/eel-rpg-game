@@ -121,6 +121,13 @@ export enum StatusEffectType {
     
     // Tongue Dragon effects
     TongueMucus = 'tongue-mucus',
+    
+    // Yumewata Mellow effects
+    CozyScent = 'cozy-scent',
+    MuzzleMelt = 'muzzle-melt',
+    SensoryOverload = 'sensory-overload',
+    RibbonNest = 'ribbon-nest',
+    KinshipDrift = 'kinship-drift',
 
     // Otherworld Centipede effects
     CentipedeSlime = 'centipede-slime',   // ネバネバ（拘束脱出力大幅低下）
