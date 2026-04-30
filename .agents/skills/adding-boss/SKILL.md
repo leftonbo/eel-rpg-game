@@ -26,7 +26,7 @@ description: Adds a new boss to the eel-rpg-game project. Use when the user asks
 | 状態異常 enum | `src/game/systems/StatusEffectTypes.ts` | 新状態異常がある場合のみ |
 | 状態異常 CSS | `src/styles/main.css`（`.status-{type}` クラス） | 新状態異常がある場合のみ |
 | i18n 翻訳 | `src/game/i18n/bosses/{boss-id}.ts` + `index.ts` 登録 | 多言語対応時 |
-| ボス資料 | `docs/bosses/{boss-id}.md` | 推奨 |
+| ボス資料 | `docs/bosses/{boss-id}.md` | 必須 |
 
 命名規則:
 - ファイル名は kebab-case の `{boss-id}.ts`
@@ -45,8 +45,10 @@ description: Adds a new boss to the eel-rpg-game project. Use when the user asks
 - [ ] 5. aiStrategy を実装（敗北後・食べられ・戦闘不能・通常の分岐）
 - [ ] 6. victoryTrophy / defeatTrophy を設定
 - [ ] 7. explorerLevelRequired をテーマに合わせて設定
-- [ ] 8. 必要なら新状態異常・i18n・資料ドキュメントを追加
-- [ ] 9. 品質チェックコマンドを一通り通す
+- [ ] 8. 新状態異常を追加 (必要であれば)
+- [ ] 9. i18n 対応 (必要であれば)
+- [ ] 10. 資料ドキュメントを追加
+- [ ] 11. 品質チェックコマンドを一通り通す
 ```
 
 ## Phase 1: コンセプト整理
@@ -123,7 +125,7 @@ description: Adds a new boss to the eel-rpg-game project. Use when the user asks
 
 ## ボスキャラクター設定資料の保存
 
-`docs/bosses/{boss-id}.md` に以下を記載して保存することを推奨。
+以降のプロンプトでボスキャラクター設定を参照できるよう、 `docs/bosses/{boss-id}.md` に以下を記載して保存すること。
 
 - ボスの世界観・コンセプト
 - ギミックの詳細な説明
@@ -131,6 +133,7 @@ description: Adds a new boss to the eel-rpg-game project. Use when the user asks
 - 拘束攻撃・体内表現のフレーバー
 - 状態異常の効果とフレーバー
 - 記念品のイメージと由来
+- その他、プロンプト時に指定された追加情報など
 
 ## 品質チェック
 
