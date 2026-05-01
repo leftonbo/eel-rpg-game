@@ -109,14 +109,14 @@ interface BossAction {
 
 ### 表現ガイドライン
 
-**以下の表現はNGとします**
+以下の表現はNGとします
 
 - エルナルに対する直接的で致命的な表現
   - 死亡させる、完全に消化してしまう等
 - 過度に暴力的な描写
   - 体をバラバラにする、四肢を切断する等
 
-**以下の要素をボスに追加しよう**
+以下の要素をボスに追加しよう
 
 - 捕食・丸呑み表現（既存ボスを参考）
 - 状態異常による一時的な影響
@@ -375,11 +375,13 @@ export const newBossTranslation: BossTranslation = {
 ### 4. 新しい状態異常の追加（必要な場合）
 
 #### StatusEffectTypeに追加
+
 `src/game/systems/StatusEffectTypes.ts` の `StatusEffectType` enumに追加
 
 #### 利用可能な状態異常一覧
 
-**基本状態異常**
+##### 基本状態異常
+
 - `Fire` - 火だるま（毎ターンダメージ）
 - `Poison` - 毒（毎ターンダメージ）
 - `Charm` - 魅了（行動阻害）
@@ -392,7 +394,8 @@ export const newBossTranslation: BossTranslation = {
 - `Darkness` - 暗闇（命中率大幅低下）
 - `Doomed` - 再起不能（最大HP0、とどめ攻撃対象）
 
-**ボス固有状態異常**
+##### ボス固有状態異常
+
 - `AphrodisiacPoison` - 媚薬毒（夢の淫魔）
 - `Drowsiness` - 眠気（夢の淫魔）
 - `Infatuation` - 恋慕（夢の淫魔）
@@ -439,9 +442,11 @@ export const newBossTranslation: BossTranslation = {
 - `TongueMucus` - 舌の粘液（舌のドラゴン）
 
 #### ボス固有状態異常の実装ファイル追加
+
 `src/game/systems/status-effects/{boss-id}-effects.ts` を作成し、`StatusEffectConfig` を定義して `src/game/systems/status-effects/index.ts` から登録します。`onApply` / `onTick` / `onRemove` と `modifiers`（攻撃力倍率、命中率、行動可否など）を必要に応じて実装してください。
 
 #### CSS クラスの追加
+
 `src/styles/main.css` に `.status-{type}` クラスを追加
 
 ## AIストラテジーのパターン例
@@ -655,49 +660,59 @@ export const bossData: BossData = {
 
 ### 既存ボスとの比較
 
-**現在実装済みのボス18体**
-
 #### 初期エリア (explorerLevelRequired: 0)
+
 - 沼のドラゴン: HP 400, 攻撃力 24 (高火力・ドラゴンタイプ)
 - 闇のおばけ: HP 250, 攻撃力 18 (状態異常・精神タイプ)
 - 機械のクモ: HP 300, 攻撃力 12 (拘束・繭タイプ)
 
 #### 砂漠エリア (explorerLevelRequired: 1)
+
 - 運び屋のサソリ: HP 580, 攻撃力 22 (毒+麻痺+運搬タイプ)
 
 #### 海エリア (explorerLevelRequired: 2)
+
 - 海のクラーケン: HP 640, 攻撃力 16 (拘束+吸収タイプ)
 - アクアサーペント: HP 750, 攻撃力 20 (水属性+体内攻撃タイプ)
 - スライムドラゴン: HP 550, 攻撃力 14 (スライム+卵化タイプ)
 
 #### ゲストキャラエリア (explorerLevelRequired: 3)
+
 - 夢の淫魔: HP 320, 攻撃力 10 (夢+特殊状態異常タイプ)
 
 #### ジャングルエリア (explorerLevelRequired: 4)
+
 - 蜜柑ドラゴン: HP 450, 攻撃力 18 (果物+睡眠タイプ)
 
 #### 洞窟・地下世界エリア (explorerLevelRequired: 5)
+
 - 地底のワーム: HP 800, 攻撃力 13 (地下型拘束+石化タイプ)
 - 舌のドラゴン: HP 680, 攻撃力 16 (舌拘束+粘液タイプ)
 
 #### 遺跡・古城エリア (explorerLevelRequired: 6)
+
 - クリーンマスター: HP 720, 攻撃力 16 (清掃+状態異常タイプ)
 - 蝙蝠のヴァンパイア: HP 640, 攻撃力 30 (拘束+魅了+生気吸収タイプ)
 
 #### 氷河エリア (explorerLevelRequired: 7)
+
 - ふわふわドラゴン: HP 600, 攻撃力 14 (ふわふわ+睡眠タイプ)
 
 #### 工業エリア (explorerLevelRequired: 8)
+
 - サーマル・アーカイバー: HP 580, 攻撃力 17 (自動標本保管システム)
 
 #### 天使エリア (explorerLevelRequired: 9)
+
 - セラフィムマスコット: HP 1200, 攻撃力 32 (巨大天使マスコット)
 - 双面の道化師: HP 970, 攻撃力 20 (二面性道化師)
 
 #### 魔界エリア (explorerLevelRequired: 10)
+
 - 魔界の竜: HP 2600, 攻撃力 22 (最高難易度ボス)
 
-**バランス設計指針**
+### バランス設計指針
+
 - HP 250-450: 初級〜中級ボス（基本システム習得用）
 - HP 550-800: 上級ボス（各種状態異常・特殊システム）
 - HP 970-2600: 最高級ボス（高難易度・複合システム）
@@ -705,7 +720,7 @@ export const bossData: BossData = {
 
 ## エクスプローラーアビリティとボス解禁システム
 
-### 概要
+### エクスプローラーアビリティ概要
 
 エクスプローラーアビリティは、プレイヤーの探検範囲を拡大し、新しいボスとの戦闘をアンロックするシステムです。各ボスに `explorerLevelRequired` を設定することで、段階的なコンテンツ解禁が可能です。
 
@@ -753,7 +768,7 @@ explorerLevelRequired: 8-10
 - **レベル9 - 天空・天使界**
   - セラフィムマスコット、双面の道化師
 - **レベル10 - 魔界・冥界**
-  - 魔界の竜（理不尽度MAX!）
+  - 魔界の竜
 
 ### 記念品システム
 
@@ -797,12 +812,14 @@ defeatTrophy: {
 ## テスト項目
 
 ### 特に重要なテスト
+
 - [ ] **TypeScript型チェック**: `npm run typecheck` でエラーがないこと
 - [ ] **単体テスト**: `npm run test` でテストが成功すること
 - [ ] **ビルドテスト**: `npm run build` でビルドが成功すること
 - [ ] **エクスプローラーレベル制御**: 適切なレベルでボスが解禁されること
 
 ### 基本機能テスト
+
 - [ ] ボス選択画面での表示確認
 - [ ] 戦闘開始・終了の動作確認
 - [ ] 各アクションの動作確認
@@ -816,16 +833,19 @@ defeatTrophy: {
 実装の参考として以下のファイルを確認してください：
 
 ### コアシステムファイル
+
 - `src/templates/` - EJSテンプレートシステム（HTML自動生成）
 - `vite.config.ts` - Viteビルド設定、EJSプラグイン統合
 - `vitest.config.ts` - Vitestテスト設定
 
 ### 初期実装（シンプル・参考用）
+
 - `src/game/data/bosses/swamp-dragon.ts` - 複雑なAI戦略の例
 - `src/game/data/bosses/dark-ghost.ts` - 状態異常特化の例
 - `src/game/data/bosses/mech-spider.ts` - 拘束・繭システムの例
 
 ### 近代的な実装（推奨）
+
 - `src/game/data/bosses/sea-kraken.ts` - 現代的なAI戦略、PostDefeatedAttack、finishingMove の例
 - `src/game/data/bosses/aqua-serpent.ts` - customVariables での特殊技管理、onUse コールバックの例
 - `src/game/data/bosses/clean-master.ts` - 新しい状態異常システムの例
@@ -841,6 +861,7 @@ defeatTrophy: {
 - `src/game/data/bosses/thermal-archiver.ts` - 機械系ボスの標本保管ギミック、非戦闘的 AI 戦略の例
 
 ### システムファイル
+
 - `src/game/entities/Boss.ts` - ボスクラス・`BossData` / `BossAction` / `TrophyData` の実装
 - `src/game/entities/Actor.ts` - 基底クラス（Player / Boss 共通）
 - `src/game/systems/StatusEffect.ts` - 状態異常マネージャ
@@ -874,8 +895,8 @@ defeatTrophy: {
 - `statusChance` の設定確認（0.0-1.0の範囲で設定）
 
 ### コード品質関連エラー
+
 - **EJSテンプレート関連**: Viteビルドエラーが出る場合はテンプレート構文を確認
-- ~~**registeredBossIdsの不一致**~~: ❌ **不要！** glob importによる自動検出
 - **glob import エラー**: ファイル名とexport名のパターンマッチング確認
 - **TypeScriptエラー**: ボスデータのBossDataインターフェース適合性を確認
 - **テストエラー**: Vitestテストケースの実行結果を確認
