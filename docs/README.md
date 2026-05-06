@@ -13,4 +13,9 @@
 
 ## 🗃️ 設定資料集
 
-- **[ボス一覧](bosses/README.md)** - ゲーム内のボスキャラクター一覧
+### キャラクター設定
+
+- **エルナル**（主人公）
+  - 設定資料: **[Notion](https://tonbonotion01.notion.site/mycharacter-elnal)**
+- **各種ボス設定**
+  - **[ボス資料集](bosses/README.md)** - 全ボスの詳細情報
