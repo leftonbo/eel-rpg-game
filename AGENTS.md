@@ -83,17 +83,6 @@ use context 7
 
 ## 実装パターン
 
-### 新ボス追加
-
-新ボスの追加作業は `adding-boss` Skill（`.cursor/skills/adding-boss/SKILL.md`）に従うこと。Skill が作業フロー・ファイル配置・参考ボス対応表・品質チェックをまとめている。詳細な実装仕様は [包括的なボス追加ガイド](docs/boss-creation-guide.md)、既存ボス資料は [ボス資料集](docs/bosses/README.md) を参照。
-
-### 状態異常追加
-
-1. `StatusEffectType` enum に新タイプ追加
-2. `StatusEffectManager.configs` Map に設定追加
-3. `onTick` / `onApply` / `onRemove` コールバックで効果実装
-4. CSS（`src/styles/main.css`）に `status-[type]` クラス追加
-
 ### セーブデータ管理（PlayerSaveData）
 
 - **PlayerSaveData interface**: アビリティ、装備、戦闘記録を含むプレイヤー進行状態
