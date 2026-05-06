@@ -7,6 +7,7 @@ import { TrophyDisplayComponent } from './components/TrophyDisplayComponent';
 import { Player } from '../entities/Player';
 import { ToastType, ToastUtils } from '../utils/ToastUtils';
 import { t } from '../i18n';
+import { countUnlockedBosses } from '../utils/BossUnlockUtils';
 
 // 拡張されたアビリティデータ型（experienceToNextを含む）
 interface ExtendedAbilityData extends AbilityData {
@@ -72,9 +73,7 @@ export class OutGameExplorationRecordScene extends BaseOutGameScene {
         
         // 統計情報
         const allBossData = getAllBossData();
-        const unlockedCount = allBossData.filter(boss => 
-            boss.explorerLevelRequired || 0 <= player.getExplorerLevel()
-        ).length;
+        const unlockedCount = countUnlockedBosses(allBossData, player.getExplorerLevel());
         this.updateElement('unlocked-bosses-count', unlockedCount.toString());
         this.updateElement('unlockable-bosses-count', allBossData.length.toString());
         
