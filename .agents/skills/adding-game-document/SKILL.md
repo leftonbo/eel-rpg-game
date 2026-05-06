@@ -45,7 +45,7 @@ requiredBossLosses: ["boss-id"]
 | `requiredBossDefeats` | 任意 | 表示に必要な撃破済みボス ID 配列 |
 | `requiredBossLosses` | 任意 | 表示に必要な敗北済みボス ID 配列 |
 
-条件項目を省略した文書は、基本的に最初から表示される。複数条件を指定した場合は、すべて満たしたプレイヤーに表示される想定で設計する。
+条件項目を省略した文書は、常に最初から表示される。複数条件を指定した場合は、すべてを満たしたプレイヤーにのみ表示される。条件間に優先順位はなく、`requiredExplorerLevel`・`requiredBossDefeats`・`requiredBossLosses` はすべて AND 条件として評価される。例: `requiredExplorerLevel: 5` と `requiredBossDefeats: ["boss-a"]` を両方指定した場合、レベル 5 以上かつ boss-a を撃破済みのプレイヤーだけに表示される。
 
 ## 実装ワークフロー
 
@@ -53,7 +53,7 @@ requiredBossLosses: ["boss-id"]
 
 ```text
 - [ ] 1. 文書の目的を確認する（世界観、攻略、日記、キャラクター資料など）
-- [ ] 2. `id` と保存先 `src/game/data/documents/{id}.md` を決める
+- [ ] 2. `id` と保存先 `src/game/data/documents/{id}.md` を決める（既存ファイルと重複する場合はユーザーに別の ID を求める）
 - [ ] 3. 表示条件を決める（Explorer レベル、撃破条件、敗北条件）
 - [ ] 4. frontmatter と本文を Markdown で作成する
 - [ ] 5. 既存の文体やエルナル設定と矛盾しないか確認する
