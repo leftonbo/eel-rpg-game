@@ -14,7 +14,7 @@
 
 ## 情報の置き場所
 
-- 新ボス追加: `.agents/skills/adding-boss/SKILL.md` と `docs/boss-creation-guide.md`
+- 新ボス追加: `.agents/skills/adding-boss/SKILL.md`
 - ゲーム内文書追加: `.agents/skills/adding-game-document/SKILL.md`
 - ボス設定資料: `docs/bosses/README.md` と `docs/bosses/*.md`
 - Git コミット規約: `docs/rules/git-commit.md`
