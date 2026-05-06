@@ -14,6 +14,7 @@ description: Adds a new boss to the eel-rpg-game project. Use when the user asks
 - 詳細ガイド: `docs/boss-creation-guide.md`
 - 既存ボス資料: `docs/bosses/README.md`
 - ボスクラス実装: `src/game/entities/Boss.ts`
+- 現在のボス一覧とステータス比較: `npm run boss-overview`
 
 ## 作業対象ファイル
 
