@@ -88,7 +88,8 @@
 ## 変更内容
 
 - `src/game/data/bosses/[boss-id].ts` - ボスデータ定義
-- `src/game/data/index.ts` - ボス登録処理追加
+- `src/game/i18n/bosses/[boss-id].ts` - 翻訳データ追加（該当する場合）
+- `docs/bosses/[boss-id].md` - ボス設定資料
 - [その他の変更ファイル]
 
 ## ボス仕様
