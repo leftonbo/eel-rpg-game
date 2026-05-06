@@ -1,0 +1,15 @@
+---
+description: TypeScript conventions for eel-rpg-game source files
+globs: "**/*.ts"
+alwaysApply: false
+---
+
+# TypeScript Conventions
+
+- Import local modules without `.js` extensions.
+- Prefer existing aliases (`@/`, `@/game/`, `@/ui/`, `@/data/`) when they improve clarity.
+- Keep class and interface names PascalCase; do not prefix interfaces with `I`.
+- Keep functions and variables camelCase; keep constants UPPER_SNAKE_CASE.
+- Use `addEventListener` for DOM events and arrow callbacks when `this` binding matters.
+- Do not use browser-native `alert()`, `confirm()`, or `prompt()`; use `ModalUtils` / `ToastUtils`.
+- For persisted data changes, update `PlayerSaveData` migration and validation paths deliberately.
