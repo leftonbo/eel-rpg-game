@@ -5,7 +5,7 @@ description: Adds a new boss to the eel-rpg-game project. Use when the user asks
 
 # 新ボス追加 Skill
 
-このプロジェクトへ新しいボスを追加する際の中核手順をまとめる。詳細情報は必要になった時だけ `references/` の該当ファイルを読む。
+このプロジェクトへ新しいボスを追加する際の中核手順をまとめる。`references/` のファイルは、新しい AI 戦略・状態異常・カスタムとどめ・バランス調整・トラブル対応を実装する場合にのみ読む。
 
 ## 参照の使い分け
 
@@ -64,7 +64,7 @@ Vite の glob import により `src/game/data/bosses/*.ts` は自動検出され
 
 ## Phase 1: コンセプト整理
 
-実装前にユーザーと以下を確定する。不明点が実装や表現を大きく変える場合は質問する。
+実装前にユーザーと以下を確定する。情報が不足・不明瞭な場合は次の質問を優先して確認してから実装を進める: 「ボスの見た目・世界観は？」「想定難易度と解禁レベルは？」「特殊ギミック（拘束・丸呑み・状態異常など）はあるか？」「記念品のイメージは？」「i18n 対応は必要か？」
 
 - ボスの世界観、見た目、行動コンセプト
 - 想定難易度帯と `explorerLevelRequired`
@@ -108,11 +108,13 @@ Vite の glob import により `src/game/data/bosses/*.ts` は自動検出され
 
 AI 分岐の推奨順:
 
-1. `player.isEaten() && player.isDoomed()` のカスタムとどめ
-2. `player.isDefeated()` の敗北後行動
-3. `player.isEaten()` の体内行動
-4. `player.isKnockedOut()` の拘束・繭・丸呑み分岐
-5. 通常の重み付きランダム選択
+まずプレイヤー状態を次の優先順位で確認し、該当するブロックだけ処理する:
+
+1. **カスタムとどめ**: `player.isEaten() && player.isDoomed()` → とどめ演出
+2. **敗北後行動**: `player.isDefeated()` → 敗北後のターン行動
+3. **体内行動**: `player.isEaten()` → 体内での攻撃・演出
+4. **拘束・繭・丸呑み分岐**: `player.isKnockedOut()` → 状態に応じた特殊行動
+5. **通常行動**: 上記のいずれにも該当しない → 重み付きランダム選択
 
 ## Phase 4: 新状態異常
 
