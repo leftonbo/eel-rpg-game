@@ -2,12 +2,12 @@ import { Game } from '../Game';
 import { BaseOutGameScene } from './BaseOutGameScene';
 import { AbilityType, AbilitySystem, AbilityData } from '../systems/AbilitySystem';
 import { getAllBossData } from '../data';
-import type { BossData } from '../entities/Boss';
 import { MemorialSystem } from '../systems/MemorialSystem';
 import { TrophyDisplayComponent } from './components/TrophyDisplayComponent';
 import { Player } from '../entities/Player';
 import { ToastType, ToastUtils } from '../utils/ToastUtils';
 import { t } from '../i18n';
+import { countUnlockedBosses } from '../utils/BossUnlockUtils';
 
 // 拡張されたアビリティデータ型（experienceToNextを含む）
 interface ExtendedAbilityData extends AbilityData {
@@ -18,13 +18,6 @@ interface GameProgressionData {
     currentScore: number;
     maxScore: number;
     ratio: number;
-}
-
-export function countUnlockedBosses(
-    bosses: Pick<BossData, 'explorerLevelRequired'>[],
-    explorerLevel: number
-): number {
-    return bosses.filter(boss => (boss.explorerLevelRequired || 0) <= explorerLevel).length;
 }
 
 export class OutGameExplorationRecordScene extends BaseOutGameScene {

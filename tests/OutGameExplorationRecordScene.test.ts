@@ -1,4 +1,4 @@
-import { countUnlockedBosses } from '../src/game/scenes/OutGameExplorationRecordScene';
+import { countUnlockedBosses } from '../src/game/utils/BossUnlockUtils';
 
 describe('countUnlockedBosses', () => {
     test('探索者レベル以下のボスだけをアンロック済みとして数える', () => {
