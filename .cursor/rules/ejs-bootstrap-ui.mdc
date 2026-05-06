@@ -1,0 +1,13 @@
+---
+description: EJS and Bootstrap UI conventions for eel-rpg-game templates
+globs: "src/templates/**/*.ejs"
+alwaysApply: false
+---
+
+# EJS / Bootstrap UI Conventions
+
+- Treat `src/templates/` as the source of generated HTML; do not patch generated HTML by hand.
+- Prefer Bootstrap 5 cards, buttons, badges, progress bars, grid, and utility classes before adding custom CSS.
+- Keep UI structure consistent with existing partials and reusable components such as `modal-base.ejs` and `ability-card.ejs`.
+- Maintain responsive layout and accessible labels/ARIA attributes when adding interactive elements.
+- Keep template logic small; move complex behavior into TypeScript scene or component code.
