@@ -23,6 +23,7 @@ description: Adds a new boss to the eel-rpg-game project. Use when the user asks
 - バランス、解禁レベル、記念品: `references/balance-unlocks-and-trophies.md`
 - 目的別の既存ボス参照: `references/reference-bosses.md`
 - 不具合時の確認表: `references/troubleshooting.md`
+- `docs/bosses/` に置くボス「設定資料」のひな形: `references/boss-design-template.md`
 
 ## 作業対象ファイル
 
@@ -35,7 +36,7 @@ Vite の glob import により `src/game/data/bosses/*.ts` は自動検出され
 | 状態異常 enum | `src/game/systems/StatusEffectTypes.ts` | 新状態異常がある場合のみ |
 | 状態異常 CSS | `src/styles/main.css` | 新状態異常の表示が必要な場合のみ |
 | i18n 翻訳 | `src/game/i18n/bosses/{boss-id}.ts` と `src/game/i18n/bosses/index.ts` | 多言語対応時 |
-| ボス資料 | `docs/bosses/{boss-id}.md` | 必須 |
+| ボス資料（ひな形: [`references/boss-design-template.md`](references/boss-design-template.md)） | `docs/bosses/{boss-id}.md` | 必須 |
 
 命名規則:
 
@@ -58,7 +59,7 @@ Vite の glob import により `src/game/data/bosses/*.ts` は自動検出され
 - [ ] 7. `explorerLevelRequired` を設定
 - [ ] 8. 新状態異常を追加するか判断し、必要なら実装
 - [ ] 9. i18n 対応するか判断し、必要なら実装
-- [ ] 10. `docs/bosses/{boss-id}.md` に設定資料を保存
+- [ ] 10. テンプレに沿って `docs/bosses/{boss-id}.md` に設定資料を保存
 - [ ] 11. 品質チェックを実行
 ```
 
@@ -142,15 +143,7 @@ AI 分岐の推奨順:
 
 ## ボス設定資料
 
-以降のプロンプトで参照できるよう、`docs/bosses/{boss-id}.md` に以下を保存する。
-
-- ボスの世界観・コンセプト
-- ギミックの詳細
-- 各種行動のフレーバー
-- 拘束攻撃・体内表現のフレーバー
-- 状態異常の効果とフレーバー
-- 記念品のイメージと由来
-- ユーザーが指定した追加情報
+以降のプロンプトで参照できるよう、章立ては [`references/boss-design-template.md`](references/boss-design-template.md) を `docs/bosses/{boss-id}.md` にコピーして埋める。リポジトリ側の書き方や一覧は `docs/bosses/README.md` を参照する。
 
 ## 品質チェック
 
