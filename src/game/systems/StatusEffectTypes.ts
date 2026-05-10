@@ -130,8 +130,12 @@ export enum StatusEffectType {
     KinshipDrift = 'kinship-drift',
 
     // Otherworld Centipede effects
-    CentipedeSlime = 'centipede-slime',   // ネバネバ（拘束脱出力大幅低下）
-    CentipedePoison = 'centipede-poison'  // ムカデ毒（弱い継続ダメージ）
+    CentipedeSlime = 'centipede-slime',
+    CentipedePoison = 'centipede-poison',
+
+    // Fluffy Noir effects
+    SignBound = 'sign-bound',
+    OwnershipMark = 'ownership-mark'
 }
 
 export interface StatusEffect {
