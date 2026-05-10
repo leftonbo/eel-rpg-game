@@ -5,7 +5,7 @@ export const fluffyNoirEffectsConfigs: StatusEffectConfig[] = [
         type: StatusEffectType.SignBound,
         name: '進入禁止',
         description: '進入禁止標識の効力で、その場から動けない',
-        duration: 3,
+        duration: 4,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
@@ -22,9 +22,9 @@ export const fluffyNoirEffectsConfigs: StatusEffectConfig[] = [
     },
     {
         type: StatusEffectType.OwnershipMark,
-        name: '所有マーク',
+        name: '所有標識',
         description: '黒ケモノの青い所有印が体に巻きつき、抵抗する気力を奪っていく',
-        duration: 999,
+        duration: -1,
         category: 'debuff',
         isDebuff: true,
         modifiers: {
@@ -34,9 +34,9 @@ export const fluffyNoirEffectsConfigs: StatusEffectConfig[] = [
             actionPriority: ActionPriority.CannotAct
         },
         messages: {
-            onApplyPlayer: '{name}の体に青い標識マークが巻きついた！剥がそうとしても指が動かない...',
-            onTickPlayer: '青い所有マークが{name}の体にぴったりと貼りつき、抵抗する意思を吸い取っていく...',
-            onRemovePlayer: '{name}の体から青い所有マークが薄れていった'
+            onApplyPlayer: '',
+            onTickPlayer: '',
+            onRemovePlayer: ''
         }
     }
 ];
