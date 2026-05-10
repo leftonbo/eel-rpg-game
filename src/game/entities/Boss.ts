@@ -345,7 +345,10 @@ export class Boss extends Actor {
                 id: 'stunned-skip',
                 type: ActionType.Skip,
                 name: '行動不能',
-                description: '反動で動けない...',
+                description: '反動で動けない',
+                messages: [
+                    '{boss}は反動で動けない...'
+                ],
                 weight: 1
             };
         }
@@ -774,9 +777,9 @@ export class Boss extends Actor {
         return messages;
     }
     
-    private executeSkipAction(action: BossAction): string[] {
-        // Skip action, just return a message
-        return [action.description ?? `${this.displayName}は行動できない...`];
+    private executeSkipAction(_action: BossAction): string[] {
+        // Skip action. No messages.
+        return [];
     }
     
     private processHpAbsorption(action: BossAction, actualDamage: number): string[] {

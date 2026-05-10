@@ -224,10 +224,8 @@ export class BattleUIManager {
         // Check if omamori can be used
         const hasOmamori = player.getItemCount('omamori') > 0;
         const canUseOmamori = hasOmamori && (
-            player.isKnockedOut() || 
-            player.isRestrained() || 
-            player.isEaten() || 
-            player.isCocoon() || 
+            player.isKnockedOut() ||
+            player.isAnyRestrained() ||
             player.statusEffects.hasEffect(StatusEffectType.Sleep)
         );
         

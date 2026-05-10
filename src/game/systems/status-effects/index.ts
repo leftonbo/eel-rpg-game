@@ -18,6 +18,7 @@ import { slimeDragonEffectsConfigs } from './slime-dragon-effects';
 import { tongueDragonEffectsConfigs } from './tongue-dragon-effects';
 import { yumewataMellowEffectsConfigs } from './yumewata-mellow-effects';
 import { otherworldCentipedeEffectsConfigs } from './otherworld-centipede-effects';
+import { fluffyNoirEffectsConfigs } from './fluffy-noir-effects';
 
 // Aggregate all status effect configurations
 export const createStatusEffectConfigs = (): Map<StatusEffectType, StatusEffectConfig> => {
@@ -115,6 +116,11 @@ export const createStatusEffectConfigs = (): Map<StatusEffectType, StatusEffectC
 
     // Add otherworld centipede effects
     otherworldCentipedeEffectsConfigs.forEach(config => {
+        allConfigs.set(config.type, config);
+    });
+
+    // Add fluffy noir effects
+    fluffyNoirEffectsConfigs.forEach(config => {
         allConfigs.set(config.type, config);
     });
 

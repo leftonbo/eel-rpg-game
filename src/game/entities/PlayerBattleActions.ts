@@ -21,9 +21,7 @@ export class PlayerBattleActions {
      * もがく行動
      */
     attemptStruggle(): boolean {
-        if (!this.player.statusEffects.isRestrained() && 
-            !this.player.statusEffects.isEaten() && 
-            !this.player.statusEffects.isCocoon()) {
+        if (!this.player.isAnyRestrained()) {
             return false;
         }
         
@@ -50,10 +48,11 @@ export class PlayerBattleActions {
             // Reset struggle attempts
             this.player.struggleAttempts = 0;
             
-            // Remove restrained, eaten, or cocoon status
+            // Remove escape-capable restraint states
             this.player.statusEffects.removeEffect(StatusEffectType.Restrained);
             this.player.statusEffects.removeEffect(StatusEffectType.Eaten);
             this.player.statusEffects.removeEffect(StatusEffectType.Cocoon);
+            this.player.statusEffects.removeEffect(StatusEffectType.SignBound);
             this.player.statusEffects.removeEffect(StatusEffectType.Sleep);
             
             // Apply escape recovery passive skill

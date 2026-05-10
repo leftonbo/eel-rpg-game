@@ -462,6 +462,72 @@
     animation: fascination-pull 2s ease-in-out infinite alternate;
 }
 
+/* Fluffy Noir status effects */
+.status-sign-bound {
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 215, 0, 0.45),
+        rgba(255, 215, 0, 0.45) 6px,
+        rgba(20, 20, 20, 0.6) 6px,
+        rgba(20, 20, 20, 0.6) 12px
+    );
+    border-color: #ffd60a;
+    color: #fff8dc;
+    animation: sign-warning-flash 1.2s ease-in-out infinite alternate;
+}
+
+.status-no-entry-sign {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.6), rgba(255, 255, 255, 0.45));
+    border-color: #dc3545;
+    color: #fff7f7;
+    animation: sign-warning-flash 1.2s ease-in-out infinite alternate;
+}
+
+.status-arrow-sign {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.55), rgba(13, 110, 253, 0.5));
+    border-color: #ffc107;
+    color: #fff9e6;
+    animation: sign-warning-flash 1.2s ease-in-out infinite alternate;
+}
+
+.status-danger-sign {
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 193, 7, 0.55),
+        rgba(255, 193, 7, 0.55) 6px,
+        rgba(220, 53, 69, 0.6) 6px,
+        rgba(220, 53, 69, 0.6) 12px
+    );
+    border-color: #ffca2c;
+    color: #fff9e6;
+    animation: sign-warning-flash 1.2s ease-in-out infinite alternate;
+}
+
+.status-ownership-mark {
+    background: linear-gradient(45deg, rgba(0, 90, 200, 0.55), rgba(70, 150, 255, 0.55));
+    border-color: #4a96ff;
+    color: #f0f6ff;
+    animation: ownership-mark-pulse 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes sign-warning-flash {
+    from {
+        box-shadow: 0 0 4px rgba(255, 214, 10, 0.45);
+    }
+    to {
+        box-shadow: 0 0 14px rgba(255, 214, 10, 0.85);
+    }
+}
+
+@keyframes ownership-mark-pulse {
+    from {
+        box-shadow: 0 0 6px rgba(74, 150, 255, 0.45);
+    }
+    to {
+        box-shadow: 0 0 18px rgba(74, 150, 255, 0.85);
+    }
+}
+
 /* Basic Animations */
 @keyframes pulse {
     from {
