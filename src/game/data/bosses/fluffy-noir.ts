@@ -707,7 +707,7 @@ export const fluffyNoirData: BossData = {
     icon: '⛔',
     description: '標識に宿る怪異',
     appearanceNote: '漆黒の長毛をまとった、二足歩行のオオカミ系巨大ケモノ。ぬいぐるみのように丸い顔、左右一対の赤い大瞳とその外側に2つずつの白くて黒目のない瞳、肉球が埋もれるほど毛深い手、長い尻尾に絡む曲がった道路標識、裂けるほど大きな口と真紅にほのかに光る体内。',
-    questNote: '廃棄工場跡で、夜になると標識が動き出し、肝試しに来た者が一晩中「保管」されてから戻ってくるという目撃情報が相次いでいる。標識の警告を無視して縄張りに入った者を罰し、気に入った獲物には所有マークを刻んで夜に呼び寄せる「標識住み」の怪異――黒ケモノの目撃情報を確かめ、討伐してほしい。',
+    questNote: '廃棄工場跡で、「標識住み」の怪異の目撃情報が相次いでいる。その情報を確かめ、討伐してほしい。気をつけろ……その怪異は標識を操り、縄張りに入るものを一呑みにしてしまうといわれている。',
     maxHp: 720,
     attackPower: 16,
     actions: fluffyNoirActions,
@@ -715,12 +715,12 @@ export const fluffyNoirData: BossData = {
     explorerLevelRequired: 6,
 
     victoryTrophy: {
-        name: '曲がった青標識の欠片',
-        description: '黒ケモノの尻尾に絡みついていた、所有マークの素になっていた青い標識プレートの欠片。触れると微かに「ガウ...」という低い唸りが聞こえる気がする。'
+        name: '曲がった危険標識',
+        description: '黒ケモノの尻尾に絡みついていた危険標識。示される図柄は非常に抽象的で、何の危険を示すか分からない。'
     },
     defeatTrophy: {
-        name: '真紅の体内粘液',
-        description: '黒ケモノの真紅の体内で全身を浸した、甘く金属的な匂いを帯びた粘液。酸素と栄養を含み、ぬるりと温かく、嗅ぐと「保管されている」感覚を思い出してしまう。'
+        name: '黒ケモノの標識リボン',
+        description: '黒ケモノの示すような図柄が描かれた、黒ケモノの所有物であることを示す標識の着いたリボン。体に付けて夜を過ごすと黒ケモノが察知してやってくるらしい。'
     },
 
     personality: [
@@ -747,11 +747,6 @@ export const fluffyNoirData: BossData = {
             text: '廃棄工場跡の入口、転がる標識の山の奥から、底なしの黒い影がぬっと立ち上がった。'
         },
         {
-            speaker: 'system',
-            style: 'default',
-            text: '深い黒の長毛をまとった巨大な二足歩行のケモノが、赤い大瞳と4つの白い小瞳でこちらを見下ろしている。'
-        },
-        {
             speaker: 'boss',
             style: 'talk',
             text: '「ガウ...」'
@@ -759,7 +754,7 @@ export const fluffyNoirData: BossData = {
         {
             speaker: 'system',
             style: 'default',
-            text: '黒ケモノは尻尾に絡んだ標識を一枚くるりと回し、無言で「進入禁止」をエルナルに向けた。'
+            text: '深い黒の長毛をまとった巨大な二足歩行のケモノが、赤い大瞳と4つの白い小瞳でこちらを見下ろしている。'
         }
     ],
 
@@ -767,7 +762,7 @@ export const fluffyNoirData: BossData = {
         {
             speaker: 'boss',
             style: 'talk',
-            text: '「ウォオ...」'
+            text: '「ガウゥ...」'
         },
         {
             speaker: 'system',

@@ -3,10 +3,10 @@ import { BossTranslation } from '../types';
 export const fluffyNoirTranslations: BossTranslation = {
     ja: {},
     en: {
-        displayName: 'Anomaly Fluffy Noir',
-        description: 'An urban-legend kemono haunting abandoned road signs.',
-        appearanceNote: 'A huge bipedal wolf-like kemono in jet-black fur with light-swallowing depth. A round plush-like face with two large red central eyes and two small white pupil-less eyes on each outer side. Big triangular ears, a paw-padded fur-buried hand, a long tail tangled with bent road signs, and a mouth that splits wide to reveal a softly glowing crimson interior.',
-        questNote: 'At an abandoned factory ruins, witnesses keep returning after a "test of courage" with a strange story: when night falls, the road signs come alive, and intruders are kept somewhere warm and crimson until morning. Rumors say a kemono known as the "Sign Dweller" punishes anyone who ignores its signs and brands the ones it likes with an ownership mark to call them back at night. Investigate the sightings and put down this black urban-legend kemono.',
+        displayName: 'Anomalous Black Fluffy',
+        description: 'An anomaly inhabiting road signs.',
+        appearanceNote: 'A huge bipedal wolf-like kemono covered in long jet-black fur. It has a round plush-like face, a pair of large red eyes with two white pupil-less eyes outside each of them, furred hands so thick that its paw pads are buried, a long tail tangled with a bent road sign, a mouth wide enough to split open, and an interior that glows faintly crimson.',
+        questNote: 'At the abandoned factory ruins, sightings of an anomaly known as the "Sign Dweller" have been increasing. Please verify the reports and subdue it. Be careful... it is said to manipulate road signs and swallow anyone who enters its territory whole.',
         actions: {
             'claw-strike': {
                 name: 'Black Claw Strike',
@@ -154,12 +154,12 @@ export const fluffyNoirTranslations: BossTranslation = {
             }
         },
         victoryTrophy: {
-            name: 'Bent Blue Sign Fragment',
-            description: 'A fragment of a blue road-sign that was tangled in Signor Noir\'s tail and used to forge the ownership mark. Hold it close and you can almost hear a low "Gau..." again.'
+            name: 'Bent Danger Sign',
+            description: 'A danger sign that had been tangled in the black kemono\'s tail. Its pictogram is extremely abstract, so it is impossible to tell what danger it warns of.'
         },
         defeatTrophy: {
-            name: 'Crimson Inner Mucus',
-            description: 'Sweet, faintly metallic mucus collected from inside Signor Noir. It is warm and oxygen-rich, and breathing it always reminds you of being kept somewhere warm.'
+            name: 'Black Kemono Sign Ribbon',
+            description: 'A ribbon with a sign attached to mark its wearer as the black kemono\'s possession, decorated with a pictogram like the ones the black kemono shows. It is said that if you wear it overnight, the black kemono will sense it and come to you.'
         },
         battleStartMessages: [
             { text: 'At the entrance of the abandoned factory ruins, a bottomless black silhouette rises from a heap of road signs.' },
