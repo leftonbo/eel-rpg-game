@@ -18,8 +18,8 @@ export const fluffyNoirEffectsConfigs: StatusEffectConfig[] = [
         category: 'debuff',
         isDebuff: true,
         modifiers: {
-            actionPriority: ActionPriority.StruggleAction,
-            struggleRate: 0.2
+            canAct: false,
+            actionPriority: ActionPriority.CannotAct
         },
         messages: {
             onApplyPlayer: '{name}の前に透明な「進入禁止」の壁が立ちふさがった！動けない！',
