@@ -580,7 +580,7 @@ export const yumewataMellowData: BossData = {
     actions: yumewataMellowActions,
     aiStrategy: yumewataMellowAIStrategy,
     suppressAutoFinishingMove: true,
-    explorerLevelRequired: 10,
+    explorerLevelRequired: 9,
     battleStartMessages: [
         {
             speaker: 'player',
