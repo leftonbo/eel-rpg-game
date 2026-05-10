@@ -77,7 +77,7 @@ const signWarmupNoEntryAction: BossAction = {
     id: 'sign-warmup-no-entry',
     type: ActionType.Skip,
     name: '進入禁止標識を提示',
-    description: '尻尾から外した「進入禁止」標識を{player}に見せつける',
+    description: '尻尾から外した「進入禁止」標識を見せつける',
     weight: 1,
     messages: [
         '{boss}が尻尾の標識から「進入禁止」の赤白プレートを外し、{player}の正面にゆっくりと掲げた。',
@@ -93,7 +93,7 @@ const signWarmupArrowAction: BossAction = {
     id: 'sign-warmup-arrow',
     type: ActionType.Skip,
     name: '矢印標識を提示',
-    description: '矢印標識を自身の口元に向けて{player}に見せつける',
+    description: '矢印標識を自身の口元に向けて見せつける',
     weight: 1,
     messages: [
         '{boss}が黄色い矢印標識を尻尾から外し、矢印の先を大きな口に向けた。',
@@ -109,7 +109,7 @@ const signWarmupDangerAction: BossAction = {
     id: 'sign-warmup-danger',
     type: ActionType.Skip,
     name: '危険標識を提示',
-    description: '危険標識を{player}に見せつける',
+    description: '危険標識を見せつける',
     weight: 1,
     messages: [
         '{boss}が黄色い危険標識を尻尾から外し、{player}に向けて高々と掲げた！',
