@@ -135,7 +135,10 @@ export enum StatusEffectType {
 
     // Fluffy Noir effects
     SignBound = 'sign-bound',
-    OwnershipMark = 'ownership-mark'
+    OwnershipMark = 'ownership-mark',
+    NoEntrySign = 'no-entry-sign',
+    ArrowSign = 'arrow-sign',
+    DangerSign = 'danger-sign'
 }
 
 export interface StatusEffect {

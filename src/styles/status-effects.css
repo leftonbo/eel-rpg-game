@@ -476,6 +476,33 @@
     animation: sign-warning-flash 1.2s ease-in-out infinite alternate;
 }
 
+.status-no-entry-sign {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.6), rgba(255, 255, 255, 0.45));
+    border-color: #dc3545;
+    color: #fff7f7;
+    animation: sign-warning-flash 1.2s ease-in-out infinite alternate;
+}
+
+.status-arrow-sign {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.55), rgba(13, 110, 253, 0.5));
+    border-color: #ffc107;
+    color: #fff9e6;
+    animation: sign-warning-flash 1.2s ease-in-out infinite alternate;
+}
+
+.status-danger-sign {
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 193, 7, 0.55),
+        rgba(255, 193, 7, 0.55) 6px,
+        rgba(220, 53, 69, 0.6) 6px,
+        rgba(220, 53, 69, 0.6) 12px
+    );
+    border-color: #ffca2c;
+    color: #fff9e6;
+    animation: sign-warning-flash 1.2s ease-in-out infinite alternate;
+}
+
 .status-ownership-mark {
     background: linear-gradient(45deg, rgba(0, 90, 200, 0.55), rgba(70, 150, 255, 0.55));
     border-color: #4a96ff;

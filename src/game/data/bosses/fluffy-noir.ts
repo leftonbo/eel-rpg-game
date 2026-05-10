@@ -2,6 +2,23 @@ import { Player } from '@/game/entities/Player';
 import { ActionType, Boss, BossAction, BossData } from '@/game/entities/Boss';
 import { StatusEffectType } from '@/game/systems/StatusEffectTypes';
 
+const SIGN_WARMUP_STATUS_EFFECTS: StatusEffectType[] = [
+    StatusEffectType.NoEntrySign,
+    StatusEffectType.ArrowSign,
+    StatusEffectType.DangerSign
+];
+
+const clearSignWarmupStatusEffects = (boss: Boss): void => {
+    SIGN_WARMUP_STATUS_EFFECTS.forEach(statusEffect => {
+        boss.statusEffects.removeEffect(statusEffect);
+    });
+};
+
+const setSignWarmupStatusEffect = (boss: Boss, statusEffect: StatusEffectType): void => {
+    clearSignWarmupStatusEffects(boss);
+    boss.statusEffects.addEffect(statusEffect);
+};
+
 // =============================================================
 // 通常攻撃アクション (黒ケモノは戦闘自体は得意ではない設定)
 // =============================================================
@@ -85,6 +102,7 @@ const signWarmupNoEntryAction: BossAction = {
     ],
     onUse: (boss: Boss) => {
         boss.setCustomVariable('pendingSign', 'no-entry');
+        setSignWarmupStatusEffect(boss, StatusEffectType.NoEntrySign);
         return [];
     }
 };
@@ -101,6 +119,7 @@ const signWarmupArrowAction: BossAction = {
     ],
     onUse: (boss: Boss) => {
         boss.setCustomVariable('pendingSign', 'arrow');
+        setSignWarmupStatusEffect(boss, StatusEffectType.ArrowSign);
         return [];
     }
 };
@@ -118,6 +137,7 @@ const signWarmupDangerAction: BossAction = {
     onUse: (boss: Boss) => {
         boss.setCustomVariable('pendingSign', 'danger');
         boss.setCustomVariable('dangerVariant', Math.random() < 0.5 ? 1 : 2);
+        setSignWarmupStatusEffect(boss, StatusEffectType.DangerSign);
         return [];
     }
 };
@@ -613,11 +633,13 @@ const pickSignWarmup = (): BossAction => {
 const aiStrategy = (boss: Boss, player: Player, _turn: number): BossAction => {
     // 1. Doomed (最大HP=0だがまだ Dead 化していない) → カスタムとどめで所有マーク付与
     if (player.isDoomed() && !player.isDefeated()) {
+        clearSignWarmupStatusEffects(boss);
         return ownershipMarkingAction;
     }
 
     // 2. Defeated (Dead 状態) → KO 後フェーズ管理
     if (player.isDefeated()) {
+        clearSignWarmupStatusEffects(boss);
         let postDefeatedTurn = boss.getCustomVariable<number>('postDefeatedTurn') ?? 0;
         const postDefeatedPhase = boss.getCustomVariable<number>('postDefeatedPhase') ?? 1;
         postDefeatedTurn += 1;
@@ -640,6 +662,7 @@ const aiStrategy = (boss: Boss, player: Player, _turn: number): BossAction => {
     const pendingSign = boss.getCustomVariable<string | null>('pendingSign') ?? null;
     if (pendingSign) {
         boss.setCustomVariable('pendingSign', null);
+        clearSignWarmupStatusEffects(boss);
 
         const isPlayerDefending = player.statusEffects.hasEffect(StatusEffectType.Defending);
 

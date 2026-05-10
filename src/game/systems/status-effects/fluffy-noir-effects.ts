@@ -1,5 +1,14 @@
 import { ActionPriority, StatusEffectConfig, StatusEffectType } from '../StatusEffectTypes';
 
+const HIDDEN_SIGN_MESSAGES = {
+    onApplyPlayer: '',
+    onApplyBoss: '',
+    onTickPlayer: '',
+    onTickBoss: '',
+    onRemovePlayer: '',
+    onRemoveBoss: ''
+};
+
 export const fluffyNoirEffectsConfigs: StatusEffectConfig[] = [
     {
         type: StatusEffectType.SignBound,
@@ -38,5 +47,32 @@ export const fluffyNoirEffectsConfigs: StatusEffectConfig[] = [
             onTickPlayer: '',
             onRemovePlayer: ''
         }
+    },
+    {
+        type: StatusEffectType.NoEntrySign,
+        name: '進入禁止標識',
+        description: '黒ケモノが次に進入禁止標識の効力を放つ構えを見せている',
+        duration: -1,
+        category: 'neutral',
+        isDebuff: false,
+        messages: HIDDEN_SIGN_MESSAGES
+    },
+    {
+        type: StatusEffectType.ArrowSign,
+        name: '矢印標識',
+        description: '黒ケモノが次に矢印標識の効力を放つ構えを見せている',
+        duration: -1,
+        category: 'neutral',
+        isDebuff: false,
+        messages: HIDDEN_SIGN_MESSAGES
+    },
+    {
+        type: StatusEffectType.DangerSign,
+        name: '危険標識',
+        description: '黒ケモノが次に危険標識の効力を放つ構えを見せている',
+        duration: -1,
+        category: 'neutral',
+        isDebuff: false,
+        messages: HIDDEN_SIGN_MESSAGES
     }
 ];
