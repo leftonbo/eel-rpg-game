@@ -17,7 +17,7 @@ const normalAttackActions: BossAction[] = [
         weight: 35,
         playerStateCondition: 'normal',
         messages: [
-            '{boss}が肉球の埋もれた毛深い腕を大きく振り上げ、{player}に振り下ろした！'
+            '{boss}が腕を大きく振り上げ、{player}に振り下ろした！'
         ]
     },
     {
@@ -39,15 +39,15 @@ const normalAttackActions: BossAction[] = [
         type: ActionType.StatusAttack,
         name: '六瞳の催眠',
         description: '6つの瞳で覗き込み、抵抗意思を奪う',
-        damageFormula: (user: Boss) => user.attackPower * 0.6,
+        damageFormula: (_user: Boss) => 0,
         statusEffect: StatusEffectType.Charm,
-        statusChance: 0.5,
-        hitRate: 0.85,
+        statusChance: 0.9,
+        hitRate: 1.0,
         weight: 20,
         playerStateCondition: 'normal',
         messages: [
-            '{boss}は丸い顔ごと{player}を覗き込んだ。',
-            '左右の赤い大瞳と、その外側にある4つの白くて黒目のない瞳が、{player}の頭に「止まれ」「戻れ」「進め」と囁き始める...'
+            '{boss}は丸い顔を向け{player}を覗き込んだ。',
+            '赤い大瞳と白い瞳が、{player}の頭に奇妙な指示を囁き始める...'
         ]
     },
     {
@@ -56,7 +56,7 @@ const normalAttackActions: BossAction[] = [
         name: '両手で捕獲',
         description: '毛深い両手で{player}を抱え込もうとする',
         weight: 12,
-        hitRate: 0.55,
+        hitRate: 0.4,
         playerStateCondition: 'normal',
         canUse: (_boss: Boss, player: Player, _turn: number) => {
             return !player.isRestrained()
@@ -96,8 +96,8 @@ const signWarmupArrowAction: BossAction = {
     description: '矢印標識を自身の口元に向けて{player}に見せつける',
     weight: 1,
     messages: [
-        '{boss}が黄色い矢印標識を尻尾から外し、矢印の先を裂けるほど大きな口に向けた。',
-        '矢印の指す先に、薄く光る道筋がふわりと浮かび上がる...'
+        '{boss}が黄色い矢印標識を尻尾から外し、矢印の先を大きな口に向けた。',
+        '目の前に薄く光る道筋がふわりと浮かび上がる...'
     ],
     onUse: (boss: Boss) => {
         boss.setCustomVariable('pendingSign', 'arrow');
@@ -112,7 +112,7 @@ const signWarmupDangerAction: BossAction = {
     description: '危険標識を{player}に見せつける',
     weight: 1,
     messages: [
-        '{boss}が赤縁の「危険」標識を尻尾から外し、{player}に向けて高々と掲げた！',
+        '{boss}が黄色い危険標識を尻尾から外し、{player}に向けて高々と掲げた！',
         '標識の絵柄が黒い炎のようにゆらぎ、嫌な予感が辺りに満ちる...'
     ],
     onUse: (boss: Boss) => {
@@ -136,7 +136,7 @@ const signEffectNoEntryBindAction: BossAction = {
     statusChance: 1.0,
     hitRate: 1.0,
     messages: [
-        '攻撃に踏み込もうとした{player}の前に、突如として透明な「進入禁止」の壁がせり上がった！',
+        '攻撃に踏み込もうとした{player}の前に、突如として透明な進入禁止の壁がせり上がった！',
         '{boss}は満足そうに喉を低く鳴らしている...'
     ]
 };
@@ -190,9 +190,9 @@ const signEffectDangerPierceAction: BossAction = {
     name: '危険標識落下',
     description: '頭上に転送された巨大標識が{player}を直撃する',
     weight: 1,
-    damageFormula: (user: Boss) => user.attackPower * 2.0,
-    hitRate: 0.85,
-    criticalRate: 0.1,
+    damageFormula: (user: Boss) => user.attackPower * 4.0,
+    hitRate: 1.0,
+    criticalRate: 0.15,
     messages: [
         '{player}の頭上の空間に「落下注意」の巨大な標識が突如として転送された！',
         '錆びた金属プレートが重力に従って{player}に向けて真っ直ぐに落ちてくる！'
@@ -205,9 +205,9 @@ const signEffectDangerShockAction: BossAction = {
     name: '危険標識放電',
     description: '高電圧標識から走った電撃が{player}を貫く',
     weight: 1,
-    damageFormula: (user: Boss) => user.attackPower * 1.9,
-    hitRate: 0.85,
-    criticalRate: 0.1,
+    damageFormula: (user: Boss) => user.attackPower * 2.0,
+    hitRate: 1.0,
+    criticalRate: 0.15,
     statusEffect: StatusEffectType.Stunned,
     statusChance: 0.3,
     messages: [
@@ -246,7 +246,7 @@ const restrainedActions: BossAction[] = [
         weight: 30,
         playerStateCondition: 'restrained',
         messages: [
-            '{boss}が裂けるほど大きな口を開け、生暖かい舌で{player}の全身をベロリと舐め上げた...',
+            '{boss}が口を開け、生暖かい舌で{player}の全身をベロリと舐め上げた...',
             '甘く金属的な唾液が{player}にまとわりつく...'
         ]
     },
@@ -263,7 +263,7 @@ const restrainedActions: BossAction[] = [
         playerStateCondition: 'restrained',
         messages: [
             '{boss}は丸い顔を{player}にぴたりと近づけ、6つの瞳でじっと見つめてくる...',
-            '頭の中に「動くな」「進め」「我のもの」という囁きが満ちていく...'
+            '頭の中に奇妙な囁き声が満ちていく...'
         ]
     }
 ];
@@ -280,7 +280,7 @@ const liftAndDropSwallowAction: BossAction = {
     weight: 1,
     messages: [
         '{boss}が抱え込んだ{player}を高々と持ち上げ、自分の頭上にかざした！',
-        '裂けるほど大きな口の真上から、{player}が真紅の体内へぽとりと落ちていく...',
+        '裂けるほど大きな口を開けると手を放し、{player}が真紅の体内へぽとりと落ちていく...',
         '{boss}は満足そうに口を閉じ、{player}を完全に飲み込んだ。'
     ]
 };
@@ -292,7 +292,7 @@ const directSwallowAction: BossAction = {
     description: '抵抗できない{player}を直接抱え上げて飲み込む',
     weight: 1,
     messages: [
-        '{boss}が動けない{player}を毛深い腕でひょいと抱え上げ、裂け口の真上に運んでいく...',
+        '{boss}が動けない{player}を毛深い腕でひょいと抱え上げ、口へと運んでいく！',
         '真紅の体内へ{player}が落とし込まれていく...'
     ]
 };
@@ -307,7 +307,7 @@ const pawGrabSignBoundAction: BossAction = {
     hitRate: 1.0,
     messages: [
         '進入禁止の壁に押さえつけられて動けない{player}に、{boss}が大きな黒い両手をゆっくり伸ばしてきた...',
-        '{boss}は{player}を毛深い両腕にすっぽりと抱え込んだ！'
+        '{boss}は{player}を毛深い両手にすっぽりと抱え込んだ！'
     ]
 };
 
@@ -379,13 +379,13 @@ const eatenActions: BossAction[] = [
 const ownershipMarkingAction: BossAction = {
     id: 'ownership-marking',
     type: ActionType.FinishingMove,
-    name: '所有マーク巻きつけ',
-    description: '力尽きた{player}に青い所有マークを巻きつけ、自分のものとする',
+    name: '所有標識巻きつけ',
+    description: '力尽きた{player}に青い所有標識を巻きつけ、自分のものとする',
     weight: 1,
     messages: [
         '{boss}は体内の{player}が完全に力尽きたのを感じ取り、低く満足そうに唸った...',
-        '真紅の壁から青く光るリボン状の標識マークがするりと現れ、{player}の体に何重にも巻きついていく...',
-        '「クルル...♪」 {boss}は{player}に「所有マーク」をしっかりと刻みつけた。',
+        '真紅の壁から青く光るリボン状の標識がするりと現れ、{player}の体に何重にも巻きついていく...',
+        '「クルル...♪」 {boss}は{player}に、ケモノの描かれた所有標識をしっかりと刻みつけた。',
         '{player}はもう自分の意思で動くことはできない...'
     ],
     onUse: (_boss: Boss, player: Player) => {
@@ -445,7 +445,7 @@ const postPhase1Actions: BossAction[] = [
         weight: 1,
         messages: [
             'ゆるやかな蠕動が{player}を体内の奥から手前へ、また奥へと丁寧に運んでいる...',
-            '{player}に巻きついた所有マークが、粘液の中で静かに青く光り続けている...'
+            '{player}に巻きついた所有標識が、粘液の中で静かに青く光り続けている...'
         ]
     },
     {
@@ -496,7 +496,7 @@ const postPhase2Actions: BossAction[] = [
         weight: 1,
         messages: [
             '{boss}は丸い顔を寄せ、生暖かい舌で{player}の頬をぺろぺろと舐めている...',
-            '甘く金属的な唾液が、所有マークと一緒に{player}に染みこんでいく...'
+            '甘く金属的な唾液が、所有標識と一緒に{player}に染みこんでいく...'
         ]
     },
     {
@@ -513,11 +513,11 @@ const postPhase2Actions: BossAction[] = [
     {
         id: 'phase2-whispered-mark',
         type: ActionType.PostDefeatedAttack,
-        name: '所有マークを撫でつける',
-        description: '所有マークの上から黒い手で何度も撫でつける',
+        name: '所有標識を撫でつける',
+        description: '所有標識の上から黒い手で何度も撫でつける',
         weight: 1,
         messages: [
-            '{boss}は{player}に巻きついた青い所有マークを、毛深い手のひらで何度も撫でつけている...',
+            '{boss}は{player}に巻きついた青い所有標識を、毛深い手のひらで何度も撫でつけている...',
             'マークが黒ケモノの体温で温まり、{player}の中にしっかりと根づいていく...'
         ]
     }
@@ -534,9 +534,10 @@ const spitAndHugAction: BossAction = {
     description: '{player}を口から取り出し、両腕でしっかり抱きしめる',
     weight: 1,
     messages: [
-        '{boss}が裂けるほど大きな口を開け、真紅の体内から{player}をそっと舌に乗せて取り出した...',
+        '{player}を包む真紅の壁が急に縮むと、体内から持ち上げられる...',
+        '{boss}が口を開け、真紅の体内から{player}をそっと舌に乗せて取り出した...',
         '甘い粘液まみれの{player}を、{boss}は黒い毛むくじゃらの両腕でしっかりと抱きしめる...',
-        '青い所有マークが粘液越しにきらりと光り、{boss}は{player}に頬擦りを始めた。'
+        '青い所有標識が粘液越しにきらりと光り、{boss}は{player}に頬擦りを始めた。'
     ],
     onUse: (_boss: Boss, player: Player) => {
         player.statusEffects.removeEffect(StatusEffectType.Eaten);
@@ -551,9 +552,9 @@ const bellyReswallowAction: BossAction = {
     description: '抱きしめていた{player}を再び体内へと飲み込む',
     weight: 1,
     messages: [
-        '{boss}が抱きしめていた{player}を高々と持ち上げ、裂けるほど大きな口を開いた...',
+        '{boss}が抱きしめていた{player}を高々と持ち上げ、大きな口を開いた...',
         '所有マークの輝きと共に、{player}が真紅の体内へとゆっくり落とし込まれていく...',
-        '{boss}はまた{player}を体内に「保管」してしまった。'
+        '{boss}はまた{player}を体内に保管してしまった。'
     ],
     onUse: (_boss: Boss, player: Player) => {
         if (!player.isEaten()) {
