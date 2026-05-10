@@ -334,11 +334,11 @@ export abstract class Actor {
 
     /**
      * 何らかの拘束状態にあるかチェック
-     * 食べられ、繭状態、通常の拘束状態を含む
+     * 食べられ、繭状態、通常の拘束状態、標識による拘束を含む
      * @returns 拘束状態の場合true
      */
     isAnyRestrained(): boolean {
-        return this.isRestrained() || this.isEaten() || this.isCocoon();
+        return this.isRestrained() || this.isEaten() || this.isCocoon() || this.statusEffects.isSignBound();
     }
 
     /**

@@ -100,10 +100,10 @@ const signWarmupNoEntryAction: BossAction = {
         '{boss}が尻尾の標識から「進入禁止」の赤白プレートを外し、{player}の正面にゆっくりと掲げた。',
         '標識の周りで空気が歪み、見えない壁の気配が漂う...'
     ],
-    onUse: (boss: Boss) => {
+    onPreUse: (action: BossAction, boss: Boss) => {
         boss.setCustomVariable('pendingSign', 'no-entry');
         setSignWarmupStatusEffect(boss, StatusEffectType.NoEntrySign);
-        return [];
+        return action;
     }
 };
 
@@ -117,10 +117,10 @@ const signWarmupArrowAction: BossAction = {
         '{boss}が黄色い矢印標識を尻尾から外し、矢印の先を大きな口に向けた。',
         '目の前に薄く光る道筋がふわりと浮かび上がる...'
     ],
-    onUse: (boss: Boss) => {
+    onPreUse: (action: BossAction, boss: Boss) => {
         boss.setCustomVariable('pendingSign', 'arrow');
         setSignWarmupStatusEffect(boss, StatusEffectType.ArrowSign);
-        return [];
+        return action;
     }
 };
 
@@ -134,11 +134,11 @@ const signWarmupDangerAction: BossAction = {
         '{boss}が黄色い危険標識を尻尾から外し、{player}に向けて高々と掲げた！',
         '標識の絵柄が黒い炎のようにゆらぎ、嫌な予感が辺りに満ちる...'
     ],
-    onUse: (boss: Boss) => {
+    onPreUse: (action: BossAction, boss: Boss) => {
         boss.setCustomVariable('pendingSign', 'danger');
         boss.setCustomVariable('dangerVariant', Math.random() < 0.5 ? 1 : 2);
         setSignWarmupStatusEffect(boss, StatusEffectType.DangerSign);
-        return [];
+        return action;
     }
 };
 
@@ -183,13 +183,7 @@ const signEffectArrowEatAction: BossAction = {
         '一歩動きを止めた{player}の足元に、矢印の光線がまっすぐ走った！',
         '矢印に沿って{player}の体が滑るように{boss}の口元へ引き寄せられていく...',
         '{boss}は裂けるほど大きな口を開け、{player}を真紅の体内に飲み込んだ！'
-    ],
-    onUse: (_boss: Boss, player: Player) => {
-        if (player.isRestrained()) {
-            player.statusEffects.removeEffect(StatusEffectType.Restrained);
-        }
-        return [];
-    }
+    ]
 };
 
 const signEffectArrowFailAction: BossAction = {
@@ -325,9 +319,25 @@ const pawGrabSignBoundAction: BossAction = {
     description: '進入禁止で動けない{player}を確実に抱え込む',
     weight: 1,
     hitRate: 1.0,
+    canUse: (_boss: Boss, player: Player, _turn: number) => {
+        return player.statusEffects.hasEffect(StatusEffectType.SignBound);
+    },
     messages: [
         '進入禁止の壁に押さえつけられて動けない{player}に、{boss}が大きな黒い両手をゆっくり伸ばしてきた...',
         '{boss}は{player}を毛深い両手にすっぽりと抱え込んだ！'
+    ]
+};
+
+const pawGrabKnockedOutAction: BossAction = {
+    id: 'paw-grab-knocked-out',
+    type: ActionType.RestraintAttack,
+    name: '倒れた獲物を抱え込む',
+    description: '倒れている{player}を大きな両手で抱え込む',
+    weight: 1,
+    hitRate: 1.0,
+    messages: [
+        '足元で倒れた{player}に、{boss}が大きな黒い両手をそっと伸ばしてきた...',
+        '{boss}は動けない{player}を毛深い両手にすっぽりと抱え込んだ！'
     ]
 };
 
@@ -591,6 +601,7 @@ const bellyReswallowAction: BossAction = {
 const fluffyNoirActions: BossAction[] = [
     ...normalAttackActions,
     pawGrabSignBoundAction,
+    pawGrabKnockedOutAction,
     signWarmupNoEntryAction,
     signWarmupArrowAction,
     signWarmupDangerAction,
@@ -692,8 +703,11 @@ const aiStrategy = (boss: Boss, player: Player, _turn: number): BossAction => {
         if (player.isRestrained()) {
             return liftAndDropSwallowAction;
         }
-        if (Math.random() < 0.7) {
+        if (player.statusEffects.hasEffect(StatusEffectType.SignBound)) {
             return pawGrabSignBoundAction;
+        }
+        if (Math.random() < 0.7) {
+            return pawGrabKnockedOutAction;
         }
         return directSwallowAction;
     }

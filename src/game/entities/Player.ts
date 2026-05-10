@@ -507,11 +507,11 @@ export class Player extends Actor {
             case 'ultra-smash':
                 return this.statusEffects.canUseSkills();
             case 'struggle':
-                return this.statusEffects.canUseSkills() && (this.statusEffects.isRestrained() || this.statusEffects.isEaten());
+                return this.statusEffects.canUseSkills() && this.isAnyRestrained();
             case 'defend':
                 return true;
             case 'stay-still':
-                return this.statusEffects.isRestrained() || this.statusEffects.isEaten();
+                return this.isAnyRestrained();
             default:
                 return this.statusEffects.canUseSkills();
         }

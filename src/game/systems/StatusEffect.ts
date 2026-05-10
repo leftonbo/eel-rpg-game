@@ -265,6 +265,10 @@ export class StatusEffectManager {
     isCocoon(): boolean {
         return this.hasEffect(StatusEffectType.Cocoon);
     }
+
+    isSignBound(): boolean {
+        return this.hasEffect(StatusEffectType.SignBound);
+    }
     
     isSleeping(): boolean {
         return this.hasEffect(StatusEffectType.Sleep);

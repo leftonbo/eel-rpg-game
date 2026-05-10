@@ -28,6 +28,10 @@ export const fluffyNoirTranslations: BossTranslation = {
                 name: 'Two-Hand Secure',
                 description: 'Calmly grabs prey that is pinned by the No-Entry sign.'
             },
+            'paw-grab-knocked-out': {
+                name: 'Helpless Prey Scoop',
+                description: 'Scoops up collapsed prey with both large paws.'
+            },
             'sign-warmup-no-entry': {
                 name: 'Present: No-Entry Sign',
                 description: 'Holds up the red-and-white "No Entry" plate from its tail.'
@@ -163,9 +167,8 @@ export const fluffyNoirTranslations: BossTranslation = {
         },
         battleStartMessages: [
             { text: 'At the entrance of the abandoned factory ruins, a bottomless black silhouette rises from a heap of road signs.' },
-            { text: 'A massive bipedal kemono draped in deep black fur stares down at you with two large red eyes and four small white eyes.' },
             { text: '"Gau..."' },
-            { text: 'Without a word, Signor Noir spins a tail-tangled sign and shows the "No Entry" plate to Elnal.' }
+            { text: 'A massive bipedal kemono draped in deep black fur stares down at you with two large red eyes and four small white eyes.' }
         ],
         victoryMessages: [
             { text: '"Wooo..."' },

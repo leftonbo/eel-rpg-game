@@ -18,9 +18,7 @@ export const fluffyNoirEffectsConfigs: StatusEffectConfig[] = [
         category: 'debuff',
         isDebuff: true,
         modifiers: {
-            canAct: false,
-            canUseSkills: false,
-            actionPriority: ActionPriority.CannotAct,
+            actionPriority: ActionPriority.StruggleAction,
             struggleRate: 0.2
         },
         messages: {
