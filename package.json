@@ -42,7 +42,7 @@
     "eslint": "^9.31.0",
     "gray-matter": "^4.0.3",
     "rimraf": "^6.0.0",
-    "rollup-plugin-visualizer": "^6.0.0",
+    "rollup-plugin-visualizer": "^7.0.1",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3",
     "vite": "^7.1.0",
