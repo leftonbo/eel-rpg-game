@@ -52,8 +52,11 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
+    "bootstrap": "^5.3.8",
     "i18next": "^25.8.0",
     "marked": "^16.1.1",
-    "node": "^22.0.0"
+    "node": "^22.0.0",
+    "react": "^19.2.6",
+    "react-bootstrap": "^2.10.10"
   }
 }
