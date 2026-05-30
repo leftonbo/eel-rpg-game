@@ -7,6 +7,10 @@ import { t } from '../../i18n';
 import { ModalUtils } from '../../utils/ModalUtils';
 import { ToastType, ToastUtils } from '../../utils/ToastUtils';
 
+interface BossSelectScreenProps {
+    isActive: boolean;
+}
+
 interface PlayerSummary {
     name: string;
     icon: string;
@@ -34,12 +38,16 @@ function getEquipmentDisplayName(equipment: Equipment | null, type: EquipmentTyp
     return equipment ? AbilitySystem.getEquipmentName(type, equipment) : t('common.unknown');
 }
 
-export function BossSelectScreen(): React.ReactElement {
+export function BossSelectScreen({ isActive }: BossSelectScreenProps): React.ReactElement {
     const { game } = useGameContext();
     const [playerSummary, setPlayerSummary] = useState<PlayerSummary | null>(null);
     const [bossCards, setBossCards] = useState<BossCardInfo[]>([]);
 
     useEffect(() => {
+        if (!isActive) {
+            return;
+        }
+
         const player = game.getPlayer();
         const equipment = player.getEquipmentInfo();
         const explorerLevel = player.getExplorerLevel();
@@ -83,7 +91,7 @@ export function BossSelectScreen(): React.ReactElement {
                 };
             })
         );
-    }, [game]);
+    }, [game, isActive]);
 
     const handleBossCardClick = async (bossId: string, isUnlocked: boolean) => {
         if (!isUnlocked) return;

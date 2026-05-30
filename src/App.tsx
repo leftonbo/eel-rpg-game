@@ -13,6 +13,9 @@ import { ToastProvider } from './game/ui/ToastProvider';
 
 function App() {
     const { currentState } = useGameContext();
+    const bossSelectActive = currentState === GameState.OutGameBossSelect;
+    const playerDetailActive = currentState === GameState.OutGamePlayerDetail;
+    const changelogActive = currentState === GameState.OutGameChangelog;
 
     return (
         <ToastProvider>
@@ -20,12 +23,18 @@ function App() {
                 <div id="game-container" className="container-fluid min-vh-100 d-flex flex-column">
                     <LegacyStaticUi currentState={currentState}>
                         {currentState === GameState.Title && <TitleScreen />}
-                        {currentState === GameState.OutGameBossSelect && <BossSelectScreen />}
-                        {currentState === GameState.OutGamePlayerDetail && <PlayerDetailScreen />}
+                        <div className={bossSelectActive ? '' : 'd-none'}>
+                            <BossSelectScreen isActive={bossSelectActive} />
+                        </div>
+                        <div className={playerDetailActive ? '' : 'd-none'}>
+                            <PlayerDetailScreen isActive={playerDetailActive} />
+                        </div>
                         {currentState === GameState.OutGameExplorationRecord && <ExplorationRecordScreen />}
                         {currentState === GameState.OutGameLibrary && <LibraryScreen />}
                         {currentState === GameState.OutGameOption && <OptionScreen />}
-                        {currentState === GameState.OutGameChangelog && <ChangelogScreen />}
+                        <div className={changelogActive ? '' : 'd-none'}>
+                            <ChangelogScreen isActive={changelogActive} />
+                        </div>
                     </LegacyStaticUi>
                 </div>
             </DialogProvider>

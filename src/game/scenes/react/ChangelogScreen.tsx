@@ -5,11 +5,20 @@ import { ChangelogMarkdownRenderer } from '../../utils/ChangelogMarkdownRenderer
 
 type LoadState = 'loading' | 'loaded' | 'error';
 
-export function ChangelogScreen(): ReactElement {
+interface ChangelogScreenProps {
+    isActive: boolean;
+}
+
+export function ChangelogScreen({ isActive }: ChangelogScreenProps): ReactElement {
     const [htmlContent, setHtmlContent] = useState<string>('');
     const [loadState, setLoadState] = useState<LoadState>('loading');
 
     useEffect(() => {
+        if (!isActive) {
+            return;
+        }
+
+        setLoadState('loading');
         try {
             if (!isChangelogLoaded()) {
                 throw new Error('Changelogs are not loaded yet');
@@ -32,7 +41,7 @@ export function ChangelogScreen(): ReactElement {
             console.error('[ChangelogScreen] Failed to load changelog:', error);
             setLoadState('error');
         }
-    }, []);
+    }, [isActive]);
 
     return (
         <div className="container-fluid py-4">

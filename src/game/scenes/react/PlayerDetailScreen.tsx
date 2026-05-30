@@ -250,7 +250,11 @@ function SkillItem({ skill, isPassive }: SkillItemProps): React.ReactElement {
 
 type ActiveTab = 'stats' | 'equipment' | 'skills' | 'items';
 
-export function PlayerDetailScreen(): React.ReactElement {
+interface PlayerDetailScreenProps {
+    isActive: boolean;
+}
+
+export function PlayerDetailScreen({ isActive }: PlayerDetailScreenProps): React.ReactElement {
     const { game } = useGameContext();
     const [activeTab, setActiveTab] = useState<ActiveTab>('stats');
     const [data, setData] = useState<PlayerDetailData | null>(null);
@@ -344,7 +348,33 @@ export function PlayerDetailScreen(): React.ReactElement {
         };
     }, [refresh]);
 
-    if (!data) return <></>;
+    useEffect(() => {
+        if (isActive) {
+            refresh();
+        }
+    }, [isActive, refresh]);
+
+    if (!data) {
+        return (
+            <div className="container flex-grow-1 d-flex flex-column">
+                <div className="row mt-4 mb-4 flex-grow-1">
+                    <div className="col-12">
+                        <div className="card bg-dark">
+                            <div className="card-body text-center py-5">
+                                <div
+                                    className="spinner-border text-primary"
+                                    role="status"
+                                    style={{ width: '3rem', height: '3rem' }}
+                                >
+                                    <span className="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     // 装備ハンドラ
     const handleEquipWeapon = (id: string) => {
