@@ -169,54 +169,60 @@ export function LibraryScreen(): ReactElement {
         [documents, game]
     );
 
-    return (
-        <div className="container-fluid flex-grow-1 d-flex flex-column py-3">
-            <div className="row flex-grow-1" style={{ minHeight: 0 }}>
-                {/* 左カラム: 文書一覧 */}
-                <div className="col-md-4 col-lg-3 d-flex flex-column">
-                    <div className="card bg-dark h-100">
-                        <div className="card-header">
-                            <h6 className="mb-0">{t('library.documentListTitle')}</h6>
-                        </div>
-                        <div className="card-body overflow-auto p-2">
-                            <div id="library-document-list">
-                                {documents.map((doc) => (
-                                    <DocumentListItem
-                                        key={doc.id}
-                                        doc={doc}
-                                        isSelected={doc.id === selectedDocId}
-                                        onSelect={handleSelectDocument}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    const selectedDoc = documents.find((doc) => doc.id === selectedDocId);
 
-                {/* 右カラム: 文書コンテンツ */}
-                <div className="col-md-8 col-lg-9 d-flex flex-column">
-                    <div id="library-document-content" className="h-100">
-                        {!selectedDocId ? (
-                            <div className="text-center text-muted d-flex align-items-center justify-content-center h-100">
-                                <p className="mb-0">{t('library.selectPrompt')}</p>
-                            </div>
-                        ) : (
-                            (() => {
-                                const doc = documents.find((d) => d.id === selectedDocId);
-                                return (
-                                    <div className="card h-100">
-                                        <div className="card-header bg-primary text-white">
-                                            <h5 className="mb-0">{doc?.title}</h5>
-                                        </div>
-                                        <div
-                                            className="card-body overflow-auto"
-                                            style={{ maxHeight: '70vh' }}
-                                            dangerouslySetInnerHTML={{ __html: docHtml }}
-                                        />
+    return (
+        <div className="container flex-grow-1 d-flex flex-column">
+            <div className="row mt-4 mb-4 flex-grow-1">
+                <div className="col-12">
+                    <div className="card bg-dark">
+                        <div className="card-header">
+                            <h5 className="mb-0">{t('library.title')}</h5>
+                        </div>
+                        <div className="card-body">
+                            <div className="row h-100">
+                                {/* 左カラム: 文書一覧 */}
+                                <div className="col-md-4">
+                                    <h6>{t('library.availableDocuments')}</h6>
+                                    <div id="library-document-list">
+                                        {documents.map((doc) => (
+                                            <DocumentListItem
+                                                key={doc.id}
+                                                doc={doc}
+                                                isSelected={doc.id === selectedDocId}
+                                                onSelect={handleSelectDocument}
+                                            />
+                                        ))}
                                     </div>
-                                );
-                            })()
-                        )}
+                                </div>
+
+                                {/* 右カラム: 文書コンテンツ */}
+                                <div className="col-md-8">
+                                    <h6>{t('library.documentContent')}</h6>
+                                    <div
+                                        id="library-document-content"
+                                        style={{ minHeight: '400px', overflowY: 'auto' }}
+                                    >
+                                        {!selectedDocId ? (
+                                            <div className="text-center text-muted">
+                                                <p className="mb-0">{t('library.selectPrompt')}</p>
+                                            </div>
+                                        ) : (
+                                            <div className="card h-100">
+                                                <div className="card-header bg-primary text-white">
+                                                    <h5 className="mb-0">{selectedDoc?.title}</h5>
+                                                </div>
+                                                <div
+                                                    className="card-body overflow-auto"
+                                                    style={{ maxHeight: '70vh' }}
+                                                    dangerouslySetInnerHTML={{ __html: docHtml }}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
