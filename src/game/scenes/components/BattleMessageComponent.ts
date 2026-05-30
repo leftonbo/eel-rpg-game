@@ -45,13 +45,22 @@ export class BattleMessageComponent {
     private initializeBattleLog(): void {
         this.battleLog = document.getElementById('battle-log');
     }
+
+    private getBattleLog(): HTMLElement | null {
+        if (!this.battleLog || !document.body.contains(this.battleLog)) {
+            this.initializeBattleLog();
+        }
+
+        return this.battleLog;
+    }
     
     /**
      * バトルログをクリア
      */
     clearBattleLog(): void {
-        if (this.battleLog) {
-            this.battleLog.innerHTML = '';
+        const battleLog = this.getBattleLog();
+        if (battleLog) {
+            battleLog.innerHTML = '';
         }
     }
     
@@ -68,7 +77,8 @@ export class BattleMessageComponent {
         actor: 'player' | 'boss' | 'system' = 'system',
         boss?: Boss
     ): void {
-        if (!this.battleLog) return;
+        const battleLog = this.getBattleLog();
+        if (!battleLog) return;
         
         // Create message container
         const messageContainer = document.createElement('div');
@@ -107,15 +117,16 @@ export class BattleMessageComponent {
             }
         }
         
-        this.battleLog.appendChild(messageContainer);
-        this.battleLog.scrollTop = this.battleLog.scrollHeight;
+        battleLog.appendChild(messageContainer);
+        battleLog.scrollTop = battleLog.scrollHeight;
     }
     
     /**
      * ラウンド区切りを追加
      */
     addRoundDivider(roundNumber: number): void {
-        if (!this.battleLog) return;
+        const battleLog = this.getBattleLog();
+        if (!battleLog) return;
         
         const divider = document.createElement('div');
         divider.className = 'battle-round-divider';
@@ -125,8 +136,8 @@ export class BattleMessageComponent {
         label.textContent = t('battle.roundLabel', { round: roundNumber });
         
         divider.appendChild(label);
-        this.battleLog.appendChild(divider);
-        this.battleLog.scrollTop = this.battleLog.scrollHeight;
+        battleLog.appendChild(divider);
+        battleLog.scrollTop = battleLog.scrollHeight;
     }
     
     /**

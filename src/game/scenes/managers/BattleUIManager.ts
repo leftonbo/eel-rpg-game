@@ -31,13 +31,13 @@ export class BattleUIManager {
     private bossStatusEffects: HTMLElement | null = null;
     
     constructor() {
-        this.initializeUIElements();
+        this.refreshElements();
     }
     
     /**
      * UI要素の初期化
      */
-    private initializeUIElements(): void {
+    private refreshElements(): void {
         // Player UI elements
         this.playerHpElement = document.getElementById('player-hp');
         this.playerMaxHpElement = document.getElementById('player-max-hp');
@@ -63,6 +63,7 @@ export class BattleUIManager {
      * 全UI要素を更新
      */
     updateAllUI(player: Player, boss: Boss): void {
+        this.refreshElements();
         this.updatePlayerUI(player);
         this.updateBossUI(boss);
         this.updateItemCounts(player);
