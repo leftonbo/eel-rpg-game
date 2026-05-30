@@ -89,9 +89,6 @@ export class Game implements IGameContext {
             this.player.lateInitialize();
             console.log('[Game][initAsync] Player initialized');
             
-            // 各シーンの遅延初期化
-            this.outGameBossSelectScene.lateInitialize();
-            
             console.log('[Game][initAsync] Game initialized successfully');
             
             // Show initial title screen

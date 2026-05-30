@@ -34,11 +34,7 @@ export class OutGameBossSelectScene extends BaseOutGameScene {
         // ナビゲーションバーのアクティブ状態更新
         this.updateNavigationActiveState();
         
-        // ボスカード情報更新
-        this.bossCardManager.updateBossCards();
-        
-        // プレイヤー情報表示更新
-        this.updatePlayerSummary();
+        // ボスカード情報・プレイヤー情報はReactコンポーネントで管理
     }
 
     refreshLocalization(): void {
