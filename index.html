@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
+    <title>ElnalFTE - Turn-based RPG</title>
     
     <!-- 検索エンジン対策: インデックス禁止 -->
     <meta name="robots" content="noindex, nofollow">
@@ -27,43 +27,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-dark text-light" data-bs-theme="dark">
-    <!-- Game Container -->
-    <div id="game-container" class="container-fluid min-vh-100 d-flex flex-column">
-        <!-- Navigation Bar -->
-        <!-- Out Game Navigation (共通) -->
-        <div id="out-game-navigation-container" class="row d-none">
-            <%- include('out-game-navigation') %>
-        </div>
-        
-        <!-- Main Content -->
-        <main class="flex-grow-1">
-            <!-- Scenes -->
-            <!-- タイトル画面は React で管理 -->
-            <div id="react-root"></div>
-            <%- include('battle-scene') %>
-            <%- include('battle-result-scene') %>
-            
-            <!-- Out Game Scenes -->
-            <!-- ボス選択画面は React で管理 -->
-            <!-- プレイヤー詳細画面は React で管理 -->
-            <!-- 探検記録画面は React で管理 -->
-            <!-- 資料庫画面は React で管理 -->
-            <!-- オプション画面は React で管理 -->
-            <!-- 更新履歴画面は React で管理 -->
-        </main>
-    
-        <!-- Footer Bar -->
-        <!-- Out Game Footer (共通) -->
-        <div id="out-game-footer-container" class="row d-none mt-auto">
-            <%- include('out-game-footer') %>
-        </div>
-        
-        <!-- Modals -->
-        <%- include('boss-modal') %>
-        <%- include('debug-modal') %>
-        <%- include('utility-modals') %>
-        <%- include('player-info-edit-modal') %>
-    </div>
+    <div id="react-root"></div>
 
     <!-- Toast Container for notifications -->
     <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3"></div>

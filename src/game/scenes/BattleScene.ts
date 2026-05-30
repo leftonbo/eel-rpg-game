@@ -63,11 +63,12 @@ export class BattleScene {
     private debugManager?: BattleDebugManager;
     private messageComponent!: BattleMessageComponent;
     private eventHandler!: BattleEventHandler;
+    private eventListenersSetUp: boolean = false;
     
     constructor(game: Game) {
         this.game = game;
         this.initializeManagersAndComponents();
-        this.setupEventHandlers();
+        // イベントリスナーの設定はenter()で実施（React DOMの描画後に行う必要があるため）
     }
     
     /**
@@ -129,6 +130,13 @@ export class BattleScene {
     }
     
     enter(): void {
+        // イベントリスナーをまだ設定していない場合のみ設定する
+        // (React側のDOMが描画された後に呼ばれるためコンストラクタでは設定できない)
+        if (!this.eventListenersSetUp) {
+            this.setupEventHandlers();
+            this.eventListenersSetUp = true;
+        }
+
         this.player = this.game.getPlayer();
         this.boss = this.game.getCurrentBoss();
         
