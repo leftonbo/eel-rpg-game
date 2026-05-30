@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import Button from 'react-bootstrap/Button';
 import { useGameContext } from '../../context/GameContext';
 import { applyTranslations } from '../../i18n/dom';
 
@@ -32,13 +33,15 @@ export function TitleScreen(): React.ReactElement {
                     </ul>
                 </div>
 
-                <button
+                <Button
                     id="start-button"
-                    className="btn btn-primary btn-lg mt-4"
+                    variant="primary"
+                    size="lg"
+                    className="mt-4"
                     onClick={handleStart}
                 >
                     <span data-i18n="titleScreen.startButton">🎮 ゲームスタート</span>
-                </button>
+                </Button>
             </div>
         </div>
     );

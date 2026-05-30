@@ -6,12 +6,12 @@ import { calculateAttackResult } from '../utils/CombatUtils';
 import { BattleResultStatus, calculateBattleResult } from './BattleResultScene';
 import { BattleUIManager } from './managers/BattleUIManager';
 import { BattleActionManager } from './managers/BattleActionManager';
-import { BattleDebugManager } from './managers/BattleDebugManager';
 import { BattleMessageComponent } from './components/BattleMessageComponent';
 import { BattleEventHandler, EventCallbacks } from './utils/BattleEventHandler';
 import { PLAYER_ITEMS } from '../data/PlayerItems';
 import { StatusEffectManager } from '../systems/StatusEffect';
 import { ItemUseResult, ItemUseFailureReason } from '../entities/PlayerItemManager';
+import { ModalUtils } from '../utils/ModalUtils';
 
 /**
  * 戦闘画面を定義するクラス
@@ -60,7 +60,6 @@ export class BattleScene {
     // Manager and component instances
     private uiManager!: BattleUIManager;
     private actionManager!: BattleActionManager;
-    private debugManager?: BattleDebugManager;
     private messageComponent!: BattleMessageComponent;
     private eventHandler!: BattleEventHandler;
     private eventListenersSetUp: boolean = false;
@@ -78,11 +77,6 @@ export class BattleScene {
         this.uiManager = new BattleUIManager();
         this.actionManager = new BattleActionManager();
         this.messageComponent = new BattleMessageComponent();
-        
-        // Debug manager is only initialized in debug mode
-        if (this.game.isDebugMode()) {
-            this.debugManager = new BattleDebugManager();
-        }
         
         // Initialize event handler with callbacks
         const callbacks: EventCallbacks = {
@@ -110,10 +104,6 @@ export class BattleScene {
             
             // Debug
             onShowDebugModal: () => this.showDebugModal(),
-            onApplyDebugChanges: () => this.applyDebugChanges(),
-            onAddPlayerStatus: () => this.showAddStatusEffectDialog('player'),
-            onAddBossStatus: () => this.showAddStatusEffectDialog('boss'),
-            onAddCustomVar: () => this.showAddCustomVarDialog(),
             
             // Boss Info
             onShowBossInfo: () => this.showBossInfoModal()
@@ -664,29 +654,16 @@ export class BattleScene {
         this.endBossTurn();
     }
     
-    // Debug methods - delegate to debug manager
     private showDebugModal(): void {
-        if (this.debugManager && this.player && this.boss) {
-            this.debugManager.showDebugModal(this.player, this.boss);
-        }
-    }
-    
-    private applyDebugChanges(): void {
-        if (this.debugManager && this.player && this.boss) {
-            this.debugManager.applyDebugChanges(this.player, this.boss);
-            this.updateUI();
-        }
-    }
-    
-    private async showAddStatusEffectDialog(target: 'player' | 'boss'): Promise<void> {
-        if (this.debugManager) {
-            await this.debugManager.showAddStatusEffectDialog(target, this.player ?? undefined, this.boss ?? undefined);
-        }
-    }
-    
-    private async showAddCustomVarDialog(): Promise<void> {
-        if (this.debugManager && this.boss) {
-            await this.debugManager.showAddCustomVarDialog(this.boss);
+        if (this.player && this.boss) {
+            void ModalUtils.showBattleDebugModal({
+                player: this.player,
+                boss: this.boss,
+            }).then((applied) => {
+                if (applied) {
+                    this.updateUI();
+                }
+            });
         }
     }
     

@@ -1,4 +1,9 @@
-import { ReactElement, ReactNode } from 'react';
+import { ReactElement, ReactNode, useEffect, useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import { getUnreadCountForPlayer } from '../../data/DocumentLoader';
+import { useGameContext } from '../../context/GameContext';
 import { GameState } from '../../types/GameState';
 
 interface LegacyStaticUiProps {
@@ -15,32 +20,75 @@ function isOutGameState(state: GameState): boolean {
         state === GameState.OutGameChangelog;
 }
 
+function getLibraryUnreadCount(game: ReturnType<typeof useGameContext>['game']): number {
+    try {
+        const player = game.getPlayer();
+        return getUnreadCountForPlayer(
+            player,
+            player.getExplorerLevel(),
+            player.memorialSystem.getVictoriousBossIds(),
+            player.memorialSystem.getDefeatedBossIds()
+        );
+    } catch (error) {
+        console.error('Failed to calculate library unread badge:', error);
+        return 0;
+    }
+}
+
 export function LegacyStaticUi({ currentState, children }: LegacyStaticUiProps): ReactElement {
+    const { game } = useGameContext();
+    const [, setUnreadRefreshKey] = useState(0);
     const outGameVisible = isOutGameState(currentState);
     const battleVisible = currentState === GameState.Battle;
     const battleResultVisible = currentState === GameState.BattleResult;
+    const libraryUnreadCount = getLibraryUnreadCount(game);
+    const navItems = [
+        { id: 'nav-boss-select', state: GameState.OutGameBossSelect, label: '⚔️ ボス選択', i18nKey: 'navigation.bossSelect' },
+        { id: 'nav-player-detail', state: GameState.OutGamePlayerDetail, label: '👤 プレイヤー詳細', i18nKey: 'navigation.playerDetail' },
+        { id: 'nav-exploration-record', state: GameState.OutGameExplorationRecord, label: '📊 探検記録', i18nKey: 'navigation.explorationRecord' },
+        { id: 'nav-library', state: GameState.OutGameLibrary, label: '📚 資料庫', i18nKey: 'navigation.library' },
+        { id: 'nav-option', state: GameState.OutGameOption, label: '⚙️ オプション', i18nKey: 'navigation.option' },
+        { id: 'nav-changelog', state: GameState.OutGameChangelog, label: '📋 更新履歴', i18nKey: 'navigation.changelog' },
+    ];
+
+    useEffect(() => {
+        const handleUnreadChange = () => setUnreadRefreshKey((value) => value + 1);
+        document.addEventListener('libraryUnreadChanged', handleUnreadChange);
+        return () => document.removeEventListener('libraryUnreadChanged', handleUnreadChange);
+    }, []);
 
     return (
         <>
             <div id="out-game-navigation-container" className={`row${outGameVisible ? '' : ' d-none'}`}>
-                <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+                <Navbar expand="lg" variant="dark" bg="dark" className="w-100">
                     <div className="container-fluid">
-                        <a className="navbar-brand" href="#">🐍 ElnalFTE</a>
-                        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                            <span className="navbar-toggler-icon"></span>
-                        </button>
-                        <div className="collapse navbar-collapse" id="navbarNav">
-                            <ul className="navbar-nav me-auto">
-                                <li className="nav-item"><button className="nav-link btn btn-link" id="nav-boss-select" data-i18n="navigation.bossSelect">⚔️ ボス選択</button></li>
-                                <li className="nav-item"><button className="nav-link btn btn-link" id="nav-player-detail" data-i18n="navigation.playerDetail">👤 プレイヤー詳細</button></li>
-                                <li className="nav-item"><button className="nav-link btn btn-link" id="nav-exploration-record" data-i18n="navigation.explorationRecord">📊 探検記録</button></li>
-                                <li className="nav-item"><button className="nav-link btn btn-link" id="nav-library" data-i18n="navigation.library">📚 資料庫</button></li>
-                                <li className="nav-item"><button className="nav-link btn btn-link" id="nav-option" data-i18n="navigation.option">⚙️ オプション</button></li>
-                                <li className="nav-item"><button className="nav-link btn btn-link" id="nav-changelog" data-i18n="navigation.changelog">📋 更新履歴</button></li>
-                            </ul>
-                        </div>
+                        <Navbar.Brand href="#">🐍 ElnalFTE</Navbar.Brand>
+                        <Navbar.Toggle aria-controls="navbarNav" />
+                        <Navbar.Collapse id="navbarNav">
+                            <Nav className="me-auto">
+                                {navItems.map((item) => (
+                                    <Nav.Item key={item.id}>
+                                        <Nav.Link
+                                            as="button"
+                                            type="button"
+                                            id={item.id}
+                                            active={currentState === item.state}
+                                            onClick={() => game.setState(item.state)}
+                                            data-i18n={item.i18nKey}
+                                        >
+                                            {item.label}
+                                            {item.id === 'nav-library' && libraryUnreadCount > 0 && (
+                                                <span className="badge bg-danger unread-badge ms-1">
+                                                    {libraryUnreadCount}
+                                                </span>
+                                            )}
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                ))}
+                            </Nav>
+                        </Navbar.Collapse>
                     </div>
-                </nav>
+                </Navbar>
             </div>
 
             <main className="flex-grow-1">
@@ -72,7 +120,7 @@ export function LegacyStaticUi({ currentState, children }: LegacyStaticUiProps):
                                         <div className="card-header">
                                             <h5 className="mb-0 d-flex justify-content-between align-items-center">
                                                 <span><span id="boss-icon">👹</span> <span id="boss-name">ボス名</span></span>
-                                                <button type="button" className="btn btn-sm btn-outline-light" id="boss-info-btn" title="ボス情報を表示" data-i18n="battle.bossInfoTitle" data-i18n-attr="title">？</button>
+                                                <Button type="button" variant="outline-light" size="sm" id="boss-info-btn" title="ボス情報を表示" data-i18n="battle.bossInfoTitle" data-i18n-attr="title">？</Button>
                                             </h5>
                                         </div>
                                         <div className="card-body">
@@ -99,46 +147,46 @@ export function LegacyStaticUi({ currentState, children }: LegacyStaticUiProps):
                                 <div className="card-header"><h6 className="mb-0" data-i18n="battle.actionTitle">行動選択</h6></div>
                                 <div className="card-body">
                                     <div id="action-buttons" className="d-grid gap-2">
-                                        <button id="attack-btn" className="btn btn-danger" data-i18n="battleActions.attack">⚔️ 攻撃</button>
-                                        <button id="defend-btn" className="btn btn-primary" data-i18n="battleActions.defend">🛡️ 防御</button>
-                                        <button id="skill-btn" className="btn btn-warning" data-i18n="battleActions.skill">⚡️ スキル</button>
-                                        <button id="item-btn" className="btn btn-success" data-i18n="battleActions.item">💊 アイテム</button>
+                                        <Button id="attack-btn" variant="danger" data-i18n="battleActions.attack">⚔️ 攻撃</Button>
+                                        <Button id="defend-btn" variant="primary" data-i18n="battleActions.defend">🛡️ 防御</Button>
+                                        <Button id="skill-btn" variant="warning" data-i18n="battleActions.skill">⚡️ スキル</Button>
+                                        <Button id="item-btn" variant="success" data-i18n="battleActions.item">💊 アイテム</Button>
                                     </div>
                                     <div id="skill-panel" className="d-none mt-3">
                                         <h6 data-i18n="battleActions.skill">スキル</h6>
                                         <div className="d-grid gap-2">
-                                            <button id="power-attack-btn" className="btn btn-outline-danger" title="2.5倍の攻撃力で確実に攻撃（20MP）" data-i18n="skillPanel.powerAttackHint" data-i18n-attr="title"><span data-i18n="skillPanel.powerAttack">💥 パワーアタック</span> <span data-i18n="skillPanel.powerAttackCost">(20MP)</span></button>
-                                            <button id="heal-skill-btn" className="btn btn-outline-success" title="HPを100回復（30MP）" data-i18n="skillPanel.healHint" data-i18n-attr="title"><span data-i18n="skillPanel.heal">✨ ヒール</span> <span data-i18n="skillPanel.healCost">(30MP)</span></button>
-                                            <button id="struggle-skill-btn" className="btn btn-outline-warning" title="拘束状態専用：脱出確率2倍（30MP）" data-i18n="skillPanel.struggleHint" data-i18n-attr="title"><span data-i18n="skillPanel.struggle">🔥 あばれる</span> <span data-i18n="skillPanel.struggleCost">(30MP)</span></button>
-                                            <button id="ultra-smash-btn" className="btn btn-outline-danger" title="全力攻撃" data-i18n="skillPanel.ultraSmashHint" data-i18n-attr="title"><span data-i18n="skillPanel.ultraSmash">💀 ウルトラスマッシュ</span> <span data-i18n="skillPanel.ultraSmashCost">(MP全消費)</span></button>
-                                            <button id="skill-back-btn" className="btn btn-outline-secondary" data-i18n="common.back">戻る</button>
+                                            <Button id="power-attack-btn" variant="outline-danger" title="2.5倍の攻撃力で確実に攻撃（20MP）" data-i18n="skillPanel.powerAttackHint" data-i18n-attr="title"><span data-i18n="skillPanel.powerAttack">💥 パワーアタック</span> <span data-i18n="skillPanel.powerAttackCost">(20MP)</span></Button>
+                                            <Button id="heal-skill-btn" variant="outline-success" title="HPを100回復（30MP）" data-i18n="skillPanel.healHint" data-i18n-attr="title"><span data-i18n="skillPanel.heal">✨ ヒール</span> <span data-i18n="skillPanel.healCost">(30MP)</span></Button>
+                                            <Button id="struggle-skill-btn" variant="outline-warning" title="拘束状態専用：脱出確率2倍（30MP）" data-i18n="skillPanel.struggleHint" data-i18n-attr="title"><span data-i18n="skillPanel.struggle">🔥 あばれる</span> <span data-i18n="skillPanel.struggleCost">(30MP)</span></Button>
+                                            <Button id="ultra-smash-btn" variant="outline-danger" title="全力攻撃" data-i18n="skillPanel.ultraSmashHint" data-i18n-attr="title"><span data-i18n="skillPanel.ultraSmash">💀 ウルトラスマッシュ</span> <span data-i18n="skillPanel.ultraSmashCost">(MP全消費)</span></Button>
+                                            <Button id="skill-back-btn" variant="outline-secondary" data-i18n="common.back">戻る</Button>
                                         </div>
                                     </div>
                                     <div id="item-panel" className="d-none mt-3">
                                         <h6 data-i18n="battleActions.item">アイテム</h6>
-                                        <div className="d-grid gap-2"><button id="item-back-btn" className="btn btn-outline-secondary" data-i18n="common.back">戻る</button></div>
+                                        <div className="d-grid gap-2"><Button id="item-back-btn" variant="outline-secondary" data-i18n="common.back">戻る</Button></div>
                                     </div>
                                     <div id="special-actions" className="d-none">
                                         <div className="d-grid gap-2">
-                                            <button id="struggle-btn" className="btn btn-warning" title="拘束から脱出を試みる（成功率は試行回数で上昇）" data-i18n="specialActions.struggleHint" data-i18n-attr="title"><span data-i18n="specialActions.struggle">💪 もがく</span></button>
-                                            <button id="struggle-skill-special-btn" className="btn btn-outline-warning" title="拘束状態専用：脱出確率2倍（30MP）" data-i18n="specialActions.struggleSkillHint" data-i18n-attr="title"><span data-i18n="specialActions.struggleSkill">🔥 あばれる</span> <span data-i18n="specialActions.struggleSkillCost">(30MP)</span></button>
-                                            <button id="stay-still-btn" className="btn btn-info" title="体力を回復する（最大HPの5%）" data-i18n="specialActions.stayStillHint" data-i18n-attr="title"><span data-i18n="specialActions.stayStill">😌 じっとする</span></button>
-                                            <button id="give-up-btn" className="btn btn-secondary" title="何もしない" data-i18n="specialActions.giveUpHint" data-i18n-attr="title"><span data-i18n="specialActions.giveUp">💀 なすがまま</span></button>
+                                            <Button id="struggle-btn" variant="warning" title="拘束から脱出を試みる（成功率は試行回数で上昇）" data-i18n="specialActions.struggleHint" data-i18n-attr="title"><span data-i18n="specialActions.struggle">💪 もがく</span></Button>
+                                            <Button id="struggle-skill-special-btn" variant="outline-warning" title="拘束状態専用：脱出確率2倍（30MP）" data-i18n="specialActions.struggleSkillHint" data-i18n-attr="title"><span data-i18n="specialActions.struggleSkill">🔥 あばれる</span> <span data-i18n="specialActions.struggleSkillCost">(30MP)</span></Button>
+                                            <Button id="stay-still-btn" variant="info" title="体力を回復する（最大HPの5%）" data-i18n="specialActions.stayStillHint" data-i18n-attr="title"><span data-i18n="specialActions.stayStill">😌 じっとする</span></Button>
+                                            <Button id="give-up-btn" variant="secondary" title="何もしない" data-i18n="specialActions.giveUpHint" data-i18n-attr="title"><span data-i18n="specialActions.giveUp">💀 なすがまま</span></Button>
                                             <div id="omamori-special-container" className="d-grid gap-2"></div>
                                         </div>
                                     </div>
                                     <div id="battle-end-actions" className="d-none">
-                                        <div className="d-grid gap-2"><button id="battle-end-btn" className="btn btn-success" data-i18n="battle.endBattle">🎯 バトル終了</button></div>
+                                        <div className="d-grid gap-2"><Button id="battle-end-btn" variant="success" data-i18n="battle.endBattle">🎯 バトル終了</Button></div>
                                     </div>
                                     <div id="debug-button-container" className="mt-2">
-                                        <div className="d-grid gap-2"><button id="debug-btn" className="btn btn-outline-info btn-sm d-none" data-i18n="debug.button">🔧 デバッグ</button></div>
+                                        <div className="d-grid gap-2"><Button id="debug-btn" variant="outline-info" size="sm" className="d-none" data-i18n="debug.button">🔧 デバッグ</Button></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="position-fixed bottom-0 start-0 p-3">
-                        <button id="back-to-select-btn" className="btn btn-outline-light" data-i18n="battle.backToBossSelect">← ボス選択に戻る</button>
+                        <Button id="back-to-select-btn" variant="outline-light" data-i18n="battle.backToBossSelect">← ボス選択に戻る</Button>
                     </div>
                 </div>
 
@@ -153,7 +201,7 @@ export function LegacyStaticUi({ currentState, children }: LegacyStaticUiProps):
                                     <div id="new-unlocks" className="mb-4 battle-result-section"></div>
                                     <div id="trophies-earned" className="mb-4 battle-result-section"></div>
                                     <div id="new-boss-unlocks" className="mb-4 battle-result-section"></div>
-                                    <button id="battle-result-continue-btn" className="btn btn-primary btn-lg mx-auto" data-i18n="battleResult.continue">ボス選択に戻る</button>
+                                    <Button id="battle-result-continue-btn" variant="primary" size="lg" className="mx-auto" data-i18n="battleResult.continue">ボス選択に戻る</Button>
                                 </div>
                             </div>
                         </div>
@@ -185,131 +233,6 @@ export function LegacyStaticUi({ currentState, children }: LegacyStaticUiProps):
                 </footer>
             </div>
 
-            <div className="modal fade" id="boss-modal" tabIndex={-1}>
-                <div className="modal-dialog"><div className="modal-content bg-dark">
-                    <div className="modal-header">
-                        <h1 className="modal-title fs-3"><span id="modal-boss-icon">👹</span> <span id="modal-boss-name">ボス名</span></h1>
-                        <button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div className="modal-body">
-                        <h2 id="modal-boss-description" className="fs-5">ボスの説明</h2>
-                        <p id="modal-boss-stats"></p>
-                        <hr />
-                        <h2 className="fs-5" data-i18n="bossModal.questTitle">討伐クエスト内容</h2>
-                        <p id="modal-boss-quest-note"></p>
-                        <hr />
-                        <p id="modal-boss-appearance" className="d-none"></p>
-                        <p id="modal-boss-guest-info" className="d-none"></p>
-                    </div>
-                    <div id="modal-boss-buttons-confirm" className="modal-footer">
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" data-i18n="bossModal.buttons.cancel">キャンセル</button>
-                        <button type="button" className="btn btn-primary" id="confirm-boss-btn" data-i18n="bossModal.buttons.confirm">戦闘開始！</button>
-                    </div>
-                    <div id="modal-boss-buttons-back" className="modal-footer d-none">
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" data-i18n="bossModal.buttons.back">戻る</button>
-                    </div>
-                </div></div>
-            </div>
-
-            <div className="modal fade" id="debug-modal" tabIndex={-1}>
-                <div className="modal-dialog modal-xl"><div className="modal-content bg-dark">
-                    <div className="modal-header">
-                        <h5 className="modal-title text-warning" data-i18n="debug.title">🔧 デバッグコンソール</h5>
-                        <button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div className="modal-body">
-                        <div className="row">
-                            <div className="col-md-6 mb-4">
-                                <div className="card bg-primary"><div className="card-header"><h5 className="mb-0" data-i18n="debug.playerTitle">🐍 プレイヤー</h5></div>
-                                    <div className="card-body">
-                                        <div className="row mb-3">
-                                            <div className="col-6"><label className="form-label" data-i18n="common.hpShort">HP</label><input type="number" id="debug-player-hp" className="form-control" min="0" /></div>
-                                            <div className="col-6"><label className="form-label" data-i18n="common.maxHp">最大HP</label><input type="number" id="debug-player-max-hp" className="form-control" min="1" /></div>
-                                        </div>
-                                        <div className="row mb-3">
-                                            <div className="col-6"><label className="form-label" data-i18n="common.mpShort">MP</label><input type="number" id="debug-player-mp" className="form-control" min="0" /></div>
-                                            <div className="col-6"><label className="form-label" data-i18n="common.maxMp">最大MP</label><input type="number" id="debug-player-max-mp" className="form-control" min="0" /></div>
-                                        </div>
-                                        <h6 data-i18n="common.statusEffects">ステータス効果</h6>
-                                        <div id="debug-player-status-effects" className="mb-3"></div>
-                                        <button id="debug-add-player-status" className="btn btn-sm btn-outline-light"><span data-i18n="debug.addStatusEffect">ステータス効果を追加</span></button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-6 mb-4">
-                                <div className="card bg-danger"><div className="card-header"><h5 id="debug-boss-name" className="mb-0">👹 <span data-i18n="common.boss">ボス</span></h5></div>
-                                    <div className="card-body">
-                                        <div className="row mb-3">
-                                            <div className="col-6"><label className="form-label" data-i18n="common.hpShort">HP</label><input type="number" id="debug-boss-hp" className="form-control" min="0" /></div>
-                                            <div className="col-6"><label className="form-label" data-i18n="common.maxHp">最大HP</label><input type="number" id="debug-boss-max-hp" className="form-control" min="1" /></div>
-                                        </div>
-                                        <h6 data-i18n="common.statusEffects">ステータス効果</h6>
-                                        <div id="debug-boss-status-effects" className="mb-3"></div>
-                                        <button id="debug-add-boss-status" className="btn btn-sm btn-outline-light"><span data-i18n="debug.addStatusEffect">ステータス効果を追加</span></button>
-                                        <h6 className="mt-4" data-i18n="common.customVariables">カスタム変数</h6>
-                                        <div id="debug-boss-custom-vars" className="mb-3"></div>
-                                        <button id="debug-add-custom-var" className="btn btn-sm btn-outline-light"><span data-i18n="debug.addCustomVar">変数を追加</span></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" data-i18n="dialogs.common.cancel">キャンセル</button>
-                        <button id="debug-apply-changes" className="btn btn-success"><span data-i18n="debug.applyChanges">✅ 変更を適用</span></button>
-                    </div>
-                </div></div>
-            </div>
-
-            <div className="modal fade" id="alert-modal" tabIndex={-1} aria-labelledby="alert-modal-label" aria-hidden="true">
-                <div className="modal-dialog"><div className="modal-content bg-dark"><div className="modal-header"><h5 className="modal-title" id="alert-modal-label"><span data-i18n="dialogs.common.alert.title">通知</span></h5><button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal" data-i18n="common.close" data-i18n-attr="aria-label"></button></div><div className="modal-body"><div id="alert-modal-body"></div></div><div className="modal-footer"><button type="button" className="btn btn-primary" data-bs-dismiss="modal" data-i18n="dialogs.common.ok">OK</button></div></div></div>
-            </div>
-            <div className="modal fade" id="confirm-modal" tabIndex={-1} aria-labelledby="confirm-modal-label" aria-hidden="true">
-                <div className="modal-dialog"><div className="modal-content bg-dark"><div className="modal-header"><h5 className="modal-title" id="confirm-modal-label"><span data-i18n="dialogs.common.confirm.title">確認</span></h5><button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal" data-i18n="common.close" data-i18n-attr="aria-label"></button></div><div className="modal-body"><div id="confirm-modal-body"></div></div><div className="modal-footer"><button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id="confirm-cancel-btn" data-i18n="dialogs.common.cancel">キャンセル</button><button type="button" className="btn btn-danger" id="confirm-ok-btn" data-i18n="dialogs.common.ok">OK</button></div></div></div>
-            </div>
-            <div className="modal fade" id="prompt-modal" tabIndex={-1} aria-labelledby="prompt-modal-label" aria-hidden="true">
-                <div className="modal-dialog"><div className="modal-content bg-dark"><div className="modal-header"><h5 className="modal-title" id="prompt-modal-label"><span data-i18n="dialogs.common.prompt.title">入力</span></h5><button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal" data-i18n="common.close" data-i18n-attr="aria-label"></button></div><div className="modal-body"><div id="prompt-modal-body" className="mb-3"></div><input type="text" className="form-control" id="prompt-modal-input" placeholder="入力してください" data-i18n="dialogs.common.prompt.placeholder" data-i18n-attr="placeholder" /></div><div className="modal-footer"><button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id="prompt-cancel-btn" data-i18n="dialogs.common.cancel">キャンセル</button><button type="button" className="btn btn-primary" id="prompt-ok-btn" data-i18n="dialogs.common.ok">OK</button></div></div></div>
-            </div>
-            <div className="modal fade" id="select-modal" tabIndex={-1} aria-labelledby="select-modal-label" aria-hidden="true">
-                <div className="modal-dialog"><div className="modal-content bg-dark"><div className="modal-header"><h5 className="modal-title" id="select-modal-label"><span data-i18n="dialogs.common.selectTitle">選択</span></h5><button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal" data-i18n="common.close" data-i18n-attr="aria-label"></button></div><div className="modal-body"><div id="select-modal-body" className="mb-3"></div><select className="form-select" id="select-modal-select"></select></div><div className="modal-footer"><button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id="select-cancel-btn" data-i18n="dialogs.common.cancel">キャンセル</button><button type="button" className="btn btn-primary" id="select-ok-btn" data-i18n="dialogs.common.select">選択</button></div></div></div>
-            </div>
-            <div className="modal fade" id="custom-var-modal" tabIndex={-1} aria-labelledby="custom-var-modal-label" aria-hidden="true">
-                <div className="modal-dialog"><div className="modal-content bg-dark"><div className="modal-header"><h5 className="modal-title" id="custom-var-modal-label"><span data-i18n="dialogs.customVar.title">カスタム変数を追加</span></h5><button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal" data-i18n="common.close" data-i18n-attr="aria-label"></button></div><div className="modal-body"><div id="custom-var-error" className="alert alert-danger d-none mb-3" role="alert"></div><div className="mb-3"><label htmlFor="custom-var-key" className="form-label" data-i18n="dialogs.customVar.keyLabel">変数名</label><input type="text" className="form-control" id="custom-var-key" placeholder="変数名を入力してください" data-i18n="dialogs.customVar.keyPlaceholder" data-i18n-attr="placeholder" /></div><div className="mb-3"><label htmlFor="custom-var-value" className="form-label" data-i18n="dialogs.customVar.valueLabel">値</label><input type="text" className="form-control" id="custom-var-value" placeholder="値を入力してください" data-i18n="dialogs.customVar.valuePlaceholder" data-i18n-attr="placeholder" /><div className="form-text" data-i18n="dialogs.customVar.helper">数値やtrue/falseは自動的に変換されます</div></div></div><div className="modal-footer"><button type="button" className="btn btn-secondary" data-bs-dismiss="modal" data-i18n="dialogs.common.cancel">キャンセル</button><button type="button" className="btn btn-primary" id="custom-var-add-btn" data-i18n="common.add">追加</button></div></div></div>
-            </div>
-            <div className="modal fade" id="status-effect-modal" tabIndex={-1} aria-labelledby="status-effect-modal-label" aria-hidden="true">
-                <div className="modal-dialog"><div className="modal-content bg-dark"><div className="modal-header"><h5 className="modal-title" id="status-effect-modal-label"><span data-i18n="dialogs.statusEffect.titleDefault">ステータス効果を追加</span></h5><button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal" data-i18n="common.close" data-i18n-attr="aria-label"></button></div><div className="modal-body"><div id="status-effect-error" className="alert alert-danger d-none mb-3" role="alert"></div><div className="mb-3"><label htmlFor="status-effect-type" className="form-label" data-i18n="dialogs.statusEffect.typeLabel">ステータス効果</label><select className="form-select" id="status-effect-type"></select></div><div className="mb-3"><label htmlFor="status-effect-duration" className="form-label" data-i18n="dialogs.statusEffect.durationLabel">持続ターン数</label><input type="number" className="form-control" id="status-effect-duration" defaultValue="3" min="1" max="99" /></div></div><div className="modal-footer"><button type="button" className="btn btn-secondary" data-bs-dismiss="modal" data-i18n="dialogs.common.cancel">キャンセル</button><button type="button" className="btn btn-primary" id="status-effect-add-btn" data-i18n="common.add">追加</button></div></div></div>
-            </div>
-
-            <div className="modal fade" id="player-info-edit-modal" tabIndex={-1}>
-                <div className="modal-dialog"><div className="modal-content bg-dark">
-                    <div className="modal-header"><h5 className="modal-title" data-i18n="playerInfoEdit.title">プレイヤー情報編集</h5><button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
-                    <div className="modal-body">
-                        <div className="mb-3">
-                            <label htmlFor="player-name-input" className="form-label" data-i18n="playerInfoEdit.nameLabel">名前（32文字まで）</label>
-                            <input type="text" className="form-control" id="player-name-input" maxLength={32} placeholder="プレイヤー名を入力" data-i18n="playerInfoEdit.namePlaceholder" data-i18n-attr="placeholder" />
-                            <div className="form-text"><span data-i18n="playerInfoEdit.currentName">現在の名前</span>: <span id="current-player-name">エルナル</span></div>
-                        </div>
-                        <div className="mb-3">
-                            <label className="form-label" data-i18n="playerInfoEdit.iconLabel">アイコン選択</label>
-                            <div className="form-text mb-2"><span data-i18n="playerInfoEdit.currentIcon">現在のアイコン</span>: <span id="current-player-icon">🐍</span></div>
-                            <ul className="nav nav-pills nav-sm mb-3" id="icon-category-tabs">
-                                <li className="nav-item"><a className="nav-link active" data-category="動物" href="#" data-icon-category="動物" data-i18n="playerInfoEdit.iconCategories.animal">動物</a></li>
-                                <li className="nav-item"><a className="nav-link" data-category="ファンタジー" href="#" data-icon-category="ファンタジー" data-i18n="playerInfoEdit.iconCategories.fantasy">ファンタジー</a></li>
-                                <li className="nav-item"><a className="nav-link" data-category="自然" href="#" data-icon-category="自然" data-i18n="playerInfoEdit.iconCategories.nature">自然</a></li>
-                                <li className="nav-item"><a className="nav-link" data-category="武器" href="#" data-icon-category="武器" data-i18n="playerInfoEdit.iconCategories.weapon">武器</a></li>
-                                <li className="nav-item"><a className="nav-link" data-category="エレメント" href="#" data-icon-category="エレメント" data-i18n="playerInfoEdit.iconCategories.element">エレメント</a></li>
-                            </ul>
-                            <div id="icon-selection-grid" className="border rounded p-2" style={{ maxHeight: '200px', overflowY: 'auto' }}></div>
-                            <div className="form-text"><span data-i18n="playerInfoEdit.selectedIcon">選択中のアイコン</span>: <span id="selected-player-icon">🐍</span></div>
-                        </div>
-                    </div>
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" data-i18n="dialogs.common.cancel">キャンセル</button>
-                        <button type="button" className="btn btn-warning" id="reset-player-info-btn" data-i18n="playerInfoEdit.reset">🔄 リセット</button>
-                        <button type="button" className="btn btn-primary" id="save-player-info-btn" data-i18n="playerInfoEdit.save">保存</button>
-                    </div>
-                </div></div>
-            </div>
         </>
     );
 }

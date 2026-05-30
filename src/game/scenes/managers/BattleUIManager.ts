@@ -2,8 +2,8 @@ import { Player } from '../../entities/Player';
 import { Boss } from '../../entities/Boss';
 import { StatusEffect, StatusEffectType } from '../../systems/StatusEffect';
 import { PLAYER_ITEMS } from '@/game/data/PlayerItems';
-import { BossModalComponent } from '../components/BossModalComponent';
 import { t } from 'i18next';
+import { ModalUtils } from '../../utils/ModalUtils';
 
 /**
  * バトル画面のUI更新を管理するクラス
@@ -30,12 +30,8 @@ export class BattleUIManager {
     private bossHpProgress: HTMLElement | null = null;
     private bossStatusEffects: HTMLElement | null = null;
     
-    // Boss Modal
-    private bossModalComponent: BossModalComponent;
-    
     constructor() {
         this.initializeUIElements();
-        this.bossModalComponent = BossModalComponent.getInstance();
     }
     
     /**
@@ -247,9 +243,9 @@ export class BattleUIManager {
      * バトル画面からボス情報モーダルを表示
      */
     showBossInfoModal(boss: Boss): void {
-        // 情報表示モードでボスモーダルを表示
-        this.bossModalComponent.show(boss.id, {
-            mode: 'info'
+        void ModalUtils.showBossModal({
+            bossId: boss.id,
+            mode: 'info',
         });
     }
 }

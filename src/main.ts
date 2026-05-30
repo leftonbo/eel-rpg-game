@@ -1,6 +1,7 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/main.css';
 import { Game } from './game/Game';
-import './game/types/bootstrap';
+import './game/types/global';
 import { initI18n, onLanguageChanged } from './game/i18n';
 import { applyTranslations } from './game/i18n/dom';
 

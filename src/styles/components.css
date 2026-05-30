@@ -26,6 +26,20 @@
     transform: translateY(0);
 }
 
+.toast-container {
+    z-index: 1080;
+}
+
+.icon-selection-grid {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.player-icon-button {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
 /* Primary Button */
 .btn-primary {
     background-color: var(--game-primary) !important;

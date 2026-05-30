@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import Button from 'react-bootstrap/Button';
 import { useGameContext } from '../../context/GameContext';
 import { getAllBossData } from '../../data';
-import { BossModalComponent } from '../components/BossModalComponent';
 import { AbilitySystem, Equipment, EquipmentType } from '../../systems/AbilitySystem';
 import { t } from '../../i18n';
+import { ModalUtils } from '../../utils/ModalUtils';
+import { ToastType, ToastUtils } from '../../utils/ToastUtils';
 
 interface PlayerSummary {
     name: string;
@@ -83,14 +85,26 @@ export function BossSelectScreen(): React.ReactElement {
         );
     }, [game]);
 
-    const handleBossCardClick = (bossId: string, isUnlocked: boolean) => {
+    const handleBossCardClick = async (bossId: string, isUnlocked: boolean) => {
         if (!isUnlocked) return;
-        BossModalComponent.getInstance().show(bossId, {
+        const confirmed = await ModalUtils.showBossModal({
+            bossId,
             mode: 'select',
-            onConfirm: (selectedBossId: string) => {
-                game.selectBoss(selectedBossId);
-            },
         });
+
+        if (!confirmed) return;
+
+        try {
+            game.selectBoss(bossId);
+        } catch (error) {
+            console.error('Failed to load boss:', error);
+            const errorMessage = error instanceof Error ? error.message : t('errors.unknown.message');
+            ToastUtils.showToast(
+                t('errors.bossLoadFailed.message', { error: errorMessage }),
+                t('errors.bossLoadFailed.title'),
+                ToastType.Error
+            );
+        }
     };
 
     return (
@@ -183,9 +197,9 @@ export function BossSelectScreen(): React.ReactElement {
                                                 {boss.icon} {boss.displayName}
                                             </h3>
                                             <p className="card-text">{boss.description}</p>
-                                            <button className="btn btn-success w-100">
+                                            <Button variant="success" className="w-100">
                                                 {t('bossSelect.selectButton')}
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>

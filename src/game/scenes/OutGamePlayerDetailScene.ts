@@ -1,18 +1,9 @@
 import { Game } from "../Game";
 import { BaseOutGameScene } from "./BaseOutGameScene";
-import { PlayerInfoEditManager } from "./managers/PlayerInfoEditManager";
 
 export class OutGamePlayerDetailScene extends BaseOutGameScene {
-
-    private playerInfoEditManager: PlayerInfoEditManager;
-
     constructor(game: Game) {
         super(game, "out-game-player-detail-screen");
-        this.playerInfoEditManager = new PlayerInfoEditManager(game);
-
-        // PlayerInfoEditManager は showPlayerInfoEdit イベントを購読して
-        // プレイヤー情報編集モーダルを管理する
-        void this.playerInfoEditManager;
     }
 
     /**

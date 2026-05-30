@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, ReactElement } from 'react';
+import Button from 'react-bootstrap/Button';
 import { useGameContext } from '../../context/GameContext';
 import { PlayerSaveManager } from '../../systems/PlayerSaveData';
 import { ModalUtils } from '../../utils/ModalUtils';
@@ -194,12 +195,13 @@ export function OptionScreen(): ReactElement {
                                                     <p className="card-text">
                                                         <span>{t('options.data.exportDescription')}</span>
                                                     </p>
-                                                    <button
-                                                        className="btn btn-outline-info w-100"
+                                                    <Button
+                                                        variant="outline-info"
+                                                        className="w-100"
                                                         onClick={handleExport}
                                                     >
                                                         {t('options.data.exportButton')}
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                             </div>
                                         </div>
@@ -210,12 +212,13 @@ export function OptionScreen(): ReactElement {
                                                     <p className="card-text">
                                                         <span>{t('options.data.importDescription')}</span>
                                                     </p>
-                                                    <button
-                                                        className="btn btn-outline-success w-100"
+                                                    <Button
+                                                        variant="outline-success"
+                                                        className="w-100"
                                                         onClick={handleImport}
                                                     >
                                                         {t('options.data.importButton')}
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                             </div>
                                         </div>
@@ -224,12 +227,13 @@ export function OptionScreen(): ReactElement {
                                                 <div className="card-body text-center">
                                                     <h6 className="card-title">{t('options.data.deleteTitle')}</h6>
                                                     <p className="card-text">{t('options.data.deleteDescription')}</p>
-                                                    <button
-                                                        className="btn btn-outline-danger w-100"
+                                                    <Button
+                                                        variant="outline-danger"
+                                                        className="w-100"
                                                         onClick={handleDelete}
                                                     >
                                                         {t('options.data.deleteButton')}
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                             </div>
                                         </div>

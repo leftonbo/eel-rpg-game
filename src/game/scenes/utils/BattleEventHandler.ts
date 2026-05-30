@@ -26,10 +26,6 @@ export interface EventCallbacks {
     
     // Debug
     onShowDebugModal: () => void;
-    onApplyDebugChanges: () => void;
-    onAddPlayerStatus: () => void;
-    onAddBossStatus: () => void;
-    onAddCustomVar: () => void;
     
     // Boss Info
     onShowBossInfo: () => void;
@@ -112,10 +108,6 @@ export class BattleEventHandler {
      */
     private setupDebugListeners(): void {
         this.addEventListenerSafely('debug-btn', 'click', this.callbacks.onShowDebugModal);
-        this.addEventListenerSafely('debug-apply-changes', 'click', this.callbacks.onApplyDebugChanges);
-        this.addEventListenerSafely('debug-add-player-status', 'click', this.callbacks.onAddPlayerStatus);
-        this.addEventListenerSafely('debug-add-boss-status', 'click', this.callbacks.onAddBossStatus);
-        this.addEventListenerSafely('debug-add-custom-var', 'click', this.callbacks.onAddCustomVar);
     }
     
     /**

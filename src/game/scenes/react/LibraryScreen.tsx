@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, ReactElement } from 'react';
+import Button from 'react-bootstrap/Button';
 import { useGameContext } from '../../context/GameContext';
-import { getAllDocuments, LibraryDocument, getUnreadCountForPlayer } from '../../data/DocumentLoader';
+import { getAllDocuments, LibraryDocument } from '../../data/DocumentLoader';
 import { BootstrapMarkdownRenderer } from '../../utils/BootstrapMarkdownRenderer';
 import { getBossData } from '../../data';
 import { t } from '../../i18n';
@@ -65,35 +66,6 @@ function renderBossRequirements(bossIds: string[], type: 'defeat' | 'victory'): 
         .join(', ');
 }
 
-function updateNavLibraryBadge(
-    game: ReturnType<typeof useGameContext>['game']
-): void {
-    const libraryNavBtn = document.getElementById('nav-library');
-    if (!libraryNavBtn) return;
-
-    const existingBadge = libraryNavBtn.querySelector('.unread-badge');
-    if (existingBadge) existingBadge.remove();
-
-    const player = game.getPlayer();
-    const explorerLevel = player.getExplorerLevel();
-    const defeatedBosses = player.memorialSystem.getVictoriousBossIds();
-    const lostToBosses = player.memorialSystem.getDefeatedBossIds();
-
-    const unreadCount = getUnreadCountForPlayer(
-        player,
-        explorerLevel,
-        defeatedBosses,
-        lostToBosses
-    );
-
-    if (unreadCount > 0) {
-        const badge = document.createElement('span');
-        badge.className = 'badge bg-danger unread-badge ms-1';
-        badge.textContent = unreadCount.toString();
-        libraryNavBtn.appendChild(badge);
-    }
-}
-
 // ---- DocumentListItem サブコンポーネント ----
 
 interface DocumentListItemProps {
@@ -127,23 +99,23 @@ function DocumentListItem({ doc, isSelected, onSelect }: DocumentListItemProps):
         const requirementText = requirements.join(t('library.unlockRequirement.separator'));
 
         return (
-            <button className="btn btn-outline-secondary mb-2 w-100 text-start" disabled>
+            <Button variant="outline-secondary" className="mb-2 w-100 text-start" disabled>
                 <div className="d-flex justify-content-between align-items-center">
                     <span className="text-muted">{t('library.lockedTitle')}</span>
                 </div>
                 <small className="text-muted d-block mt-1">
                     {t('library.unlockRequirement.lockedPrefix')} {requirementText}
                 </small>
-            </button>
+            </Button>
         );
     }
 
-    const btnClass = `btn w-100 text-start mb-2 ${
-        isSelected ? 'btn-info' : 'btn-outline-info'
-    }`;
-
     return (
-        <button className={btnClass} onClick={() => onSelect(doc.id)}>
+        <Button
+            variant={isSelected ? 'info' : 'outline-info'}
+            className="w-100 text-start mb-2"
+            onClick={() => onSelect(doc.id)}
+        >
             <div className="d-flex justify-content-between align-items-center">
                 <span>{doc.title}</span>
                 {!doc.isRead && (
@@ -152,7 +124,7 @@ function DocumentListItem({ doc, isSelected, onSelect }: DocumentListItemProps):
                     </span>
                 )}
             </div>
-        </button>
+        </Button>
     );
 }
 
@@ -186,9 +158,7 @@ export function LibraryScreen(): ReactElement {
                 // ドキュメント状態を再構築
                 const updated = buildDocumentStatuses(game);
                 setDocuments(updated);
-
-                // ナビバッジ更新
-                updateNavLibraryBadge(game);
+                document.dispatchEvent(new CustomEvent('libraryUnreadChanged'));
             }
 
             // コンテンツをレンダリング

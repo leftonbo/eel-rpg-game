@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import Button from 'react-bootstrap/Button';
 import { useGameContext } from '../../context/GameContext';
 import { AbilitySystem, AbilityType, Equipment, EquipmentType } from '../../systems/AbilitySystem';
 import { t } from '../../i18n';
 import { ToastUtils, ToastType } from '../../utils/ToastUtils';
 import type { SkillData } from '../../data/skills/types';
 import type { PlayerItem } from '../../entities/PlayerItemManager';
+import { PlayerInfoEditModal } from './PlayerInfoEditModal';
 
 // ---- 型定義 ----
 
@@ -252,6 +254,7 @@ export function PlayerDetailScreen(): React.ReactElement {
     const { game } = useGameContext();
     const [activeTab, setActiveTab] = useState<ActiveTab>('stats');
     const [data, setData] = useState<PlayerDetailData | null>(null);
+    const [showPlayerInfoEditModal, setShowPlayerInfoEditModal] = useState(false);
     const [debugInputs, setDebugInputs] = useState<Record<AbilityType, string>>(
         () => Object.fromEntries(Object.values(AbilityType).map(t => [t, '0'])) as Record<AbilityType, string>
     );
@@ -400,7 +403,7 @@ export function PlayerDetailScreen(): React.ReactElement {
     };
 
     const handleEditPlayerInfo = () => {
-        document.dispatchEvent(new CustomEvent('showPlayerInfoEdit'));
+        setShowPlayerInfoEditModal(true);
     };
 
     // デバッグ: 個別アビリティ変更
@@ -468,49 +471,55 @@ export function PlayerDetailScreen(): React.ReactElement {
                                 <span>{data.icon}</span>
                                 <span>{data.name}</span>
                                 {t('playerDetail.titleSuffix')}
-                                <button
+                                <Button
                                     type="button"
-                                    className="btn btn-sm btn-outline-info ms-2"
+                                    variant="outline-info"
+                                    size="sm"
+                                    className="ms-2"
                                     onClick={handleEditPlayerInfo}
                                 >
                                     {t('playerDetail.editButton')}
-                                </button>
+                                </Button>
                             </h5>
                         </div>
                         <div className="card-body">
                             {/* タブ */}
                             <ul className="nav nav-tabs mb-3">
                                 <li className="nav-item">
-                                    <button
+                                    <Button
+                                        variant="link"
                                         className={tabClass('stats')}
                                         onClick={() => setActiveTab('stats')}
                                     >
                                         {t('playerDetail.tabs.stats')}
-                                    </button>
+                                    </Button>
                                 </li>
                                 <li className="nav-item">
-                                    <button
+                                    <Button
+                                        variant="link"
                                         className={tabClass('equipment')}
                                         onClick={() => setActiveTab('equipment')}
                                     >
                                         {t('playerDetail.tabs.equipment')}
-                                    </button>
+                                    </Button>
                                 </li>
                                 <li className="nav-item">
-                                    <button
+                                    <Button
+                                        variant="link"
                                         className={tabClass('skills')}
                                         onClick={() => setActiveTab('skills')}
                                     >
                                         {t('playerDetail.tabs.skills')}
-                                    </button>
+                                    </Button>
                                 </li>
                                 <li className="nav-item">
-                                    <button
+                                    <Button
+                                        variant="link"
                                         className={tabClass('items')}
                                         onClick={() => setActiveTab('items')}
                                     >
                                         {t('playerDetail.tabs.items')}
-                                    </button>
+                                    </Button>
                                 </li>
                             </ul>
 
@@ -539,6 +548,12 @@ export function PlayerDetailScreen(): React.ReactElement {
                     </div>
                 </div>
             </div>
+            <PlayerInfoEditModal
+                show={showPlayerInfoEditModal}
+                player={game.getPlayer()}
+                onHide={() => setShowPlayerInfoEditModal(false)}
+                onSaved={refresh}
+            />
         </div>
     );
 }
@@ -611,12 +626,13 @@ function StatsPanel({ data, isDebugMode, debugInputs, setDebugInputs, onDebugAbi
                                                 value={debugInputs[type]}
                                                 onChange={e => setDebugInputs(prev => ({ ...prev, [type]: e.target.value }))}
                                             />
-                                            <button
-                                                className="btn btn-outline-warning btn-sm"
+                                            <Button
+                                                variant="outline-warning"
+                                                size="sm"
                                                 onClick={() => onDebugAbilityChange(type)}
                                             >
                                                 {t('common.change')}
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>
@@ -636,12 +652,13 @@ function StatsPanel({ data, isDebugMode, debugInputs, setDebugInputs, onDebugAbi
                                             value={allLevelInput}
                                             onChange={e => setAllLevelInput(e.target.value)}
                                         />
-                                        <button
-                                            className="btn btn-outline-warning btn-sm"
+                                        <Button
+                                            variant="outline-warning"
+                                            size="sm"
                                             onClick={handleAllChange}
                                         >
                                             {t('playerStats.bulkChange')}
-                                        </button>
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
@@ -669,12 +686,12 @@ function EquipmentPanel({ data, onEquipWeapon, onEquipArmor, onEquipGloves, onEq
             <div className="row mb-4">
                 <div className="col-12">
                     <div className="d-flex gap-2 flex-wrap">
-                        <button className="btn btn-primary" onClick={onEquipBest}>
+                        <Button variant="primary" onClick={onEquipBest}>
                             {t('playerEquipment.equipBest')}
-                        </button>
-                        <button className="btn btn-secondary" onClick={onUnequipAll}>
+                        </Button>
+                        <Button variant="secondary" onClick={onUnequipAll}>
                             {t('playerEquipment.unequipAll')}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>
