@@ -9,6 +9,7 @@ import { getUnreadCountForPlayer } from '../data/DocumentLoader';
 export abstract class BaseOutGameScene {
     protected game: IGameContext;
     protected sceneId: string;
+    private static navigationListenerInitialized = false;
     
     constructor(game: IGameContext, sceneId: string) {
         this.game = game;
@@ -32,60 +33,41 @@ export abstract class BaseOutGameScene {
      * ナビゲーションバーのイベントリスナー設定
      */
     private setupNavigationListeners(): void {
-        // 共通ナビゲーションに一度だけイベントリスナーを設定
-        // ボス選択
-        const bossSelectNavBtn = document.getElementById('nav-boss-select');
-        if (bossSelectNavBtn && !bossSelectNavBtn.dataset.listenerAdded) {
-            bossSelectNavBtn.addEventListener('click', () => {
-                this.game.setState(GameState.OutGameBossSelect);
-            });
-            bossSelectNavBtn.dataset.listenerAdded = 'true';
+        // React の再描画で要素が差し替わっても反応するよう委譲で一度だけ登録
+        if (BaseOutGameScene.navigationListenerInitialized) {
+            return;
         }
-        
-        // プレイヤー詳細
-        const playerDetailNavBtn = document.getElementById('nav-player-detail');
-        if (playerDetailNavBtn && !playerDetailNavBtn.dataset.listenerAdded) {
-            playerDetailNavBtn.addEventListener('click', () => {
-                this.game.setState(GameState.OutGamePlayerDetail);
-            });
-            playerDetailNavBtn.dataset.listenerAdded = 'true';
-        }
-        
-        // 探検記録
-        const explorationRecordNavBtn = document.getElementById('nav-exploration-record');
-        if (explorationRecordNavBtn && !explorationRecordNavBtn.dataset.listenerAdded) {
-            explorationRecordNavBtn.addEventListener('click', () => {
-                this.game.setState(GameState.OutGameExplorationRecord);
-            });
-            explorationRecordNavBtn.dataset.listenerAdded = 'true';
-        }
-        
-        // 資料庫
-        const libraryNavBtn = document.getElementById('nav-library');
-        if (libraryNavBtn && !libraryNavBtn.dataset.listenerAdded) {
-            libraryNavBtn.addEventListener('click', () => {
-                this.game.setState(GameState.OutGameLibrary);
-            });
-            libraryNavBtn.dataset.listenerAdded = 'true';
-        }
-        
-        // オプション
-        const optionNavBtn = document.getElementById('nav-option');
-        if (optionNavBtn && !optionNavBtn.dataset.listenerAdded) {
-            optionNavBtn.addEventListener('click', () => {
-                this.game.setState(GameState.OutGameOption);
-            });
-            optionNavBtn.dataset.listenerAdded = 'true';
-        }
-        
-        // 更新履歴
-        const changelogNavBtn = document.getElementById('nav-changelog');
-        if (changelogNavBtn && !changelogNavBtn.dataset.listenerAdded) {
-            changelogNavBtn.addEventListener('click', () => {
-                this.game.setState(GameState.OutGameChangelog);
-            });
-            changelogNavBtn.dataset.listenerAdded = 'true';
-        }
+
+        document.addEventListener('click', (event) => {
+            const target = event.target as HTMLElement | null;
+            if (!target) return;
+
+            const navButton = target.closest('#nav-boss-select, #nav-player-detail, #nav-exploration-record, #nav-library, #nav-option, #nav-changelog') as HTMLElement | null;
+            if (!navButton) return;
+
+            switch (navButton.id) {
+                case 'nav-boss-select':
+                    this.game.setState(GameState.OutGameBossSelect);
+                    break;
+                case 'nav-player-detail':
+                    this.game.setState(GameState.OutGamePlayerDetail);
+                    break;
+                case 'nav-exploration-record':
+                    this.game.setState(GameState.OutGameExplorationRecord);
+                    break;
+                case 'nav-library':
+                    this.game.setState(GameState.OutGameLibrary);
+                    break;
+                case 'nav-option':
+                    this.game.setState(GameState.OutGameOption);
+                    break;
+                case 'nav-changelog':
+                    this.game.setState(GameState.OutGameChangelog);
+                    break;
+            }
+        });
+
+        BaseOutGameScene.navigationListenerInitialized = true;
     }
     
     /**

@@ -44,6 +44,13 @@ export class BossModalComponent {
      * コンポーネントの初期化
      */
     private initialize(): void {
+        this.ensureReady();
+    }
+
+    /**
+     * DOM生成タイミング差に対応するため、表示直前にも初期化を保証する
+     */
+    private ensureReady(): void {
         this.initializeBossModal();
         this.setupEventListeners();
     }
@@ -64,10 +71,11 @@ export class BossModalComponent {
     private setupEventListeners(): void {
         // ボス確定ボタン
         const confirmButton = document.getElementById('confirm-boss-btn');
-        if (confirmButton) {
+        if (confirmButton && !confirmButton.dataset.listenerAdded) {
             confirmButton.addEventListener('click', () => {
                 this.onConfirmBoss();
             });
+            confirmButton.dataset.listenerAdded = 'true';
         }
     }
     
@@ -77,6 +85,8 @@ export class BossModalComponent {
      * @param options 表示オプション
      */
     show(bossId: string, options: BossModalOptions): void {
+        this.ensureReady();
+
         this.currentBossId = bossId;
         this.currentOptions = options;
         
