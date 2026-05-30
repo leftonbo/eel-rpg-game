@@ -431,10 +431,7 @@ export function PlayerDetailScreen(): React.ReactElement {
     };
 
     // デバッグ: 全アビリティ一括変更
-    const handleDebugAllAbilitiesChange = () => {
-        const newLevel = parseInt(debugInputs[AbilityType.Combat] ?? '0', 10);
-        const allLevelInput = document.getElementById('debug-all-level') as HTMLInputElement | null;
-        const allLevel = allLevelInput ? parseInt(allLevelInput.value, 10) : newLevel;
+    const handleDebugAllAbilitiesChange = (allLevel: number) => {
 
         if (isNaN(allLevel) || allLevel < 0 || allLevel > AbilitySystem.MAX_LEVEL) {
             ToastUtils.showToast(
@@ -566,7 +563,7 @@ interface StatsPanelProps {
     debugInputs: Record<AbilityType, string>;
     setDebugInputs: React.Dispatch<React.SetStateAction<Record<AbilityType, string>>>;
     onDebugAbilityChange: (type: AbilityType) => void;
-    onDebugAllChange: () => void;
+    onDebugAllChange: (level: number) => void;
 }
 
 function StatsPanel({ data, isDebugMode, debugInputs, setDebugInputs, onDebugAbilityChange, onDebugAllChange }: StatsPanelProps): React.ReactElement {
@@ -578,7 +575,7 @@ function StatsPanel({ data, isDebugMode, debugInputs, setDebugInputs, onDebugAbi
             return;
         }
         setDebugInputs(Object.fromEntries(Object.values(AbilityType).map(type => [type, String(allLevel)])) as Record<AbilityType, string>);
-        onDebugAllChange();
+        onDebugAllChange(allLevel);
     };
 
     return (
