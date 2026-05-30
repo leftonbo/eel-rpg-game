@@ -7,7 +7,7 @@
   - data: bosses (18 files, auto-loaded), skills, documents (Markdown + gray-matter), changelogs, PlayerIcons/PlayerItems, DocumentLoader, ChangelogLoader, index.ts with localizeBossData.
   - i18n: i18next-based Japanese/English support with per-boss translation files under i18n/bosses/.
   - utils: CombatUtils, ModalUtils, ToastUtils, BootstrapMarkdownRenderer, ChangelogMarkdownRenderer.
-- UI stack uses Bootstrap 5.3 with EJS templates that generate HTML at build time (avoid manual HTML edits).
+- UI stack uses Bootstrap 5.3
 - Repository: eel-rpg-game, default branch main, branch naming: feature/bugfix/refactor/docs.
 - Commit style: Japanese + gitmoji (see docs/rules/git-commit.md). PR template in docs/rules/pull-request.md.
 - Documentation hub: AGENTS.md (agent guide), docs/boss-creation-guide.md (boss authoring), docs/bosses/ (per-boss notes).

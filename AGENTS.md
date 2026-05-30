@@ -9,7 +9,7 @@
 - TypeScript / Vite 製のブラウザ向けターン制 RPG
 - プレイヤーがボスを選択して戦闘する
 - 戦闘記録、装備、アビリティ、ゲーム内文書を進行データとして扱う。
-- 主な技術: TypeScript 5.8+, Vite 7.1+, Vitest 3.2+, ESLint 9.31, Bootstrap 5.3, EJS, i18next, marked, gray-matter
+- 主な技術: TypeScript 5.8+, Vite 7.1+, Vitest 3.2+, ESLint 9.31, Bootstrap 5.3, i18next, marked, gray-matter
 - Node.js 22+ と npm を前提にする
 
 ## 情報の置き場所
@@ -40,7 +40,6 @@
 - `src/game/systems/` はアビリティ、記録、セーブデータ、状態異常などの横断的な仕組みを持つ
 - `src/game/data/bosses/*.ts` は `import.meta.glob('./bosses/*.ts')` で自動検出される
 - ボス表示テキストは `src/game/data/index.ts` のローカライズ処理と `src/game/i18n/bosses/` の翻訳データで扱う
-- UI の HTML は `src/templates/` の EJS から生成される
 
 ## コーディング規約
 

@@ -5,7 +5,6 @@
 - Error handling: use try-catch where needed; log via console.error with descriptive prefix.
 - Dialogs/notifications (strict rule): never use browser `alert`/`confirm`/`prompt`. Always use `ModalUtils.showAlert/showConfirm/showPrompt` and `ToastUtils.showToast`.
 - UI: favor Bootstrap 5 components (cards, buttons, badges, progress bars, grid, modal, nav-tabs, utility classes); keep custom CSS minimal; mobile-first with col-sm/col-md breakpoints; consider aria-* and contrast.
-- EJS templates: HTML is generated from src/templates/; avoid hand-editing final HTML—edit the templates or partials instead.
 - Status effects:
   1. Add entry to StatusEffectType enum in src/game/systems/StatusEffectTypes.ts.
   2. Implement StatusEffectConfig under src/game/systems/status-effects/{boss-id}-effects.ts and register via its index.ts.

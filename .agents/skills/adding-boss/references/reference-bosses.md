@@ -42,5 +42,4 @@
 - `src/game/systems/status-effects/`: 状態異常設定。
 - `src/game/data/index.ts`: ボスデータの glob import と i18n 適用。
 - `src/game/i18n/bosses/`: ボス翻訳。
-- `src/templates/`: EJS テンプレートによる UI 生成。
 - `scripts/boss-overview.ts`: ボス一覧比較コマンド。
