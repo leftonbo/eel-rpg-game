@@ -3,6 +3,7 @@ import { useGameContext } from './game/context/GameContext';
 import { GameState } from './game/types/GameState';
 import { TitleScreen } from './game/scenes/react/TitleScreen';
 import { BossSelectScreen } from './game/scenes/react/BossSelectScreen';
+import { PlayerDetailScreen } from './game/scenes/react/PlayerDetailScreen';
 
 function App(): React.ReactElement {
     const { currentState } = useGameContext();
@@ -11,6 +12,7 @@ function App(): React.ReactElement {
         <>
             {currentState === GameState.Title && <TitleScreen />}
             {currentState === GameState.OutGameBossSelect && <BossSelectScreen />}
+            {currentState === GameState.OutGamePlayerDetail && <PlayerDetailScreen />}
         </>
     );
 }
