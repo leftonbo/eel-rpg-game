@@ -36,8 +36,10 @@
   },
   "devDependencies": {
     "@types/node": "^24.1.0",
+    "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.36.0",
     "@typescript-eslint/parser": "^8.59.4",
+    "@vitejs/plugin-react": "^5.2.0",
     "ejs": "^3.1.10",
     "eslint": "^9.31.0",
     "gray-matter": "^4.0.3",
@@ -57,6 +59,7 @@
     "marked": "^16.1.1",
     "node": "^22.0.0",
     "react": "^19.2.6",
-    "react-bootstrap": "^2.10.10"
+    "react-bootstrap": "^2.10.10",
+    "react-dom": "^19.2.6"
   }
 }

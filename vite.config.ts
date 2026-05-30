@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 import { ViteEjsPlugin } from 'vite-plugin-ejs';
 import { visualizer } from 'rollup-plugin-visualizer';
 import liveReload from 'vite-plugin-live-reload';
@@ -20,6 +21,7 @@ export default defineConfig(({ mode }) => {
       environment: 'node',
     },
     plugins: [
+      react(),
       ViteEjsPlugin({
         title: 'ElnalFTE - Turn-based RPG'
       }, {

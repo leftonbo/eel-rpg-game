@@ -23,6 +23,9 @@ export class Game implements IGameContext {
     private player: Player;
     private currentBoss: Boss | null = null;
     private debugMode: boolean = false;
+
+    /** React から登録される状態変化コールバック */
+    private reactStateCallback?: (state: GameState) => void;
     
     private titleScene: TitleScene;
     private battleScene: BattleScene;
@@ -187,6 +190,16 @@ export class Game implements IGameContext {
                 this.outGameChangelogScene.enter();
                 break;
         }
+
+        // React に状態変化を通知
+        this.reactStateCallback?.(newState);
+    }
+
+    /**
+     * React から状態変化コールバックを登録/解除する
+     */
+    setReactStateCallback(cb: ((state: GameState) => void) | undefined): void {
+        this.reactStateCallback = cb;
     }
 
     reboot(): void {
