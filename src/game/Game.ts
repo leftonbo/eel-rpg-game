@@ -108,13 +108,9 @@ export class Game implements IGameContext {
         document.getElementById('battle-screen')?.classList.add('d-none');
         document.getElementById('battle-result-screen')?.classList.add('d-none');
         
-        // Hide Out Game scenes
+        // Hide Out Game scenes (React管理ではないもののみ)
         document.getElementById('out-game-boss-select-screen')?.classList.add('d-none');
         document.getElementById('out-game-player-detail-screen')?.classList.add('d-none');
-        document.getElementById('out-game-exploration-record-screen')?.classList.add('d-none');
-        document.getElementById('out-game-library-screen')?.classList.add('d-none');
-        document.getElementById('out-game-option-screen')?.classList.add('d-none');
-        document.getElementById('out-game-changelog-screen')?.classList.add('d-none');
         
         // Hide/Show out-game navigation based on scene type
         const outGameNavigation = document.getElementById('out-game-navigation-container');
@@ -167,23 +163,20 @@ export class Game implements IGameContext {
                 this.outGamePlayerDetailScene.enter();
                 break;
                 
+            // 以下は React で管理（ナビゲーションの active 状態更新のみ）
             case GameState.OutGameExplorationRecord:
-                document.getElementById('out-game-exploration-record-screen')?.classList.remove('d-none');
                 this.outGameExplorationRecordScene.enter();
                 break;
                 
             case GameState.OutGameLibrary:
-                document.getElementById('out-game-library-screen')?.classList.remove('d-none');
                 this.outGameLibraryScene.enter();
                 break;
                 
             case GameState.OutGameOption:
-                document.getElementById('out-game-option-screen')?.classList.remove('d-none');
                 this.outGameOptionScene.enter();
                 break;
                 
             case GameState.OutGameChangelog:
-                document.getElementById('out-game-changelog-screen')?.classList.remove('d-none');
                 this.outGameChangelogScene.enter();
                 break;
         }
@@ -260,7 +253,6 @@ export class Game implements IGameContext {
         }
 
         this.outGameBossSelectScene.refreshLocalization();
-        this.outGameOptionScene.refreshLocalization();
     }
     
     /**
