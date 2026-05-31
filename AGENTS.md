@@ -67,4 +67,11 @@
 - コミットメッセージは日本語で、gitmoji スタイルに従う。詳細は `docs/rules/git-commit.md` を参照
 - ブランチ名は `feature/`、`bugfix/`、`refactor/`、`docs/` を基本にする
 - PR タイトルと本文は日本語で書き、`docs/rules/pull-request.md` の形式に従う
-- PR レビューコメントは日本語で、必要に応じて `[must]`、`[imo]`、`[nits]`、`[ask]`、`[fyi]` を使う
+
+## Review guidelines
+
+- Write all pull request review comments in Japanese.
+- レビューの要約、インラインコメント、修正提案はすべて日本語で書いてください。
+- 指摘には「何が問題か」「なぜ問題か」「どう直すとよいか」を含めてください。
+- 重大な不具合、セキュリティリスク、データ破壊、テスト不足、仕様破壊を優先してください。
+- 好みの問題や軽微なスタイル差分だけの指摘は避けてください。
