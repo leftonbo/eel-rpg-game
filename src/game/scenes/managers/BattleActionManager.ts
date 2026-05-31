@@ -14,13 +14,13 @@ export class BattleActionManager {
     private skillPanel: HTMLElement | null = null;
     
     constructor() {
-        this.initializeActionElements();
+        this.refreshElements();
     }
     
     /**
      * アクション関連UI要素の初期化
      */
-    private initializeActionElements(): void {
+    private refreshElements(): void {
         this.actionButtons = document.getElementById('action-buttons');
         this.specialActions = document.getElementById('special-actions');
         this.battleEndActions = document.getElementById('battle-end-actions');
@@ -32,6 +32,8 @@ export class BattleActionManager {
      * アクションの可用性を更新
      */
     updateActionAvailability(player: Player, _boss: Boss, playerTurn: boolean, battleEnded: boolean): void {
+        this.refreshElements();
+
         const canAct = player.canAct();
         const canActActually = canAct && playerTurn && !battleEnded;
         const isAnyRestrained = player.isAnyRestrained();
@@ -234,6 +236,8 @@ export class BattleActionManager {
      * スキルパネルを表示
      */
     showSkillPanel(): void {
+        this.refreshElements();
+
         if (this.actionButtons && this.skillPanel) {
             this.actionButtons.classList.add('d-none');
             this.skillPanel.classList.remove('d-none');
@@ -244,6 +248,8 @@ export class BattleActionManager {
      * スキルパネルを非表示
      */
     hideSkillPanel(): void {
+        this.refreshElements();
+
         if (this.actionButtons && this.skillPanel) {
             this.skillPanel.classList.add('d-none');
             this.actionButtons.classList.remove('d-none');
@@ -254,6 +260,8 @@ export class BattleActionManager {
      * アイテムパネルを表示
      */
     showItemPanel(): void {
+        this.refreshElements();
+
         if (this.actionButtons && this.itemPanel) {
             this.actionButtons.classList.add('d-none');
             this.itemPanel.classList.remove('d-none');
@@ -264,6 +272,8 @@ export class BattleActionManager {
      * アイテムパネルを非表示
      */
     hideItemPanel(): void {
+        this.refreshElements();
+
         if (this.actionButtons && this.itemPanel) {
             this.itemPanel.classList.add('d-none');
             this.actionButtons.classList.remove('d-none');

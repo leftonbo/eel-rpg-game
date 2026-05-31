@@ -52,7 +52,7 @@
 - `BossAction` の必須フィールドがすべてあるか。
 - `aiStrategy` が必ず `BossAction` を返すか。
 - `onUse` が `string[]` を返すか。
-- EJS や HTML を触った場合、Bootstrap の構造を壊していないか。
+- HTML を触った場合、Bootstrap の構造を壊していないか。
 - `npm run typecheck`、`npm run test`、`npm run lint`、`npm run build` のどれで失敗しているかを切り分ける。
 
 ## フレーバー表現の確認

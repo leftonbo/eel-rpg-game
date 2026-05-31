@@ -1,0 +1,5 @@
+- Bootstrap/React-Bootstrap migration implemented: CDN Bootstrap CSS/JS and `window.bootstrap` usage removed from active app code; Bootstrap CSS is imported from npm in `src/main.tsx` and `src/main.ts` before `src/styles/main.css`.
+- `src/game/utils/ToastUtils.ts` and `src/game/utils/ModalUtils.ts` are now compatibility facades. React implementations live in `src/game/ui/ToastProvider.tsx` and `src/game/ui/DialogProvider.tsx`, mounted in `src/App.tsx`.
+- Dedicated DOM modal classes were removed: `BossModalComponent`, `PlayerInfoEditManager`, and `BattleDebugManager`. Boss/changelog/debug modals are routed through `ModalUtils`; player info editing is `PlayerInfoEditModal` under React.
+- `LegacyStaticUi` now uses React-Bootstrap `Navbar`, `Nav`, and `Button`; static utility/debug/boss/player modals were removed. Battle manager DOM IDs for battle controls remain stable.
+- `src/game/types/bootstrap.ts` was replaced by `src/game/types/global.ts` for `window.game` only.

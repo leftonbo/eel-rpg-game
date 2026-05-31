@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
+    <title>ElnalFTE - Turn-based RPG</title>
     
     <!-- 検索エンジン対策: インデックス禁止 -->
     <meta name="robots" content="noindex, nofollow">
@@ -23,54 +23,11 @@
     <meta name="twitter:title" content="🐍 ElnalFTE">
     <meta name="twitter:description" content="うなぎのエルナルが主人公のターン制RPGゲーム">
     
-    <!-- Bootstrap CSS (Dark Theme) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-dark text-light" data-bs-theme="dark">
-    <!-- Game Container -->
-    <div id="game-container" class="container-fluid min-vh-100 d-flex flex-column">
-        <!-- Navigation Bar -->
-        <!-- Out Game Navigation (共通) -->
-        <div id="out-game-navigation-container" class="row d-none">
-            <%- include('out-game-navigation') %>
-        </div>
-        
-        <!-- Main Content -->
-        <main class="flex-grow-1">
-            <!-- Scenes -->
-            <%- include('title-scene') %>
-            <%- include('battle-scene') %>
-            <%- include('battle-result-scene') %>
-            
-            <!-- Out Game Scenes -->
-            <%- include('out-game-boss-select-scene') %>
-            <%- include('out-game-player-detail-scene') %>
-            <%- include('out-game-exploration-record-scene') %>
-            <%- include('out-game-library-scene') %>
-            <%- include('out-game-option-scene') %>
-            <%- include('out-game-changelog-scene') %>
-        </main>
-    
-        <!-- Footer Bar -->
-        <!-- Out Game Footer (共通) -->
-        <div id="out-game-footer-container" class="row d-none mt-auto">
-            <%- include('out-game-footer') %>
-        </div>
-        
-        <!-- Modals -->
-        <%- include('boss-modal') %>
-        <%- include('debug-modal') %>
-        <%- include('utility-modals') %>
-        <%- include('player-info-edit-modal') %>
-    </div>
+    <div id="react-root"></div>
 
-    <!-- Toast Container for notifications -->
-    <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     <!-- Vite Entry Point -->
-    <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>

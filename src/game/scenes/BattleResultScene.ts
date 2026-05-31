@@ -32,26 +32,28 @@ export interface BattleResult {
 export class BattleResultScene {
     private game: Game;
     private battleResult: BattleResult | null = null;
+    private continueListenerSetUp: boolean = false;
     
     constructor(game: Game) {
         this.game = game;
-        this.init();
-    }
-    
-    private init(): void {
-        // Initialize any event listeners if needed
-        const continueButton = document.getElementById('battle-result-continue-btn');
-        if (continueButton) {
-            continueButton.addEventListener('click', () => {
-                this.continueToBossSelect();
-            });
-        }
+        // イベントリスナーの設定はenter()で実施（React DOM描画後に呼ばれるため）
     }
     
     /**
      * Enter the battle result scene with the given result data
      */
     enter(result: BattleResult): void {
+        // 続けるボタンのリスナーをDOMが存在してから一度だけ設定
+        if (!this.continueListenerSetUp) {
+            const continueButton = document.getElementById('battle-result-continue-btn');
+            if (continueButton) {
+                continueButton.addEventListener('click', () => {
+                    this.continueToBossSelect();
+                });
+                this.continueListenerSetUp = true;
+            }
+        }
+
         console.log('Entered battle result scene', result);
         this.battleResult = result;
         

@@ -1,23 +1,22 @@
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/main.css';
 import { Game } from './game/Game';
 import './game/types/global';
 import { initI18n, onLanguageChanged } from './game/i18n';
 import { applyTranslations } from './game/i18n/dom';
+import { GameProvider } from './game/context/GameContext';
+import App from './App';
 
-// Declare global variables
 declare global {
     const DEBUG: boolean;
 }
 
-// Initialize the game when the DOM is loaded
-document.addEventListener('DOMContentLoaded', async () => {
-    console.log('[ElnalFTE] Starting game...');
-
+async function main() {
     await initI18n();
     applyTranslations();
 
-    // Create and start the game
     const game = new Game();
 
     onLanguageChanged(() => {
@@ -28,5 +27,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Make game globally accessible for debugging
     window.game = game;
 
-    console.log('[ElnalFTE] Game initialized');
-});
+    const rootEl = document.getElementById('react-root');
+    if (!rootEl) throw new Error('[main] #react-root element not found');
+
+    const root = createRoot(rootEl);
+    root.render(
+        <React.StrictMode>
+            <GameProvider game={game}>
+                <App />
+            </GameProvider>
+        </React.StrictMode>
+    );
+}
+
+main().catch(console.error);

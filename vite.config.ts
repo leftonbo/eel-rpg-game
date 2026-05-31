@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import { ViteEjsPlugin } from 'vite-plugin-ejs';
+import react from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
 import liveReload from 'vite-plugin-live-reload';
 import { plugin as markdown, Mode } from 'vite-plugin-markdown';
@@ -20,24 +20,13 @@ export default defineConfig(({ mode }) => {
       environment: 'node',
     },
     plugins: [
-      ViteEjsPlugin({
-        title: 'ElnalFTE - Turn-based RPG'
-      }, {
-        ejs: {
-          views: [
-            path.resolve(__dirname, 'src/templates/partials'),
-            path.resolve(__dirname, 'src/templates/components')
-          ],
-          beautify: !isProduction
-        }
-      }),
+      react(),
       // Markdown plugin for document management
       markdown({
         mode: [Mode.MARKDOWN]
       }),
       // Live reload for EJS templates and Markdown documents (development only)
       ...(!isProduction ? [
-        liveReload('src/templates/**/*.ejs'),
         liveReload('src/game/data/documents/**/*.md')
       ] : []),
       // Bundle analyzer (conditional)

@@ -6,7 +6,6 @@ After code changes, run these checks:
 - npm run boss-overview (run when touching boss stats/balance)
 
 Additional guardrails:
-- Keep EJS/template-driven generation in mind: edit templates/partials, not generated HTML.
 - Preserve architectural patterns: data-driven bosses (glob import), scene separation, Bootstrap-based UI, ModalUtils/ToastUtils for dialogs, StatusEffectManager for effects.
 - When adding/modifying a boss:
   - Update i18n (src/game/i18n/bosses/{boss-id}.ts and the index) if display text should localize.

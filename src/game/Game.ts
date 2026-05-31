@@ -23,6 +23,9 @@ export class Game implements IGameContext {
     private player: Player;
     private currentBoss: Boss | null = null;
     private debugMode: boolean = false;
+
+    /** React から登録される状態変化コールバック */
+    private reactStateCallback?: (state: GameState) => void;
     
     private titleScene: TitleScene;
     private battleScene: BattleScene;
@@ -86,9 +89,6 @@ export class Game implements IGameContext {
             this.player.lateInitialize();
             console.log('[Game][initAsync] Player initialized');
             
-            // 各シーンの遅延初期化
-            this.outGameBossSelectScene.lateInitialize();
-            
             console.log('[Game][initAsync] Game initialized successfully');
             
             // Show initial title screen
@@ -102,91 +102,58 @@ export class Game implements IGameContext {
     }
     
     setState(newState: GameState): void {
-        // Hide all scenes
-        document.getElementById('title-screen')?.classList.add('d-none');
-        document.getElementById('boss-select-screen')?.classList.add('d-none');
-        document.getElementById('battle-screen')?.classList.add('d-none');
-        document.getElementById('battle-result-screen')?.classList.add('d-none');
-        
-        // Hide Out Game scenes
-        document.getElementById('out-game-boss-select-screen')?.classList.add('d-none');
-        document.getElementById('out-game-player-detail-screen')?.classList.add('d-none');
-        document.getElementById('out-game-exploration-record-screen')?.classList.add('d-none');
-        document.getElementById('out-game-library-screen')?.classList.add('d-none');
-        document.getElementById('out-game-option-screen')?.classList.add('d-none');
-        document.getElementById('out-game-changelog-screen')?.classList.add('d-none');
-        
-        // Hide/Show out-game navigation based on scene type
-        const outGameNavigation = document.getElementById('out-game-navigation-container');
-        const isOutGameScene = this.isOutGameState(newState);
-        if (outGameNavigation) {
-            if (isOutGameScene) {
-                outGameNavigation.classList.remove('d-none');
-            } else {
-                outGameNavigation.classList.add('d-none');
-            }
-        }
-        
-        // Hide/Show out-game footer based on scene type
-        const outGameFooter = document.getElementById('out-game-footer-container');
-        if (outGameFooter) {
-            if (isOutGameScene) {
-                outGameFooter.classList.remove('d-none');
-            } else {
-                outGameFooter.classList.add('d-none');
-            }
-        }
-        
         this.currentState = newState;
         
-        // Show appropriate scene
+        // 状態に応じた副作用のみ実行（表示はReact側が担当）
         switch (newState) {
             case GameState.Title:
-                document.getElementById('title-screen')?.classList.remove('d-none');
                 this.titleScene.enter();
                 break;
                 
             case GameState.Battle:
-                document.getElementById('battle-screen')?.classList.remove('d-none');
                 this.battleScene.enter();
                 break;
                 
             case GameState.BattleResult:
-                document.getElementById('battle-result-screen')?.classList.remove('d-none');
                 // BattleResultScene.enter() will be called separately with result data
                 break;
                 
             // Out Game Scenes
             case GameState.OutGameBossSelect:
-                document.getElementById('out-game-boss-select-screen')?.classList.remove('d-none');
                 this.outGameBossSelectScene.enter();
                 break;
                 
             case GameState.OutGamePlayerDetail:
-                document.getElementById('out-game-player-detail-screen')?.classList.remove('d-none');
                 this.outGamePlayerDetailScene.enter();
                 break;
                 
+            // 以下は React で管理（ナビゲーションの active 状態更新のみ）
             case GameState.OutGameExplorationRecord:
-                document.getElementById('out-game-exploration-record-screen')?.classList.remove('d-none');
                 this.outGameExplorationRecordScene.enter();
                 break;
                 
             case GameState.OutGameLibrary:
-                document.getElementById('out-game-library-screen')?.classList.remove('d-none');
                 this.outGameLibraryScene.enter();
                 break;
                 
             case GameState.OutGameOption:
-                document.getElementById('out-game-option-screen')?.classList.remove('d-none');
                 this.outGameOptionScene.enter();
                 break;
                 
             case GameState.OutGameChangelog:
-                document.getElementById('out-game-changelog-screen')?.classList.remove('d-none');
                 this.outGameChangelogScene.enter();
                 break;
         }
+
+        // React に状態変化を通知
+        this.reactStateCallback?.(newState);
+    }
+
+    /**
+     * React から状態変化コールバックを登録/解除する
+     */
+    setReactStateCallback(cb: ((state: GameState) => void) | undefined): void {
+        this.reactStateCallback = cb;
     }
 
     reboot(): void {
@@ -250,7 +217,6 @@ export class Game implements IGameContext {
         }
 
         this.outGameBossSelectScene.refreshLocalization();
-        this.outGameOptionScene.refreshLocalization();
     }
     
     /**
@@ -260,15 +226,4 @@ export class Game implements IGameContext {
         return this.debugMode;
     }
     
-    /**
-     * Check if the given state is an out-game state
-     */
-    private isOutGameState(state: GameState): boolean {
-        return state === GameState.OutGameBossSelect ||
-               state === GameState.OutGamePlayerDetail ||
-               state === GameState.OutGameExplorationRecord ||
-               state === GameState.OutGameLibrary ||
-               state === GameState.OutGameOption ||
-               state === GameState.OutGameChangelog;
-    }
 }

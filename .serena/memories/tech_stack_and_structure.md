@@ -1,5 +1,5 @@
 - Tech stack:
-  - TypeScript 5.8+, Vite 7.1+, Vitest 3.2+, ESLint 9.31, Bootstrap 5.3, EJS templates (vite-plugin-ejs), vite-plugin-markdown, vite-plugin-live-reload.
+  - TypeScript 5.8+, Vite 7.1+, Vitest 3.2+, ESLint 9.31, Bootstrap 5.3, vite-plugin-markdown, vite-plugin-live-reload.
   - i18next 25+ for localization (ja/en).
   - marked (Markdown rendering) + gray-matter (frontmatter parsing).
   - tsx for script execution, rimraf for clean, rollup-plugin-visualizer for bundle analysis.
@@ -13,7 +13,6 @@
   - src/game/i18n: index.ts, types.ts (SupportedLanguage, BossTranslation), dom.ts, resources/ (ja.ts, en.ts), bosses/ (per-boss translation files + index.ts).
   - src/game/constants/: ChangelogConstants etc.
   - src/game/utils: CombatUtils, ModalUtils, ToastUtils, BootstrapMarkdownRenderer, ChangelogMarkdownRenderer.
-  - src/templates: EJS components/ (ability-card, modal-base) and partials/ (25+ files for scenes, modals, panels).
   - src/styles: main.css and supporting CSS.
   - tests: Vitest tests (e.g., Player.test.ts).
   - scripts: boss-overview.ts (CLI boss stat table via tsx).
