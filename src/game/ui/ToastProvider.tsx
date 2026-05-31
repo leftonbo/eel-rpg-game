@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import Toast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
 import { registerToastController, ToastRequest, ToastType, ToastUtils } from '../utils/ToastUtils';
@@ -11,6 +11,7 @@ interface ToastProviderProps {
 
 interface ToastEntry extends ToastRequest {
     id: number;
+    visible: boolean;
 }
 
 function getToastBgClass(type: ToastType): string {
@@ -43,26 +44,50 @@ function getToastIcon(type: ToastType): string {
 
 export function ToastProvider({ children }: ToastProviderProps): React.ReactElement {
     const [toasts, setToasts] = useState<ToastEntry[]>([]);
+    const showFrameIds = useRef<Set<number>>(new Set());
 
     const removeToast = useCallback((id: number) => {
         setToasts((current) => current.filter((toast) => toast.id !== id));
     }, []);
 
+    const hideToast = useCallback((id: number) => {
+        setToasts((current) => current.map((toast) => (
+            toast.id === id ? { ...toast, visible: false } : toast
+        )));
+    }, []);
+
+    const showToast = useCallback((request: ToastRequest) => {
+        const id = Date.now() + Math.floor(Math.random() * 1000);
+
+        setToasts((current) => [
+            ...current,
+            {
+                ...request,
+                id,
+                visible: false,
+            },
+        ]);
+
+        const frameId = requestAnimationFrame(() => {
+            showFrameIds.current.delete(frameId);
+            setToasts((current) => current.map((toast) => (
+                toast.id === id ? { ...toast, visible: true } : toast
+            )));
+        });
+        showFrameIds.current.add(frameId);
+    }, []);
+
     useEffect(() => {
         registerToastController({
-            showToast: (request) => {
-                setToasts((current) => [
-                    ...current,
-                    {
-                        ...request,
-                        id: Date.now() + Math.floor(Math.random() * 1000),
-                    },
-                ]);
-            },
+            showToast,
         });
 
-        return () => registerToastController(null);
-    }, []);
+        return () => {
+            registerToastController(null);
+            showFrameIds.current.forEach((frameId) => cancelAnimationFrame(frameId));
+            showFrameIds.current.clear();
+        };
+    }, [showToast]);
 
     return (
         <>
@@ -71,10 +96,11 @@ export function ToastProvider({ children }: ToastProviderProps): React.ReactElem
                 {toasts.map((toast) => (
                     <Toast
                         key={toast.id}
-                        show
+                        show={toast.visible}
                         autohide
                         delay={TOAST_AUTO_HIDE_MS}
-                        onClose={() => removeToast(toast.id)}
+                        onClose={() => hideToast(toast.id)}
+                        onExited={() => removeToast(toast.id)}
                     >
                         <Toast.Header className={`${getToastBgClass(toast.type)} text-white`}>
                             <span className="me-2">{getToastIcon(toast.type)}</span>
