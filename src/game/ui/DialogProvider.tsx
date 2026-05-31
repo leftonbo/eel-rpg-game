@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -44,6 +44,13 @@ type DialogResult =
     | StatusEffectModalResult
     | ChangelogModalResult;
 
+type ActiveDialog = {
+    id: number;
+    item: DialogItem;
+    show: boolean;
+    resolved: boolean;
+};
+
 function getDismissValue(item: DialogItem): DialogResult {
     switch (item.kind) {
         case 'alert':
@@ -83,34 +90,57 @@ function parseCustomValue(value: string, originalType?: string): string | number
 }
 
 export function DialogProvider({ children }: DialogProviderProps): React.ReactElement {
-    const [current, setCurrent] = useState<DialogItem | null>(null);
-    const [, setQueue] = useState<DialogItem[]>([]);
+    const [current, setCurrent] = useState<ActiveDialog | null>(null);
+    const currentRef = useRef<ActiveDialog | null>(null);
+    const nextDialogIdRef = useRef(0);
+    const queueRef = useRef<DialogItem[]>([]);
+
+    const showDialog = useCallback((item: DialogItem) => {
+        const active = { id: nextDialogIdRef.current, item, show: true, resolved: false };
+        nextDialogIdRef.current += 1;
+        currentRef.current = active;
+        setCurrent(active);
+    }, []);
 
     const enqueue = useCallback((item: DialogItem) => {
-        setCurrent((active) => {
-            if (active) {
-                setQueue((items) => [...items, item]);
-                return active;
-            }
-            return item;
-        });
-    }, []);
+        if (currentRef.current) {
+            queueRef.current = [...queueRef.current, item];
+            return;
+        }
+
+        showDialog(item);
+    }, [showDialog]);
 
     const finish = useCallback((value: DialogResult) => {
-        setCurrent((active) => {
-            if (active) {
-                (active.resolve as (result: DialogResult) => void)(value);
-            }
-            return null;
-        });
-        setQueue((items) => {
-            const [next, ...rest] = items;
-            if (next) {
-                setCurrent(next);
-            }
-            return rest;
-        });
+        const active = currentRef.current;
+        if (!active || active.resolved) {
+            return;
+        }
+
+        (active.item.resolve as (result: DialogResult) => void)(value);
+
+        const closing = { ...active, show: false, resolved: true };
+        currentRef.current = closing;
+        setCurrent(closing);
     }, []);
+
+    const handleExited = useCallback(() => {
+        const active = currentRef.current;
+        if (!active || active.show) {
+            return;
+        }
+
+        const [next, ...rest] = queueRef.current;
+        queueRef.current = rest;
+
+        if (next) {
+            showDialog(next);
+            return;
+        }
+
+        currentRef.current = null;
+        setCurrent(null);
+    }, [showDialog]);
 
     useEffect(() => {
         registerDialogController({
@@ -132,39 +162,102 @@ export function DialogProvider({ children }: DialogProviderProps): React.ReactEl
     }, [enqueue]);
 
     const handleHide = () => {
-        if (!current) return;
-        finish(getDismissValue(current));
+        const active = currentRef.current;
+        if (!active) return;
+        finish(getDismissValue(active.item));
     };
 
     return (
         <>
             {children}
-            {current?.kind === 'alert' && (
-                <AlertDialog item={current} onHide={handleHide} onResolve={() => finish(undefined)} />
+            {current?.item.kind === 'alert' && (
+                <AlertDialog
+                    key={current.id}
+                    item={current.item}
+                    show={current.show}
+                    onHide={handleHide}
+                    onExited={handleExited}
+                    onResolve={() => finish(undefined)}
+                />
             )}
-            {current?.kind === 'confirm' && (
-                <ConfirmDialog item={current} onHide={handleHide} onResolve={finish} />
+            {current?.item.kind === 'confirm' && (
+                <ConfirmDialog
+                    key={current.id}
+                    item={current.item}
+                    show={current.show}
+                    onHide={handleHide}
+                    onExited={handleExited}
+                    onResolve={finish}
+                />
             )}
-            {current?.kind === 'prompt' && (
-                <PromptDialog item={current} onHide={handleHide} onResolve={finish} />
+            {current?.item.kind === 'prompt' && (
+                <PromptDialog
+                    key={current.id}
+                    item={current.item}
+                    show={current.show}
+                    onHide={handleHide}
+                    onExited={handleExited}
+                    onResolve={finish}
+                />
             )}
-            {current?.kind === 'select' && (
-                <SelectDialog item={current} onHide={handleHide} onResolve={finish} />
+            {current?.item.kind === 'select' && (
+                <SelectDialog
+                    key={current.id}
+                    item={current.item}
+                    show={current.show}
+                    onHide={handleHide}
+                    onExited={handleExited}
+                    onResolve={finish}
+                />
             )}
-            {current?.kind === 'custom-var' && (
-                <CustomVarDialog onHide={handleHide} onResolve={finish} />
+            {current?.item.kind === 'custom-var' && (
+                <CustomVarDialog
+                    key={current.id}
+                    show={current.show}
+                    onHide={handleHide}
+                    onExited={handleExited}
+                    onResolve={finish}
+                />
             )}
-            {current?.kind === 'status-effect' && (
-                <StatusEffectDialog item={current} onHide={handleHide} onResolve={finish} />
+            {current?.item.kind === 'status-effect' && (
+                <StatusEffectDialog
+                    key={current.id}
+                    item={current.item}
+                    show={current.show}
+                    onHide={handleHide}
+                    onExited={handleExited}
+                    onResolve={finish}
+                />
             )}
-            {current?.kind === 'boss' && (
-                <BossModalDialog item={current} onHide={handleHide} onResolve={finish} />
+            {current?.item.kind === 'boss' && (
+                <BossModalDialog
+                    key={current.id}
+                    item={current.item}
+                    show={current.show}
+                    onHide={handleHide}
+                    onExited={handleExited}
+                    onResolve={finish}
+                />
             )}
-            {current?.kind === 'changelog' && (
-                <ChangelogDialog item={current} onHide={handleHide} onResolve={finish} />
+            {current?.item.kind === 'changelog' && (
+                <ChangelogDialog
+                    key={current.id}
+                    item={current.item}
+                    show={current.show}
+                    onHide={handleHide}
+                    onExited={handleExited}
+                    onResolve={finish}
+                />
             )}
-            {current?.kind === 'battle-debug' && (
-                <BattleDebugDialog item={current} onHide={handleHide} onResolve={finish} />
+            {current?.item.kind === 'battle-debug' && (
+                <BattleDebugDialog
+                    key={current.id}
+                    item={current.item}
+                    show={current.show}
+                    onHide={handleHide}
+                    onExited={handleExited}
+                    onResolve={finish}
+                />
             )}
         </>
     );
@@ -172,15 +265,19 @@ export function DialogProvider({ children }: DialogProviderProps): React.ReactEl
 
 function AlertDialog({
     item,
+    show,
     onHide,
+    onExited,
     onResolve,
 }: {
     item: Extract<DialogItem, { kind: 'alert' }>;
+    show: boolean;
     onHide: () => void;
+    onExited: () => void;
     onResolve: () => void;
 }): React.ReactElement {
     return (
-        <Modal show onHide={onHide} centered contentClassName="bg-dark text-light">
+        <Modal show={show} onHide={onHide} onExited={onExited} centered contentClassName="bg-dark text-light">
             <Modal.Header closeButton closeVariant="white">
                 <Modal.Title>{item.title}</Modal.Title>
             </Modal.Header>
@@ -196,15 +293,19 @@ function AlertDialog({
 
 function ConfirmDialog({
     item,
+    show,
     onHide,
+    onExited,
     onResolve,
 }: {
     item: Extract<DialogItem, { kind: 'confirm' }>;
+    show: boolean;
     onHide: () => void;
+    onExited: () => void;
     onResolve: (value: boolean) => void;
 }): React.ReactElement {
     return (
-        <Modal show onHide={onHide} centered contentClassName="bg-dark text-light">
+        <Modal show={show} onHide={onHide} onExited={onExited} centered contentClassName="bg-dark text-light">
             <Modal.Header closeButton closeVariant="white">
                 <Modal.Title>{item.title}</Modal.Title>
             </Modal.Header>
@@ -223,11 +324,15 @@ function ConfirmDialog({
 
 function PromptDialog({
     item,
+    show,
     onHide,
+    onExited,
     onResolve,
 }: {
     item: Extract<DialogItem, { kind: 'prompt' }>;
+    show: boolean;
     onHide: () => void;
+    onExited: () => void;
     onResolve: (value: string | null) => void;
 }): React.ReactElement {
     const [value, setValue] = useState(item.defaultValue);
@@ -237,7 +342,7 @@ function PromptDialog({
     }, [item]);
 
     return (
-        <Modal show onHide={onHide} centered contentClassName="bg-dark text-light">
+        <Modal show={show} onHide={onHide} onExited={onExited} centered contentClassName="bg-dark text-light">
             <Modal.Header closeButton closeVariant="white">
                 <Modal.Title>{item.title}</Modal.Title>
             </Modal.Header>
@@ -270,11 +375,15 @@ function PromptDialog({
 
 function SelectDialog({
     item,
+    show,
     onHide,
+    onExited,
     onResolve,
 }: {
     item: Extract<DialogItem, { kind: 'select' }>;
+    show: boolean;
     onHide: () => void;
+    onExited: () => void;
     onResolve: (value: string | null) => void;
 }): React.ReactElement {
     const [value, setValue] = useState(item.options[0]?.value ?? '');
@@ -284,7 +393,7 @@ function SelectDialog({
     }, [item]);
 
     return (
-        <Modal show onHide={onHide} centered contentClassName="bg-dark text-light">
+        <Modal show={show} onHide={onHide} onExited={onExited} centered contentClassName="bg-dark text-light">
             <Modal.Header closeButton closeVariant="white">
                 <Modal.Title>{item.title}</Modal.Title>
             </Modal.Header>
@@ -311,10 +420,14 @@ function SelectDialog({
 }
 
 function CustomVarDialog({
+    show,
     onHide,
+    onExited,
     onResolve,
 }: {
+    show: boolean;
     onHide: () => void;
+    onExited: () => void;
     onResolve: (value: CustomVarResult | null) => void;
 }): React.ReactElement {
     const [key, setKey] = useState('');
@@ -344,7 +457,7 @@ function CustomVarDialog({
     };
 
     return (
-        <Modal show onHide={onHide} centered contentClassName="bg-dark text-light">
+        <Modal show={show} onHide={onHide} onExited={onExited} centered contentClassName="bg-dark text-light">
             <Modal.Header closeButton closeVariant="white">
                 <Modal.Title>{t('dialogs.customVar.title')}</Modal.Title>
             </Modal.Header>
@@ -391,11 +504,15 @@ function CustomVarDialog({
 
 function StatusEffectDialog({
     item,
+    show,
     onHide,
+    onExited,
     onResolve,
 }: {
     item: Extract<DialogItem, { kind: 'status-effect' }>;
+    show: boolean;
     onHide: () => void;
+    onExited: () => void;
     onResolve: (value: StatusEffectModalResult | null) => void;
 }): React.ReactElement {
     const [type, setType] = useState(item.statusTypes[0] ?? '');
@@ -432,7 +549,7 @@ function StatusEffectDialog({
     const targetLabel = item.target === 'player' ? t('common.player') : t('common.boss');
 
     return (
-        <Modal show onHide={onHide} centered contentClassName="bg-dark text-light">
+        <Modal show={show} onHide={onHide} onExited={onExited} centered contentClassName="bg-dark text-light">
             <Modal.Header closeButton closeVariant="white">
                 <Modal.Title>{t('dialogs.statusEffect.title', { target: targetLabel })}</Modal.Title>
             </Modal.Header>
@@ -477,18 +594,22 @@ function StatusEffectDialog({
 
 function BossModalDialog({
     item,
+    show,
     onHide,
+    onExited,
     onResolve,
 }: {
     item: Extract<DialogItem, { kind: 'boss' }>;
+    show: boolean;
     onHide: () => void;
+    onExited: () => void;
     onResolve: (value: boolean) => void;
 }): React.ReactElement {
     const bossData = getBossData(item.request.bossId);
     const isSelectMode = item.request.mode === 'select';
 
     return (
-        <Modal show onHide={onHide} centered contentClassName="bg-dark text-light">
+        <Modal show={show} onHide={onHide} onExited={onExited} centered contentClassName="bg-dark text-light">
             <Modal.Header closeButton closeVariant="white">
                 <Modal.Title className="fs-3">
                     <span>{bossData.icon}</span> <span>{bossData.displayName}</span>
@@ -541,15 +662,19 @@ function BossModalDialog({
 
 function ChangelogDialog({
     item,
+    show,
     onHide,
+    onExited,
     onResolve,
 }: {
     item: Extract<DialogItem, { kind: 'changelog' }>;
+    show: boolean;
     onHide: () => void;
+    onExited: () => void;
     onResolve: (value: ChangelogModalResult) => void;
 }): React.ReactElement {
     return (
-        <Modal show onHide={onHide} size="xl" scrollable contentClassName="bg-dark text-light">
+        <Modal show={show} onHide={onHide} onExited={onExited} size="xl" scrollable contentClassName="bg-dark text-light">
             <Modal.Header closeButton closeVariant="white" className="bg-primary text-white">
                 <Modal.Title>🎉 新しい更新履歴</Modal.Title>
             </Modal.Header>
@@ -602,11 +727,15 @@ function buildCustomVarState(boss: Boss): DebugCustomVarState[] {
 
 function BattleDebugDialog({
     item,
+    show,
     onHide,
+    onExited,
     onResolve,
 }: {
     item: Extract<DialogItem, { kind: 'battle-debug' }>;
+    show: boolean;
     onHide: () => void;
+    onExited: () => void;
     onResolve: (value: boolean) => void;
 }): React.ReactElement {
     const { player, boss } = item.request;
@@ -759,7 +888,15 @@ function BattleDebugDialog({
     };
 
     return (
-        <Modal show onHide={onHide} size="xl" scrollable contentClassName="bg-dark text-light" dialogClassName="debug-modal-dialog">
+        <Modal
+            show={show}
+            onHide={onHide}
+            onExited={onExited}
+            size="xl"
+            scrollable
+            contentClassName="bg-dark text-light"
+            dialogClassName="debug-modal-dialog"
+        >
             <Modal.Header closeButton closeVariant="white">
                 <Modal.Title className="text-warning">{t('debug.title')}</Modal.Title>
             </Modal.Header>
