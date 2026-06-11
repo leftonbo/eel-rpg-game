@@ -17,6 +17,7 @@ import { undergroundWormTranslations } from './underground-worm';
 import { otherworldCentipedeTranslations } from './otherworld-centipede';
 import { yumewataMellowTranslations } from './yumewata-mellow';
 import { fluffyNoirTranslations } from './fluffy-noir';
+import { gluttonBloomTranslations } from './glutton-bloom';
 
 export const bossTranslations = {
     ja: {
@@ -38,7 +39,8 @@ export const bossTranslations = {
         'underground-worm': undergroundWormTranslations.ja,
         'otherworld-centipede': otherworldCentipedeTranslations.ja,
         'yumewata-mellow': yumewataMellowTranslations.ja,
-        'fluffy-noir': fluffyNoirTranslations.ja
+        'fluffy-noir': fluffyNoirTranslations.ja,
+        'glutton-bloom': gluttonBloomTranslations.ja
     },
     en: {
         'aqua-serpent': aquaSerpentTranslations.en,
@@ -59,6 +61,7 @@ export const bossTranslations = {
         'underground-worm': undergroundWormTranslations.en,
         'otherworld-centipede': otherworldCentipedeTranslations.en,
         'yumewata-mellow': yumewataMellowTranslations.en,
-        'fluffy-noir': fluffyNoirTranslations.en
+        'fluffy-noir': fluffyNoirTranslations.en,
+        'glutton-bloom': gluttonBloomTranslations.en
     }
 };
