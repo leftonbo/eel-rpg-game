@@ -138,7 +138,12 @@ export enum StatusEffectType {
     OwnershipMark = 'ownership-mark',
     NoEntrySign = 'no-entry-sign',
     ArrowSign = 'arrow-sign',
-    DangerSign = 'danger-sign'
+    DangerSign = 'danger-sign',
+
+    // Mascot Death effects
+    SoulCurse = 'soul-curse',
+    ScytheStance = 'scythe-stance',
+    SoulForm = 'soul-form'
 }
 
 export interface StatusEffect {
