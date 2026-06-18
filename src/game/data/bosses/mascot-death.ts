@@ -492,7 +492,7 @@ const mascotDeathAIStrategy = (boss: Boss, player: Player, turn: number): BossAc
     const scytheCharging = boss.getCustomVariable<boolean>('scytheCharging', false);
     if (scytheCharging) {
         clearScytheStance(boss);
-        const isPlayerDefending = player.statusEffects.hasEffect(StatusEffectType.Defending);
+        const isPlayerDefending = player.statusEffects.hasEffect(StatusEffectType.Defending) || player.statusEffects.hasEffect(StatusEffectType.Invincible);
         return isPlayerDefending ? soulReapGuardedAction : soulReapSwingAction;
     }
 
