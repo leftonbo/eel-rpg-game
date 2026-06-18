@@ -97,7 +97,7 @@ const scytheRaiseAction: BossAction = {
 // 魂を体から切り離す共通処理 (ダウンしていなければ強制ダウンさせる)
 const reapSoul = (player: Player): void => {
     if (player.hp > 0) {
-        player.takeDamage(player.hp);
+        player.takeDamage(66600);
     }
     if (!player.statusEffects.hasEffect(StatusEffectType.SoulForm)) {
         player.statusEffects.addEffect(StatusEffectType.SoulForm);
