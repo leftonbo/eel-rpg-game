@@ -251,7 +251,6 @@ const eatenActions: BossAction[] = [
         name: '生気すすり',
         description: '体内に閉じ込めた魂から、生気をちゅうちゅうと吸い取る',
         damageFormula: (user: Boss) => user.attackPower * 1.6,
-        healRatio: 0.5,
         weight: 35,
         playerStateCondition: 'eaten',
         messages: [
@@ -280,7 +279,6 @@ const eatenActions: BossAction[] = [
         name: '深い生気吸収',
         description: '魂の芯から生気をごっそりと吸い上げ、自分のものにする',
         damageFormula: (user: Boss) => user.attackPower * 2.0,
-        healRatio: 0.6,
         weight: 25,
         playerStateCondition: 'eaten',
         messages: [
