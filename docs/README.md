@@ -19,3 +19,7 @@
   - 設定資料: **[Notion](https://tonbonotion01.notion.site/mycharacter-elnal)**
 - **各種ボス設定**
   - **[ボス資料集](bosses/README.md)** - 全ボスの詳細情報
+
+## ❓️ その他
+
+- **[AI_USAGE.md](AI_USAGE.md)** - プロジェクト内の AI 利用について
