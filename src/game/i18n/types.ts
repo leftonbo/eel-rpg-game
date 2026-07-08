@@ -23,6 +23,7 @@ export interface BossTranslationData {
         name?: string;
         description?: string;
         messages?: string[];
+        onUseMessages?: string[];
     }>;
     battleStartMessages?: Array<{
         text: string;
@@ -30,6 +31,8 @@ export interface BossTranslationData {
     victoryMessages?: Array<{
         text: string;
     }>;
+    finishingMove?: string[];
+    dialogues?: Record<string, string>;
     personality?: string[];
 }
 

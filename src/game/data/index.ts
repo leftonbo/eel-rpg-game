@@ -1,5 +1,5 @@
-import { BossData } from '../entities/Boss';
-import { t } from '../i18n';
+import { BossAction, BossData } from '../entities/Boss';
+import { getLanguage, t } from '../i18n';
 
 /**
  * ボスモジュールの型定義
@@ -23,58 +23,217 @@ const modules = import.meta.glob('./bosses/*.ts') as Record<string, BossModuleLo
  */
 const bossDataCache: Map<string, BossData> = new Map();
 
+function humanizeIdentifier(identifier: string): string {
+    const upperCaseSegments = new Set(['ai', 'hp', 'ko', 'mp']);
+
+    return identifier
+        .split('-')
+        .filter(Boolean)
+        .map(segment => upperCaseSegments.has(segment)
+            ? segment.toUpperCase()
+            : segment.charAt(0).toUpperCase() + segment.slice(1)
+        )
+        .join(' ');
+}
+
+function localizedDefault(jaDefault: string, enDefault: string): string {
+    return getLanguage() === 'en' ? enDefault : jaDefault;
+}
+
+function tWithLanguageFallback(key: string, jaDefault: string, enDefault: string): string {
+    return t(key, { defaultValue: localizedDefault(jaDefault, enDefault) });
+}
+
+function defaultActionMessage(actionName: string, index: number): string {
+    if (index === 0) {
+        return `{boss} uses ${actionName}!`;
+    }
+
+    if (index === 1) {
+        return `{player} is caught in ${actionName}.`;
+    }
+
+    return `${actionName} continues to affect {player}.`;
+}
+
+function defaultSequenceMessage(displayName: string, sequenceName: string, index: number): string {
+    if (sequenceName === 'battleStartMessages') {
+        return index === 0
+            ? `${displayName} appears!`
+            : `${displayName} prepares for battle.`;
+    }
+
+    if (sequenceName === 'victoryMessages') {
+        return index === 0
+            ? `${displayName} is defeated.`
+            : `The battle with ${displayName} ends.`;
+    }
+
+    return `${displayName} continues the scene.`;
+}
+
+function localizeBossAction(baseKey: string, action: BossAction): BossAction {
+    const fallbackName = humanizeIdentifier(action.id);
+    const localizedName = tWithLanguageFallback(
+        `${baseKey}.actions.${action.id}.name`,
+        action.name,
+        fallbackName
+    );
+    const localizedAction: BossAction = {
+        ...action,
+        name: localizedName,
+        description: tWithLanguageFallback(
+            `${baseKey}.actions.${action.id}.description`,
+            action.description,
+            `Uses ${localizedName}.`
+        ),
+        messages: action.messages?.map((message, index) => (
+            tWithLanguageFallback(
+                `${baseKey}.actions.${action.id}.messages.${index}`,
+                message,
+                defaultActionMessage(localizedName, index)
+            )
+        ))
+    };
+
+    if (action.onPreUse) {
+        localizedAction.onPreUse = (currentAction, boss, player, turn) => {
+            const modifiedAction = action.onPreUse?.(currentAction, boss, player, turn);
+            return modifiedAction ? localizeBossAction(baseKey, modifiedAction) : null;
+        };
+    }
+
+    if (action.onUse) {
+        localizedAction.onUse = (boss, player, turn) => {
+            const messages = action.onUse?.(boss, player, turn) ?? [];
+            return messages.map((message, index) => (
+                tWithLanguageFallback(
+                    `${baseKey}.actions.${action.id}.onUseMessages.${index}`,
+                    message,
+                    defaultActionMessage(localizedName, index + (action.messages?.length ?? 0))
+                )
+            ));
+        };
+    }
+
+    return localizedAction;
+}
+
 function localizeBossData(bossData: BossData): BossData {
     const baseKey = `bosses.${bossData.id}`;
+    const fallbackDisplayName = humanizeIdentifier(bossData.id);
+    const displayName = tWithLanguageFallback(`${baseKey}.displayName`, bossData.displayName, fallbackDisplayName);
 
     return {
         ...bossData,
-        displayName: t(`${baseKey}.displayName`, { defaultValue: bossData.displayName }),
-        description: t(`${baseKey}.description`, { defaultValue: bossData.description }),
-        questNote: t(`${baseKey}.questNote`, { defaultValue: bossData.questNote }),
+        displayName,
+        description: tWithLanguageFallback(
+            `${baseKey}.description`,
+            bossData.description,
+            `A boss known as ${displayName}.`
+        ),
+        questNote: tWithLanguageFallback(
+            `${baseKey}.questNote`,
+            bossData.questNote,
+            `A request has arrived to investigate and subdue ${displayName}.`
+        ),
         appearanceNote: bossData.appearanceNote
-            ? t(`${baseKey}.appearanceNote`, { defaultValue: bossData.appearanceNote })
+            ? tWithLanguageFallback(
+                `${baseKey}.appearanceNote`,
+                bossData.appearanceNote,
+                `${displayName}'s appearance is recorded in the guild notes.`
+            )
             : undefined,
         personality: bossData.personality
-            ? bossData.personality.map((entry, index) => t(`${baseKey}.personality.${index}`, { defaultValue: entry }))
+            ? bossData.personality.map((entry, index) => tWithLanguageFallback(
+                `${baseKey}.personality.${index}`,
+                entry,
+                `${displayName} watches carefully.`
+            ))
             : bossData.personality,
         guestCharacterInfo: bossData.guestCharacterInfo
             ? {
                 ...bossData.guestCharacterInfo,
                 characterName: bossData.guestCharacterInfo.characterName
-                    ? t(`${baseKey}.guestCharacterInfo.characterName`, { defaultValue: bossData.guestCharacterInfo.characterName })
+                    ? tWithLanguageFallback(
+                        `${baseKey}.guestCharacterInfo.characterName`,
+                        bossData.guestCharacterInfo.characterName,
+                        bossData.guestCharacterInfo.characterName
+                    )
                     : undefined,
-                creator: t(`${baseKey}.guestCharacterInfo.creator`, {
-                    defaultValue: bossData.guestCharacterInfo.creator ?? ''
-                })
+                creator: tWithLanguageFallback(
+                    `${baseKey}.guestCharacterInfo.creator`,
+                    bossData.guestCharacterInfo.creator ?? '',
+                    bossData.guestCharacterInfo.creator ?? ''
+                )
             }
             : undefined,
         victoryTrophy: bossData.victoryTrophy
             ? {
-                name: t(`${baseKey}.victoryTrophy.name`, { defaultValue: bossData.victoryTrophy.name }),
-                description: t(`${baseKey}.victoryTrophy.description`, { defaultValue: bossData.victoryTrophy.description })
+                name: tWithLanguageFallback(
+                    `${baseKey}.victoryTrophy.name`,
+                    bossData.victoryTrophy.name,
+                    `${displayName} Trophy`
+                ),
+                description: tWithLanguageFallback(
+                    `${baseKey}.victoryTrophy.description`,
+                    bossData.victoryTrophy.description,
+                    `A trophy earned by defeating ${displayName}.`
+                )
             }
             : undefined,
         defeatTrophy: bossData.defeatTrophy
             ? {
-                name: t(`${baseKey}.defeatTrophy.name`, { defaultValue: bossData.defeatTrophy.name }),
-                description: t(`${baseKey}.defeatTrophy.description`, { defaultValue: bossData.defeatTrophy.description })
+                name: tWithLanguageFallback(
+                    `${baseKey}.defeatTrophy.name`,
+                    bossData.defeatTrophy.name,
+                    `${displayName} Keepsake`
+                ),
+                description: tWithLanguageFallback(
+                    `${baseKey}.defeatTrophy.description`,
+                    bossData.defeatTrophy.description,
+                    `A keepsake tied to being defeated by ${displayName}.`
+                )
             }
             : undefined,
-        actions: bossData.actions.map(action => ({
-            ...action,
-            name: t(`${baseKey}.actions.${action.id}.name`, { defaultValue: action.name }),
-            description: t(`${baseKey}.actions.${action.id}.description`, { defaultValue: action.description }),
-            messages: action.messages?.map((message, index) => (
-                t(`${baseKey}.actions.${action.id}.messages.${index}`, { defaultValue: message })
+        actions: bossData.actions.map(action => localizeBossAction(baseKey, action)),
+        aiStrategy: bossData.aiStrategy
+            ? (boss, player, turn) => localizeBossAction(baseKey, bossData.aiStrategy!(boss, player, turn))
+            : undefined,
+        finishingMove: bossData.finishingMove
+            ? () => bossData.finishingMove!().map((message, index) => tWithLanguageFallback(
+                `${baseKey}.finishingMove.${index}`,
+                message,
+                index === 0
+                    ? `${displayName} performs a finishing move.`
+                    : `${displayName}'s finishing move continues.`
             ))
-        })),
+            : undefined,
+        getDialogue: bossData.getDialogue
+            ? (situation) => {
+                const originalDialogue = bossData.getDialogue!(situation);
+                return tWithLanguageFallback(
+                    `${baseKey}.dialogues.${situation}`,
+                    originalDialogue,
+                    `${displayName} reacts to the battle.`
+                );
+            }
+            : undefined,
         battleStartMessages: bossData.battleStartMessages?.map((message, index) => ({
             ...message,
-            text: t(`${baseKey}.battleStartMessages.${index}.text`, { defaultValue: message.text })
+            text: tWithLanguageFallback(
+                `${baseKey}.battleStartMessages.${index}.text`,
+                message.text,
+                defaultSequenceMessage(displayName, 'battleStartMessages', index)
+            )
         })),
         victoryMessages: bossData.victoryMessages?.map((message, index) => ({
             ...message,
-            text: t(`${baseKey}.victoryMessages.${index}.text`, { defaultValue: message.text })
+            text: tWithLanguageFallback(
+                `${baseKey}.victoryMessages.${index}.text`,
+                message.text,
+                defaultSequenceMessage(displayName, 'victoryMessages', index)
+            )
         }))
     };
 }

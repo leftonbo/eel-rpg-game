@@ -3,8 +3,17 @@ export type { StatusEffect, StatusEffectConfig } from './StatusEffectTypes';
 
 import { Actor } from '../entities/Actor';
 import { Player } from '../entities/Player';
+import { getLanguage } from '../i18n';
 import { createStatusEffectConfigs } from './status-effects';
 import { StatusEffectType, StatusEffect, StatusEffectConfig, ActionPriority } from './StatusEffectTypes';
+
+function humanizeStatusType(type: StatusEffectType): string {
+    return type
+        .split('-')
+        .filter(Boolean)
+        .map(segment => segment.charAt(0).toUpperCase() + segment.slice(1))
+        .join(' ');
+}
 
 export class StatusEffectManager {
     private effects: Map<StatusEffectType, StatusEffect> = new Map();
@@ -14,6 +23,9 @@ export class StatusEffectManager {
     
     static getEffectName(type: StatusEffectType): string {
         const config = StatusEffectManager.configs.get(type);
+        if (getLanguage() === 'en') {
+            return humanizeStatusType(type);
+        }
         return config ? config.name : '不明な状態異常';
     }
 
@@ -356,13 +368,16 @@ export class StatusEffectManager {
         
         const isPlayer = StatusEffectManager.isPlayerActor(target);
         const messages = config.messages;
-        
-        if (messages) {
-            const template = isPlayer ? messages.onApplyPlayer : messages.onApplyBoss;
-            if (template === "") return null; // Empty string means hide message
-            if (template) {
-                return StatusEffectManager.formatMessageTemplate(template, target);
-            }
+        const template = messages ? (isPlayer ? messages.onApplyPlayer : messages.onApplyBoss) : undefined;
+
+        if (template === "") return null; // Empty string means hide message
+
+        if (getLanguage() === 'en') {
+            return `${target.displayName} is affected by ${StatusEffectManager.getEffectName(statusType)}!`;
+        }
+
+        if (template) {
+            return StatusEffectManager.formatMessageTemplate(template, target);
         }
         
         // Default message if no custom template
@@ -382,13 +397,16 @@ export class StatusEffectManager {
         
         const isPlayer = StatusEffectManager.isPlayerActor(target);
         const messages = config.messages;
-        
-        if (messages) {
-            const template = isPlayer ? messages.onTickPlayer : messages.onTickBoss;
-            if (template === "") return null; // Empty string means hide message
-            if (template) {
-                return StatusEffectManager.formatMessageTemplate(template, target, damage);
-            }
+        const template = messages ? (isPlayer ? messages.onTickPlayer : messages.onTickBoss) : undefined;
+
+        if (template === "") return null; // Empty string means hide message
+
+        if (getLanguage() === 'en') {
+            return `${StatusEffectManager.getEffectName(statusType)} deals ${damage} damage!`;
+        }
+
+        if (template) {
+            return StatusEffectManager.formatMessageTemplate(template, target, damage);
         }
         
         // Default message if no custom template
@@ -401,13 +419,16 @@ export class StatusEffectManager {
         
         const isPlayer = StatusEffectManager.isPlayerActor(target);
         const messages = config?.messages;
-        
-        if (messages) {
-            const template = isPlayer ? messages.onRemovePlayer : messages.onRemoveBoss;
-            if (template === "") return null; // Empty string means hide message
-            if (template) {
-                return StatusEffectManager.formatMessageTemplate(template, target);
-            }
+        const template = messages ? (isPlayer ? messages.onRemovePlayer : messages.onRemoveBoss) : undefined;
+
+        if (template === "") return null; // Empty string means hide message
+
+        if (getLanguage() === 'en') {
+            return `${StatusEffectManager.getEffectName(statusType)} wore off.`;
+        }
+
+        if (template) {
+            return StatusEffectManager.formatMessageTemplate(template, target);
         }
         
         // Default message if no custom template
