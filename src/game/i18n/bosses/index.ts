@@ -1,6 +1,7 @@
 import { aquaSerpentTranslations } from './aqua-serpent';
 import { batVampireTranslations } from './bat-vampire';
 import { cleanMasterTranslations } from './clean-master';
+import { chromeReaperTranslations } from './chrome-reaper';
 import { darkGhostTranslations } from './dark-ghost';
 import { demonDragonTranslations } from './demon-dragon';
 import { dreamDemonTranslations } from './dream-demon';
@@ -23,6 +24,7 @@ export const bossTranslations = {
         'aqua-serpent': aquaSerpentTranslations.ja,
         'bat-vampire': batVampireTranslations.ja,
         'clean-master': cleanMasterTranslations.ja,
+        'chrome-reaper': chromeReaperTranslations.ja,
         'dark-ghost': darkGhostTranslations.ja,
         'demon-dragon': demonDragonTranslations.ja,
         'dream-demon': dreamDemonTranslations.ja,
@@ -44,6 +46,7 @@ export const bossTranslations = {
         'aqua-serpent': aquaSerpentTranslations.en,
         'bat-vampire': batVampireTranslations.en,
         'clean-master': cleanMasterTranslations.en,
+        'chrome-reaper': chromeReaperTranslations.en,
         'dark-ghost': darkGhostTranslations.en,
         'demon-dragon': demonDragonTranslations.en,
         'dream-demon': dreamDemonTranslations.en,
