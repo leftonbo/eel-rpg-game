@@ -74,3 +74,6 @@ coverage/
 
 # Claude code local config
 .claude/settings.local.json
+
+# Private outputs
+/outputs/
