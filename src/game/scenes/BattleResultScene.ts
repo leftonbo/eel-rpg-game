@@ -50,12 +50,34 @@ export class BattleResultScene {
                 continueButton.addEventListener('click', () => {
                     this.continueToBossSelect();
                 });
+                document.getElementById('battle-result-retry-btn')?.addEventListener('click', () => {
+                    const bossId = this.game.getCurrentBoss()?.id;
+                    if (bossId) this.game.selectBoss(bossId);
+                });
+                document.getElementById('battle-result-equip-btn')?.addEventListener('click', () => {
+                    const player = this.game.getPlayer();
+                    const success = player.equipBestEquipments();
+                    const status = document.getElementById('battle-result-equipment-status');
+                    if (status) {
+                        status.textContent = t(success
+                            ? 'playerEquipment.toasts.equipBestSuccess.message'
+                            : 'playerEquipment.toasts.equipBestFailure.message');
+                    }
+                });
                 this.continueListenerSetUp = true;
             }
         }
 
         console.log('Entered battle result scene', result);
         this.battleResult = result;
+        const title = document.getElementById('battle-result-title');
+        if (title) title.textContent = t(`battleResult.outcomes.${result.status}`);
+        const equipmentStatus = document.getElementById('battle-result-equipment-status');
+        if (equipmentStatus) equipmentStatus.textContent = '';
+        const retryButton = document.getElementById('battle-result-retry-btn') as HTMLButtonElement | null;
+        if (retryButton) retryButton.disabled = !this.game.getCurrentBoss();
+        const resultBody = document.querySelector('#battle-result-screen .card-body');
+        if (resultBody) resultBody.scrollTop = 0;
         
         // Save player data after battle
         this.game.getPlayer().saveToStorage();
@@ -335,13 +357,15 @@ export function calculateBattleResult(
                 };
                 
                 // Check for new unlocks
-                const unlocks = checkNewUnlocks(abilityType as AbilityType, result.newLevel);
-                newUnlocks.weapons.push(...unlocks.weapons);
-                newUnlocks.armors.push(...unlocks.armors);
-                newUnlocks.gloves.push(...unlocks.gloves);
-                newUnlocks.belts.push(...unlocks.belts);
-                newUnlocks.items.push(...unlocks.items);
-                newUnlocks.skills.push(...unlocks.skills);
+                for (let level = result.previousLevel + 1; level <= result.newLevel; level++) {
+                    const unlocks = checkNewUnlocks(abilityType as AbilityType, level);
+                    newUnlocks.weapons.push(...unlocks.weapons);
+                    newUnlocks.armors.push(...unlocks.armors);
+                    newUnlocks.gloves.push(...unlocks.gloves);
+                    newUnlocks.belts.push(...unlocks.belts);
+                    newUnlocks.items.push(...unlocks.items);
+                    newUnlocks.skills.push(...unlocks.skills);
+                }
                 
                 // Check for new boss unlocks if explorer level increased
                 if (abilityType === AbilityType.Explorer) {

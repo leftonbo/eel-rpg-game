@@ -47,6 +47,7 @@ export class BattleScene {
      * Indicates whether the battle has ended.
      */
     private battleEnded: boolean = false;
+    private bossTurnTimeout: ReturnType<typeof setTimeout> | null = null;
     
     // Battle statistics for experience calculation
     private battleStats = {
@@ -119,6 +120,16 @@ export class BattleScene {
         this.eventHandler.setupEventListeners();
     }
     
+    /** 戦闘を離れた後に、予約済みの敵ターンを実行しない。 */
+    exit(): void {
+        if (this.bossTurnTimeout !== null) {
+            clearTimeout(this.bossTurnTimeout);
+            this.bossTurnTimeout = null;
+        }
+        this.playerTurn = false;
+        this.battleEnded = true;
+    }
+
     enter(): void {
         // イベントリスナーをまだ設定していない場合のみ設定する
         // (React側のDOMが描画された後に呼ばれるためコンストラクタでは設定できない)
@@ -468,7 +479,8 @@ export class BattleScene {
         
         this.updateUI();
         if (!this.checkBattleEnd()) {
-            setTimeout(() => {
+            this.bossTurnTimeout = setTimeout(() => {
+                this.bossTurnTimeout = null;
                 this.bossTurn();
             }, 1000);
         }

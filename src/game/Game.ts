@@ -102,6 +102,9 @@ export class Game implements IGameContext {
     }
     
     setState(newState: GameState): void {
+        if (this.currentState === GameState.Battle && newState !== GameState.Battle) {
+            this.battleScene.exit();
+        }
         this.currentState = newState;
         
         // 状態に応じた副作用のみ実行（表示はReact側が担当）

@@ -1,5 +1,9 @@
 const battle = {
     actionTitle: '行動選択',
+    yourTurn: 'あなたのターンです。行動を選んでください。',
+    enemyTurn: '相手の行動を待っています…',
+    finished: '戦闘が終了しました。結果を確認できます。',
+    defeatedHint: '敗北しました。結果へ進むか、このまま演出を続けられます。',
     logTitle: 'バトルログ',
     logStart: 'バトル開始！',
     backToBossSelect: '← ボス選択に戻る',

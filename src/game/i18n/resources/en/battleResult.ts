@@ -1,6 +1,10 @@
 const battleResult = {
         title: 'Battle Results',
         continue: 'Back to Boss Select',
+        retry: 'Retry this boss',
+        equipBest: 'Equip best gear',
+        savedHint: 'Experience and unlocks have been saved. Equip your new gear to benefit from it.',
+        outcomes: { victory: 'Victory!', defeat: 'Defeat — Progress earned', interrupted: 'Battle interrupted — Progress earned' },
         experienceTitle: 'Experience Gained',
         levelUpTitle: 'Level Up!',
         newUnlocksTitle: 'New Unlocks!',

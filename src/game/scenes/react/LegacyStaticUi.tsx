@@ -146,6 +146,7 @@ export function LegacyStaticUi({ currentState, children }: LegacyStaticUiProps):
                             <div className="card bg-secondary h-100">
                                 <div className="card-header"><h6 className="mb-0" data-i18n="battle.actionTitle">行動選択</h6></div>
                                 <div className="card-body">
+                                    <p id="battle-turn-status" role="status" aria-live="polite" className="small mb-3"></p>
                                     <div id="action-buttons" className="d-grid gap-2">
                                         <Button id="attack-btn" variant="danger" data-i18n="battleActions.attack">⚔️ 攻撃</Button>
                                         <Button id="defend-btn" variant="primary" data-i18n="battleActions.defend">🛡️ 防御</Button>
@@ -175,7 +176,7 @@ export function LegacyStaticUi({ currentState, children }: LegacyStaticUiProps):
                                             <div id="omamori-special-container" className="d-grid gap-2"></div>
                                         </div>
                                     </div>
-                                    <div id="battle-end-actions" className="d-none">
+                                    <div id="battle-end-actions" className="d-none mt-3">
                                         <div className="d-grid gap-2"><Button id="battle-end-btn" variant="success" data-i18n="battle.endBattle">🎯 バトル終了</Button></div>
                                     </div>
                                     <div id="debug-button-container" className="mt-2">
@@ -195,13 +196,21 @@ export function LegacyStaticUi({ currentState, children }: LegacyStaticUiProps):
                         <div className="col-md-8 col-lg-6">
                             <div className="card bg-dark border-info">
                                 <div className="card-body text-center">
-                                    <h2 id="battle-result-title" className="text-info mb-4" data-i18n="battleResult.title">バトル結果</h2>
+                                    <h2 id="battle-result-title" className="text-info mb-4">バトル結果</h2>
                                     <div id="experience-gained" className="mb-4"></div>
                                     <div id="level-ups" className="mb-4 battle-result-section"></div>
                                     <div id="new-unlocks" className="mb-4 battle-result-section"></div>
                                     <div id="trophies-earned" className="mb-4 battle-result-section"></div>
                                     <div id="new-boss-unlocks" className="mb-4 battle-result-section"></div>
-                                    <Button id="battle-result-continue-btn" variant="primary" size="lg" className="mx-auto" data-i18n="battleResult.continue">ボス選択に戻る</Button>
+                                </div>
+                                <div className="card-footer flex-shrink-0 text-center">
+                                    <p className="small mb-2" data-i18n="battleResult.savedHint">経験値と解禁内容は保存済みです。新しい装備は、装備すると強さに反映されます。</p>
+                                    <p id="battle-result-equipment-status" className="small text-info mb-2" role="status" aria-live="polite"></p>
+                                    <div className="d-grid gap-2">
+                                        <Button id="battle-result-equip-btn" variant="outline-info" data-i18n="battleResult.equipBest">最強装備に変更</Button>
+                                        <Button id="battle-result-retry-btn" variant="primary" data-i18n="battleResult.retry">同じボスに再挑戦</Button>
+                                        <Button id="battle-result-continue-btn" variant="outline-light" data-i18n="battleResult.continue">ボス選択に戻る</Button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

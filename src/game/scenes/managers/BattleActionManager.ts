@@ -1,5 +1,6 @@
 import { Player } from '../../entities/Player';
 import { Boss } from '../../entities/Boss';
+import { t } from '../../i18n';
 
 /**
  * バトル画面のアクション制御を管理するクラス
@@ -40,6 +41,12 @@ export class BattleActionManager {
         const isKnockedOut = player.isKnockedOut();
         const isDoomed = player.isDoomed();
         const isDefeated = player.isDefeated();
+        const turnStatus = document.getElementById('battle-turn-status');
+        if (turnStatus) {
+            turnStatus.textContent = t(battleEnded ? 'battle.finished'
+                : !playerTurn ? 'battle.enemyTurn'
+                : isDefeated ? 'battle.defeatedHint' : 'battle.yourTurn');
+        }
         
         // Show/hide action panels
         if (this.actionButtons && this.specialActions && this.battleEndActions) {
@@ -51,7 +58,8 @@ export class BattleActionManager {
             } else if (isAnyRestrained || isKnockedOut || isDoomed || isDefeated || !canAct) {
                 this.actionButtons.classList.add('d-none');
                 this.specialActions.classList.remove('d-none');
-                this.battleEndActions.classList.add('d-none');
+                // 敗北後の演出を続ける操作と、結果へ進む操作を両方残す。
+                this.battleEndActions.classList.toggle('d-none', !isDefeated);
             } else {
                 this.actionButtons.classList.remove('d-none');
                 this.specialActions.classList.add('d-none');
@@ -65,6 +73,7 @@ export class BattleActionManager {
             const btn = document.getElementById(btnId);
             if (btn) {
                 btn.classList.toggle('disabled', !canActActually || isAnyRestrained);
+                (btn as HTMLButtonElement).disabled = !canActActually || isAnyRestrained;
             }
         });
         
@@ -73,6 +82,7 @@ export class BattleActionManager {
         specialBtns.forEach(btnId => {
             const btn = document.getElementById(btnId);
             if (btn) {
+                (btn as HTMLButtonElement).disabled = !playerTurn || battleEnded;
                 if (isDefeated || isDoomed || isKnockedOut || !canAct) {
                     // For knocked out, doomed, and defeated states, only show give-up button
                     if (btnId === 'struggle-btn' || btnId === 'stay-still-btn') {
@@ -167,6 +177,7 @@ export class BattleActionManager {
             } else {
                 struggleSkillSpecialBtn.style.display = 'block';
                 struggleSkillSpecialBtn.classList.toggle('disabled', !playerTurn || !canUseStruggle);
+                (struggleSkillSpecialBtn as HTMLButtonElement).disabled = !playerTurn || !canUseStruggle;
             }
         }
         
